@@ -24,9 +24,11 @@ if sys.version >= (3, 11):
     from enum import StrEnum
 else:
     from strenum import StrEnum
+from enum import auto
 
-class ControlMethod(enum.StrEnum):
-    xvfb: enum.auto()
+# TODO: test this under py3.9/3.10
+class ControlMethod(StrEnum):
+    xvfb: auto()
 
 controlMethod =ControlMethod.xvfb
 
