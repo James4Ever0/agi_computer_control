@@ -442,8 +442,10 @@ elif deviceType == DeviceType.ch9329:
             self.port = port
             super().__init__(screen_width=screen_width, screen_height=screen_height)
         
+        @beartype
         def assert_inbound(self, x:non_neg_int, y:non_neg_int):
-            
+            assert x <=self.X_MAX
+            assert y <= self.Y_MAX
         
         @beartype
         def send_data_absolute(self,  x: non_neg_int, y: non_neg_int, button_codes:List[MouseButton]=[]):
