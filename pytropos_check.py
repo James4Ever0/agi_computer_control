@@ -43,4 +43,4 @@ from hypothesis.strategies import text
 
 @given(s = text(), s0=text())
 def test_myfun(s,s0):
-    print(s, s0)
+    print(s, s0) # lots of charactors.
