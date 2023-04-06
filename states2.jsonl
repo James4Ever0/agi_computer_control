@@ -1,0 +1,623 @@
+{"HIDEvent": ["mouse_move", [969.74609375, 545.890625]], "timeStamp": 1680234935.545706}
+{"HIDEvent": ["mouse_move", [965.16796875, 548.94140625]], "timeStamp": 1680234935.545729}
+{"HIDEvent": ["mouse_move", [959.265625, 551.0859375]], "timeStamp": 1680234935.5457401}
+{"HIDEvent": ["mouse_move", [954.9375, 552.52734375]], "timeStamp": 1680234935.54575}
+{"HIDEvent": ["mouse_move", [948.1640625, 554.78125]], "timeStamp": 1680234935.54576}
+{"HIDEvent": ["mouse_move", [940.4609375, 556.5546875]], "timeStamp": 1680234935.54577}
+{"HIDEvent": ["mouse_move", [931.7734375, 557.79296875]], "timeStamp": 1680234935.5458078}
+{"HIDEvent": ["mouse_move", [923.0859375, 558.41015625]], "timeStamp": 1680234935.545828}
+{"HIDEvent": ["mouse_move", [914.3984375, 558.41015625]], "timeStamp": 1680234935.545839}
+{"HIDEvent": ["mouse_move", [907.625, 558.41015625]], "timeStamp": 1680234935.5458481}
+{"HIDEvent": ["mouse_move", [902.56640625, 557.3984375]], "timeStamp": 1680234935.5458581}
+{"HIDEvent": ["mouse_move", [897.48046875, 555.36328125]], "timeStamp": 1680234935.545868}
+{"HIDEvent": ["mouse_move", [896.0, 553.8828125]], "timeStamp": 1680234935.5458791}
+{"HIDEvent": ["mouse_move", [892.6328125, 550.99609375]], "timeStamp": 1680234935.545894}
+{"HIDEvent": ["mouse_move", [890.5078125, 548.87109375]], "timeStamp": 1680234935.5459042}
+{"HIDEvent": ["mouse_move", [888.3828125, 546.74609375]], "timeStamp": 1680234935.545913}
+{"HIDEvent": ["mouse_move", [887.28125, 544.91015625]], "timeStamp": 1680234935.545921}
+{"HIDEvent": ["mouse_move", [886.5390625, 543.0625]], "timeStamp": 1680234935.54593}
+{"HIDEvent": ["mouse_move", [885.85546875, 541.6953125]], "timeStamp": 1680234935.545939}
+{"HIDEvent": ["mouse_move", [885.56640625, 541.12109375]], "timeStamp": 1680234935.545949}
+{"HIDEvent": ["mouse_move", [885.56640625, 540.546875]], "timeStamp": 1680234935.5459578}
+{"HIDEvent": ["mouse_move", [885.56640625, 539.97265625]], "timeStamp": 1680234935.5459661}
+{"HIDEvent": ["mouse_move", [885.56640625, 539.7109375]], "timeStamp": 1680234935.545977}
+{"HIDEvent": ["mouse_move", [885.56640625, 539.46484375]], "timeStamp": 1680234935.5459871}
+{"HIDEvent": ["mouse_move", [885.82421875, 539.46484375]], "timeStamp": 1680234935.5459971}
+{"HIDEvent": ["mouse_move", [887.1875, 539.12109375]], "timeStamp": 1680234935.54601}
+{"HIDEvent": ["mouse_move", [888.55078125, 538.77734375]], "timeStamp": 1680234935.5460238}
+{"HIDEvent": ["mouse_move", [889.9140625, 538.43359375]], "timeStamp": 1680234935.5460322}
+{"HIDEvent": ["mouse_move", [892.29296875, 538.43359375]], "timeStamp": 1680234935.54604}
+{"HIDEvent": ["mouse_move", [892.05859375, 539.12890625]], "timeStamp": 1680234937.9608672}
+{"HIDEvent": ["mouse_move", [891.4296875, 540.06640625]], "timeStamp": 1680234937.962968}
+{"HIDEvent": ["mouse_move", [889.7265625, 542.61328125]], "timeStamp": 1680234937.9630132}
+{"HIDEvent": ["mouse_move", [888.13671875, 544.59765625]], "timeStamp": 1680234937.963041}
+{"HIDEvent": ["mouse_move", [886.9453125, 546.9765625]], "timeStamp": 1680234937.963068}
+{"HIDEvent": ["mouse_move", [884.6796875, 550.14453125]], "timeStamp": 1680234937.963095}
+{"HIDEvent": ["mouse_move", [882.8671875, 553.3125]], "timeStamp": 1680234937.963146}
+{"HIDEvent": ["mouse_move", [881.0546875, 556.93359375]], "timeStamp": 1680234937.9631932}
+{"HIDEvent": ["mouse_move", [878.6484375, 560.77734375]], "timeStamp": 1680234937.963222}
+{"HIDEvent": ["mouse_move", [876.8359375, 564.3984375]], "timeStamp": 1680234937.963249}
+{"HIDEvent": ["mouse_move", [874.29296875, 568.97265625]], "timeStamp": 1680234937.9632761}
+{"HIDEvent": ["mouse_move", [872.2578125, 574.0546875]], "timeStamp": 1680234937.963309}
+{"HIDEvent": ["mouse_move", [869.71484375, 578.62890625]], "timeStamp": 1680234937.963347}
+{"HIDEvent": ["mouse_move", [867.7890625, 582.953125]], "timeStamp": 1680234937.963373}
+{"HIDEvent": ["mouse_move", [865.24609375, 587.52734375]], "timeStamp": 1680234937.963399}
+{"HIDEvent": ["mouse_move", [862.703125, 592.1015625]], "timeStamp": 1680234937.963424}
+{"HIDEvent": ["mouse_move", [860.296875, 595.9453125]], "timeStamp": 1680234937.9634502}
+{"HIDEvent": ["mouse_move", [856.9296875, 599.30859375]], "timeStamp": 1680234937.9634812}
+{"HIDEvent": ["mouse_move", [850.1015625, 605.51171875]], "timeStamp": 1680234937.963508}
+{"HIDEvent": ["mouse_move", [842.9921875, 608.47265625]], "timeStamp": 1680234937.9635332}
+{"HIDEvent": ["mouse_move", [838.6640625, 608.953125]], "timeStamp": 1680234937.963557}
+{"HIDEvent": ["mouse_move", [826.68359375, 611.06640625]], "timeStamp": 1680234937.963583}
+{"HIDEvent": ["mouse_move", [817.99609375, 611.06640625]], "timeStamp": 1680234937.963607}
+{"HIDEvent": ["mouse_move", [808.31640625, 610.41796875]], "timeStamp": 1680234937.965919}
+{"HIDEvent": ["mouse_move", [798.84375, 605.00390625]], "timeStamp": 1680234937.9668832}
+{"HIDEvent": ["mouse_move", [790.046875, 598.23828125]], "timeStamp": 1680234937.966914}
+{"HIDEvent": ["mouse_move", [781.92578125, 590.1171875]], "timeStamp": 1680234937.966936}
+{"HIDEvent": ["mouse_move", [779.3828125, 585.5390625]], "timeStamp": 1680234937.966957}
+{"HIDEvent": ["mouse_move", [774.41796875, 578.09375]], "timeStamp": 1680234937.966978}
+{"HIDEvent": ["mouse_move", [770.26953125, 570.984375]], "timeStamp": 1680234937.966998}
+{"HIDEvent": ["mouse_move", [768.12109375, 565.08203125]], "timeStamp": 1680234937.967024}
+{"HIDEvent": ["mouse_move", [767.6953125, 562.10546875]], "timeStamp": 1680234937.967045}
+{"HIDEvent": ["mouse_move", [767.2109375, 557.77734375]], "timeStamp": 1680234937.967065}
+{"HIDEvent": ["mouse_move", [767.2109375, 551.875]], "timeStamp": 1680234937.967084}
+{"HIDEvent": ["mouse_move", [767.2109375, 548.8984375]], "timeStamp": 1680234937.967104}
+{"HIDEvent": ["mouse_move", [770.26171875, 544.3203125]], "timeStamp": 1680234937.967124}
+{"HIDEvent": ["mouse_move", [776.46875, 541.49609375]], "timeStamp": 1680234937.967149}
+{"HIDEvent": ["mouse_move", [785.15234375, 538.390625]], "timeStamp": 1680234937.9671738}
+{"HIDEvent": ["mouse_move", [795.97265625, 536.359375]], "timeStamp": 1680234937.9671948}
+{"HIDEvent": ["mouse_move", [819.22265625, 532.63671875]], "timeStamp": 1680234937.967216}
+{"HIDEvent": ["mouse_move", [830.04296875, 532.63671875]], "timeStamp": 1680234937.967236}
+{"HIDEvent": ["mouse_move", [848.63671875, 532.63671875]], "timeStamp": 1680234937.967255}
+{"HIDEvent": ["mouse_move", [867.23046875, 532.63671875]], "timeStamp": 1680234937.9672801}
+{"HIDEvent": ["mouse_move", [884.38671875, 532.63671875]], "timeStamp": 1680234937.9673111}
+{"HIDEvent": ["mouse_move", [892.0859375, 535.00390625]], "timeStamp": 1680234937.9673321}
+{"HIDEvent": ["mouse_move", [904.5390625, 539.3984375]], "timeStamp": 1680234937.9673522}
+{"HIDEvent": ["mouse_move", [915.796875, 544.32421875]], "timeStamp": 1680234937.967372}
+{"HIDEvent": ["mouse_move", [923.859375, 548.6640625]], "timeStamp": 1680234937.967394}
+{"HIDEvent": ["mouse_move", [926.3984375, 550.35546875]], "timeStamp": 1680234937.9675012}
+{"HIDEvent": ["mouse_move", [930.46484375, 553.40625]], "timeStamp": 1680234937.96753}
+{"HIDEvent": ["mouse_move", [933.6328125, 555.66796875]], "timeStamp": 1680234937.967558}
+{"HIDEvent": ["mouse_move", [934.73828125, 557.51171875]], "timeStamp": 1680234937.967577}
+{"HIDEvent": ["mouse_move", [935.4765625, 559.35546875]], "timeStamp": 1680234937.967595}
+{"HIDEvent": ["mouse_move", [935.81640625, 560.71875]], "timeStamp": 1680234937.9676118}
+{"HIDEvent": ["mouse_move", [935.81640625, 562.5625]], "timeStamp": 1680234937.967629}
+{"HIDEvent": ["mouse_move", [935.81640625, 563.5]], "timeStamp": 1680234937.967649}
+{"HIDEvent": ["mouse_move", [934.7890625, 564.5234375]], "timeStamp": 1680234937.9676712}
+{"HIDEvent": ["mouse_move", [932.80078125, 566.109375]], "timeStamp": 1680234937.969207}
+{"HIDEvent": ["mouse_move", [931.3203125, 567.21484375]], "timeStamp": 1680234937.9692328}
+{"HIDEvent": ["mouse_move", [928.1484375, 569.4765625]], "timeStamp": 1680234937.969253}
+{"HIDEvent": ["mouse_move", [925.59765625, 571.17578125]], "timeStamp": 1680234937.969407}
+{"HIDEvent": ["mouse_move", [923.21484375, 572.36328125]], "timeStamp": 1680234937.969492}
+{"HIDEvent": ["mouse_move", [920.23828125, 573.63671875]], "timeStamp": 1680234937.969517}
+{"HIDEvent": ["mouse_move", [916.61328125, 574.9921875]], "timeStamp": 1680234937.9695292}
+{"HIDEvent": ["mouse_move", [912.98828125, 575.89453125]], "timeStamp": 1680234937.969543}
+{"HIDEvent": ["mouse_move", [908.66015625, 576.85546875]], "timeStamp": 1680234937.9696698}
+{"HIDEvent": ["mouse_move", [903.57421875, 577.36328125]], "timeStamp": 1680234937.969679}
+{"HIDEvent": ["mouse_move", [899.24609375, 577.36328125]], "timeStamp": 1680234937.9696891}
+{"HIDEvent": ["mouse_move", [894.91796875, 577.36328125]], "timeStamp": 1680234937.969698}
+{"HIDEvent": ["mouse_move", [890.58984375, 577.36328125]], "timeStamp": 1680234937.969707}
+{"HIDEvent": ["mouse_move", [886.96484375, 575.55078125]], "timeStamp": 1680234937.969716}
+{"HIDEvent": ["mouse_move", [883.79296875, 573.28515625]], "timeStamp": 1680234937.969729}
+{"HIDEvent": ["mouse_move", [882.3125, 571.8046875]], "timeStamp": 1680234937.969738}
+{"HIDEvent": ["mouse_move", [879.59375, 569.0859375]], "timeStamp": 1680234937.969748}
+{"HIDEvent": ["mouse_move", [877.46875, 566.9609375]], "timeStamp": 1680234937.9697568}
+{"HIDEvent": ["mouse_move", [876.27734375, 564.578125]], "timeStamp": 1680234937.9697669}
+{"HIDEvent": ["mouse_move", [874.3515625, 560.25]], "timeStamp": 1680234937.9697769}
+{"HIDEvent": ["mouse_move", [874.3515625, 560.48046875]], "timeStamp": 1680234937.969795}
+{"HIDEvent": ["mouse_move", [874.74609375, 562.859375]], "timeStamp": 1680234937.969804}
+{"HIDEvent": ["mouse_move", [876.01953125, 565.83203125]], "timeStamp": 1680234937.969813}
+{"HIDEvent": ["mouse_move", [877.375, 569.453125]], "timeStamp": 1680234937.969825}
+{"HIDEvent": ["mouse_move", [878.26953125, 573.04296875]], "timeStamp": 1680234937.969833}
+{"HIDEvent": ["mouse_move", [879.625, 576.6640625]], "timeStamp": 1680234937.969842}
+{"HIDEvent": ["mouse_move", [880.52734375, 580.28515625]], "timeStamp": 1680234937.9698508}
+{"HIDEvent": ["mouse_move", [880.9765625, 583.90625]], "timeStamp": 1680234937.96986}
+{"HIDEvent": ["mouse_move", [882.66015625, 590.64453125]], "timeStamp": 1680234937.96987}
+{"HIDEvent": ["mouse_move", [883.1953125, 596.54296875]], "timeStamp": 1680234937.969878}
+{"HIDEvent": ["mouse_move", [883.73046875, 602.44140625]], "timeStamp": 1680234937.969889}
+{"HIDEvent": ["mouse_move", [883.73046875, 607.5234375]], "timeStamp": 1680234937.969898}
+{"HIDEvent": ["mouse_move", [883.73046875, 611.84765625]], "timeStamp": 1680234937.969907}
+{"HIDEvent": ["mouse_move", [883.73046875, 615.46875]], "timeStamp": 1680234937.9699159}
+{"HIDEvent": ["mouse_move", [881.32421875, 619.3125]], "timeStamp": 1680234937.9699252}
+{"HIDEvent": ["mouse_move", [877.95703125, 622.67578125]], "timeStamp": 1680234937.969933}
+{"HIDEvent": ["mouse_move", [873.12890625, 626.4296875]], "timeStamp": 1680234937.969944}
+{"HIDEvent": ["mouse_move", [868.04296875, 628.4609375]], "timeStamp": 1680234937.969953}
+{"HIDEvent": ["mouse_move", [862.140625, 629.53125]], "timeStamp": 1680234937.969962}
+{"HIDEvent": ["mouse_move", [856.23828125, 630.06640625]], "timeStamp": 1680234937.969971}
+{"HIDEvent": ["mouse_move", [845.4140625, 630.06640625]], "timeStamp": 1680234937.969981}
+{"HIDEvent": ["mouse_move", [837.7109375, 627.6953125]], "timeStamp": 1680234937.9699898}
+{"HIDEvent": ["mouse_move", [829.58984375, 620.25390625]], "timeStamp": 1680234937.970001}
+{"HIDEvent": ["mouse_move", [815.38671875, 604.2734375]], "timeStamp": 1680234937.970012}
+{"HIDEvent": ["mouse_move", [807.21484375, 588.74609375]], "timeStamp": 1680234937.970021}
+{"HIDEvent": ["mouse_move", [799.3515625, 569.52734375]], "timeStamp": 1680234937.970029}
+{"HIDEvent": ["mouse_move", [791.91015625, 547.203125]], "timeStamp": 1680234937.970037}
+{"HIDEvent": ["mouse_move", [786.328125, 523.94921875]], "timeStamp": 1680234937.970046}
+{"HIDEvent": ["mouse_move", [784.86328125, 510.796875]], "timeStamp": 1680234937.9700558}
+{"HIDEvent": ["mouse_move", [782.0703125, 487.54296875]], "timeStamp": 1680234937.9700649}
+{"HIDEvent": ["mouse_move", [780.20703125, 464.2890625]], "timeStamp": 1680234937.9700742}
+{"HIDEvent": ["mouse_move", [779.33203125, 444.1953125]], "timeStamp": 1680234937.970083}
+{"HIDEvent": ["mouse_move", [779.33203125, 436.4921875]], "timeStamp": 1680234937.970093}
+{"HIDEvent": ["mouse_move", [779.33203125, 419.33203125]], "timeStamp": 1680234937.970103}
+{"HIDEvent": ["mouse_move", [779.33203125, 406.140625]], "timeStamp": 1680234937.970114}
+{"HIDEvent": ["mouse_move", [779.33203125, 395.31640625]], "timeStamp": 1680234937.970122}
+{"HIDEvent": ["mouse_move", [779.33203125, 391.69140625]], "timeStamp": 1680234937.970131}
+{"HIDEvent": ["mouse_move", [779.33203125, 384.91796875]], "timeStamp": 1680234937.97014}
+{"HIDEvent": ["mouse_move", [779.33203125, 379.05078125]], "timeStamp": 1680234937.970148}
+{"HIDEvent": ["mouse_move", [779.33203125, 375.42578125]], "timeStamp": 1680234937.9701571}
+{"HIDEvent": ["mouse_move", [779.7265625, 373.04296875]], "timeStamp": 1680234937.970169}
+{"HIDEvent": ["mouse_move", [780.09375, 371.1953125]], "timeStamp": 1680234937.9701781}
+{"HIDEvent": ["mouse_move", [780.40625, 370.25390625]], "timeStamp": 1680234937.970187}
+{"HIDEvent": ["mouse_move", [780.69140625, 369.6796875]], "timeStamp": 1680234937.970195}
+{"HIDEvent": ["mouse_move", [780.69140625, 368.49609375]], "timeStamp": 1680234937.970222}
+{"HIDEvent": ["mouse_move", [780.69140625, 366.6484375]], "timeStamp": 1680234937.970231}
+{"HIDEvent": ["mouse_move", [780.69140625, 364.80078125]], "timeStamp": 1680234937.97024}
+{"HIDEvent": ["mouse_move", [780.69140625, 362.953125]], "timeStamp": 1680234937.970249}
+{"HIDEvent": ["mouse_move", [780.69140625, 361.10546875]], "timeStamp": 1680234937.97026}
+{"HIDEvent": ["mouse_move", [780.3203125, 359.2578125]], "timeStamp": 1680234937.970269}
+{"HIDEvent": ["mouse_move", [779.94921875, 357.41015625]], "timeStamp": 1680234937.970281}
+{"HIDEvent": ["mouse_move", [779.5234375, 354.43359375]], "timeStamp": 1680234937.970289}
+{"HIDEvent": ["mouse_move", [778.7265625, 352.05078125]], "timeStamp": 1680234937.9703}
+{"HIDEvent": ["mouse_move", [778.328125, 349.66796875]], "timeStamp": 1680234937.970309}
+{"HIDEvent": ["mouse_move", [777.5859375, 347.8203125]], "timeStamp": 1680234937.970319}
+{"HIDEvent": ["mouse_move", [777.2421875, 346.453125]], "timeStamp": 1680234937.970331}
+{"HIDEvent": ["mouse_move", [777.2421875, 345.51171875]], "timeStamp": 1680234937.97034}
+{"HIDEvent": ["mouse_move", [776.953125, 344.9375]], "timeStamp": 1680234937.9787781}
+{"HIDEvent": ["mouse_move", [776.953125, 344.67578125]], "timeStamp": 1680234937.978814}
+{"HIDEvent": ["mouse_move", [776.953125, 344.4140625]], "timeStamp": 1680234937.978828}
+{"HIDEvent": ["mouse_move", [776.953125, 344.6484375]], "timeStamp": 1680234937.978843}
+{"HIDEvent": ["mouse_move", [776.953125, 345.21875]], "timeStamp": 1680234937.978852}
+{"HIDEvent": ["mouse_move", [776.953125, 345.4765625]], "timeStamp": 1680234937.978865}
+{"HIDEvent": ["mouse_move", [777.265625, 346.4140625]], "timeStamp": 1680234937.978875}
+{"HIDEvent": ["mouse_move", [777.60546875, 347.77734375]], "timeStamp": 1680234937.978884}
+{"HIDEvent": ["mouse_move", [777.9453125, 349.140625]], "timeStamp": 1680234937.9788952}
+{"HIDEvent": ["mouse_move", [778.73828125, 351.51953125]], "timeStamp": 1680234937.9789052}
+{"HIDEvent": ["mouse_move", [779.640625, 355.140625]], "timeStamp": 1680234937.978913}
+{"HIDEvent": ["mouse_move", [780.6015625, 359.46484375]], "timeStamp": 1680234937.978925}
+{"HIDEvent": ["mouse_move", [781.6171875, 364.546875]], "timeStamp": 1680234937.978934}
+{"HIDEvent": ["mouse_move", [782.6328125, 369.62890625]], "timeStamp": 1680234937.978942}
+{"HIDEvent": ["mouse_move", [783.703125, 375.52734375]], "timeStamp": 1680234937.978951}
+{"HIDEvent": ["mouse_move", [784.7734375, 381.42578125]], "timeStamp": 1680234937.978961}
+{"HIDEvent": ["mouse_move", [785.16796875, 383.8046875]], "timeStamp": 1680234937.9789708}
+{"HIDEvent": ["mouse_move", [785.6171875, 387.42578125]], "timeStamp": 1680234937.97898}
+{"HIDEvent": ["mouse_move", [785.6171875, 390.3984375]], "timeStamp": 1680234937.978991}
+{"HIDEvent": ["mouse_move", [785.6171875, 392.77734375]], "timeStamp": 1680234937.979}
+{"HIDEvent": ["mouse_move", [785.6171875, 394.140625]], "timeStamp": 1680234937.979011}
+{"HIDEvent": ["mouse_move", [785.6171875, 394.7109375]], "timeStamp": 1680234937.97902}
+{"HIDEvent": ["mouse_move", [785.6171875, 395.28125]], "timeStamp": 1680234937.979029}
+{"HIDEvent": ["mouse_move", [785.6171875, 395.5390625]], "timeStamp": 1680234937.979038}
+{"HIDEvent": ["mouse_move", [785.375, 395.5390625]], "timeStamp": 1680234937.979052}
+{"HIDEvent": ["mouse_move", [785.11328125, 395.5390625]], "timeStamp": 1680234937.979061}
+{"HIDEvent": ["mouse_move", [784.5390625, 394.96484375]], "timeStamp": 1680234937.97907}
+{"HIDEvent": ["mouse_move", [784.25, 394.390625]], "timeStamp": 1680234937.979079}
+{"HIDEvent": ["mouse_move", [783.98828125, 394.12890625]], "timeStamp": 1680234937.9790878}
+{"HIDEvent": ["mouse_move", [783.69921875, 393.5546875]], "timeStamp": 1680234937.979101}
+{"HIDEvent": ["mouse_move", [783.4375, 393.29296875]], "timeStamp": 1680234937.97911}
+{"HIDEvent": ["mouse_move", [783.17578125, 393.29296875]], "timeStamp": 1680234937.979119}
+{"HIDEvent": ["mouse_move", [782.9140625, 393.03125]], "timeStamp": 1680234937.97913}
+{"HIDEvent": ["mouse_move", [782.671875, 393.03125]], "timeStamp": 1680234937.979143}
+{"HIDEvent": ["mouse_move", [782.671875, 392.79296875]], "timeStamp": 1680234937.979161}
+{"HIDEvent": ["mouse_move", [782.671875, 392.5546875]], "timeStamp": 1680234937.9791749}
+{"HIDEvent": ["mouse_click", [782.671875, 392.5546875, "Button.left", true]], "timeStamp": 1680234937.9794612}
+{"HIDEvent": ["mouse_click", [782.671875, 392.5546875, "Button.left", false]], "timeStamp": 1680234937.979504}
+{"HIDEvent": ["mouse_move", [784.07421875, 392.0859375]], "timeStamp": 1680234938.435961}
+{"HIDEvent": ["mouse_move", [787.046875, 390.80859375]], "timeStamp": 1680234938.4360042}
+{"HIDEvent": ["mouse_move", [791.62109375, 388.265625]], "timeStamp": 1680234938.436019}
+{"HIDEvent": ["mouse_move", [798.7265625, 384.1171875]], "timeStamp": 1680234938.43603}
+{"HIDEvent": ["mouse_move", [808.1953125, 378.703125]], "timeStamp": 1680234938.4360719}
+{"HIDEvent": ["mouse_move", [817.6640625, 373.2890625]], "timeStamp": 1680234938.436085}
+{"HIDEvent": ["mouse_move", [822.23828125, 370.234375]], "timeStamp": 1680234938.436095}
+{"HIDEvent": ["mouse_move", [830.6640625, 364.3984375]], "timeStamp": 1680234938.4361038}
+{"HIDEvent": ["mouse_move", [838.44140625, 358.5625]], "timeStamp": 1680234938.436112}
+{"HIDEvent": ["mouse_move", [844.95703125, 353.8203125]], "timeStamp": 1680234938.4361222}
+{"HIDEvent": ["mouse_move", [847.078125, 351.6953125]], "timeStamp": 1680234938.4361322}
+{"HIDEvent": ["mouse_move", [851.14453125, 348.1328125]], "timeStamp": 1680234938.436141}
+{"HIDEvent": ["mouse_move", [853.859375, 345.4140625]], "timeStamp": 1680234938.436152}
+{"HIDEvent": ["mouse_move", [855.98046875, 343.2890625]], "timeStamp": 1680234938.436161}
+{"HIDEvent": ["mouse_move", [857.0859375, 341.80859375]], "timeStamp": 1680234938.43617}
+{"HIDEvent": ["mouse_move", [857.7109375, 340.8671875]], "timeStamp": 1680234938.436179}
+{"HIDEvent": ["mouse_move", [858.28125, 340.29296875]], "timeStamp": 1680234938.436188}
+{"HIDEvent": ["mouse_click", [858.28125, 340.29296875, "Button.left", true]], "timeStamp": 1680234938.436223}
+{"HIDEvent": ["mouse_move", [858.40625, 340.1640625]], "timeStamp": 1680234938.4362361}
+{"HIDEvent": ["mouse_click", [858.40625, 340.1640625, "Button.left", false]], "timeStamp": 1680234938.436277}
+{"HIDEvent": ["mouse_move", [858.90625, 339.6640625]], "timeStamp": 1680234938.436286}
+{"HIDEvent": ["mouse_click", [858.90625, 339.6640625, "Button.left", true]], "timeStamp": 1680234938.855649}
+{"HIDEvent": ["mouse_click", [858.90625, 339.6640625, "Button.left", false]], "timeStamp": 1680234938.961243}
+{"HIDEvent": ["mouse_move", [860.52734375, 339.6640625]], "timeStamp": 1680234939.476119}
+{"HIDEvent": ["mouse_move", [864.1484375, 339.2109375]], "timeStamp": 1680234939.4761689}
+{"HIDEvent": ["mouse_move", [867.76953125, 338.3046875]], "timeStamp": 1680234939.4761899}
+{"HIDEvent": ["mouse_move", [877.4921875, 336.359375]], "timeStamp": 1680234939.476209}
+{"HIDEvent": ["mouse_move", [885.19140625, 333.98828125]], "timeStamp": 1680234939.476227}
+{"HIDEvent": ["mouse_move", [890.234375, 332.9765625]], "timeStamp": 1680234939.476251}
+{"HIDEvent": ["mouse_move", [898.91796875, 330.4921875]], "timeStamp": 1680234939.476269}
+{"HIDEvent": ["mouse_move", [906.6171875, 328.71484375]], "timeStamp": 1680234939.476287}
+{"HIDEvent": ["mouse_move", [914.31640625, 326.34375]], "timeStamp": 1680234939.476305}
+{"HIDEvent": ["mouse_move", [921.0859375, 324.6484375]], "timeStamp": 1680234939.4763231}
+{"HIDEvent": ["mouse_move", [923.46484375, 323.8515625]], "timeStamp": 1680234939.47634}
+{"HIDEvent": ["mouse_move", [927.7890625, 322.40625]], "timeStamp": 1680234939.4763641}
+{"HIDEvent": ["mouse_move", [931.41015625, 321.5]], "timeStamp": 1680234939.4763808}
+{"HIDEvent": ["mouse_move", [933.7890625, 320.703125]], "timeStamp": 1680234939.4763992}
+{"HIDEvent": ["mouse_move", [935.6328125, 319.9609375]], "timeStamp": 1680234939.476416}
+{"HIDEvent": ["mouse_move", [936.99609375, 319.6171875]], "timeStamp": 1680234939.476434}
+{"HIDEvent": ["mouse_move", [937.93359375, 319.30078125]], "timeStamp": 1680234939.47645}
+{"HIDEvent": ["mouse_move", [938.50390625, 319.01171875]], "timeStamp": 1680234939.4764748}
+{"HIDEvent": ["mouse_move", [938.76171875, 318.75]], "timeStamp": 1680234939.4764931}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234939.63841}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234939.6540911}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234939.754422}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234939.7544498}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234939.754466}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, -1, 1]], "timeStamp": 1680234939.7544808}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234939.754494}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234939.754508}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.135066}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.135099}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, -1, 0]], "timeStamp": 1680234940.135116}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, -1]], "timeStamp": 1680234940.135134}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, -1]], "timeStamp": 1680234940.135148}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, -1]], "timeStamp": 1680234940.135162}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.135175}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.1351948}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.135221}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.135235}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.135248}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.1352608}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.135276}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.1352892}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 1, 1]], "timeStamp": 1680234940.135301}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.135315}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.13533}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.135343}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.135355}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.13537}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.135381}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.1442409}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.160128}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.1768022}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.193262}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.209986}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.226573}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.2433548}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.2599092}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.276674}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.293324}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.310034}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.326603}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.3433118}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.399889}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.399916}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.3999329}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.562515}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 1]], "timeStamp": 1680234940.562542}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 2]], "timeStamp": 1680234940.562559}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 3]], "timeStamp": 1680234940.562575}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 1, 5]], "timeStamp": 1680234940.562589}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 4]], "timeStamp": 1680234940.562603}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 3]], "timeStamp": 1680234940.562617}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 2]], "timeStamp": 1680234940.562633}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.5626419}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 5]], "timeStamp": 1680234940.562655}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234940.576653}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234940.593348}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234940.60994}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234940.626611}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234940.6432881}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234940.660046}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234940.6767948}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 5]], "timeStamp": 1680234940.693394}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 5]], "timeStamp": 1680234940.709974}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 4]], "timeStamp": 1680234940.726646}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 4]], "timeStamp": 1680234940.743309}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 4]], "timeStamp": 1680234940.7865212}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 3]], "timeStamp": 1680234940.786547}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 3]], "timeStamp": 1680234940.799833}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.79985}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.947687}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.947705}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 2]], "timeStamp": 1680234940.947726}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 2]], "timeStamp": 1680234940.947739}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 1, 3]], "timeStamp": 1680234940.947753}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 4]], "timeStamp": 1680234940.947767}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 3]], "timeStamp": 1680234940.947784}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234940.947793}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234940.947806}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 7]], "timeStamp": 1680234940.947815}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 7]], "timeStamp": 1680234940.959927}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 7]], "timeStamp": 1680234940.976556}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 7]], "timeStamp": 1680234940.993354}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 7]], "timeStamp": 1680234941.0099761}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 7]], "timeStamp": 1680234941.026509}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 7]], "timeStamp": 1680234941.043272}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234941.060009}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 6]], "timeStamp": 1680234941.076666}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 5]], "timeStamp": 1680234941.093226}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 5]], "timeStamp": 1680234941.109958}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 5]], "timeStamp": 1680234941.177493}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 4]], "timeStamp": 1680234941.1775181}
+{"HIDEvent": ["mouse_scroll", [938.76171875, 318.75, 0, 0]], "timeStamp": 1680234941.177532}
+{"HIDEvent": ["mouse_click", [938.76171875, 318.75, "Button.left", true]], "timeStamp": 1680234941.209963}
+{"HIDEvent": ["mouse_click", [938.76171875, 318.75, "Button.left", false]], "timeStamp": 1680234941.331743}
+{"HIDEvent": ["mouse_move", [938.76171875, 320.1328125]], "timeStamp": 1680234941.820715}
+{"HIDEvent": ["mouse_move", [939.6640625, 323.75390625]], "timeStamp": 1680234941.820907}
+{"HIDEvent": ["mouse_move", [940.9375, 326.7265625]], "timeStamp": 1680234941.8210292}
+{"HIDEvent": ["mouse_move", [942.29296875, 330.34765625]], "timeStamp": 1680234941.821078}
+{"HIDEvent": ["mouse_move", [943.1953125, 333.96875]], "timeStamp": 1680234941.821128}
+{"HIDEvent": ["mouse_move", [944.71875, 339.046875]], "timeStamp": 1680234941.821171}
+{"HIDEvent": ["mouse_move", [946.41015625, 345.81640625]], "timeStamp": 1680234941.821223}
+{"HIDEvent": ["mouse_move", [947.2578125, 348.7890625]], "timeStamp": 1680234941.821301}
+{"HIDEvent": ["mouse_move", [948.328125, 354.6875]], "timeStamp": 1680234941.8213491}
+{"HIDEvent": ["mouse_move", [948.80859375, 359.01171875]], "timeStamp": 1680234941.821394}
+{"HIDEvent": ["mouse_move", [949.23046875, 361.984375]], "timeStamp": 1680234941.8214772}
+{"HIDEvent": ["mouse_move", [949.625, 364.36328125]], "timeStamp": 1680234941.8215208}
+{"HIDEvent": ["mouse_move", [949.96484375, 365.7265625]], "timeStamp": 1680234941.821573}
+{"HIDEvent": ["mouse_move", [950.27734375, 366.6640625]], "timeStamp": 1680234941.821663}
+{"HIDEvent": ["mouse_move", [950.58984375, 367.6015625]], "timeStamp": 1680234941.8217359}
+{"HIDEvent": ["mouse_move", [950.58984375, 367.859375]], "timeStamp": 1680234941.821783}
+{"HIDEvent": ["mouse_move", [950.58984375, 368.1171875]], "timeStamp": 1680234941.821824}
+{"HIDEvent": ["mouse_click", [950.58984375, 368.1171875, "Button.left", true]], "timeStamp": 1680234941.8219352}
+{"HIDEvent": ["mouse_move", [950.58984375, 368.23828125]], "timeStamp": 1680234941.821989}
+{"HIDEvent": ["mouse_click", [950.58984375, 368.23828125, "Button.left", false]], "timeStamp": 1680234941.822142}
+{"HIDEvent": ["mouse_move", [950.58984375, 368.73828125]], "timeStamp": 1680234941.822183}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, 0]], "timeStamp": 1680234942.457257}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, -1]], "timeStamp": 1680234942.457282}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, -1]], "timeStamp": 1680234942.457301}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, -2]], "timeStamp": 1680234942.4573162}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, -2]], "timeStamp": 1680234942.457331}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, -1]], "timeStamp": 1680234942.457345}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, -1]], "timeStamp": 1680234942.457359}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, -1]], "timeStamp": 1680234942.457372}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, -1]], "timeStamp": 1680234942.457386}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, 0]], "timeStamp": 1680234942.4573991}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, 0]], "timeStamp": 1680234942.4574132}
+{"HIDEvent": ["mouse_scroll", [950.58984375, 368.73828125, 0, 0]], "timeStamp": 1680234942.5431612}
+{"HIDEvent": ["mouse_click", [950.58984375, 368.73828125, "Button.left", true]], "timeStamp": 1680234942.770831}
+{"HIDEvent": ["mouse_click", [950.58984375, 368.73828125, "Button.left", false]], "timeStamp": 1680234942.859543}
+{"HIDEvent": ["mouse_move", [951.28125, 368.50390625]], "timeStamp": 1680234943.303231}
+{"HIDEvent": ["mouse_move", [952.64453125, 367.8203125]], "timeStamp": 1680234943.303261}
+{"HIDEvent": ["mouse_move", [954.12109375, 366.7109375]], "timeStamp": 1680234943.30328}
+{"HIDEvent": ["mouse_move", [955.96484375, 365.6015625]], "timeStamp": 1680234943.303298}
+{"HIDEvent": ["mouse_move", [957.80859375, 364.4921875]], "timeStamp": 1680234943.303317}
+{"HIDEvent": ["mouse_move", [959.28515625, 363.3828125]], "timeStamp": 1680234943.303335}
+{"HIDEvent": ["mouse_move", [960.76171875, 362.2734375]], "timeStamp": 1680234943.303352}
+{"HIDEvent": ["mouse_move", [963.30859375, 360.57421875]], "timeStamp": 1680234943.303369}
+{"HIDEvent": ["mouse_move", [965.29296875, 358.984375]], "timeStamp": 1680234943.303387}
+{"HIDEvent": ["mouse_move", [967.13671875, 357.875]], "timeStamp": 1680234943.303405}
+{"HIDEvent": ["mouse_move", [968.2421875, 356.39453125]], "timeStamp": 1680234943.303422}
+{"HIDEvent": ["mouse_move", [968.8671875, 355.453125]], "timeStamp": 1680234943.3034391}
+{"HIDEvent": ["mouse_move", [969.890625, 354.42578125]], "timeStamp": 1680234943.3034601}
+{"HIDEvent": ["mouse_move", [969.890625, 353.8515625]], "timeStamp": 1680234943.303478}
+{"HIDEvent": ["mouse_move", [970.515625, 352.91015625]], "timeStamp": 1680234943.303496}
+{"HIDEvent": ["mouse_move", [970.828125, 351.96875]], "timeStamp": 1680234943.303513}
+{"HIDEvent": ["mouse_move", [971.11328125, 351.39453125]], "timeStamp": 1680234943.30353}
+{"HIDEvent": ["mouse_move", [971.11328125, 350.453125]], "timeStamp": 1680234943.3035479}
+{"HIDEvent": ["mouse_click", [971.11328125, 350.453125, "Button.left", true]], "timeStamp": 1680234943.3035982}
+{"HIDEvent": ["mouse_move", [971.11328125, 350.328125]], "timeStamp": 1680234943.303623}
+{"HIDEvent": ["mouse_click", [971.11328125, 350.328125, "Button.left", false]], "timeStamp": 1680234943.3036969}
+{"HIDEvent": ["mouse_move", [971.11328125, 349.828125]], "timeStamp": 1680234943.3037162}
+{"HIDEvent": ["mouse_move", [971.11328125, 349.12890625]], "timeStamp": 1680234943.758292}
+{"HIDEvent": ["mouse_move", [971.11328125, 347.28125]], "timeStamp": 1680234943.7583401}
+{"HIDEvent": ["mouse_move", [971.11328125, 345.43359375]], "timeStamp": 1680234943.758353}
+{"HIDEvent": ["mouse_move", [970.7421875, 343.5859375]], "timeStamp": 1680234943.7583628}
+{"HIDEvent": ["mouse_move", [970.37109375, 341.73828125]], "timeStamp": 1680234943.758373}
+{"HIDEvent": ["mouse_move", [969.6875, 340.37109375]], "timeStamp": 1680234943.758382}
+{"HIDEvent": ["mouse_move", [969.00390625, 339.00390625]], "timeStamp": 1680234943.758396}
+{"HIDEvent": ["mouse_move", [968.6875, 338.0625]], "timeStamp": 1680234943.7584052}
+{"HIDEvent": ["mouse_move", [967.9453125, 336.21484375]], "timeStamp": 1680234943.758414}
+{"HIDEvent": ["mouse_move", [967.31640625, 335.2734375]], "timeStamp": 1680234943.758423}
+{"HIDEvent": ["mouse_move", [967.0, 334.33203125]], "timeStamp": 1680234943.758432}
+{"HIDEvent": ["mouse_click", [967.0, 334.33203125, "Button.left", true]], "timeStamp": 1680234943.758471}
+{"HIDEvent": ["mouse_move", [967.0, 334.20703125]], "timeStamp": 1680234943.758484}
+{"HIDEvent": ["mouse_click", [967.0, 334.20703125, "Button.left", false]], "timeStamp": 1680234943.758514}
+{"HIDEvent": ["mouse_move", [967.0, 333.70703125]], "timeStamp": 1680234943.758523}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 0]], "timeStamp": 1680234944.1541948}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.15424}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.154258}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.154272}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 1, 2]], "timeStamp": 1680234944.2664719}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.266506}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.2665222}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.266536}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.266549}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 0]], "timeStamp": 1680234944.266567}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.278069}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.2934778}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.3101199}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.3266718}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.343402}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.3599129}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.376637}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.393287}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.409981}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.426783}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 2]], "timeStamp": 1680234944.4432058}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.460141}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.476625}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.4934862}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.557995}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 1]], "timeStamp": 1680234944.5580192}
+{"HIDEvent": ["mouse_scroll", [967.0, 333.70703125, 0, 0]], "timeStamp": 1680234944.5580301}
+{"HIDEvent": ["mouse_move", [966.3046875, 333.70703125]], "timeStamp": 1680234944.949545}
+{"HIDEvent": ["mouse_move", [963.328125, 333.70703125]], "timeStamp": 1680234944.9496372}
+{"HIDEvent": ["mouse_move", [959.0, 333.70703125]], "timeStamp": 1680234944.949743}
+{"HIDEvent": ["mouse_move", [954.671875, 333.70703125]], "timeStamp": 1680234944.949785}
+{"HIDEvent": ["mouse_move", [950.34375, 333.70703125]], "timeStamp": 1680234944.9498072}
+{"HIDEvent": ["mouse_move", [943.5703125, 333.140625]], "timeStamp": 1680234944.9498281}
+{"HIDEvent": ["mouse_move", [935.8671875, 331.36328125]], "timeStamp": 1680234944.949847}
+{"HIDEvent": ["mouse_move", [929.09375, 329.10546875]], "timeStamp": 1680234944.9498649}
+{"HIDEvent": ["mouse_move", [921.984375, 325.55078125]], "timeStamp": 1680234944.949883}
+{"HIDEvent": ["mouse_move", [915.79296875, 322.171875]], "timeStamp": 1680234944.949901}
+{"HIDEvent": ["mouse_move", [910.1484375, 318.21875]], "timeStamp": 1680234944.949919}
+{"HIDEvent": ["mouse_move", [906.078125, 314.65625]], "timeStamp": 1680234944.9499369}
+{"HIDEvent": ["mouse_move", [904.59765625, 313.17578125]], "timeStamp": 1680234944.949954}
+{"HIDEvent": ["mouse_move", [902.47265625, 310.625]], "timeStamp": 1680234944.949974}
+{"HIDEvent": ["mouse_move", [900.484375, 309.03515625]], "timeStamp": 1680234944.949992}
+{"HIDEvent": ["mouse_move", [899.00390625, 307.5546875]], "timeStamp": 1680234944.950009}
+{"HIDEvent": ["mouse_move", [898.375, 306.61328125]], "timeStamp": 1680234944.950027}
+{"HIDEvent": ["mouse_move", [897.80078125, 306.0390625]], "timeStamp": 1680234944.9500532}
+{"HIDEvent": ["mouse_move", [897.5390625, 305.77734375]], "timeStamp": 1680234944.95007}
+{"HIDEvent": ["mouse_move", [897.5390625, 305.53125]], "timeStamp": 1680234944.95009}
+{"HIDEvent": ["mouse_click", [897.5390625, 305.53125, "Button.left", true]], "timeStamp": 1680234944.950227}
+{"HIDEvent": ["mouse_click", [897.5390625, 305.53125, "Button.left", false]], "timeStamp": 1680234944.950305}
+{"HIDEvent": ["mouse_move", [896.83984375, 306.4609375]], "timeStamp": 1680234945.550899}
+{"HIDEvent": ["mouse_move", [895.359375, 307.56640625]], "timeStamp": 1680234945.550965}
+{"HIDEvent": ["mouse_move", [893.37109375, 309.15234375]], "timeStamp": 1680234945.550994}
+{"HIDEvent": ["mouse_move", [891.3828125, 310.73828125]], "timeStamp": 1680234945.551014}
+{"HIDEvent": ["mouse_move", [888.83203125, 312.4375]], "timeStamp": 1680234945.551033}
+{"HIDEvent": ["mouse_move", [884.25390625, 314.9765625]], "timeStamp": 1680234945.551073}
+{"HIDEvent": ["mouse_move", [874.78125, 320.38671875]], "timeStamp": 1680234945.5511}
+{"HIDEvent": ["mouse_move", [867.078125, 322.75390625]], "timeStamp": 1680234945.5511198}
+{"HIDEvent": ["mouse_move", [862.7578125, 323.7109375]], "timeStamp": 1680234945.551193}
+{"HIDEvent": ["mouse_move", [854.0703125, 324.94921875]], "timeStamp": 1680234945.551222}
+{"HIDEvent": ["mouse_move", [845.3828125, 325.56640625]], "timeStamp": 1680234945.551241}
+{"HIDEvent": ["mouse_move", [837.6796875, 326.15625]], "timeStamp": 1680234945.55126}
+{"HIDEvent": ["mouse_move", [834.0546875, 326.15625]], "timeStamp": 1680234945.551281}
+{"HIDEvent": ["mouse_move", [828.96875, 326.15625]], "timeStamp": 1680234945.551299}
+{"HIDEvent": ["mouse_move", [824.640625, 326.15625]], "timeStamp": 1680234945.551316}
+{"HIDEvent": ["mouse_move", [822.2578125, 325.7578125]], "timeStamp": 1680234945.551334}
+{"HIDEvent": ["mouse_click", [822.2578125, 325.7578125, "Button.left", true]], "timeStamp": 1680234945.551391}
+{"HIDEvent": ["mouse_move", [821.4375, 325.59375]], "timeStamp": 1680234945.551417}
+{"HIDEvent": ["mouse_click", [821.4375, 325.59375, "Button.left", false]], "timeStamp": 1680234945.5514722}
+{"HIDEvent": ["mouse_move", [818.9375, 325.09375]], "timeStamp": 1680234945.5514932}
+{"HIDEvent": ["mouse_move", [818.9375, 325.32421875]], "timeStamp": 1680234945.9799721}
+{"HIDEvent": ["mouse_move", [818.9375, 327.703125]], "timeStamp": 1680234945.9800608}
+{"HIDEvent": ["mouse_move", [820.29296875, 331.32421875]], "timeStamp": 1680234945.98016}
+{"HIDEvent": ["mouse_move", [821.6484375, 334.9453125]], "timeStamp": 1680234945.980187}
+{"HIDEvent": ["mouse_move", [822.49609375, 337.91796875]], "timeStamp": 1680234945.980212}
+{"HIDEvent": ["mouse_move", [823.34375, 340.890625]], "timeStamp": 1680234945.9802308}
+{"HIDEvent": ["mouse_move", [825.4765625, 346.7578125]], "timeStamp": 1680234945.9802518}
+{"HIDEvent": ["mouse_move", [826.26953125, 349.13671875]], "timeStamp": 1680234945.9802701}
+{"HIDEvent": ["mouse_move", [827.23046875, 353.4609375]], "timeStamp": 1680234945.980288}
+{"HIDEvent": ["mouse_move", [828.50390625, 356.43359375]], "timeStamp": 1680234945.9803069}
+{"HIDEvent": ["mouse_move", [829.296875, 358.8125]], "timeStamp": 1680234945.980326}
+{"HIDEvent": ["mouse_move", [829.63671875, 360.17578125]], "timeStamp": 1680234945.980345}
+{"HIDEvent": ["mouse_click", [829.63671875, 360.17578125, "Button.left", true]], "timeStamp": 1680234945.980408}
+{"HIDEvent": ["mouse_move", [829.78125, 360.609375]], "timeStamp": 1680234945.980435}
+{"HIDEvent": ["mouse_click", [829.78125, 360.609375, "Button.left", false]], "timeStamp": 1680234945.9805062}
+{"HIDEvent": ["mouse_move", [830.28125, 362.109375]], "timeStamp": 1680234945.980526}
+{"HIDEvent": ["mouse_move", [830.28125, 363.03515625]], "timeStamp": 1680234946.7540638}
+{"HIDEvent": ["mouse_move", [830.28125, 368.1171875]], "timeStamp": 1680234946.754116}
+{"HIDEvent": ["mouse_move", [830.28125, 374.88671875]], "timeStamp": 1680234946.754129}
+{"HIDEvent": ["mouse_move", [830.28125, 382.5859375]], "timeStamp": 1680234946.7541509}
+{"HIDEvent": ["mouse_move", [830.28125, 391.26953125]], "timeStamp": 1680234946.754194}
+{"HIDEvent": ["mouse_move", [830.28125, 408.42578125]], "timeStamp": 1680234946.754207}
+{"HIDEvent": ["mouse_move", [830.28125, 420.40234375]], "timeStamp": 1680234946.754217}
+{"HIDEvent": ["mouse_move", [830.28125, 440.4921875]], "timeStamp": 1680234946.754231}
+{"HIDEvent": ["mouse_move", [830.28125, 462.1328125]], "timeStamp": 1680234946.754241}
+{"HIDEvent": ["mouse_move", [829.37890625, 483.7734375]], "timeStamp": 1680234946.75425}
+{"HIDEvent": ["mouse_move", [826.7578125, 503.86328125]], "timeStamp": 1680234946.754261}
+{"HIDEvent": ["mouse_move", [825.06640625, 522.45703125]], "timeStamp": 1680234946.7542698}
+{"HIDEvent": ["mouse_move", [823.48828125, 538.234375]], "timeStamp": 1680234946.754279}
+{"HIDEvent": ["mouse_move", [822.921875, 545.00390625]], "timeStamp": 1680234946.754294}
+{"HIDEvent": ["mouse_move", [821.453125, 558.19140625]], "timeStamp": 1680234946.754304}
+{"HIDEvent": ["mouse_move", [820.7734375, 569.01171875]], "timeStamp": 1680234946.754313}
+{"HIDEvent": ["mouse_move", [820.3203125, 572.6328125]], "timeStamp": 1680234946.7543209}
+{"HIDEvent": ["mouse_move", [819.75390625, 579.40234375]], "timeStamp": 1680234946.7543309}
+{"HIDEvent": ["mouse_move", [819.75390625, 584.484375]], "timeStamp": 1680234946.7543402}
+{"HIDEvent": ["mouse_move", [819.328125, 587.45703125]], "timeStamp": 1680234946.754349}
+{"HIDEvent": ["mouse_move", [819.328125, 589.8359375]], "timeStamp": 1680234946.754358}
+{"HIDEvent": ["mouse_move", [818.984375, 591.1953125]], "timeStamp": 1680234946.7543669}
+{"HIDEvent": ["mouse_move", [818.984375, 592.1328125]], "timeStamp": 1680234946.754375}
+{"HIDEvent": ["mouse_move", [818.984375, 592.703125]], "timeStamp": 1680234946.7543838}
+{"HIDEvent": ["mouse_click", [818.984375, 592.703125, "Button.left", true]], "timeStamp": 1680234946.75442}
+{"HIDEvent": ["mouse_move", [818.984375, 592.82421875]], "timeStamp": 1680234946.754432}
+{"HIDEvent": ["mouse_click", [818.984375, 592.82421875, "Button.left", false]], "timeStamp": 1680234946.754472}
+{"HIDEvent": ["mouse_move", [818.984375, 593.32421875]], "timeStamp": 1680234946.7544808}
+{"HIDEvent": ["mouse_move", [818.984375, 590.94921875]], "timeStamp": 1680234947.687107}
+{"HIDEvent": ["mouse_move", [817.7421875, 582.26171875]], "timeStamp": 1680234947.687142}
+{"HIDEvent": ["mouse_move", [814.078125, 569.0703125]], "timeStamp": 1680234947.6871629}
+{"HIDEvent": ["mouse_move", [811.03125, 554.61328125]], "timeStamp": 1680234947.6871822}
+{"HIDEvent": ["mouse_move", [803.7265625, 524.35546875]], "timeStamp": 1680234947.6872}
+{"HIDEvent": ["mouse_move", [789.31640625, 463.8359375]], "timeStamp": 1680234947.687219}
+{"HIDEvent": ["mouse_move", [779.6015625, 421.34765625]], "timeStamp": 1680234947.687237}
+{"HIDEvent": ["mouse_move", [770.50390625, 371.9609375]], "timeStamp": 1680234947.687254}
+{"HIDEvent": ["mouse_move", [766.78125, 348.70703125]], "timeStamp": 1680234947.6872718}
+{"HIDEvent": ["mouse_move", [757.8828125, 301.6796875]], "timeStamp": 1680234947.687305}
+{"HIDEvent": ["mouse_move", [750.46875, 257.203125]], "timeStamp": 1680234947.687359}
+{"HIDEvent": ["mouse_move", [744.68359375, 219.01953125]], "timeStamp": 1680234947.687385}
+{"HIDEvent": ["mouse_move", [741.63671875, 204.5625]], "timeStamp": 1680234947.6874108}
+{"HIDEvent": ["mouse_move", [739.69140625, 194.8359375]], "timeStamp": 1680234947.68743}
+{"HIDEvent": ["mouse_move", [735.3203125, 174.7421875]], "timeStamp": 1680234947.687448}
+{"HIDEvent": ["mouse_move", [733.79296875, 169.65625]], "timeStamp": 1680234947.687466}
+{"HIDEvent": ["mouse_move", [731.84765625, 159.9296875]], "timeStamp": 1680234947.6874828}
+{"HIDEvent": ["mouse_move", [730.23828125, 154.02734375]], "timeStamp": 1680234947.687511}
+{"HIDEvent": ["mouse_move", [729.78515625, 150.40234375]], "timeStamp": 1680234947.6875288}
+{"HIDEvent": ["mouse_move", [729.04296875, 148.5546875]], "timeStamp": 1680234947.687547}
+{"HIDEvent": ["mouse_move", [729.04296875, 147.61328125]], "timeStamp": 1680234947.687565}
+{"HIDEvent": ["mouse_move", [729.04296875, 147.3515625]], "timeStamp": 1680234947.687582}
+{"HIDEvent": ["mouse_move", [729.04296875, 147.5859375]], "timeStamp": 1680234947.6876018}
+{"HIDEvent": ["mouse_move", [729.04296875, 147.84375]], "timeStamp": 1680234947.687619}
+{"HIDEvent": ["mouse_move", [729.328125, 148.4140625]], "timeStamp": 1680234947.687636}
+{"HIDEvent": ["mouse_move", [729.61328125, 148.984375]], "timeStamp": 1680234947.6876569}
+{"HIDEvent": ["mouse_move", [730.18359375, 149.5546875]], "timeStamp": 1680234947.6876748}
+{"HIDEvent": ["mouse_move", [731.2890625, 151.03125]], "timeStamp": 1680234947.687692}
+{"HIDEvent": ["mouse_move", [732.3125, 152.0546875]], "timeStamp": 1680234947.6877089}
+{"HIDEvent": ["mouse_move", [733.41796875, 153.53125]], "timeStamp": 1680234947.687726}
+{"HIDEvent": ["mouse_move", [734.5234375, 155.0078125]], "timeStamp": 1680234947.687744}
+{"HIDEvent": ["mouse_move", [735.62890625, 156.8515625]], "timeStamp": 1680234947.687774}
+{"HIDEvent": ["mouse_move", [737.21484375, 158.8359375]], "timeStamp": 1680234947.687816}
+{"HIDEvent": ["mouse_move", [738.3203125, 160.6796875]], "timeStamp": 1680234947.687855}
+{"HIDEvent": ["mouse_move", [739.11328125, 163.05859375]], "timeStamp": 1680234947.687892}
+{"HIDEvent": ["mouse_move", [740.46875, 166.6796875]], "timeStamp": 1680234947.687928}
+{"HIDEvent": ["mouse_move", [741.37109375, 170.30078125]], "timeStamp": 1680234947.687964}
+{"HIDEvent": ["mouse_move", [741.79296875, 173.2734375]], "timeStamp": 1680234947.688013}
+{"HIDEvent": ["mouse_move", [742.2734375, 177.59765625]], "timeStamp": 1680234947.68805}
+{"HIDEvent": ["mouse_move", [742.75390625, 181.921875]], "timeStamp": 1680234947.688085}
+{"HIDEvent": ["mouse_move", [743.234375, 186.24609375]], "timeStamp": 1680234947.688121}
+{"HIDEvent": ["mouse_move", [743.6015625, 188.08984375]], "timeStamp": 1680234947.688156}
+{"HIDEvent": ["mouse_move", [744.08203125, 192.4140625]], "timeStamp": 1680234947.688192}
+{"HIDEvent": ["mouse_move", [744.5, 195.33984375]], "timeStamp": 1680234947.688235}
+{"HIDEvent": ["mouse_move", [744.89453125, 197.71875]], "timeStamp": 1680234947.688271}
+{"HIDEvent": ["mouse_move", [744.89453125, 199.08203125]], "timeStamp": 1680234947.688307}
+{"HIDEvent": ["mouse_move", [744.89453125, 200.4453125]], "timeStamp": 1680234947.688342}
+{"HIDEvent": ["mouse_move", [744.89453125, 201.015625]], "timeStamp": 1680234947.688378}
+{"HIDEvent": ["mouse_move", [744.89453125, 201.2734375]], "timeStamp": 1680234947.68842}
+{"HIDEvent": ["mouse_move", [744.89453125, 201.53125]], "timeStamp": 1680234947.6884649}
+{"HIDEvent": ["mouse_click", [744.89453125, 201.53125, "Button.left", true]], "timeStamp": 1680234947.688641}
+{"HIDEvent": ["mouse_move", [744.89453125, 201.65234375]], "timeStamp": 1680234947.688698}
+{"HIDEvent": ["mouse_click", [744.89453125, 201.65234375, "Button.left", false]], "timeStamp": 1680234947.688885}
+{"HIDEvent": ["mouse_move", [744.89453125, 202.15234375]], "timeStamp": 1680234947.688925}
+{"HIDEvent": ["mouse_move", [744.89453125, 201.91796875]], "timeStamp": 1680234947.888704}
+{"HIDEvent": ["mouse_move", [744.6328125, 201.91796875]], "timeStamp": 1680234947.8887308}
+{"HIDEvent": ["mouse_move", [744.38671875, 201.91796875]], "timeStamp": 1680234947.912956}
+{"HIDEvent": ["mouse_move", [744.38671875, 201.65625]], "timeStamp": 1680234947.912972}
+{"HIDEvent": ["mouse_move", [744.140625, 201.65625]], "timeStamp": 1680234947.925963}
+{"HIDEvent": ["mouse_move", [744.140625, 201.4140625]], "timeStamp": 1680234947.977531}
+{"HIDEvent": ["mouse_move", [743.89453125, 201.4140625]], "timeStamp": 1680234947.977553}
+{"HIDEvent": ["mouse_move", [743.65625, 201.4140625]], "timeStamp": 1680234948.017248}
+{"HIDEvent": ["key_press", "'w'"], "timeStamp": 1680234948.352632}
+{"HIDEvent": ["key_press", "'h'"], "timeStamp": 1680234948.426482}
+{"HIDEvent": ["key_release", "'w'"], "timeStamp": 1680234948.4587111}
+{"HIDEvent": ["key_release", "'h'"], "timeStamp": 1680234948.4822989}
+{"HIDEvent": ["key_press", "'o'"], "timeStamp": 1680234948.556415}
+{"HIDEvent": ["key_release", "'o'"], "timeStamp": 1680234948.6583412}
+{"HIDEvent": ["key_press", "'a'"], "timeStamp": 1680234948.6583822}
+{"HIDEvent": ["key_press", "'m'"], "timeStamp": 1680234948.736914}
+{"HIDEvent": ["key_release", "'a'"], "timeStamp": 1680234948.795569}
+{"HIDEvent": ["key_press", "'i'"], "timeStamp": 1680234948.8158631}
+{"HIDEvent": ["key_release", "'m'"], "timeStamp": 1680234948.879463}
+{"HIDEvent": ["key_release", "'i'"], "timeStamp": 1680234948.927393}
+{"HIDEvent": ["key_press", "Key.backspace"], "timeStamp": 1680234949.525533}
+{"HIDEvent": ["key_release", "Key.backspace"], "timeStamp": 1680234949.57318}
+{"HIDEvent": ["key_press", "Key.backspace"], "timeStamp": 1680234949.684402}
+{"HIDEvent": ["key_release", "Key.backspace"], "timeStamp": 1680234949.7200818}
+{"HIDEvent": ["key_press", "Key.backspace"], "timeStamp": 1680234949.825938}
+{"HIDEvent": ["key_release", "Key.backspace"], "timeStamp": 1680234949.8648388}
+{"HIDEvent": ["key_press", "Key.backspace"], "timeStamp": 1680234949.9656541}
+{"HIDEvent": ["key_release", "Key.backspace"], "timeStamp": 1680234950.0022469}
+{"HIDEvent": ["key_press", "Key.backspace"], "timeStamp": 1680234950.098058}
+{"HIDEvent": ["key_release", "Key.backspace"], "timeStamp": 1680234950.149555}
+{"HIDEvent": ["key_press", "Key.space"], "timeStamp": 1680234950.205211}
+{"HIDEvent": ["key_press", "'a'"], "timeStamp": 1680234950.246445}
+{"HIDEvent": ["key_release", "Key.space"], "timeStamp": 1680234950.3568609}
+{"HIDEvent": ["key_press", "Key.cmd"], "timeStamp": 1680234950.3858528}
+{"HIDEvent": ["key_release", "'a'"], "timeStamp": 1680234950.449342}
+{"HIDEvent": ["key_release", "Key.cmd"], "timeStamp": 1680234950.51227}
+{"HIDEvent": ["key_press", "Key.backspace"], "timeStamp": 1680234950.765188}
+{"HIDEvent": ["key_press", "Key.cmd"], "timeStamp": 1680234950.8267741}
+{"HIDEvent": ["key_release", "Key.backspace"], "timeStamp": 1680234950.826808}
+{"HIDEvent": ["key_release", "Key.cmd"], "timeStamp": 1680234950.935549}
+{"HIDEvent": ["key_press", "Key.cmd"], "timeStamp": 1680234950.958037}
+{"HIDEvent": ["key_press", "'a'"], "timeStamp": 1680234951.0862238}
+{"HIDEvent": ["key_release", "'a'"], "timeStamp": 1680234951.231605}
+{"HIDEvent": ["key_release", "Key.cmd"], "timeStamp": 1680234951.2428968}
+{"HIDEvent": ["key_press", "Key.backspace"], "timeStamp": 1680234951.408412}
+{"HIDEvent": ["key_release", "Key.backspace"], "timeStamp": 1680234951.477823}
