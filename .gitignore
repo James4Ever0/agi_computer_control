@@ -5,6 +5,8 @@
 
 !.gitignore
 !*.j2
+!*.html
+!*.ipynb
 !*.json
 !*.mjson
 !*.jsonl

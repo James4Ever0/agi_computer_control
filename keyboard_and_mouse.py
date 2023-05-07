@@ -1,29 +1,23 @@
+from datetime import datetime
 from pynput import keyboard
-import time
 
-States = []
-
-# import mss
-# screenshot_factory = mss.mss()
+HIDEvents = []
 
 from config import timestep  # this will be sufficient?
 
 # problem is the windows zooming factor.
 # is it really the problem?
 
-# make it short since we cannot learn too many things.
-
-
 def on_press(key):
     if type(key) != str:
         key = str(key)
-    States.append({"HIDEvent": ("key_press", key), "timeStamp": time.time()})
+    HIDEvents.append(('key_press', key))
 
 
 def on_release(key):
     if type(key) != str:
         key = str(key)
-    States.append({"HIDEvent": ("key_release", key), "timeStamp": time.time()})
+    HIDEvents.append(('key_release', key))
 
 
 keyboard_listener = keyboard.Listener(on_press=on_press, on_release=on_release)
@@ -32,22 +26,15 @@ from pynput import mouse
 
 
 def on_move(x: int, y: int):
-    States.append({"HIDEvent": ("mouse_move", [x, y]), "timeStamp": time.time()})
+    HIDEvents.append(("mouse_move", [x, y]))
 
 
 def on_click(x: int, y: int, button: mouse.Button, pressed: bool):
-    States.append(
-        {
-            "HIDEvent": ("mouse_click", [x, y, str(button), pressed]),
-            "timeStamp": time.time(),
-        }
-    )
+    HIDEvents.append(("mouse_click", [x, y, str(button), pressed]))
 
 
 def on_scroll(x: int, y: int, dx: int, dy: int):
-    States.append(
-        {"HIDEvent": ("mouse_scroll", [x, y, dx, dy]), "timeStamp": time.time()}
-    )
+    HIDEvents.append(("mouse_scroll", [x, y, dx, dy]))
 
 
 # # ...or, in a non-blocking fashion:
@@ -66,35 +53,16 @@ import jsonlines
 
 print("RECORDING START")
 from config import filePath
-
-# world_start = datetime.datetime.now()
-
-# run mss in another thread? with lock? dead lock?
-
-# generate two separate file?
-
-with jsonlines.open(filePath, "w") as w:
-    for loopIndex in range(loopCount):
+import datetime
+world_start = datetime.datetime.now()
+with jsonlines.open(filePath, 'w') as w:
+    for _ in range(loopCount):
         time.sleep(timestep)
         # as for screenshot, use mss instead of screenshot.
         #     screenshot = pyautogui.screenshot()
         # shall you mark the time here.
-        # image = screenshot_factory.grab(screenshot_factory.monitors[0])
-        # imagebytes = image.raw
-        # imagePath = f"{imagedir}/{loopIndex}.raw" # no compression needed.
-        # with open(imagePath, 'wb') as f:
-        #     f.write(imagebytes)
-        # timeDelay = (datetime.datetime.now() - world_start).total_seconds()
-        # screenshot_factory.shot(output=imagePath)
-        for state in States:
-        # state = dict(
-        #     # States=States,
-        #     HIDEvent=HIDEvent,
-        #     timeStamp=timeStamp
-        #     # imagePath=imagePath,
-        #     # timeDelay=timeDelay
-        # )  # also the image!
-            print("STATE?", state)
-            w.write(state)
-        States = []
-        # mouseloc = []
+        state = dict(HIDEvents=HIDEvents)  # also the image!
+        print("STATE?", state)
+        w.write(state)
+        HIDEvents = []
+        mouseloc = []

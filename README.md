@@ -1,11 +1,3 @@
-we pack up the screenshots using ffmpeg, with respect to timeline.
-
-compressing it make it easy for uploading to kaggle. we don't want to setup daunting ML environments everywhere.
-
-keep the video in sync! you have been warned.
-
-----
-
 the openai [universe](https://github.com/openai/universe) is using VNC, almost doing the same thing.
 
 you can find some demo models from [there](https://github.com/openai/universe-starter-agent).
@@ -13,3 +5,7 @@ you can find some demo models from [there](https://github.com/openai/universe-st
 check out [SerpentAI](https://github.com/SerpentAI/SerpentAI)
 
 but why bother? we can build these things in the same way.
+
+human demonstrations are limited, but random keystrokes are infinite.
+
+try to obtain infinite data as pretrained data, then fine-tune on human demonstrations.

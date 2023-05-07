@@ -3,13 +3,40 @@
 
 # special keys are not recorded. what a shame.
 import ast
-from datetime import datetime
 import os
 
 # what about "ctrl + /" ?
 
 
 def unshift(key):
+    lower_keycodes = {
+        "A": "a",
+        "B": "b",
+        "C": "c",
+        "D": "d",
+        "E": "e",
+        "F": "f",
+        "G": "g",
+        "H": "h",
+        "I": "i",
+        "J": "j",
+        "K": "k",
+        "L": "l",
+        "M": "m",
+        "N": "n",
+        "O": "o",
+        "P": "p",
+        "Q": "q",
+        "R": "r",
+        "S": "s",
+        "T": "t",
+        "U": "u",
+        "V": "v",
+        "W": "w",
+        "X": "x",
+        "Y": "y",
+        "Z": "z",
+    }
     unshift_keycodes = {
         "!": "1",
         "@": "2",
@@ -82,9 +109,9 @@ def unshift(key):
         "<190>": ".",
         "<191>": "/",
     }
-    key = unshift_keycodes.get(key, ctrl_keycodes.get(key, key))
-    if key.startswith("<") and key.endswith(">"):
-        key = pynput.keyboard.KeyCode(int(key[1:-1]))
+    key = unshift_keycodes.get(
+        key, ctrl_keycodes.get(key, lower_keycodes.get(key, key))
+    )
     return key
 
 
@@ -115,10 +142,6 @@ import pyautogui
 
 # filePath = "states.jsonl"
 from config import filePath
-# filePath = "states2.jsonl"
-
-# what about the screenshots?
-# how to read in sync?
 
 with jsonlines.open(filePath) as r:
     stateList = list(r.iter())
@@ -127,78 +150,63 @@ keyboard_controller = pynput.keyboard.Controller()
 mouse_controller = pynput.mouse.Controller()
 
 mouse_buttons = [
-    pynput.mouse.Button.left,
-    pynput.mouse.Button.right,
-    pynput.mouse.Button.middle,
+    pynput.mouse.Button.left, pynput.mouse.Button.right, pynput.mouse.Button.middle
 ]
 mouse_button_states = {button: False for button in mouse_buttons}
 
-
-# shall you include the delay.
-
-world_start = time.time()
-initTimeStamp = stateList[0]["timeStamp"] # this is just a demo. maybe there is no action to be taken.
 for state in stateList:
+    time.sleep(timestep)
     # perform actions.
-    HIDEvent = state["HIDEvent"]
-    timeStamp = state["timeStamp"]
-    current = time.time()
-    timeShift = (timeStamp - initTimeStamp) - (current - world_start)
-    if timeShift > 0:
-        time.sleep(timeShift)
+    HIDEvents = state["HIDEvents"]
     # you need to preserve the order. dump all events into one single list.
-    action_type, action_args = HIDEvent
-    print("ACTION?", action_type, action_args)
-    if action_type == "key_press":
-        if not action_args.startswith("Key."):
-            keycode = unshift(
-                action_args
-                if action_args.startswith("<") and action_args.endswith(">")
-                else ast.literal_eval(action_args)
-            )
-            if type(keycode) == pynput.keyboard.KeyCode:
-                keyboard_controller.tap(keycode)
-            else:
+    for action_type, action_args in HIDEvents:
+        print("ACTION?", action_type, action_args)
+        if action_type == "key_press":
+            if not action_args.startswith("Key."):
+                keycode = unshift(
+                    action_args if action_args.startswith("<")
+                    and action_args.endswith(">") else ast.literal_eval(action_args)
+                )
                 pyautogui.write(keycode)
 
+            else:
+                keyboard_controller.press(
+                    pynput.keyboard.Key.__dict__[action_args.split(".")[-1]]
+                )
+        elif action_type == "key_release":
+            if action_args.startswith("Key."):
+                keyboard_controller.release(
+                    pynput.keyboard.Key.__dict__[action_args.split(".")[-1]]
+                )
+        elif action_type == "mouse_move":
+            x, y = action_args
+            # x = math.floor(x/zoom_factor)
+            # y = math.floor(y/zoom_factor)
+            mouse_controller.position = (x, y)
+        elif action_type == "mouse_click":
+            x, y, button, pressed = action_args
+            # x = math.floor(x/zoom_factor)
+            # y = math.floor(y/zoom_factor)
+            button = pynput.mouse.Button.__dict__[button.split(".")[-1]]
+            mouse_button_states[button] = pressed
+            mouse_controller.position = (x, y)
+            if pressed:
+                mouse_controller.press(button)
+            else:
+                mouse_controller.click(button)
+        elif action_type == "mouse_scroll":
+            x, y, dx, dy = action_args
+
+            # x = math.floor(x/zoom_factor)
+            # y = math.floor(y/zoom_factor)
+
+            # dx = math.floor(dx/zoom_factor)
+            # dy = math.floor(dy/zoom_factor)
+
+            mouse_controller.position = (x, y)
+            mouse_controller.scroll(dx, dy)
         else:
-            keyboard_controller.press(
-                pynput.keyboard.Key.__dict__[action_args.split(".")[-1]]
-            )
-    elif action_type == "key_release":
-        if action_args.startswith("Key."):
-            keyboard_controller.release(
-                pynput.keyboard.Key.__dict__[action_args.split(".")[-1]]
-            )
-    elif action_type == "mouse_move":
-        x, y = action_args
-        # x = math.floor(x/zoom_factor)
-        # y = math.floor(y/zoom_factor)
-        mouse_controller.position = (x, y)
-    elif action_type == "mouse_click":
-        x, y, button, pressed = action_args
-        # x = math.floor(x/zoom_factor)
-        # y = math.floor(y/zoom_factor)
-        button = pynput.mouse.Button.__dict__[button.split(".")[-1]]
-        mouse_button_states[button] = pressed
-        mouse_controller.position = (x, y)
-        if pressed:
-            mouse_controller.press(button)
-        else:
-            mouse_controller.click(button)
-    elif action_type == "mouse_scroll":
-        x, y, dx, dy = action_args
-
-        # x = math.floor(x/zoom_factor)
-        # y = math.floor(y/zoom_factor)
-
-        # dx = math.floor(dx/zoom_factor)
-        # dy = math.floor(dy/zoom_factor)
-
-        mouse_controller.position = (x, y)
-        mouse_controller.scroll(dx, dy)
-    else:
-        raise Exception("Unknown action type: {}".format(action_type))
+            raise Exception("Unknown action type: {}".format(action_type))
 
 # after all the havok, you should not leave the mouse button pressed, and you should not leave any button onhold.
 
