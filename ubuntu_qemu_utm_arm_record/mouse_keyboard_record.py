@@ -1,9 +1,16 @@
+import datetime
+from utils import filepaths, check_redis_on, check_redis_off, TimestampedContext, set_redis_off_on_exception
+
+import jsonlines
+import time
+from pynput import mouse
+from utils import timestep  # this will be sufficient?
 from datetime import datetime
 from pynput import keyboard
 
 HIDEvents = []
 
-from utils import timestep  # this will be sufficient?
+set_redis_off_on_exception()
 
 # problem is the windows zooming factor.
 # is it really the problem?
@@ -23,7 +30,6 @@ def on_release(key):
 
 keyboard_listener = keyboard.Listener(on_press=on_press, on_release=on_release)
 keyboard_listener.start()
-from pynput import mouse
 
 
 def on_move(x: int, y: int):
@@ -39,24 +45,21 @@ def on_scroll(x: int, y: int, dx: int, dy: int):
 
 
 # # ...or, in a non-blocking fashion:
-listener = mouse.Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll)
+listener = mouse.Listener(
+    on_move=on_move, on_click=on_click, on_scroll=on_scroll)
 listener.start()
 
 # you may start that non-blocking. start some looping-forever thread for writing states to file.
-import time
 
 # import pyautogui
 # import datetime
 
 # loopCount = 500
 
-import jsonlines
 
 print("RECORDING START")
-from utils import filepaths, check_redis_on, check_redis_off, TimestampedContext
-import datetime
 
-world_start = datetime.datetime.now()
+# world_start = datetime.datetime.now()
 
 if check_redis_on():
     with TimestampedContext(filepaths.hid_timestamps) as t:

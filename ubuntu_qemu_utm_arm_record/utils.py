@@ -1,16 +1,28 @@
 # timestamp, redis, constants.
+# PYTHON_EXECUTABLE = 'python3' # just in case.
 
+import json
+import time
+from typing import Union
+import functools
+import redis
+import os
+import sys
+PYTHON_EXECUTABLE = sys.executable
 
 # it is the main recorder which will pack all recordings into hdf5 file format after success.
 
+
 class filepaths:
-    hid_record = "hid_record.jsonl"
-    audio_record = "audio_record.wav"
-    video_record = "video_record.mp4"
-    
-    video_timestamps = "video_timestamps.json"
-    hid_timestamps = "hid_timestamps.json"
-    audio_timestamps = "audio_timestamps.json"
+    prefix = "./test_record/"
+    hid_record = f"{prefix}hid_record.jsonl"
+    audio_record = f"{prefix}audio_record.wav"
+    video_record = f"{prefix}video_record.mp4"
+    video_record_script = f"{prefix}video_record_script.sh"
+
+    video_timestamps = f"{prefix}video_timestamps.json"
+    hid_timestamps = f"{prefix}hid_timestamps.json"
+    audio_timestamps = f"{prefix}audio_timestamps.json"
 
 
 lock_key = "HID_MAIN_RECORDER_LOCK"
@@ -19,11 +31,6 @@ sig_off = "OFF"
 
 timestep = 0.03
 # filePath = "states.jsonl"
-
-
-import os
-import redis
-import functools
 
 
 @functools.lru_cache(maxsize=1)
@@ -42,9 +49,6 @@ def set_redis_on():
     r.set(lock_key, sig_on)
 
 
-from typing import Union
-
-
 def get_redis_value() -> Union[None, str]:
     r = get_redis_client()
     val = r.get(lock_key)
@@ -61,21 +65,24 @@ def check_redis_on():
     return get_redis_value() == sig_on
 
 
-import time
-import json
-
-
 class TimestampedLogCreater:
     def __init__(self, file_name, indent_output=True):
         self.file_name = file_name
         self.timestamp_list = []
         self.indent_output = indent_output
+        self.last_int_timestamp = -1
 
     def clear(self):
         self.timestamp_list = []
 
     def commit(self):
         timestamp = time.time()
+        # show info every 1 second.
+        int_timestamp = int(timestamp)
+        if int_timestamp > self.last_int_timestamp:
+            print("Appending timestamp at `{}`:".format(
+                self.file_name), timestamp)
+            self.last_int_timestamp = int_timestamp
         self.timestamp_list.append(timestamp)
 
     def read(self):
@@ -103,7 +110,8 @@ class TimestampedContext:
         print("INIT TIMESTAMPED CONTEXT AT: {}".format(self.file_name))
         if os.path.exists(file_name):
             if os.path.isfile(file_name):
-                print("REMOVING OLD TIMESTAMPED CONTEXT AT: {}".format(self.file_name))
+                print("REMOVING OLD TIMESTAMPED CONTEXT AT: {}".format(
+                    self.file_name))
                 os.remove(file_name)
             else:
                 raise Exception(
@@ -123,3 +131,23 @@ class TimestampedContext:
             print("ERROR IN TIMESTAMPED CONTEXT")
             print("NOT WRITING TIMESTAMPED LOG AT {}".format(self.file_name))
         print("EXITING TIMESTAMPED CONTEXT")
+
+
+def set_redis_off_on_exception():
+
+    def exception_hook(exc_type, exc_value, tb):
+        # print('Traceback:')
+        # filename = tb.tb_frame.f_code.co_filename
+        # name = tb.tb_frame.f_code.co_name
+        # line_no = tb.tb_lineno
+        # print(f"File {filename} line {line_no}, in {name}")
+
+        # # Exception type and value
+        # print(f"{exc_type.__name__}, Message: {exc_value}")
+        set_redis_off()
+
+        # print("*** Traceback: ***")
+        # traceback.print_tb(tb, limit=10)
+        tb.print_exc_info()
+
+    sys.excepthook = exception_hook

@@ -24,14 +24,18 @@
 
 import mss
 import sys
-from utils import TimestampedContext, filepaths, check_redis_on, check_redis_off
+from utils import TimestampedContext, filepaths, check_redis_on, check_redis_off, set_redis_off_on_exception
+
+set_redis_off_on_exception()
 
 s = mss.mss()
+
+# where is the damn mouse cursor?
 
 if check_redis_on():
     with TimestampedContext(filepaths.video_timestamps) as t:
         with open(sys.stdout.fileno(), "wb", closefd=False) as stdout:
-            while check_redis_off() is True:
+            while check_redis_off() is False:
                 # img = pyscreenshot.grab()
                 # img_bytes = img.tobytes()
                 img = s.grab(s.monitors[0])
