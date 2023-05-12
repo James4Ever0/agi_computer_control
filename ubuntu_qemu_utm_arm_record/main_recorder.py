@@ -13,9 +13,9 @@ WAIT_TIMEOUT = 1
 set_redis_off()
 time.sleep(MINIBREAK_SECONDS)
 
-# RECORDERS = {"Audio": False, "Video": True, "HID": True}
+RECORDERS = {"Audio": False, "Video": True, "HID": True}
 # RECORDERS = {"Audio": False, "Video": False, "HID": True}
-RECORDERS = {"Audio": True, "Video": False, "HID": False}
+# RECORDERS = {"Audio": True, "Video": False, "HID": False}
 # RECORDERS = {"Audio": True, "Video": True, "HID": True}
 
 if all([signal is not True for _, signal in RECORDERS.items()]):

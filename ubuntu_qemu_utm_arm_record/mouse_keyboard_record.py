@@ -1,11 +1,10 @@
-import datetime
+# import datetime
 from utils import filepaths, check_redis_on, check_redis_off, TimestampedContext, set_redis_off_on_exception
 
 import jsonlines
 import time
 from pynput import mouse
 from utils import timestep  # this will be sufficient?
-from datetime import datetime
 from pynput import keyboard
 
 HIDEvents = []
