@@ -1,7 +1,13 @@
 import parse
 from pyaudio_get_device_info import get_audio_input_device_list
 import platform
-from utils import filepaths, check_redis_on, check_redis_off, TimestampedContext, set_redis_off_on_exception
+from utils import (
+    filepaths,
+    check_redis_on,
+    check_redis_off,
+    TimestampedContext,
+    set_redis_off_on_exception,
+)
 import pyaudio
 import wave
 
@@ -31,18 +37,17 @@ def get_input_device_index(input_device_list, pattern):
         if parse.parse(pattern, device_name):
             print("SELECT AUDIO INPUT DEVICE: %s" % device_name)
             return index
-    raise Exception(
-        "Cannot find audio input device index with pattern:", pattern)
+    raise Exception("Cannot find audio input device index with pattern:", pattern)
 
 
 if system == "Windows":
     raise Exception("Windows is currently not supported.")
 elif system == "Darwin":
-    input_device_index = get_input_device_index(
-        input_device_list, "BlackHole {}")
+    input_device_index = get_input_device_index(input_device_list, "BlackHole {}")
 elif system == "Linux":
     input_device_index = get_input_device_index(
-        input_device_list, "Loopback: PCM (hw:{},1)")
+        input_device_list, "Loopback: PCM (hw:{},1)"
+    )
 
 # input_device_index = 2 # shall you automate this?
 #

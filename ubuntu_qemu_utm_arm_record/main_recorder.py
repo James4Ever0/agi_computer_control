@@ -1,6 +1,13 @@
 import time
 import subprocess
-from utils import set_redis_on, set_redis_off, check_redis_on, check_redis_off, PYTHON_EXECUTABLE, set_redis_off_on_exception
+from utils import (
+    set_redis_on,
+    set_redis_off,
+    check_redis_on,
+    check_redis_off,
+    PYTHON_EXECUTABLE,
+    set_redis_off_on_exception,
+)
 
 set_redis_off_on_exception()
 
@@ -17,6 +24,7 @@ RECORDERS = {"Audio": False, "Video": True, "HID": True}
 # RECORDERS = {"Audio": False, "Video": False, "HID": True}
 # RECORDERS = {"Audio": True, "Video": False, "HID": False}
 # RECORDERS = {"Audio": True, "Video": True, "HID": True}
+RANDOM_ACTOR = True
 
 if all([signal is not True for _, signal in RECORDERS.items()]):
     raise Exception("Should at least use one recorder.")
@@ -33,13 +41,21 @@ if check_redis_off():
         # execute subcommands. (subprocess)
         if RECORDERS["HID"]:
             HIDRecorderProcess = subprocess.Popen(
-                [PYTHON_EXECUTABLE, 'mouse_keyboard_record.py'])
+                [PYTHON_EXECUTABLE, "mouse_keyboard_record.py"]
+            )
         if RECORDERS["Video"]:
             VideoRecorderProcess = subprocess.Popen(
-                [PYTHON_EXECUTABLE, 'video_record.py'])
+                [PYTHON_EXECUTABLE, "video_record.py"]
+            )
         if RECORDERS["Audio"]:
             AudioRecorderProcess = subprocess.Popen(
-                [PYTHON_EXECUTABLE, 'audio_record.py'])
+                [PYTHON_EXECUTABLE, "audio_record.py"]
+            )
+
+        if RANDOM_ACTOR:
+            RandomActorProcess = subprocess.Popen(
+                [PYTHON_EXECUTABLE, "random_actor_redis.py"]
+            )
         # time.sleep(RECORD_SECONDS)
         for _ in range(RECORD_SECONDS):
             time.sleep(1)
@@ -57,21 +73,24 @@ if check_redis_off():
                 hid_exit_code = HIDRecorderProcess.wait(timeout=WAIT_TIMEOUT)
                 exit_codes.append(hid_exit_code)
             if RECORDERS["Video"]:
-                video_exit_code = VideoRecorderProcess.wait(
-                    timeout=WAIT_TIMEOUT)
+                video_exit_code = VideoRecorderProcess.wait(timeout=WAIT_TIMEOUT)
                 exit_codes.append(video_exit_code)
             if RECORDERS["Audio"]:
-                audio_exit_code = AudioRecorderProcess.wait(
-                    timeout=WAIT_TIMEOUT)
+                audio_exit_code = AudioRecorderProcess.wait(timeout=WAIT_TIMEOUT)
                 exit_codes.append(audio_exit_code)
+            if RANDOM_ACTOR:
+                random_actor_exit_code = RandomActorProcess.wait(timeout=WAIT_TIMEOUT)
+                exit_codes.append(random_actor_exit_code)
             print()
             print("EXIT CODES:")
             if RECORDERS["Audio"]:
-                print(f"AUDIO - {audio_exit_code}")
+                print("AUDIO - {}".format(audio_exit_code))
             if RECORDERS["Video"]:
-                print(f'VIDEO - {video_exit_code}')
+                print("VIDEO - {}".format(video_exit_code))
             if RECORDERS["HID"]:
-                print(f'HID - {hid_exit_code}')
+                print("HID - {}".format(hid_exit_code))
+            if RANDOM_ACTOR:
+                print("RANDOM_ACTOR - {}".format(random_actor_exit_code))
             print()
             if any([code != 0 for code in exit_codes]):
                 raise Exception("COMPUTER RECORDER HAS ABNORMAL EXIT CODE.")

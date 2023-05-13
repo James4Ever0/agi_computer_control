@@ -8,6 +8,7 @@ import functools
 import redis
 import os
 import sys
+
 PYTHON_EXECUTABLE = sys.executable
 
 # it is the main recorder which will pack all recordings into hdf5 file format after success.
@@ -15,14 +16,14 @@ PYTHON_EXECUTABLE = sys.executable
 
 class filepaths:
     prefix = "./test_record/"
-    hid_record = f"{prefix}hid_record.jsonl"
-    audio_record = f"{prefix}audio_record.wav"
-    video_record = f"{prefix}video_record.mp4"
-    video_record_script = f"{prefix}video_record_script.sh"
+    hid_record = "{}hid_record.jsonl".format(prefix)
+    audio_record = "{}audio_record.wav".format(prefix)
+    video_record = "{}video_record.mp4".format(prefix)
+    video_record_script = "{}video_record_script.sh".format(prefix)
 
-    video_timestamps = f"{prefix}video_timestamps.json"
-    hid_timestamps = f"{prefix}hid_timestamps.json"
-    audio_timestamps = f"{prefix}audio_timestamps.json"
+    video_timestamps = "{}video_timestamps.json".format(prefix)
+    hid_timestamps = "{}hid_timestamps.json".format(prefix)
+    audio_timestamps = "{}audio_timestamps.json".format(prefix)
 
 
 lock_key = "HID_MAIN_RECORDER_LOCK"
@@ -80,8 +81,7 @@ class TimestampedLogCreater:
         # show info every 1 second.
         int_timestamp = int(timestamp)
         if int_timestamp > self.last_int_timestamp:
-            print("Appending timestamp at `{}`:".format(
-                self.file_name), timestamp)
+            print("Appending timestamp at `{}`:".format(self.file_name), timestamp)
             self.last_int_timestamp = int_timestamp
         self.timestamp_list.append(timestamp)
 
@@ -110,8 +110,7 @@ class TimestampedContext:
         print("INIT TIMESTAMPED CONTEXT AT: {}".format(self.file_name))
         if os.path.exists(file_name):
             if os.path.isfile(file_name):
-                print("REMOVING OLD TIMESTAMPED CONTEXT AT: {}".format(
-                    self.file_name))
+                print("REMOVING OLD TIMESTAMPED CONTEXT AT: {}".format(self.file_name))
                 os.remove(file_name)
             else:
                 raise Exception(
@@ -134,7 +133,6 @@ class TimestampedContext:
 
 
 def set_redis_off_on_exception():
-
     def exception_hook(exc_type, exc_value, tb):
         # print('Traceback:')
         # filename = tb.tb_frame.f_code.co_filename

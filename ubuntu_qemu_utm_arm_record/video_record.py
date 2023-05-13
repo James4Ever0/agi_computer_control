@@ -20,7 +20,7 @@ script_content = "{} pyscreenshot_output.py | ffmpeg -y -f rawvideo -pix_fmt {} 
     PYTHON_EXECUTABLE, pix_fmt, video_size, framerate, codec, filepaths.video_record
 )
 
-with open(filepaths.video_record_script, 'w+') as f:
+with open(filepaths.video_record_script, "w+") as f:
     f.write(script_content)
 
 

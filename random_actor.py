@@ -286,12 +286,18 @@ def get_random_mod_key():
 
 def random_mod_key_down():
     key = get_random_mod_key()
-    pyautogui.keyDown(key)
+    try:
+        pyautogui.keyDown(key)
+    except:
+        pass
 
 
 def random_mod_key_up():
     key = get_random_mod_key()
-    pyautogui.keyUp(key)
+    try:
+        pyautogui.keyUp(key)
+    except:
+        pass
 
 
 def get_random_offset():
@@ -346,7 +352,10 @@ MOUSE_ACTIONS = [
 
 
 def random_mouse_button_action():
-    action = random.choice(MOUSE_ACTIONS)
+    try:
+        action = random.choice(MOUSE_ACTIONS)
+    except:
+        pass
     action()
 
 
@@ -365,12 +374,27 @@ if __name__ == "__main__":
         random_mouse_scroll,
     ]
 
-    random_actions = random_mouse_actions+random_keyboard_actions
+    random_actions = random_mouse_actions + random_keyboard_actions
 
     for _ in range(10):
         random_action = random.choice(random_actions)
-        random_action()
-    
+        try:
+            random_action()
+        except:
+            pass
+
     # to recover from mortality...
     # use try...finally or something...
     # context manager...
+
+    for key in KEY_MOD + KEY_WIN_MOD + KEY_MAC_MOD:
+        try:
+            pyautogui.keyUp(key)
+        except:
+            pass
+
+    for button in MOUSE_BUTTONS:
+        try:
+            pyautogui.mouseUp(button)
+        except:
+            pass

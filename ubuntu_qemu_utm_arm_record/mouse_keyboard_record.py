@@ -1,5 +1,11 @@
 # import datetime
-from utils import filepaths, check_redis_on, check_redis_off, TimestampedContext, set_redis_off_on_exception
+from utils import (
+    filepaths,
+    check_redis_on,
+    check_redis_off,
+    TimestampedContext,
+    set_redis_off_on_exception,
+)
 
 import jsonlines
 import time
@@ -44,8 +50,7 @@ def on_scroll(x: int, y: int, dx: int, dy: int):
 
 
 # # ...or, in a non-blocking fashion:
-listener = mouse.Listener(
-    on_move=on_move, on_click=on_click, on_scroll=on_scroll)
+listener = mouse.Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll)
 listener.start()
 
 # you may start that non-blocking. start some looping-forever thread for writing states to file.

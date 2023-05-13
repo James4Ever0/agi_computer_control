@@ -24,7 +24,13 @@
 
 import mss
 import sys
-from utils import TimestampedContext, filepaths, check_redis_on, check_redis_off, set_redis_off_on_exception
+from utils import (
+    TimestampedContext,
+    filepaths,
+    check_redis_on,
+    check_redis_off,
+    set_redis_off_on_exception,
+)
 
 set_redis_off_on_exception()
 
