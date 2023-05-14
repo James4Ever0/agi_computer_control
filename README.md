@@ -35,3 +35,9 @@ disable ubuntu system authentication?
 ----
 
 make some server for vm to access to restart the webdav server when you have error.
+
+----
+
+agi_workspace happen to be in recycle bin. make sure we have the init files.
+
+make sure we can restore our environments in every restart.
