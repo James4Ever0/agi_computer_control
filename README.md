@@ -31,3 +31,7 @@ try to obtain infinite data as pretrained data, then fine-tune on human demonstr
 looking for using docker for automation, or using some tty-like things for automation.
 
 disable ubuntu system authentication?
+
+----
+
+make some server for vm to access to restart the webdav server when you have error.
