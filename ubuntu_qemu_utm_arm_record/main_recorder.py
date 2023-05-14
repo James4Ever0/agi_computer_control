@@ -10,7 +10,7 @@ from utils import (
     PYTHON_EXECUTABLE,
     set_redis_off_on_exception,
     filepaths,
-    MAX_RECORDING_COUNT
+    MAX_RECORDING_COUNT,
 )
 
 set_redis_off_on_exception()
@@ -32,7 +32,17 @@ RANDOM_ACTOR = True
 
 # keep last 30 recordings.
 # will remove anything more than that.
-filepaths.prefix
+rec_folders = [
+    "{}{}".format(filepaths.prefix, p)
+    for p in os.listdir(filepaths.prefix)
+    if os.path.isdir("{}{}".format(filepaths.prefix, p))
+]
+rec_folders.sort(key=lambda p: -os.path.getmtime(p))
+expired_rec_folders = rec_folders[MAX_RECORDING_COUNT:]
+print("EXPIRED RECORDING FOLDER COUNT:", len(expired_rec_folders))
+for p in expired_rec_folders:
+    print("REMOVING EXPIRED RECORDING FOLDER:", p)
+    os.system("rm -rf {}".format(p))
 
 if all([signal is not True for _, signal in RECORDERS.items()]):
     raise Exception("Should at least use one recorder.")
@@ -118,7 +128,10 @@ if check_redis_off():
                 raise Exception("COMPUTER RECORDER HAS ABNORMAL EXIT CODE.")
             else:
                 print("COMPUTER RECORDER EXIT NORMALLY")
-                current_timestamp = datetime.datetime.now().isoformat().replace(":","_")# required for ntfs.
+                # required for ntfs.
+                current_timestamp = (
+                    datetime.datetime.now().isoformat().replace(":", "_")
+                )
                 records_folder = "{}{}".format(filepaths.prefix, current_timestamp)
                 print("MOVING RECORDS TO: {}".format(records_folder))
                 os.mkdir(records_folder)

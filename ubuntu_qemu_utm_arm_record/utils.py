@@ -153,7 +153,8 @@ def set_redis_off_on_exception():
 
         import traceback
         print("*** Traceback: ***")
-        traceback.print_tb(tb, limit=10)
+        traceback.print_tb(tb, limit=None)
+        # traceback.print_tb(tb, limit=10)
         # print(dir(tb))
         # tb.print_tb()
         # traceback.print_exc()

@@ -101,6 +101,7 @@ KEY_CHARS = [
     "~",
 ]
 
+
 KEY_MOD = [
     "alt",
     "altleft",
@@ -276,6 +277,19 @@ def random_press_single_key():
     pyautogui.press(key)
 
 
+KEY_MOD_COMMON = ['ctrl','alt','shift'] # disable win key to prevent locking the system.
+# KEY_MOD_COMMON = ['ctrl','alt','shift','win']
+
+
+
+def random_hot_key():
+    key = get_random_single_key()
+    selected_indexs = random.sample([i for i in range(len(KEY_MOD_COMMON))], random.randint(1, len(KEY_MOD_COMMON)-1))
+    selected_indexs.sort()
+    selected_hotkeys = [KEY_MOD_COMMON[i] for i in selected_indexs]
+    pyautogui.hotkey(*selected_hotkeys,key)
+
+
 # no keydown support? what about states?
 
 
@@ -346,8 +360,8 @@ MOUSE_ACTIONS = [
     lambda: pyautogui.leftClick(),
     lambda: pyautogui.rightClick(),
     lambda: pyautogui.middleClick(),
-    lambda: pyautogui.mouseDown(button=get_random_mouse_button()),
-    lambda: pyautogui.mouseUp(button=get_random_mouse_button()),
+    # lambda: pyautogui.mouseDown(button=get_random_mouse_button()),
+    # lambda: pyautogui.mouseUp(button=get_random_mouse_button()),
 ]
 
 
@@ -368,8 +382,9 @@ if __name__ == "__main__":
     if check_redis_on():
         try:
             random_keyboard_actions = [
-                random_mod_key_down,
-                random_mod_key_up,
+                # random_mod_key_down,
+                # random_mod_key_up,
+                random_hot_key,
                 random_press_single_key,
             ]
 
