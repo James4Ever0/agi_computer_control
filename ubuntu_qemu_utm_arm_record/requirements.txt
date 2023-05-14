@@ -1,0 +1,11 @@
+redis
+jsonlines
+pynput
+# pytweening
+pyautogui==0.9.50
+# pyautogui==0.9.8
+mss==3
+parse
+# pyaudio
+# install python3-pyaudio using apt
+# you'd probably want a different python executable on ubuntu 16.04

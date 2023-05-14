@@ -3,6 +3,9 @@
 *
 !*/
 
+recordings
+recordings/*
+
 !.gitignore
 !*.j2
 !*.html

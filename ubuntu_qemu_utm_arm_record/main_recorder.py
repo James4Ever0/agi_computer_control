@@ -1,5 +1,7 @@
 import time
 import subprocess
+import datetime
+import os
 from utils import (
     set_redis_on,
     set_redis_off,
@@ -7,6 +9,8 @@ from utils import (
     check_redis_off,
     PYTHON_EXECUTABLE,
     set_redis_off_on_exception,
+    filepaths,
+    MAX_RECORDING_COUNT
 )
 
 set_redis_off_on_exception()
@@ -25,6 +29,10 @@ RECORDERS = {"Audio": False, "Video": True, "HID": True}
 # RECORDERS = {"Audio": True, "Video": False, "HID": False}
 # RECORDERS = {"Audio": True, "Video": True, "HID": True}
 RANDOM_ACTOR = True
+
+# keep last 30 recordings.
+# will remove anything more than that.
+filepaths.prefix
 
 if all([signal is not True for _, signal in RECORDERS.items()]):
     raise Exception("Should at least use one recorder.")
@@ -93,9 +101,37 @@ if check_redis_off():
                 print("RANDOM_ACTOR - {}".format(random_actor_exit_code))
             print()
             if any([code != 0 for code in exit_codes]):
+                # you may remove all temp files under recorder folder.
+                for fpath in [
+                    filepaths.hid_record,
+                    filepaths.audio_record,
+                    filepaths.video_record,
+                    filepaths.video_record_script,
+                    filepaths.video_timestamps,
+                    filepaths.hid_timestamps,
+                    filepaths.audio_timestamps,
+                ]:
+                    try:
+                        os.remove(fpath)
+                    except:
+                        pass
                 raise Exception("COMPUTER RECORDER HAS ABNORMAL EXIT CODE.")
             else:
                 print("COMPUTER RECORDER EXIT NORMALLY")
+                current_timestamp = datetime.datetime.now().isoformat().replace(":","_")# required for ntfs.
+                records_folder = "{}{}".format(filepaths.prefix, current_timestamp)
+                print("MOVING RECORDS TO: {}".format(records_folder))
+                os.mkdir(records_folder)
+                for fpath in [
+                    filepaths.hid_record,
+                    filepaths.audio_record,
+                    filepaths.video_record,
+                    filepaths.video_record_script,
+                    filepaths.video_timestamps,
+                    filepaths.hid_timestamps,
+                    filepaths.audio_timestamps,
+                ]:
+                    os.system("mv {} {}".format(fpath, records_folder))
         else:
             print("FAILED TO SET LOCK AS OFF.")
             print("FAILED AT FINAL CHECK.")

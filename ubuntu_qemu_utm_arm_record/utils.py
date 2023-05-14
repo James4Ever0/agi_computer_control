@@ -13,9 +13,16 @@ PYTHON_EXECUTABLE = sys.executable
 
 # it is the main recorder which will pack all recordings into hdf5 file format after success.
 
+CONFIG_PATH="config.json"
+
+with open(CONFIG_PATH,'r') as f:
+    config = json.load(f)
+
+MAX_RECORDING_COUNT=30
 
 class filepaths:
-    prefix = "./test_record/"
+    prefix = config['filepaths_prefix']
+    # prefix = "./test_record/"
     hid_record = "{}hid_record.jsonl".format(prefix)
     audio_record = "{}audio_record.wav".format(prefix)
     video_record = "{}video_record.mp4".format(prefix)
@@ -144,8 +151,12 @@ def set_redis_off_on_exception():
         # print(f"{exc_type.__name__}, Message: {exc_value}")
         set_redis_off()
 
-        # print("*** Traceback: ***")
-        # traceback.print_tb(tb, limit=10)
-        tb.print_exc_info()
+        import traceback
+        print("*** Traceback: ***")
+        traceback.print_tb(tb, limit=10)
+        # print(dir(tb))
+        # tb.print_tb()
+        # traceback.print_exc()
+        # tb.print_exc_info()
 
     sys.excepthook = exception_hook
