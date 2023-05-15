@@ -3,6 +3,8 @@ cd agi_computer_control/ubuntu_qemu_utm_arm_record
 # enable sudo
 echo -e "KSDA37287522\n" | sudo -S echo "enable sudo"
 
+sudo apt-get install -y python3-tk python3-dev
+
 # remove davfs pid locks
 sudo rm /var/run/mount.davfs/mnt-dav1.pid
 sudo rm /var/run/mount.davfs/mnt-dav2.pid
