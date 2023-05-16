@@ -19,11 +19,12 @@ scripts = [stop_vm, mount_kali_webdav_dirs, restore_vm, start_vm]
 while True:
     codes = []
     for script in scripts:
-        codes.append(script)
+        code = run_bash_script(script)
+        codes.append(code)
     if any(codes):
         print("HAS ERROR CODE!")
-        for iscript in scripts:
-
+        for index, script in enumerate(scripts):
+            print(f'{script} EXIT CODE:', codes[index])
         time.sleep(1)
         continue
     # CAN YOU DO THIS WITHOUT INTERRUPTING ME?
