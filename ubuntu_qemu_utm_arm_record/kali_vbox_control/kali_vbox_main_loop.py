@@ -1,5 +1,8 @@
 import time
 import os
+import progressbar
+seconds = 60*5
+
 restore_vm = "restore_vm.sh"
 stop_vm = "stop_vm.sh"
 start_vm = "start_vm.sh"
@@ -14,3 +17,6 @@ while True:
     run_bash_script(mount_kali_webdav_dirs)
     run_bash_script(restore_vm)
     run_bash_script(start_vm)
+    print("WAITING {} SECONDS...".format(seconds))
+    for _ in progressbar.progressbar(range(seconds)):
+        time.sleep(1)
