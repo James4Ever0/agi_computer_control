@@ -14,13 +14,23 @@ def run_bash_script(script_path):
     command = f"bash {script_path}"
     return os.system(command)
 
+
 # scripts = [stop_vm, kali_prepare_two_webdav_dirs, restore_vm] # restoration will make vm start?
 scripts = [stop_vm, kali_prepare_two_webdav_dirs, restore_vm, start_vm]
 
 while True:
     codes = []
     for script in scripts:
-        code = run_bash_script(script)
+        while True:
+            code = run_bash_script(script)
+            time.sleep(1)
+            if script != start_vm:
+                break
+            else:
+                if code != 0:
+                    continue
+                else:
+                    break
         codes.append(code)
     print()
     for index, script in enumerate(scripts):
