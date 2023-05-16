@@ -6,7 +6,7 @@ seconds = 60*5
 restore_vm = "restore_vm.sh"
 stop_vm = "stop_vm.sh"
 start_vm = "start_vm.sh"
-mount_kali_webdav_dirs = "../kali_prepare_two_webdav_dirs.sh"
+kali_prepare_two_webdav_dirs = "../kali_prepare_two_webdav_dirs.sh"
 
 
 def run_bash_script(script_path):
@@ -14,8 +14,8 @@ def run_bash_script(script_path):
     command = f"bash {script_path}"
     return os.system(command)
 
-# scripts = [stop_vm, mount_kali_webdav_dirs, restore_vm] # restoration will make vm start?
-scripts = [stop_vm, mount_kali_webdav_dirs, restore_vm, start_vm]
+# scripts = [stop_vm, kali_prepare_two_webdav_dirs, restore_vm] # restoration will make vm start?
+scripts = [stop_vm, kali_prepare_two_webdav_dirs, restore_vm, start_vm]
 
 while True:
     codes = []
