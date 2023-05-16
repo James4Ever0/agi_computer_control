@@ -14,6 +14,7 @@ def run_bash_script(script_path):
     command = f"bash {script_path}"
     return os.system(command)
 
+# scripts = [stop_vm, mount_kali_webdav_dirs, restore_vm] # restoration will make vm start?
 scripts = [stop_vm, mount_kali_webdav_dirs, restore_vm, start_vm]
 
 while True:
@@ -21,13 +22,13 @@ while True:
     for script in scripts:
         code = run_bash_script(script)
         codes.append(code)
-    if any(codes):
-        print()
-        print("HAS ERROR CODE!")
-        for index, script in enumerate(scripts):
-            print(f'{script} EXIT CODE:', codes[index])
-        time.sleep(1)
-        continue
+    # if any(codes):
+    #     print()
+    #     print("HAS ERROR CODE!")
+    #     for index, script in enumerate(scripts):
+    #         print(f'{script} EXIT CODE:', codes[index])
+    #     time.sleep(1)
+    #     continue
     # CAN YOU DO THIS WITHOUT INTERRUPTING ME?
     print("WAITING {} SECONDS...".format(seconds))
     for _ in progressbar.progressbar(range(seconds)):
