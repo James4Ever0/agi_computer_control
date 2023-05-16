@@ -22,6 +22,7 @@ while True:
         code = run_bash_script(script)
         codes.append(code)
     if any(codes):
+        print()
         print("HAS ERROR CODE!")
         for index, script in enumerate(scripts):
             print(f'{script} EXIT CODE:', codes[index])
@@ -31,3 +32,4 @@ while True:
     print("WAITING {} SECONDS...".format(seconds))
     for _ in progressbar.progressbar(range(seconds)):
         time.sleep(1)
+    print()
