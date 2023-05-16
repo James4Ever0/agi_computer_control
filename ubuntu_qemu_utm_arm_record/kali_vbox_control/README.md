@@ -1,0 +1,1 @@
+automatic login -> execute program on start -> screenshot to check if stale -> restore init state
