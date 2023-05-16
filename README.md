@@ -54,3 +54,9 @@ https://github.com/gnif/PureSpice
 
 https://github.com/citrix-openstack-build/spice-html5
 
+https://github.com/oetcxiaoliu/spice
+
+https://github.com/TotalWAR/spice_protocol
+
+remmina
+
