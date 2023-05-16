@@ -20,7 +20,7 @@ while True:
     run_bash_script(mount_kali_webdav_dirs)
     run_bash_script(restore_vm)
     run_bash_script(start_vm)
-    # CAN YOU DO THIS WITHOUT INTERRUPTING ME》
+    # CAN YOU DO THIS WITHOUT INTERRUPTING ME?
     print("WAITING {} SECONDS...".format(seconds))
     for _ in progressbar.progressbar(range(seconds)):
         time.sleep(1)
