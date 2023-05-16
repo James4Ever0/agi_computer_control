@@ -2,4 +2,4 @@ automatic login -> execute program on start -> screenshot to check if stale -> r
 
 before we going too technical, we just restart & restore the machine every 5 minutes.
 
-put 
+put `the_random_forest.service` under `/etc/systemd/system/`
