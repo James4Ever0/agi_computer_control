@@ -6,7 +6,7 @@ seconds = 60*5
 restore_vm = "restore_vm.sh"
 stop_vm = "stop_vm.sh"
 start_vm = "start_vm.sh"
-mount_kali_webdav_dirs = "../mount_kali_webdav_dirs.sh"
+mount_kali_webdav_dirs = "../kali_prepare_two_webdav_dirs.sh"
 
 
 def run_bash_script(script_path):
