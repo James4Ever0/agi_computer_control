@@ -1,1 +1,1 @@
-vboxmanage.com/vboxmanage/vboxmanage/services
+vboxmanage modifyvm "Ubuntu 16.04" --vrde on --vrdeport 8981 --vrdeaddress 127.0.0.1 --vrdeauthtype null --vrdemulticon on
