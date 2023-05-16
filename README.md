@@ -47,3 +47,10 @@ make sure we can restore our environments in every restart.
 spice-protocol
 
 found on utm.app, launch qemu and create spice unix socket.
+
+https://github.com/Shells-com/spice
+
+https://github.com/gnif/PureSpice
+
+https://github.com/citrix-openstack-build/spice-html5
+
