@@ -1,7 +1,9 @@
-# vboxmanage controlvm keyboardputscancode
-# vboxmanage controlvm keyboardputstring
+# vboxmanage controlvm "Ubuntu 16.04" keyboardputscancode
+# vboxmanage controlvm "Ubuntu 16.04" keyboardputstring
 
 # cannot perform mouse actions.
-vboxmanage controlvm 
-# vboxmanage controlvm audioout off
-# vboxmanage guestcontrol run -- 
+vboxmanage controlvm "Ubuntu 16.04" vrde on
+vboxmanage controlvm "Ubuntu 16.04" vrdeport 8991
+
+# vboxmanage controlvm "Ubuntu 16.04" audioout off
+# vboxmanage guestcontrol "Ubuntu 16.04" run -- 
