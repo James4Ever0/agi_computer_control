@@ -1,0 +1,1 @@
+vboxmanage list vms
