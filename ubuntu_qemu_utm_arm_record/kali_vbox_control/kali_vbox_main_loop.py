@@ -14,13 +14,18 @@ def run_bash_script(script_path):
     command = f"bash {script_path}"
     return os.system(command)
 
+scripts = [stop_vm, mount_kali_webdav_dirs, restore_vm, start_vm]
 
 while True:
-    for script in [stop_vm,mount_kali_webdav_dirs,restore_vm,start_vm]:
-    codes = [run_bash_script(), run_bash_script(
-        ), run_bash_script(), run_bash_script()]
+    codes = []
+    for script in scripts:
+        codes.append(script)
     if any(codes):
-        print("JAS
+        print("HAS ERROR CODE!")
+        for iscript in scripts:
+
+        time.sleep(1)
+        continue
     # CAN YOU DO THIS WITHOUT INTERRUPTING ME?
     print("WAITING {} SECONDS...".format(seconds))
     for _ in progressbar.progressbar(range(seconds)):
