@@ -10,7 +10,7 @@ human demonstrations are limited, but random keystrokes are infinite.
 
 try to obtain infinite data as pretrained data, then fine-tune on human demonstrations.
 
-----
+---
 
 键鼠真神 又名cybergod 赛博真神
 
@@ -22,27 +22,26 @@ try to obtain infinite data as pretrained data, then fine-tune on human demonstr
 
 避免机器卡死： 监测机器是否卡死 如果卡死那么自动外部重启 （重置状态，重新跑脚本）
 
-
 连着WEBDAV一起刷新 有filelock
 
 (直接取消lock权限)
-----
+------------------
 
 looking for using docker for automation, or using some tty-like things for automation.
 
 disable ubuntu system authentication?
 
-----
+---
 
 make some server for vm to access to restart the webdav server when you have error.
 
-----
+---
 
 agi_workspace happen to be in recycle bin. make sure we have the init files.
 
 make sure we can restore our environments in every restart.
 
-----
+---
 
 spice-protocol
 
@@ -56,7 +55,6 @@ https://github.com/citrix-openstack-build/spice-html5
 
 https://github.com/oetcxiaoliu/spice
 
-https://github.com/TotalWAR/spice_protocol
+https://github.com/TotallWAR/spice_protocol
 
 remmina
-
