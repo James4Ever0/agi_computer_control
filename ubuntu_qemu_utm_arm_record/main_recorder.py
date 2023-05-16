@@ -145,6 +145,8 @@ if check_redis_off():
                     filepaths.audio_timestamps,
                 ]:
                     os.system("mv {} {}".format(fpath, records_folder))
+                print("MAKING FINISHED INDICATOR")
+                os.system("touch {}".format(os.path.join(records_folder, "finished")))
         else:
             print("FAILED TO SET LOCK AS OFF.")
             print("FAILED AT FINAL CHECK.")
