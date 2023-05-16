@@ -12,14 +12,15 @@ mount_kali_webdav_dirs = "../kali_prepare_two_webdav_dirs.sh"
 def run_bash_script(script_path):
     print("Excuting bash script: %s" % script_path)
     command = f"bash {script_path}"
-    os.system(command)
+    return os.system(command)
 
 
 while True:
-    run_bash_script(stop_vm)
-    run_bash_script(mount_kali_webdav_dirs)
-    run_bash_script(restore_vm)
-    run_bash_script(start_vm)
+    for script in [stop_vm,mount_kali_webdav_dirs,restore_vm,start_vm]:
+    codes = [run_bash_script(), run_bash_script(
+        ), run_bash_script(), run_bash_script()]
+    if any(codes):
+        print("JAS
     # CAN YOU DO THIS WITHOUT INTERRUPTING ME?
     print("WAITING {} SECONDS...".format(seconds))
     for _ in progressbar.progressbar(range(seconds)):
