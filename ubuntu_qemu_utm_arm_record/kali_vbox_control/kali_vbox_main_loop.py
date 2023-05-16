@@ -6,7 +6,7 @@ seconds = 60*5
 restore_vm = "restore_vm.sh"
 stop_vm = "stop_vm.sh"
 start_vm = "start_vm.sh"
-kali_prepare_two_webdav_dirs = "../kali_prepare_two_webdav_dirs.sh"
+kali_prepare_two_webdav_dirs = "../../kali_prepare_two_webdav_dirs.sh"
 
 
 def run_bash_script(script_path):
@@ -22,6 +22,9 @@ while True:
     for script in scripts:
         code = run_bash_script(script)
         codes.append(code)
+    print()
+    for index, script in enumerate(scripts):
+        print(f'{script} EXIT CODE:', codes[index])
     # if any(codes):
     #     print()
     #     print("HAS ERROR CODE!")
