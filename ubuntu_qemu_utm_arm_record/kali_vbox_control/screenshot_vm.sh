@@ -1,0 +1,1 @@
+vboxmanage controlvm screenshotpng output.png
