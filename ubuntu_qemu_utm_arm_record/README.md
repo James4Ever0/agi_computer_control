@@ -31,3 +31,7 @@ sudo apt install python3-tk python3-dev
 sudo apt install ffmpeg
 
 sudo python3 main_recorder.py
+
+----
+
+the wallpaper can change. better execute some command to check if screen is locked.
