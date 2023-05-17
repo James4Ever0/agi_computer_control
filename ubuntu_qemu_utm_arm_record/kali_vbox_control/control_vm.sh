@@ -5,9 +5,9 @@
 
 # can only do this when vm running.
 
-# vboxmanage controlvm "Ubuntu 16.04" vrde on
-# vboxmanage controlvm "Ubuntu 16.04" vrdeport 8991
-# vboxmanage controlvm "Ubuntu 16.04" vrdeproperty vrdeauthtype=null
+vboxmanage controlvm "Ubuntu 16.04" vrde on
+vboxmanage controlvm "Ubuntu 16.04" vrdeport 8991
+vboxmanage controlvm "Ubuntu 16.04" vrdeproperty vrdeauthtype=null
 
-# vboxmanage controlvm "Ubuntu 16.04" audioout off
+vboxmanage controlvm "Ubuntu 16.04" audioout off
 # vboxmanage guestcontrol "Ubuntu 16.04" run -- 
