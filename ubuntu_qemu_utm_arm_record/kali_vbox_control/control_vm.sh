@@ -7,7 +7,7 @@
 
 vboxmanage controlvm "Ubuntu 16.04" vrde on
 vboxmanage controlvm "Ubuntu 16.04" vrdeport 8991
-vboxmanage controlvm "Ubuntu 16.04" vrdeaddress 127.0.0.1
+vboxmanage controlvm "Ubuntu 16.04" vrdeproperty vrdeaddress=127.0.0.1
 vboxmanage controlvm "Ubuntu 16.04" vrdeproperty vrdeauthtype=null
 
 vboxmanage controlvm "Ubuntu 16.04" audioout off
