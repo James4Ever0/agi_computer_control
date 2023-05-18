@@ -1,1 +1,2 @@
-xvfb-run --server-num=11 --listen-tcp --server-args="-screen 0 1280x800x24" -f /tmp/.Xauthority1 bash x11grab.sh | python3 stop_on_ffmpeg_x11_error.py
+xvfb-run --server-num=11 --listen-tcp --server-args="-screen 0 1280x800x24" -f /tmp/.Xauthority1 bash x11grab.sh
+# xvfb-run --server-num=11 --listen-tcp --server-args="-screen 0 1280x800x24" -f /tmp/.Xauthority1 bash x11grab.sh | python3 stop_on_ffmpeg_x11_error.py
