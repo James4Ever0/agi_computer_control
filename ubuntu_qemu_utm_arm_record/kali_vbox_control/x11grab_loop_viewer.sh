@@ -1,0 +1,1 @@
+env XAUTHORITY=/tmp/.Xauthority1 ffplay -f x11grab -i :11 -autoexit
