@@ -1,4 +1,6 @@
 error = "Failed to query xcb pointer"
 while True:
     data = input()
-    if data in 
+    print(data)
+    if error in data:
+        break
