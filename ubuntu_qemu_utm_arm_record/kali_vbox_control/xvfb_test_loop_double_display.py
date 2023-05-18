@@ -1,12 +1,13 @@
 import subprocess
 
 # run this using xvfb.
+import os
 
 script_1 = 'xvfb-run --server-num=10 --listen-tcp --server-args="-screen 0 1280x800x24" -f /tmp/.Xauthority vboxsdl --startvm "Ubuntu 16.04"'
 
 script_2 = 'env XAUTHORITY=/tmp/.Xauthorit ffplay -f x11grab -i :10'
 
-script_3 = 'vboxmanage '
+script_3 = 'vboxmanage controlvm "Ubuntu 16.04" poweroff'
 
 import time
 import progressbar
@@ -19,3 +20,4 @@ while True:
         time.sleep(1)
     
     os.system(script_3)
+    
