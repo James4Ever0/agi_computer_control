@@ -1,6 +1,6 @@
-# Cybergod
 
 ![Cybergod logo](propaganda/logos/cybergod_2.png)
+# Cybergod
 
 Trained on The Frozen Forest, a dataset containing random keystrokes, mouse clicks and screen recordings.
 
