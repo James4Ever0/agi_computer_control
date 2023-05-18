@@ -1,7 +1,7 @@
 
 from xvfbwrapper import Xvfb
 
-vdisplay = Xvfb(width=1280, height=740)
+vdisplay = Xvfb(display=3)
 vdisplay.start()
 
 import os
