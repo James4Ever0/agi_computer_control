@@ -1,6 +1,8 @@
 
 from xvfbwrapper import Xvfb
 
+# it sucks!
+
 vdisplay = Xvfb(display=3)
 vdisplay.start()
 
