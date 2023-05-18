@@ -1,0 +1,1 @@
+xvfb-run --server-num=11 --listen-tcp --server-args="-screen 0 1280x800x24" -f /tmp/.Xauthority1 env XAUTHORITY=/tmp/.Xauthority ffplay -f x11grab -i :10 | python3 stop_on_ffmpeg_x11_error.py
