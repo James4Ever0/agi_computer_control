@@ -19,6 +19,7 @@ def run_bash_script(script_path):
 scripts = [stop_vm, kali_prepare_two_webdav_dirs, restore_vm, start_vm]
 
 while True:
+    os.system("rm nohup.out")
     codes = []
     for script in scripts:
         while True:
