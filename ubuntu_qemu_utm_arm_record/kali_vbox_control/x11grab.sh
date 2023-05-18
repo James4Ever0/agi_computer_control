@@ -1,0 +1,1 @@
+env XAUTHORITY=/tmp/.Xauthority ffplay -f x11grab -i :10 2>&1
