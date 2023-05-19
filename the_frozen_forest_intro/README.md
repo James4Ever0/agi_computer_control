@@ -2,4 +2,4 @@
 
 # The Frozen Forest
 
-Dataset of 
+Dataset of time-aligned keystrokes, mouse and screen recordings.
