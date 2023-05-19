@@ -7,3 +7,7 @@
 # The Frozen Forest
 
 A dataset of time-aligned keystrokes, mouse and screen recordings.
+
+## Roadmap
+
+To train our mighty multimodal `cybergod`, I plan to add more modalities into this dataset, ma
