@@ -10,4 +10,7 @@ A dataset of time-aligned keystrokes, mouse and screen recordings.
 
 ## Roadmap
 
-To train our mighty multimodal `cybergod`, I plan to add more modalities into this dataset, ma
+Currently I only record these contents by running autostart scripts within our tiny little virtual machine, copy and  
+
+To train our mighty multimodal `cybergod`, I plan to add more modalities into this dataset, namely text, audio and more.
+
