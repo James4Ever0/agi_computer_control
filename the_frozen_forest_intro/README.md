@@ -2,7 +2,7 @@
 
 *"Can you hear it slowing? You're slowing it. You are in control. Calm. At peace."*
 
-— Corvus
+<div style='text-align: right;'>— Corvus</div>
 
 # The Frozen Forest
 
