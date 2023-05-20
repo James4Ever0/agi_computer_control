@@ -1,1 +1,1 @@
-tmux kill-session -s 
+tmux kill-session -t streaming_utils
