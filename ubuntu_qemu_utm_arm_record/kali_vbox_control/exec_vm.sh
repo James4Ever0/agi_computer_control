@@ -5,4 +5,5 @@ vboxmanage guestcontrol "Ubuntu 16.04" --username hua --password 110110 run -- /
 # Class=user
 # Class=greeter
 
-# if current
+# if current session is greeter -> reboot session
+# if is just screen lock -> unlock session
