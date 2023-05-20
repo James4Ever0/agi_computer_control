@@ -45,6 +45,17 @@ while True:
     #     continue
     # CAN YOU DO THIS WITHOUT INTERRUPTING ME?
     print("WAITING {} SECONDS...".format(seconds))
+    abort = 0
     for _ in progressbar.progressbar(range(seconds)):
+        # you just don't wait...
+        paths = os.listdir("/tmp/.X11-unix")
+        target_path = "X10" # where virtualbox runs.
+        vm_running = target_path in paths
+        if not vm_running:
+            abort+=1
+        else:
+            abort = 0
+        if abort >10:
+            print("ABORTING! VM IS NOT RUNNING>")
         time.sleep(1)
     print()
