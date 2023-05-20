@@ -64,3 +64,7 @@ https://github.com/oetcxiaoliu/spice
 https://github.com/TotallWAR/spice_protocol
 
 remmina
+
+----
+
+掉盘问题： `cd .`
