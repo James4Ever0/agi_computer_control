@@ -4,11 +4,6 @@ windows:
   - window_name: dev window
     layout: tiled
     panes:
-######################[webdav]
-      - shell_command:
-        - "gnome-terminal -- bash kali_prepare_dirs_loop.sh"
-        start_directory: "ubuntu_qemu_utm_arm_record"
-
 ######################[bongocats]
       - shell_command:
         - "python3 cat.pyw"
