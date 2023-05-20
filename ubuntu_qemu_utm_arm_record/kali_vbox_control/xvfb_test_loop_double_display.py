@@ -15,6 +15,7 @@ import time
 
 while True:
     time.sleep(1)
+    os.system("cd .") # FIX: input/output error
     os.system(script_4)
 
 # while True:
