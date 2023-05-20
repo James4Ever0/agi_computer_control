@@ -49,13 +49,14 @@ while True:
     for _ in progressbar.progressbar(range(seconds)):
         # you just don't wait...
         paths = os.listdir("/tmp/.X11-unix")
-        target_path = "X10" # where virtualbox runs.
+        target_path = "X10"  # where virtualbox runs.
         vm_running = target_path in paths
         if not vm_running:
-            abort+=1
+            abort += 1
         else:
             abort = 0
-        if abort >10:
-            print("ABORTING! VM IS NOT RUNNING>")
+        if abort > 10:
+            print("ABORTING! VM IS NOT RUNNING.")
+            break
         time.sleep(1)
     print()
