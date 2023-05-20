@@ -1,3 +1,3 @@
 tmux kill-session -t streaming_utils
 
-tmuxp load streaming_utils.yaml
+gnome-terminal -- tmuxp load streaming_utils.yaml
