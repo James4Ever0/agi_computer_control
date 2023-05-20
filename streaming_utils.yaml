@@ -1,0 +1,36 @@
+session_name: streaming_utils
+start_directory: "/media/root/Toshiba XG3/works/agi_computer_control"
+windows:
+  - window_name: dev window
+    layout: tiled
+    panes:
+######################[webdav]
+      - shell_command:
+        - "gnome-terminal -- bash kali_prepare_dirs_loop.sh"
+        start_directory: "ubuntu_qemu_utm_arm_record"
+
+######################[bongocats]
+      - shell_command:
+        - "python3 cat.pyw"
+        start_directory: "BongoCat"
+
+      - shell_command:
+        - "python3 cat.pyw"
+        start_directory: "BongoCat"
+
+######################[virtualbox]
+      - shell_command:
+        - "python3 kali_vbox_main_loop.py"
+        start_directory: "ubuntu_qemu_utm_arm_record/kali_vbox_control"
+
+######################[viewer_loop]
+      - shell_command:
+        - sleep 1
+        - "python3 xvfb_test_loop_double_display.py"
+        start_directory: "ubuntu_qemu_utm_arm_record/kali_vbox_control"
+
+######################[viewer_final]
+      - shell_command:
+        - sleep 3
+        - "bash x11grab_loop_viewer.sh"
+        start_directory: "ubuntu_qemu_utm_arm_record/kali_vbox_control"

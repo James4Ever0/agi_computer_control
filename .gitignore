@@ -6,6 +6,8 @@
 recordings
 recordings/*
 
+!*.yaml
+!*.yml
 !.gitignore
 !*.j2
 !*.html

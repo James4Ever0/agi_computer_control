@@ -1,0 +1,9 @@
+session_name: kali_prepare_two_webdav_dirs
+windows:
+  - window_name: dev window
+    layout: tiled
+    panes:
+      - shell_command:
+        - "webdav-cli --host=10.0.1.6 --port=8110 --username=root --password=root --path=/media/root/Toshiba\\ XG3/works/agi_computer_control/ubuntu_qemu_utm_arm_record/ --rights=canRead,canGetMimeType,canGetSizecanGetChildren,canGetProperty,canGetProperties,canGetCreationDate,canGetLastModifiedDate,canGetWebName,canGetType"
+      - shell_command:
+        - "webdav-cli --host=10.0.1.6 --port=8111 --username=root --password=root --path=/media/root/Toshiba\\ XG3/works/agi_computer_control/recordings/ --rights=canCreate,canDelete,canMove,canRename,canAppend,canWrite,canRead,canSource,canGetMimeType,canGetSize,canAddChild,canRemoveChild,canGetChildren,canSetProperty,canGetProperty,canGetProperties,canRemoveProperty,canGetCreationDate,canGetLastModifiedDate,canGetWebName,canGetType"
