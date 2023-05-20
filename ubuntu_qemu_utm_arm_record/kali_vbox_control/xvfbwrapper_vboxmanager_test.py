@@ -6,12 +6,12 @@ from xvfbwrapper import Xvfb
 # vdisplay = Xvfb(display=3)
 # vdisplay.start()
 
-# import os
+import os
 
 cmd = 'vboxsdl --startvm "Ubuntu 16.04"' 
 
-with Xvfb(display=3) as vdisplay:
-
+with Xvfb(display=3) as vdisplay: # not working...
+    os.system(cmd)
 # try:
 #     # launch stuff inside virtual display here.
 #     # os.system('bash start_vm.sh')
