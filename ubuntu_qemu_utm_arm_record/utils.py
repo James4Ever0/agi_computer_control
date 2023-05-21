@@ -24,6 +24,15 @@ import uuid
 
 def set_prefix():
     r = get_redis_client()
+    prefix = "/tmp/{}".format(str(uuid.uuid4()).replace("-", "_"))
+    r.set(PREFIX_KEY, prefix)
+
+def get_prefix():
+    r = get_redis_client()
+    val = r.get(PREFIX_KEY)
+    if val:
+        return val.decode('utf-8')
+    return val
 
 CONFIG_PATH = "config.json"
 
