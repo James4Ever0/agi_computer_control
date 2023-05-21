@@ -7,7 +7,7 @@ restore_vm = "restore_vm.sh"
 stop_vm = "stop_vm.sh"
 start_vm = "start_vm.sh"
 kali_prepare_two_webdav_dirs = "../kali_prepare_two_webdav_dirs.sh"
-
+ABORT_THRESHOLD = 15
 
 from exec_vm_if_locked import exec_vm_if_locked
 
@@ -56,9 +56,12 @@ while True:
         if not vm_running:
             abort += 1
         else:
-            exec_vm_if_locked
-            abort = 0
-        if abort > 10:
+            reboot = exec_vm_if_locked()
+            if reboot:
+                abort +=1
+            else:
+                abort = 0
+        if abort > ABORT_THRESHOLD:
             print("ABORTING! VM IS NOT RUNNING.")
             break
         time.sleep(1)
