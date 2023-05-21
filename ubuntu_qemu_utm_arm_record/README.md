@@ -35,3 +35,7 @@ sudo python3 main_recorder.py
 ----
 
 the wallpaper can change. better execute some command to check if screen is locked.
+
+----
+
+use temp dir to store recordings, preventing deadlocks.
