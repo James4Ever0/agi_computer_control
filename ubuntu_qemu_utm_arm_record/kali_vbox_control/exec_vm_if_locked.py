@@ -89,7 +89,7 @@ def exec_vm_if_locked(verbose=False,
             datamap[key] = mdict
         if verbose:
             print()
-        rich.print(datamap)
+            rich.print(datamap)
 
         active_session = datamap['seat']['ActiveSession'][0]
 
