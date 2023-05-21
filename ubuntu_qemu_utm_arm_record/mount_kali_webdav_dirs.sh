@@ -20,4 +20,4 @@ ln -s /mnt/dav2 recordings
 
 # just start stuff here.
 
-sudo 
+# sudo bash main_loop.sh
