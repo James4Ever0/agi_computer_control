@@ -15,7 +15,12 @@ PYTHON_EXECUTABLE = sys.executable
 
 CONFIG_PATH="config.json"
 import uuid
-tempdir = "/tmp/{}".format(str(uuid.uuid4()).replace("-", "_"))
+
+def set_tempdir():
+    tempdir = "/tmp/{}".format(str(uuid.uuid4()).replace("-", "_"))
+
+def get_tempdir():
+    return tempdir
 
 with open(CONFIG_PATH,'r') as f:
     config = json.load(f)
@@ -24,9 +29,10 @@ MAX_RECORDING_COUNT=30
 
 class filepaths:
     # prefix = config['filepaths_prefix']
+    shared_folder_prefix = config['filepaths_prefix']
 
     # prefix = "./test_record/"
-    prefix = tempdir
+    prefix = get_tempdir()
     hid_record = "{}hid_record.jsonl".format(prefix)
     audio_record = "{}audio_record.wav".format(prefix)
     video_record = "{}video_record.mp4".format(prefix)
