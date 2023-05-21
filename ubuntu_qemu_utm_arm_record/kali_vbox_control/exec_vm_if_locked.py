@@ -87,4 +87,4 @@ rich.print(datamap)
 
 active_session = datamap['seat']['ActiveSession']
 
-active_session_type = data['']
+type_active_session = datamap['session'][active_session][1]
