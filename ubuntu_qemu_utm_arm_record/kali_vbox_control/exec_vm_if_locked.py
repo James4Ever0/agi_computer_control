@@ -39,7 +39,6 @@ cmds = [
             "show-seat",
             "seat0",  # get ActiveSession
         ],
-    ['',''] 
     ]
 ]
 
@@ -64,7 +63,7 @@ def sess_parse(data):
 
 
 timeout = 1  # seconds.
-for cmd in cmds:
+for index, cmd in cmds:
     output = subprocess.check_output(cmd, timeout=timeout)
     # if with error return code, it will raise exception.
     # machine not started, service not running.
