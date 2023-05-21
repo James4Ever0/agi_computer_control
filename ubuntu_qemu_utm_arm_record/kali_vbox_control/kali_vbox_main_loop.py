@@ -64,6 +64,7 @@ while True:
                 print("ABORTING! NOT RECORDING.")
                 break
         else:
+            quit=0
             old_rec_paths = rec_paths.copy()
 
         target_path = "X10"  # where virtualbox runs.
