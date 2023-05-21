@@ -24,7 +24,7 @@ import uuid
 
 def set_prefix():
     r = get_redis_client()
-    prefix = "/tmp/{}".format(str(uuid.uuid4()).replace("-", "_"))
+    prefix = "/tmp/{}/".format(str(uuid.uuid4()).replace("-", "_"))
     print("SET PREFIX: {}".format(prefix))
     os.mkdir(prefix)
     r.set(PREFIX_KEY, prefix)
