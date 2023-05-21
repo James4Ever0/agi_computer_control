@@ -5,7 +5,7 @@ import subprocess
 # cmd = 'vboxmanage guestcontrol "Ubuntu 16.04" --username hua --password 110110 run --timeout 100 -- /bin/loginctl'
 # cmd = ['vboxmanage', 'guestcontrol', 'Ubuntu 16.04', '--username', 'hua', '--password', '110110', 'run', '--timeout', '100', '--', '/bin/loginctl','--help']
 
-def exec_vm_if_locked():
+def exec_vm_if_locked(verbose=False):
 
     def getcmd(
         args: list[str] = [],
@@ -75,18 +75,20 @@ def exec_vm_if_locked():
         output = subprocess.check_output(cmd, timeout=timeout)
         # if with error return code, it will raise exception.
         # machine not started, service not running.
-        print("=============OUTPUT=============")
-        print(output.decode())
-        print()
+        if verbose:
+            print("=============OUTPUT=============")
+            print(output.decode())
+            print()
         dec_output = output.decode()
 
         mlist_output = sess_parse(dec_output)
-        rich.print(mlist_output)
+        if verbose:
+            rich.print(mlist_output)
         mdict = {e[0]:e[1:] for e in mlist_output}
 
         datamap[key] = mdict
-
-    print()
+    if verbose:
+        print()
     rich.print(datamap)
 
     active_session = datamap['seat']['ActiveSession']

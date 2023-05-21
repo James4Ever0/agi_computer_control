@@ -9,6 +9,8 @@ start_vm = "start_vm.sh"
 kali_prepare_two_webdav_dirs = "../kali_prepare_two_webdav_dirs.sh"
 
 
+from exec_vm_if_locked import exec_vm_if_locked
+
 def run_bash_script(script_path):
     print("Excuting bash script: %s" % script_path)
     command = f"bash {script_path}"
@@ -54,6 +56,7 @@ while True:
         if not vm_running:
             abort += 1
         else:
+            exec_vm_if_locked
             abort = 0
         if abort > 10:
             print("ABORTING! VM IS NOT RUNNING.")
