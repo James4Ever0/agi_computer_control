@@ -17,3 +17,7 @@ mkdir recordings
 
 ln -s /mnt/dav1 scripts
 ln -s /mnt/dav2 recordings
+
+# just start stuff here.
+
+sudo 
