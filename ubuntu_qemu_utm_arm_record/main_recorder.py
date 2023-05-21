@@ -37,7 +37,7 @@ rec_folders = [
     for p in os.listdir(filepaths.prefix)
     if os.path.isdir("{}{}".format(filepaths.prefix, p)) and p is not "lost+found"
 ]
-rec_folders.sort(key=lambda p: os.path.getmtime(p))
+rec_folders.sort(key=lambda p: -os.path.getmtime(p))
 expired_rec_folders = rec_folders[MAX_RECORDING_COUNT:]
 print("EXPIRED RECORDING FOLDER COUNT:", len(expired_rec_folders))
 for p in expired_rec_folders:
