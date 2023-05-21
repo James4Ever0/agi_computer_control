@@ -34,12 +34,12 @@ def getcmd(
 cmds = [
     getcmd(e)
     for e in [
-        [],
+        [], # main info.
         [
             "show-seat",
             "seat0",  # get ActiveSession
         ],
-    ['','']
+    ['',''] 
     ]
 ]
 
