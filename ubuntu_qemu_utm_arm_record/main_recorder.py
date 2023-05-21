@@ -95,13 +95,16 @@ if check_redis_off():
                 hid_exit_code = HIDRecorderProcess.wait(timeout=WAIT_TIMEOUT)
                 exit_codes.append(hid_exit_code)
             if RECORDERS["Video"]:
-                video_exit_code = VideoRecorderProcess.wait(timeout=WAIT_TIMEOUT)
+                video_exit_code = VideoRecorderProcess.wait(
+                    timeout=WAIT_TIMEOUT)
                 exit_codes.append(video_exit_code)
             if RECORDERS["Audio"]:
-                audio_exit_code = AudioRecorderProcess.wait(timeout=WAIT_TIMEOUT)
+                audio_exit_code = AudioRecorderProcess.wait(
+                    timeout=WAIT_TIMEOUT)
                 exit_codes.append(audio_exit_code)
             if RANDOM_ACTOR:
-                random_actor_exit_code = RandomActorProcess.wait(timeout=WAIT_TIMEOUT)
+                random_actor_exit_code = RandomActorProcess.wait(
+                    timeout=WAIT_TIMEOUT*3)
                 exit_codes.append(random_actor_exit_code)
             print()
             print("EXIT CODES:")
@@ -116,7 +119,7 @@ if check_redis_off():
             print()
             if any([code != 0 for code in exit_codes]):
                 # you may remove all temp files under recorder folder.
-                prefix=get_prefix()
+                prefix = get_prefix()
                 hid_record = "{}hid_record.jsonl".format(prefix)
                 audio_record = "{}audio_record.wav".format(prefix)
                 video_record = "{}video_record.mp4".format(prefix)
@@ -145,7 +148,8 @@ if check_redis_off():
                 current_timestamp = (
                     datetime.datetime.now().isoformat().replace(":", "_")
                 )
-                records_folder = "{}{}".format(filepaths.target_prefix, current_timestamp)
+                records_folder = "{}{}".format(
+                    filepaths.target_prefix, current_timestamp)
                 # records_folder = "{}{}".format(filepaths.prefix, current_timestamp)
                 print("MOVING RECORDS TO: {}".format(records_folder))
                 os.mkdir(records_folder)
