@@ -63,7 +63,10 @@ def sess_parse(data):
 
 
 timeout = 1  # seconds.
-for index, cmd in cmds:
+keys = ['session','seat']
+datamap = {}
+for index, cmd in enumerate(cmds):
+    key = keys[index]
     output = subprocess.check_output(cmd, timeout=timeout)
     # if with error return code, it will raise exception.
     # machine not started, service not running.
@@ -74,3 +77,4 @@ for index, cmd in cmds:
 
     mlist_output = sess_parse(dec_output)
     rich.print(mlist_output)
+    mdict = {e[0]:e[1:] for e in mlist_output}
