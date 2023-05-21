@@ -4,11 +4,11 @@ import subprocess
 
 # cmd = 'vboxmanage guestcontrol "Ubuntu 16.04" --username hua --password 110110 run --timeout 100 -- /bin/loginctl'
 # cmd = ['vboxmanage', 'guestcontrol', 'Ubuntu 16.04', '--username', 'hua', '--password', '110110', 'run', '--timeout', '100', '--', '/bin/loginctl','--help']
-cmds = [
-    [
-        "vboxmanage",
+
+def getcmd(args:list[str], machine="Ubuntu 16.04", username, password, timeout, bin, ):
+     cmd = "vboxmanage",
         "guestcontrol",
-        "Ubuntu 16.04",
+        machine,
         "--username",
         "hua",
         "--password",
@@ -18,6 +18,11 @@ cmds = [
         "100",
         "--",
         "/bin/loginctl",
+    return cmd + args
+
+cmds = [
+    [
+       
     ],
     [
         "vboxmanage",
@@ -33,7 +38,7 @@ cmds = [
         "--",
         "/bin/loginctl",
         "show-seat",
-        "seat0",
+        "seat0", # get ActiveSession
     ],
 ]
 
