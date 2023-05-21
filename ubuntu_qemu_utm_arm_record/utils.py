@@ -25,6 +25,7 @@ import uuid
 def set_prefix():
     r = get_redis_client()
     prefix = "/tmp/{}".format(str(uuid.uuid4()).replace("-", "_"))
+    os.mkdir(prefix)
     r.set(PREFIX_KEY, prefix)
 
 def get_prefix():
@@ -169,6 +170,8 @@ def set_redis_off_on_exception():
 
         # # Exception type and value
         # print(f"{exc_type.__name__}, Message: {exc_value}")
+        if os.path.exists(get_prefix()):
+            os.system("rm -rf {}".format(get_prefix()))
         set_redis_off()
 
         import traceback

@@ -5,7 +5,7 @@ import os
 from utils import (
     set_redis_on,
     set_redis_off,
-    get_prefix, set_prefix
+    set_prefix,
     check_redis_on,
     check_redis_off,
     PYTHON_EXECUTABLE,
@@ -13,6 +13,8 @@ from utils import (
     filepaths,
     MAX_RECORDING_COUNT,
 )
+
+set_prefix()
 
 set_redis_off_on_exception()
 
@@ -134,6 +136,7 @@ if check_redis_off():
                     datetime.datetime.now().isoformat().replace(":", "_")
                 )
                 records_folder = "{}{}".format(filepaths.prefix, current_timestamp)
+                # records_folder = "{}{}".format(filepaths.prefix, current_timestamp)
                 print("MOVING RECORDS TO: {}".format(records_folder))
                 os.mkdir(records_folder)
                 for fpath in [
