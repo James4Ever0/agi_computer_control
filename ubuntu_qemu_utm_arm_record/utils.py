@@ -48,7 +48,7 @@ MAX_RECORDING_COUNT = 30
 
 class filepaths:
     # prefix = config['filepaths_prefix']
-    @property
+    # @property
     def prefix():
         return get_prefix()
     target_prefix = config['filepaths_prefix']
