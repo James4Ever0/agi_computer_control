@@ -3,7 +3,7 @@ import subprocess
 # cmd = 'vboxmanage guestcontrol "Ubuntu 16.04" --username hua --password 110110 run --timeout 100 -- /bin/loginctl'
 cmd = ['vboxmanage', 'guestcontrol', 'Ubuntu 16.04', '--username', 'hua', '--password', '110110', 'run', '--timeout', '100', '--', '/bin/loginctl']
 
-timeout = 0.5 # seconds.
+timeout = 1 # seconds.
 output = subprocess.check_output(cmd, timeout=timeout)
-
-print(output)
+# if with error return code, it will raise exception.
+print('OUTPUT',output)
