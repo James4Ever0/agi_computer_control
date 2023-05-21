@@ -22,13 +22,10 @@ def getcmd(args: list[str] = [], machine="Ubuntu 16.04", username="hua", passwor
     return cmd + args
 
 
-cmds = [
-    getcmd(),
-    getcmd([
+cmds = [getcmd(e) for e in [[], [
         "show-seat",
         "seat0",  # get ActiveSession
-    ]),
-]
+        ]]]
 
 
 def sess_parse(data):
