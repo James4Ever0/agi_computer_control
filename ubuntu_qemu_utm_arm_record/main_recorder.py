@@ -135,7 +135,7 @@ if check_redis_off():
                 current_timestamp = (
                     datetime.datetime.now().isoformat().replace(":", "_")
                 )
-                records_folder = "{}{}".format(filepaths.prefix, current_timestamp)
+                records_folder = "{}{}".format(filepaths.target_prefix, current_timestamp)
                 # records_folder = "{}{}".format(filepaths.prefix, current_timestamp)
                 print("MOVING RECORDS TO: {}".format(records_folder))
                 os.mkdir(records_folder)
