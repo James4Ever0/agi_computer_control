@@ -49,8 +49,7 @@ MAX_RECORDING_COUNT = 30
 class filepaths:
     # prefix = config['filepaths_prefix']
     # @property
-    def prefix():
-        return get_prefix()
+    prefix = get_prefix()
     target_prefix = config['filepaths_prefix']
     # prefix = "./test_record/"
     hid_record = "{}hid_record.jsonl".format(prefix)
