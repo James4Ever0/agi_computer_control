@@ -9,7 +9,7 @@ stop_vm = "stop_vm.sh"
 start_vm = "start_vm.sh"
 kali_prepare_two_webdav_dirs = "../kali_prepare_two_webdav_dirs.sh"
 ABORT_THRESHOLD = 15
-QUIT_THRESHOLD = 30
+QUIT_THRESHOLD = 60
 
 
 def run_bash_script(script_path):
