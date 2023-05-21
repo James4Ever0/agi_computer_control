@@ -35,6 +35,7 @@ def get_prefix():
     if val:
         dval = val.decode('utf-8')
         print("GET PREFIX: {}".format(dval))
+        return dval
     return val
 
 CONFIG_PATH = "config.json"
