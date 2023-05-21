@@ -6,41 +6,28 @@ import subprocess
 # cmd = ['vboxmanage', 'guestcontrol', 'Ubuntu 16.04', '--username', 'hua', '--password', '110110', 'run', '--timeout', '100', '--', '/bin/loginctl','--help']
 
 
-def getcmd(args: list[str], machine="Ubuntu 16.04", username="hua", password="110110", timeout="100", bin="/bin/loginctl"):
-     cmd = ["vboxmanage",
-        "guestcontrol",
-        machine,
-        "--username",
-        username,
-        "--password",
-        password,
-        "run",
-        "--timeout",
-        timeout,
-        "--",
-       bin]
+def getcmd(args: list[str] = [], machine="Ubuntu 16.04", username="hua", password="110110", timeout="100", bin="/bin/loginctl"):
+    cmd = ["vboxmanage",
+           "guestcontrol",
+           machine,
+           "--username",
+           username,
+           "--password",
+           password,
+           "run",
+           "--timeout",
+           timeout,
+           "--",
+           bin]
     return cmd + args
 
+
 cmds = [
-    [
-       
-    ],
-    [
-        "vboxmanage",
-        "guestcontrol",
-        "Ubuntu 16.04",
-        "--username",
-        "hua",
-        "--password",
-        "110110",
-        "run",
-        "--timeout",
-        "100",
-        "--",
-        "/bin/loginctl",
+    getcmd(),
+    getcmd([
         "show-seat",
-        "seat0", # get ActiveSession
-    ],
+        "seat0",  # get ActiveSession
+    ]),
 ]
 
 
