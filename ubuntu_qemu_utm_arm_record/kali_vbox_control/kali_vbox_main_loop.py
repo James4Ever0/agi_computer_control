@@ -48,6 +48,7 @@ while True:
     # CAN YOU DO THIS WITHOUT INTERRUPTING ME?
     print("WAITING {} SECONDS...".format(seconds))
     abort = 0
+    quit = 0
     for _ in progressbar.progressbar(range(seconds)):
         # you just don't wait...
         paths = os.listdir("/tmp/.X11-unix")
