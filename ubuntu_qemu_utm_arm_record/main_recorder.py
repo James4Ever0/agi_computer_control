@@ -6,6 +6,7 @@ from utils import (
     set_redis_on,
     set_redis_off,
     set_prefix,
+    get_prefix,
     check_redis_on,
     check_redis_off,
     PYTHON_EXECUTABLE,
@@ -115,14 +116,23 @@ if check_redis_off():
             print()
             if any([code != 0 for code in exit_codes]):
                 # you may remove all temp files under recorder folder.
+                prefix=get_prefix()
+                hid_record = "{}hid_record.jsonl".format(prefix)
+                audio_record = "{}audio_record.wav".format(prefix)
+                video_record = "{}video_record.mp4".format(prefix)
+                video_record_script = "{}video_record_script.sh".format(prefix)
+
+                video_timestamps = "{}video_timestamps.json".format(prefix)
+                hid_timestamps = "{}hid_timestamps.json".format(prefix)
+                audio_timestamps = "{}audio_timestamps.json".format(prefix)
                 for fpath in [
-                    filepaths.hid_record,
-                    filepaths.audio_record,
-                    filepaths.video_record,
-                    filepaths.video_record_script,
-                    filepaths.video_timestamps,
-                    filepaths.hid_timestamps,
-                    filepaths.audio_timestamps,
+                    hid_record,
+                    audio_record,
+                    video_record,
+                    video_record_script,
+                    video_timestamps,
+                    hid_timestamps,
+                    audio_timestamps,
                 ]:
                     try:
                         os.remove(fpath)
