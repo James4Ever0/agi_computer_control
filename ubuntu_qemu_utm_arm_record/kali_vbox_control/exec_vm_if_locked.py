@@ -6,26 +6,42 @@ import subprocess
 # cmd = ['vboxmanage', 'guestcontrol', 'Ubuntu 16.04', '--username', 'hua', '--password', '110110', 'run', '--timeout', '100', '--', '/bin/loginctl','--help']
 
 
-def getcmd(args: list[str] = [], machine="Ubuntu 16.04", username="hua", password="110110", timeout="100", bin="/bin/loginctl"):
-    cmd = ["vboxmanage",
-           "guestcontrol",
-           machine,
-           "--username",
-           username,
-           "--password",
-           password,
-           "run",
-           "--timeout",
-           timeout,
-           "--",
-           bin]
+def getcmd(
+    args: list[str] = [],
+    machine="Ubuntu 16.04",
+    username="hua",
+    password="110110",
+    timeout="100",
+    bin="/bin/loginctl",
+):
+    cmd = [
+        "vboxmanage",
+        "guestcontrol",
+        machine,
+        "--username",
+        username,
+        "--password",
+        password,
+        "run",
+        "--timeout",
+        timeout,
+        "--",
+        bin,
+    ]
     return cmd + args
 
 
-cmds = [getcmd(e) for e in [[], [
-        "show-seat",
-        "seat0",  # get ActiveSession
-        ]]]
+cmds = [
+    getcmd(e)
+    for e in [
+        [],
+        [
+            "show-seat",
+            "seat0",  # get ActiveSession
+        ],
+    ['','']
+    ]
+]
 
 
 def sess_parse(data):
