@@ -43,6 +43,9 @@ cmds = [
 ]
 
 
+cmd_unlock = lambda session: getcmd(['unlock-session', session])
+
+
 def sess_parse(data):
     lines = data.split("\n")
     mlist = []
@@ -87,4 +90,8 @@ rich.print(datamap)
 
 active_session = datamap['seat']['ActiveSession']
 
-type_active_session = datamap['session'][active_session][1]
+user_active_session = datamap['session'][active_session][1]
+
+if user_active_session != 'hua':
+    reboot=True
+else:
