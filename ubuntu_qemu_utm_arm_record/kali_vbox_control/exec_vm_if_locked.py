@@ -5,10 +5,11 @@ import traceback
 # cmd = 'vboxmanage guestcontrol "Ubuntu 16.04" --username hua --password 110110 run --timeout 100 -- /bin/loginctl'
 # cmd = ['vboxmanage', 'guestcontrol', 'Ubuntu 16.04', '--username', 'hua', '--password', '110110', 'run', '--timeout', '100', '--', '/bin/loginctl','--help']
 
-def exec_vm_if_locked(verbose=False,
-    timeout = 1  # seconds.
 
-):
+def exec_vm_if_locked(verbose=False,
+                      timeout=1  # seconds.
+
+                      ):
 
     def getcmd(
         args: list[str] = [],
@@ -34,11 +35,10 @@ def exec_vm_if_locked(verbose=False,
         ]
         return cmd + args
 
-
     cmds = [
         getcmd(e)
         for e in [
-            [], # main info.
+            [],  # main info.
             [
                 "show-seat",
                 "seat0",  # get ActiveSession
@@ -46,9 +46,7 @@ def exec_vm_if_locked(verbose=False,
         ]
     ]
 
-
-    cmd_unlock = lambda session: getcmd(['unlock-session', session])
-
+    def cmd_unlock(session): return getcmd(['unlock-session', session])
 
     def sess_parse(data):
         lines = data.split("\n")
@@ -65,13 +63,11 @@ def exec_vm_if_locked(verbose=False,
                 mlist.append(list_l)
         return mlist
 
-
     # json is for journal formatting.
 
-
-    keys = ['session','seat']
+    keys = ['session', 'seat']
     datamap = {}
-    reboot=False
+    reboot = False
 
     try:
         for index, cmd in enumerate(cmds):
@@ -88,25 +84,26 @@ def exec_vm_if_locked(verbose=False,
             mlist_output = sess_parse(dec_output)
             if verbose:
                 rich.print(mlist_output)
-            mdict = {e[0]:e[1:] for e in mlist_output}
+            mdict = {e[0]: e[1:] for e in mlist_output}
 
             datamap[key] = mdict
         if verbose:
             print()
         rich.print(datamap)
 
-        active_session = datamap['seat']['ActiveSession']
+        active_session = datamap['seat']['ActiveSession'][0]
 
         user_active_session = datamap['session'][active_session][1]
 
         if user_active_session != 'hua':
-            reboot=True
+            reboot = True
         else:
             cmd = cmd_unlock(active_session)
-            subprocess.call(cmd,timeout=timeout)
+            subprocess.call(cmd, timeout=timeout)
     except:
         traceback.print_exc()
     return reboot
+
 
 if __name__ == '__main__':
     reboot = exec_vm_if_locked(verbose=True)
