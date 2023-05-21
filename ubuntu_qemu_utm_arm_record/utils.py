@@ -11,17 +11,32 @@ import sys
 
 PYTHON_EXECUTABLE = sys.executable
 
+
+@functools.lru_cache(maxsize=1)
+def get_redis_client():
+    r = redis.Redis(host="localhost", port=6379, db=0)
+    return r
+
 # it is the main recorder which will pack all recordings into hdf5 file format after success.
 
-CONFIG_PATH="config.json"
+PREFIX_KEY = "RECORD_PREFIX"
+import uuid
 
-with open(CONFIG_PATH,'r') as f:
+def set_prefix():
+    r = get_redis_client()
+
+CONFIG_PATH = "config.json"
+
+with open(CONFIG_PATH, 'r') as f:
     config = json.load(f)
 
-MAX_RECORDING_COUNT=30
+MAX_RECORDING_COUNT = 30
+
 
 class filepaths:
-    prefix = config['filepaths_prefix']
+    # prefix = config['filepaths_prefix']
+    prefix = get_prefix()
+    target_prefix = config['filepaths_prefix']
     # prefix = "./test_record/"
     hid_record = "{}hid_record.jsonl".format(prefix)
     audio_record = "{}audio_record.wav".format(prefix)
@@ -39,12 +54,6 @@ sig_off = "OFF"
 
 timestep = 0.03
 # filePath = "states.jsonl"
-
-
-@functools.lru_cache(maxsize=1)
-def get_redis_client():
-    r = redis.Redis(host="localhost", port=6379, db=0)
-    return r
 
 
 def set_redis_off():
@@ -88,7 +97,8 @@ class TimestampedLogCreater:
         # show info every 1 second.
         int_timestamp = int(timestamp)
         if int_timestamp > self.last_int_timestamp:
-            print("Appending timestamp at `{}`:".format(self.file_name), timestamp)
+            print("Appending timestamp at `{}`:".format(
+                self.file_name), timestamp)
             self.last_int_timestamp = int_timestamp
         self.timestamp_list.append(timestamp)
 
@@ -117,7 +127,8 @@ class TimestampedContext:
         print("INIT TIMESTAMPED CONTEXT AT: {}".format(self.file_name))
         if os.path.exists(file_name):
             if os.path.isfile(file_name):
-                print("REMOVING OLD TIMESTAMPED CONTEXT AT: {}".format(self.file_name))
+                print("REMOVING OLD TIMESTAMPED CONTEXT AT: {}".format(
+                    self.file_name))
                 os.remove(file_name)
             else:
                 raise Exception(
