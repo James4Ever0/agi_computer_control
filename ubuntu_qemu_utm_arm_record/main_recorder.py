@@ -33,9 +33,9 @@ RANDOM_ACTOR = True
 # keep last 30 recordings.
 # will remove anything more than that.
 rec_folders = [
-    "{}{}".format(filepaths.shared_folder_prefix, p)
-    for p in os.listdir(filepaths.shared_folder_prefix)
-    if os.path.isdir("{}{}".format(filepaths.shared_folder_prefix, p)) and p is not "lost+found"
+    "{}{}".format(filepaths.prefix, p)
+    for p in os.listdir(filepaths.prefix)
+    if os.path.isdir("{}{}".format(filepaths.prefix, p))
 ]
 rec_folders.sort(key=lambda p: -os.path.getmtime(p))
 expired_rec_folders = rec_folders[MAX_RECORDING_COUNT:]
@@ -132,7 +132,7 @@ if check_redis_off():
                 current_timestamp = (
                     datetime.datetime.now().isoformat().replace(":", "_")
                 )
-                records_folder = "{}{}".format(filepaths.shared_folder_prefix, current_timestamp)
+                records_folder = "{}{}".format(filepaths.prefix, current_timestamp)
                 print("MOVING RECORDS TO: {}".format(records_folder))
                 os.mkdir(records_folder)
                 for fpath in [
