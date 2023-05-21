@@ -22,7 +22,9 @@
 from functools import lru_cache
 import random
 import pyautogui
+import time
 
+SLEEP = 0.2
 # there are several keys we should never touch.
 
 
@@ -402,6 +404,7 @@ if __name__ == "__main__":
                 random_action = random.choice(random_actions)
                 try:
                     random_action()
+                    time.sleep(SLEEP)
                 except:
                     pass
 
