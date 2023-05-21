@@ -35,7 +35,7 @@ RANDOM_ACTOR = True
 rec_folders = [
     "{}{}".format(filepaths.prefix, p)
     for p in os.listdir(filepaths.prefix)
-    if os.path.isdir("{}{}".format(filepaths.prefix, p))
+    if os.path.isdir("{}{}".format(filepaths.prefix, p)) and p is not "lost+found"
 ]
 rec_folders.sort(key=lambda p: -os.path.getmtime(p))
 expired_rec_folders = rec_folders[MAX_RECORDING_COUNT:]
