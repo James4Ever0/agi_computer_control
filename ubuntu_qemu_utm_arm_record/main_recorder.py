@@ -17,7 +17,7 @@ from utils import (
 
 set_prefix()
 
-set_redis_off_on_exception()
+set_redis_off_on_exception(main=True)
 
 MINIBREAK_SECONDS = 1
 RECORD_SECONDS = 10

@@ -164,7 +164,7 @@ class TimestampedContext:
         print("EXITING TIMESTAMPED CONTEXT")
 
 
-def set_redis_off_on_exception():
+def set_redis_off_on_exception(main=False):
     def exception_hook(exc_type, exc_value, tb):
         # print('Traceback:')
         # filename = tb.tb_frame.f_code.co_filename
@@ -174,8 +174,9 @@ def set_redis_off_on_exception():
 
         # # Exception type and value
         # print(f"{exc_type.__name__}, Message: {exc_value}")
-        if os.path.exists(get_prefix()):
-            os.system("rm -rf {}".format(get_prefix()))
+        if main:
+            if os.path.exists(get_prefix()):
+                os.system("rm -rf {}".format(get_prefix()))
         set_redis_off()
 
         import traceback
