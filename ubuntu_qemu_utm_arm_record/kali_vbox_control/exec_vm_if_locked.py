@@ -65,6 +65,7 @@ def sess_parse(data):
 timeout = 1  # seconds.
 keys = ['session','seat']
 datamap = {}
+
 for index, cmd in enumerate(cmds):
     key = keys[index]
     output = subprocess.check_output(cmd, timeout=timeout)
@@ -78,3 +79,12 @@ for index, cmd in enumerate(cmds):
     mlist_output = sess_parse(dec_output)
     rich.print(mlist_output)
     mdict = {e[0]:e[1:] for e in mlist_output}
+
+    datamap[key] = mdict
+
+print()
+rich.print(datamap)
+
+active_session = datamap['seat']['ActiveSession']
+
+active_session_type = data['']
