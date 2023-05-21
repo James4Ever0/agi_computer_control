@@ -7,7 +7,10 @@ cmd = ['vboxmanage', 'guestcontrol', 'Ubuntu 16.04', '--username', 'hua', '--pas
 def sess_parse(data):
     lines = data.split('\n')
     for l in lines:
-        
+        if "USER" in l:
+            continue
+        else:
+            list_l = l.replace(" ")
 
 # json is for journal formatting.
 
