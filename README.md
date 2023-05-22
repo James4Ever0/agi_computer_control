@@ -4,7 +4,7 @@
 
 [join discord group](https://discord.gg/eM5vezJvEQ)
 
-Trained on [The Frozen Forest](https://huggingface.co/datasets/James4Ever0/the_frozen_forest), a [dataset]() containing random keystrokes, mouse clicks and screen recordings.
+Trained on [The Frozen Forest](https://huggingface.co/datasets/James4Ever0/the_frozen_forest), a [dataset](https://modelscope.cn/datasets/james4ever0/the_frozen_forest/summary) containing random keystrokes, mouse clicks and screen recordings.
 
 the openai [universe](https://github.com/openai/universe) is using VNC, almost doing the same thing.
 
