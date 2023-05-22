@@ -2,6 +2,8 @@
 ![Cybergod logo](propaganda/logos/cybergod_2.png)
 # Cybergod
 
+[join discord group]()
+
 Trained on The Frozen Forest, a dataset containing random keystrokes, mouse clicks and screen recordings.
 
 the openai [universe](https://github.com/openai/universe) is using VNC, almost doing the same thing.
