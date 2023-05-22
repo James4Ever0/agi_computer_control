@@ -1,6 +1,6 @@
 timeout 10 vboxmanage controlvm "12c0e77b-5f4a-4d30-b19b-1b105d2042cf" poweroff # Ubuntu 16.04
 
-# 掉盘了 一般是
+# FIXME: 掉盘了 一般是
 # 就没有更好的固态硬盘盒么
 
 if [ "$?" -ne 0 ]; then
