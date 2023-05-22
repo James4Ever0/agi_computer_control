@@ -2,7 +2,7 @@
 ![Cybergod logo](propaganda/logos/cybergod_2.png)
 # Cybergod
 
-[join discord group]()
+[join discord group](https://discord.gg/eM5vezJvEQ)
 
 Trained on The Frozen Forest, a dataset containing random keystrokes, mouse clicks and screen recordings.
 
