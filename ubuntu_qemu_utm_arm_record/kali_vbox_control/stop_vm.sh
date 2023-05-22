@@ -2,6 +2,7 @@ timeout 10 vboxmanage controlvm "12c0e77b-5f4a-4d30-b19b-1b105d2042cf" poweroff 
 
 # FIXME: 掉盘了 一般是
 # 就没有更好的固态硬盘盒么
+# 刷固件需要拿出来硬盘
 
 if [ "$?" -ne 0 ]; then
 echo "ERROR: Failed to stop vm."
