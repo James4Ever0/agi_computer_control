@@ -9,6 +9,7 @@ for e in spliters:
 	data = data.replace(e, " ")
 
 data = data.strip()
+data = data.split(" ")
 
 with open(output, 'w+') as f:
 	f.write("\n".join(data))
