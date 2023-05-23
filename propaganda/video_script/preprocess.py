@@ -12,4 +12,7 @@ data = data.strip()
 data = data.split(" ")
 
 with open(output, 'w+') as f:
-	f.write("\n".join(data))
+	#f.write("\n".join(data))
+	for d in data:
+		f.write(f"- text: {d}\n")
+		f.write("  video: \n")
