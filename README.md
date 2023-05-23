@@ -23,6 +23,10 @@ try to obtain infinite data as pretrained data, then fine-tune on human demonstr
 
 ---
 
+键鼠真神是一种意识形态
+
+cybergod is an ideology.
+
 键鼠真神 又名cybergod 赛博真神
 
 训练数据集为the frozen forest 随机敲键盘点鼠标 录屏
