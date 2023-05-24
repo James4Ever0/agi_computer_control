@@ -47,6 +47,6 @@
 - text: Github链接我已经放在评论区了
   video: https://ssv-video.agilestudio.cn/7636_953a6a/7636_953a6a180.ts
 - text: 欢迎小伙伴们交流使用感受
-  video:
+  video: https://oss.agilestudio.cn/fse-videos/dff6696ece5ed72f56183d2181306492/dff6696ece5ed72f56183d2181306492.m3u8
 - text: 记得一键三连哦
   video:
