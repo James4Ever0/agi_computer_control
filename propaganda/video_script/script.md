@@ -1,7 +1,7 @@
 - text: 这个可以自动识别屏幕内容控制键盘鼠标的人工智能火了
-  video: video/
+  video: https://oss.agilestudio.cn/fse-videos/pixabay/Keyboard-45238/Keyboard-45238.m3u8
 - text: 它就是最新推出的键鼠真神
-  video:
+  video: https://ssv-video.agilestudio.cn/4910_2e324b/4910_2e324b.m3u8
 - text: 键鼠真神又名赛博真神
   video:
 - text: 英文名字叫Cybergod
