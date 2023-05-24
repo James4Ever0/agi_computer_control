@@ -31,6 +31,7 @@ engine.setProperty('voice', engine.getProperty("voices")[39].id)
 # engine.runAndWait()
 import progressbar
 os.system(f"rm -rf {dir_path}")
+os.system(f"mkdir {dir_path}")
 for index, elem in progressbar.progressbar(enumerate(data)):
     text = elem['text']
     output_path = f"{dir_path}/{index}.wav"
