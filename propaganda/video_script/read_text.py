@@ -28,10 +28,10 @@ engine.setProperty('voice', engine.getProperty("voices")[39].id)
 # # The punctuals make the bot to pause for some time. Maybe you should control that yourself.
 # engine.save_to_file("你好，世界", 'output.wav')
 # engine.runAndWait()
-
-for index, elem in enumerate(data):
+import progressbar
+for index, elem in progressbar.progressbar(enumerate(data)):
     text = elem['text']
     output_path = f"{dir_path}/{index}.wav"
-
+    print("READING:", text)
     engine.save_to_file(text, output_path)
     engine.runAndWait()
