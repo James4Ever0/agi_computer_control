@@ -15,7 +15,7 @@
 - text: 让你能够在睡觉的时候依然全力工作
   video: https://ssv-video.agilestudio.cn/7610_cdbd07/7610_cdbd07121.ts
 - text: 给它说一句话
-  video:
+  video: https://ssv-video.agilestudio.cn/993_49a47e/993_49a47e-00019.ts
 - text: 它不仅能够自动帮你写Excel
   video:
 - text: 调试程序
