@@ -30,8 +30,8 @@ engine.setProperty('voice', engine.getProperty("voices")[39].id)
 # engine.runAndWait()
 
 for index, elem in enumerate(data):
-    test = elem['text']
+    text = elem['text']
     output_path = f"{dir_path}/{index}.wav"
 
-    engine.save_to_file("你好 世界", 'output.wav')
+    engine.save_to_file(text, output_path)
     engine.runAndWait()
