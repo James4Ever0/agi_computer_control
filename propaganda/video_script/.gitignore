@@ -1,1 +1,4 @@
 !*.txt
+!*.yml
+!*.yaml
+!*.json
