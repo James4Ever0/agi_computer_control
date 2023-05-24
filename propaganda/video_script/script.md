@@ -7,7 +7,7 @@
 - text: 英文名字叫Cybergod
   video: https://ssv-video.agilestudio.cn/952_4A6f6O/952_4A6f6O-00511.ts
 - text: 应用最新一代通用人工智能
-  video:
+  video: https://ssv-video.agilestudio.cn/4910_2e324b/4910_2e324b415.ts
 - text: 性能比肩GPT5
   video:
 - text: 自动控制你的电脑
