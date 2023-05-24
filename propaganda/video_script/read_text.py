@@ -33,8 +33,8 @@ import progressbar
 os.system(f"rm -rf {dir_path}")
 os.system(f"mkdir {dir_path}")
 for index, elem in progressbar.progressbar(enumerate(data)):
-    text = elem['text']
+    text = elem['text'].strip()
     output_path = f"{dir_path}/{index}.wav"
-    print("READING:", text)
+    # print("READING:", text)
     engine.save_to_file(text, output_path)
     engine.runAndWait()
