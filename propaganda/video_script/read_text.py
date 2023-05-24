@@ -2,6 +2,7 @@
 # import os
 
 dir_path = "audio"
+import os
 import yaml
 
 script_path = "script.yaml"
@@ -29,6 +30,7 @@ engine.setProperty('voice', engine.getProperty("voices")[39].id)
 # engine.save_to_file("你好，世界", 'output.wav')
 # engine.runAndWait()
 import progressbar
+os.system(f"rm -rf {dir_path}")
 for index, elem in progressbar.progressbar(enumerate(data)):
     text = elem['text']
     output_path = f"{dir_path}/{index}.wav"
