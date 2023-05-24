@@ -41,11 +41,11 @@
 - text: 下载键鼠真神
   video:
 - text: 解放你的生产力
-  video:
+  video: https://ssv-video.agilestudio.cn/6945_02df36/6945_02df36183.ts
 - text: 让你走向人生巅峰
-  video:
+  video: https://oss.agilestudio.cn/fse-videos/pixabay/Worship-54996/Worship-54996.m3u8
 - text: Github链接我已经放在评论区了
-  video:
+  video: https://ssv-video.agilestudio.cn/7636_953a6a/7636_953a6a180.ts
 - text: 欢迎小伙伴们交流使用感受
   video:
 - text: 记得一键三连哦
