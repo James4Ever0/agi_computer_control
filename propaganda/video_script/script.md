@@ -13,7 +13,7 @@
 - text: 自动控制你的电脑
   video: https://ssv-video.agilestudio.cn/4948_00a6bc/4948_00a6bc495.ts
 - text: 让你能够在睡觉的时候依然全力工作
-  video:
+  video: https://ssv-video.agilestudio.cn/7610_cdbd07/7610_cdbd07121.ts
 - text: 给它说一句话
   video:
 - text: 它不仅能够自动帮你写Excel
