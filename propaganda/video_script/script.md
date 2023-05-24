@@ -11,7 +11,7 @@
 - text: 性能比肩GPT5
   video: https://oss.agilestudio.cn/fse-videos/3c363da42970912223541177bddcd2b3/3c363da42970912223541177bddcd2b30.ts
 - text: 自动控制你的电脑
-  video:
+  video: https://ssv-video.agilestudio.cn/4948_00a6bc/4948_00a6bc495.ts
 - text: 让你能够在睡觉的时候依然全力工作
   video:
 - text: 给它说一句话
