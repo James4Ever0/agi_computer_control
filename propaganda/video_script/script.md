@@ -9,7 +9,7 @@
 - text: 应用最新一代通用人工智能
   video: https://ssv-video.agilestudio.cn/4910_2e324b/4910_2e324b415.ts
 - text: 性能比肩GPT5
-  video:
+  video: https://oss.agilestudio.cn/fse-videos/3c363da42970912223541177bddcd2b3/3c363da42970912223541177bddcd2b30.ts
 - text: 自动控制你的电脑
   video:
 - text: 让你能够在睡觉的时候依然全力工作
