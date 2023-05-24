@@ -13,8 +13,16 @@ output_path= "output.json"
 import json
 import rich
 rich.print(data)
+output_data = {}
+index = 0
 for d in data:
     vlink = d.get('video', None)
     if vlink:
-        video_output = os.path.join()
-        os.system(f'ffmpeg -i "{vlink}" {video_output}')
+        index+=1
+        vpath = f"{index}.mp4"
+        video_output = os.path.join(dir_path, vpath)
+        os.system(f'ffmpeg -y -i "{vlink}" {video_output}')
+        output_data.update({vlink:video_output})
+
+with open(output_path,'w+') as f:
+    f.write(json.dumps(output_data, indent=4, ensure_ascii=False))
