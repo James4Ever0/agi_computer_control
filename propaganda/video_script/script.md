@@ -35,11 +35,11 @@
 - text: 安装了键鼠真神
   video:
 - text: 人类再也不用操控电脑了
-  video:
+  video: https://oss.agilestudio.cn/fse-videos/7ae43148f2daf8fa1507c2521907cb2b/7ae43148f2daf8fa1507c2521907cb2b.m3u8
 - text: 避免了因为长时间久坐产生的各种身体疾病
-  video:
+  video: https://oss.agilestudio.cn/fse-videos/pixabay/Science-57693/Science-57693.m3u8
 - text: 下载键鼠真神
-  video:
+  video: https://ssv-video.agilestudio.cn/5436_4393c6/5436_4393c6610.ts
 - text: 解放你的生产力
   video: https://ssv-video.agilestudio.cn/6945_02df36/6945_02df36183.ts
 - text: 让你走向人生巅峰
