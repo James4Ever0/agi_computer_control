@@ -17,9 +17,9 @@
 - text: 给它说一句话
   video: https://ssv-video.agilestudio.cn/993_49a47e/993_49a47e-00019.ts
 - text: 它不仅能够自动帮你写Excel
-  video:
+  video: https://oss.agilestudio.cn/fse-videos/pixabay/ToWrite-8424/ToWrite-8424-00003.ts
 - text: 调试程序
-  video:
+  video: https://oss.agilestudio.cn/fse-videos/pixabay/Drug-45682/Drug-45682.m3u8
 - text: 可以自己打开网页
   video:
 - text: 观看视频
