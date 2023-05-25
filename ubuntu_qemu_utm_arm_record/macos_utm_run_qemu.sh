@@ -1,5 +1,5 @@
-EFI_PATH=""
-IMAGE_PATH=""
+EFI_PATH="/Volumes/Toshiba XG3/works/agi_computer_control/ubuntu_qemu_utm_arm_record/EFI/QEMU_EFI.fd"
+IMAGE_PATH="/Volumes/Toshiba XG3/UTM VMs/Ubuntu ARM.utm/Data/335D6651-2B4B-47A7-99B4-CBFB1EFDEFF8.qcow2"
 
 qemu-system-aarch64 \
   -serial stdio \
