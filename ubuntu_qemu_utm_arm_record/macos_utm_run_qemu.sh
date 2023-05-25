@@ -20,9 +20,9 @@ qemu-system-aarch64 \
   -device intel-hda \
   -device hda-duplex \
   -drive file="$IMAGE_PATH",if=virtio,cache=writethrough \
-  -vnc :1 # 5901
+  -vnc unix:$HOME/.qemu_vnc
+  # -vnc :1 # 5901
   # -vnc :1,password=on # 5901
-  # -vnc unix:$HOME/.qemu_vnc
 
 # no visual?
 # https://www.jianshu.com/p/ccde2786ebf8
