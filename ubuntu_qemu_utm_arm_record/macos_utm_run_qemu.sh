@@ -20,8 +20,8 @@ qemu-system-aarch64 \
   -device intel-hda \
   -device hda-duplex \
   -drive file="$IMAGE_PATH",if=virtio,cache=writethrough \
-  -vnc unix:$HOME/.qemu_vnc
-  # -vnc http://127.0.0.1:31111,password=off
+  -vnc :31111
+  # -vnc unix:$HOME/.qemu_vnc
 
 # no visual?
 
