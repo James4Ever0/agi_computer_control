@@ -24,7 +24,9 @@ qemu-system-aarch64 \
   # -vnc :1,password=on # 5901
   # -vnc unix:$HOME/.qemu_vnc
 
+
 # no visual?
+# https://www.jianshu.com/p/ccde2786ebf8
 
 ##################
 # make snapshots #
