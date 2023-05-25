@@ -1,3 +1,6 @@
+EFI_PATH=""
+IMAGE_PATH=""
+
 qemu-system-aarch64 \
   -serial stdio \
   -M virt,highmem=off \
