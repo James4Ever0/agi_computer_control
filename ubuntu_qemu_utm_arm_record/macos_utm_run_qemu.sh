@@ -29,10 +29,12 @@ qemu-system-aarch64 \
 ##################
 # make snapshots #
 ##################
-# qemu-img snapshot -c <SNAPSHOT_NAME> <QCOW2_PATH>
-# qemu-img snapshot -l <QCOW2_PATH>
-#
-#
+# CREATE: qemu-img snapshot -c <SNAPSHOT_NAME> <QCOW2_PATH>
+# LIST: qemu-img snapshot -l <QCOW2_PATH>
+# APPLY: qemu-img snapshot -a <SNAPSHOT_NAME> <QCOW2_PATH>
+# DELETE: qemu-img snapshot -d <SNAPSHOT_NAME> <QCOW2_PATH>
+
+# https://blog.csdn.net/liu_xing_hui/article/details/32718839
 
 # refer to: https://qemu.readthedocs.io/en/latest/system/vnc-security.html
 
