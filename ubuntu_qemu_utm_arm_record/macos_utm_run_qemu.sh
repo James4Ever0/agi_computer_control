@@ -1,4 +1,7 @@
-EFI_PATH="/Volumes/Toshiba XG3/works/agi_computer_control/ubuntu_qemu_utm_arm_record/EFI/QEMU_EFI.fd"
+# https://vaibhavkaushal.com/posts/ubuntu-focal-on-apple-silicon-m1/#step-4---launch-acvm
+
+# EFI_PATH="/Volumes/Toshiba XG3/works/agi_computer_control/ubuntu_qemu_utm_arm_record/EFI/QEMU_EFI.fd"
+EFI_PATH="/Volumes/Toshiba XG3/works/agi_computer_control/ubuntu_qemu_utm_arm_record/EFI/efi_vars.fd"
 IMAGE_PATH="/Volumes/Toshiba XG3/UTM VMs/Ubuntu ARM.utm/Data/335D6651-2B4B-47A7-99B4-CBFB1EFDEFF8.qcow2"
 
 qemu-system-aarch64 \
