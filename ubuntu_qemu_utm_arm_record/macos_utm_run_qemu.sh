@@ -19,8 +19,8 @@ qemu-system-aarch64 \
   -device usb-tablet \
   -device intel-hda \
   -device hda-duplex \
-  -drive file="$IMAGE_PATH",if=virtio,cache=writethrough \
-  -vnc unix:$HOME/.qemu_vnc
+  -drive file="$IMAGE_PATH",if=virtio,cache=writethrough 
+  # -vnc unix:$HOME/.qemu_vnc
   # -vnc :1,password=off # 5901
   # -vnc :1,password=on # 5901
 
