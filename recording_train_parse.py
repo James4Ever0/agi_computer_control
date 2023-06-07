@@ -13,4 +13,8 @@ video_timestamp = load_json(video_timestamp_path)
 
 import numpy as np
 
-hidseq = np.array([0,i] for i in range(len(hid_timestamp)))
+hidseq = np.zeros(shape=(2, len(hid_timestamp)))
+hidseq[0] = np.array(range(len(hid_timestamp)))
+
+videoseq = np.zeros(shape=(2, len(video_timestamp)))
+videoseq[1] = np.array(range(len(video_timestamp)))
