@@ -18,3 +18,6 @@ hidseq[0] = np.array(range(len(hid_timestamp)))
 
 videoseq = np.zeros(shape=(2, len(video_timestamp)))
 videoseq[1] = np.array(range(len(video_timestamp)))
+
+seq = np.hstack((hidseq, videoseq))
+print("SEQ SHAPE?", seq.shape)
