@@ -13,10 +13,10 @@ video_timestamp = load_json(video_timestamp_path)
 
 import numpy as np
 
-hidseq = np.zeros(shape=(2, len(hid_timestamp)))
+hidseq = np.zeros(shape=(2, len(hid_timestamp)))-1
 hidseq[0] = np.array(range(len(hid_timestamp)))
 
-videoseq = np.zeros(shape=(2, len(video_timestamp)))
+videoseq = np.zeros(shape=(2, len(video_timestamp)))-1
 videoseq[1] = np.array(range(len(video_timestamp)))
 
 seq = np.hstack((hidseq, videoseq))
@@ -25,5 +25,5 @@ print("SEQ SHAPE?", seq.shape)
 timeseq = np.array(hid_timestamp+video_timestamp)
 sorted_indexes = np.argsort(timeseq)
 
-sorted_seq = seq[:, sorted_indexes]
+sorted_seq = seq[:, sorted_indexes].T
 print(sorted_seq)
