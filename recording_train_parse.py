@@ -21,3 +21,9 @@ videoseq[1] = np.array(range(len(video_timestamp)))
 
 seq = np.hstack((hidseq, videoseq))
 print("SEQ SHAPE?", seq.shape)
+
+timeseq = np.array(hid_timestamp+video_timestamp)
+sorted_indexes = np.argsort(timeseq)
+
+sorted_seq = seq[:, sorted_indexes]
+print(sorted_seq)
