@@ -4,6 +4,7 @@ video_timestamp_path = "recordings/2023-06-02T07_59_45.711256/video_timestamps.j
 
 import json
 
+
 def load_json(filename):
     with open(filename, 'r') as f:
         return json.load(f)
