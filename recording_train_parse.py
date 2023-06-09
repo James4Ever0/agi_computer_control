@@ -41,15 +41,19 @@ hid_rec_path = f"{basePath}hid_record.jsonl"
 
 video_cap = cv2.VideoCapture(video_path)
 
+with open(hid_rec_path, 'r') as f:
+    jsonl_reader =  jsonlines.Reader(f).
+
 NO_CONTENT = -1
 for hid_index, frame_index in sorted_seq:
     print(hid_index, frame_index)
     assert not all([e == NO_CONTENT for e in [hid_index, frame_index]]), "at least one type of content is active"
     assert not all([e != NO_CONTENT for e in [hid_index, frame_index]]), "cannot have two types of active content sharing the same index"
     if hid_index != NO_CONTENT:
-        ...
+        hid_data = hid_data_list[hid_index]
     elif frame_index != NO_CONTENT:
-        suc, frame = 
+        suc, frame = video_cap.read()
+        assert suc, f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
     else:
         
 # success, frame = video_cap.read()
