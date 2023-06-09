@@ -40,9 +40,10 @@ video_path = f"{basePath}video_record.mp4"
 hid_rec_path = f"{basePath}hid_record.jsonl"
 
 video_cap = cv2.VideoCapture(video_path)
-breakpoint()
+# breakpoint()
 # 318 frames? only got 266 timestamps!
 frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+print("FRAME COUNT?", frame_count)
 
 hid_data_list = []
 with open(hid_rec_path, 'r') as f:
