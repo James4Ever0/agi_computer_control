@@ -66,6 +66,7 @@ for hid_index, frame_index in sorted_seq:
     else:
         raise Exception("Something impossible has happened.")
 
-breakpoint()
+# breakpoint()
+video_cap.release()
 # success, frame = video_cap.read()
 # print(frame.shape) # (768, 1280, 3)
