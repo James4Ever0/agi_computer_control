@@ -40,7 +40,10 @@ video_path = f"{basePath}video_record.mp4"
 hid_rec_path = f"{basePath}hid_record.jsonl"
 
 video_cap = cv2.VideoCapture(video_path)
-video_cap.get_property(cv2.Video_)
+# breakpoint()
+# 318 frames?
+frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+
 hid_data_list = []
 with open(hid_rec_path, 'r') as f:
     jsonl_reader =  jsonlines.Reader(f)
@@ -65,6 +68,8 @@ for hid_index, frame_index in sorted_seq:
         suc, frame = video_cap.read()
         assert suc, f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
         print(frame.shape)
+        cv2.imshow('win',frame)
+        cv2.waitKey(1)
     else:
         raise Exception("Something impossible has happened.")
 
