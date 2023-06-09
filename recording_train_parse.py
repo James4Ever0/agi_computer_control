@@ -44,11 +44,12 @@ video_cap = cv2.VideoCapture(video_path)
 NO_CONTENT = -1
 for hid_index, frame_index in sorted_seq:
     print(hid_index, frame_index)
-    assert not all(hid_index, frame_index]
+    assert not all([e == NO_CONTENT for e in [hid_index, frame_index]]), "at least one type of content is active"
+    assert not all([e != NO_CONTENT for e in [hid_index, frame_index]]), "cannot have two types of active content sharing the same index"
     if hid_index != NO_CONTENT:
         ...
     elif frame_index != NO_CONTENT:
-        ...
+        suc, frame = 
     else:
         
 # success, frame = video_cap.read()
