@@ -64,6 +64,8 @@ for hid_index, frame_index in sorted_seq:
         assert suc, f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
         print(frame.shape)
     else:
-        
+        raise Exception("Something impossible has happened.")
+
+breakpoint()
 # success, frame = video_cap.read()
 # print(frame.shape) # (768, 1280, 3)
