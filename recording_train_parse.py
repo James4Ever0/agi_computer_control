@@ -40,7 +40,7 @@ video_path = f"{basePath}video_record.mp4"
 hid_rec_path = f"{basePath}hid_record.jsonl"
 
 video_cap = cv2.VideoCapture(video_path)
-
+video_cap.get_property(cv2.Video_)
 hid_data_list = []
 with open(hid_rec_path, 'r') as f:
     jsonl_reader =  jsonlines.Reader(f)
@@ -50,6 +50,8 @@ with open(hid_rec_path, 'r') as f:
             hid_data_list.append(hid_data)
         except:
             break
+
+# maybe you should "yield" data through these iterators.
 
 NO_CONTENT = -1
 for hid_index, frame_index in sorted_seq:
