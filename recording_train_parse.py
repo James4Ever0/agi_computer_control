@@ -1,8 +1,8 @@
-basePath = 
+basePath = "recordings/2023-06-02T07_59_45.711256/"
 
-hid_timestamp_path = "recordings/2023-06-02T07_59_45.711256/hid_timestamps.json"
+hid_timestamp_path = f"{basePath}hid_timestamps.json"
 
-video_timestamp_path = "recordings/2023-06-02T07_59_45.711256/video_timestamps.json"
+video_timestamp_path = f"{basePath}2023-06-02T07_59_45.711256/video_timestamps.json"
 
 import json
 
@@ -34,6 +34,9 @@ print(sorted_seq)
 # now, attempt to parse them.
 
 import cv2
+import jsonlines
 
-video_path = ""
-hid_rec_path = ""
+video_path = f"{basePath}video_record.mp4"
+hid_rec_path = f"{basePath}hid_record.jsonl"
+
+video_cap = cv2.VideoCapture(video_path)
