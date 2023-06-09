@@ -1,3 +1,5 @@
+basePath = 
+
 hid_timestamp_path = "recordings/2023-06-02T07_59_45.711256/hid_timestamps.json"
 
 video_timestamp_path = "recordings/2023-06-02T07_59_45.711256/video_timestamps.json"
@@ -28,3 +30,10 @@ sorted_indexes = np.argsort(timeseq)
 
 sorted_seq = seq[:, sorted_indexes].T
 print(sorted_seq)
+
+# now, attempt to parse them.
+
+import cv2
+
+video_path = ""
+hid_rec_path = ""
