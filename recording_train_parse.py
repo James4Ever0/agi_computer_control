@@ -2,7 +2,7 @@ basePath = "recordings/2023-06-02T07_59_45.711256/"
 
 hid_timestamp_path = f"{basePath}hid_timestamps.json"
 
-video_timestamp_path = f"{basePath}2023-06-02T07_59_45.711256/video_timestamps.json"
+video_timestamp_path = f"{basePath}video_timestamps.json"
 
 import json
 
@@ -40,3 +40,7 @@ video_path = f"{basePath}video_record.mp4"
 hid_rec_path = f"{basePath}hid_record.jsonl"
 
 video_cap = cv2.VideoCapture(video_path)
+
+
+success, frame = video_cap.read()
+print(frame.shape) # (768, 1280, 3)
