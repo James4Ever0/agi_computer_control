@@ -28,8 +28,8 @@ print("SEQ SHAPE?", seq.shape)
 timeseq = np.array(hid_timestamp+video_timestamp)
 sorted_indexes = np.argsort(timeseq)
 
-sorted_seq = seq[:, sorted_indexes].T
-print(sorted_seq)
+sorted_seq = seq[:, sorted_indexes].T.astype(int)
+# print(sorted_seq)
 
 # now, attempt to parse them.
 
@@ -41,6 +41,15 @@ hid_rec_path = f"{basePath}hid_record.jsonl"
 
 video_cap = cv2.VideoCapture(video_path)
 
-
-success, frame = video_cap.read()
-print(frame.shape) # (768, 1280, 3)
+NO_CONTENT = -1
+for hid_index, frame_index in sorted_seq:
+    print(hid_index, frame_index)
+    assert not all(hid_index, frame_index]
+    if hid_index != NO_CONTENT:
+        ...
+    elif frame_index != NO_CONTENT:
+        ...
+    else:
+        
+# success, frame = video_cap.read()
+# print(frame.shape) # (768, 1280, 3)
