@@ -43,7 +43,10 @@ hidseq = np.zeros(shape=(2, len(hid_timestamp))) - 1
 hidseq[0] = np.array(range(len(hid_timestamp)))
 
 videoseq = np.zeros(shape=(2, len(video_timestamp))) - 1
-videoseq[1] = np.array(range(len(video_timestamp)))
+
+# videoseq[1] = np.array(range(len(video_timestamp)))
+actual_video_frame_indexs = np.array(range(len(video_timestamp)))
+getVideoFrameIndexSynced(actual_video_frame_indexs)
 
 seq = np.hstack((hidseq, videoseq))
 print("SEQ SHAPE?", seq.shape)
@@ -81,7 +84,9 @@ with open(hid_rec_path, "r") as f:
 # maybe you should "yield" data through these iterators.
 
 NO_CONTENT = -1
-frame_index_cursor = -1
+
+suc, frame = video_cap.read()
+frame_index_cursor = 0
 
 for hid_index, frame_index in sorted_seq:
     print(hid_index, frame_index)
