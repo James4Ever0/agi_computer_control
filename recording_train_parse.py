@@ -23,12 +23,14 @@ def getVideoFrameIndexSynced(
     x: Union[List[int], np.ndarray], y: Union[List[int], np.ndarray], EPS: float = 1e-10
 ) -> List[int]:
     """
+    
+    All input arrays and output array are 
     Params:
-        x: Actual video frame indexes.
-        y: Index list to be synced against.
+        x: Actual video frame indexes. Positive. Increasing.
+        y: Index list to be synced against. Positive. Increasing.
 
     Output:
-        x_: Synced frame indexs. (len(x_) == len(y))
+        x_: Synced frame indexs. Positive. Increasing. (len(x_) == len(y))
     """
     x_ = np.linspace(x[0], x[-1] + (1 - EPS), len(y))
     x_ = np.floor(x_).astype(int).tolist()
