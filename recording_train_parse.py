@@ -23,10 +23,10 @@ def getVideoFrameIndexSynced(
     x: Union[List[int], np.ndarray], y: Union[List[int], np.ndarray], EPS: float = 1e-10
 ) -> List[int]:
     """
-    
+
     Notes:
         All input arrays and output array are positive and increasing.
-    
+
     Params:
         x: Actual video frame indexes.
         y: Index list to be synced against.
@@ -81,6 +81,8 @@ with open(hid_rec_path, "r") as f:
 # maybe you should "yield" data through these iterators.
 
 NO_CONTENT = -1
+frame_index_cursor = -1
+
 for hid_index, frame_index in sorted_seq:
     print(hid_index, frame_index)
     assert not all(
@@ -93,7 +95,9 @@ for hid_index, frame_index in sorted_seq:
         hid_data = hid_data_list[hid_index]
         print(hid_data)
     elif frame_index != NO_CONTENT:
-        suc, frame = video_cap.read()
+        while frame_index_cursor != frame_index:
+            suc, frame = video_cap.read()
+            frame_index_cursor += 1
         assert (
             suc
         ), f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
