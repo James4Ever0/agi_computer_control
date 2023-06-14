@@ -8,35 +8,42 @@ import json
 
 
 def load_json(filename):
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         return json.load(f)
+
 
 hid_timestamp = load_json(hid_timestamp_path)
 video_timestamp = load_json(video_timestamp_path)
 
 import numpy as np
+from typing import Union, List
 
-def getVideoFrameIndexSynced(x, y):
+def getVideoFrameIndexSynced(
+    x: Union[List[int], np.ndarray], y: Union[List[int], np.ndarray]
+) -> List[int]:
     """
     Params:
         x: Actual video frame indexes.
         y: Index list to be synced against.
-    
+
     Output:
         x_: Synced frame indexs. (len(x_) == len(y))
     """
-    
+    x_ = np.linspace(x[0], x[-1] + 0.9999, len(y))
+    x_ = np.floor(x_).astype(int).tolist()
+    return x_
 
-hidseq = np.zeros(shape=(2, len(hid_timestamp)))-1
+
+hidseq = np.zeros(shape=(2, len(hid_timestamp))) - 1
 hidseq[0] = np.array(range(len(hid_timestamp)))
 
-videoseq = np.zeros(shape=(2, len(video_timestamp)))-1
+videoseq = np.zeros(shape=(2, len(video_timestamp))) - 1
 videoseq[1] = np.array(range(len(video_timestamp)))
 
 seq = np.hstack((hidseq, videoseq))
 print("SEQ SHAPE?", seq.shape)
 
-timeseq = np.array(hid_timestamp+video_timestamp)
+timeseq = np.array(hid_timestamp + video_timestamp)
 sorted_indexes = np.argsort(timeseq)
 
 sorted_seq = seq[:, sorted_indexes].T.astype(int)
@@ -57,8 +64,8 @@ frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
 print("FRAME COUNT?", frame_count)
 
 hid_data_list = []
-with open(hid_rec_path, 'r') as f:
-    jsonl_reader =  jsonlines.Reader(f)
+with open(hid_rec_path, "r") as f:
+    jsonl_reader = jsonlines.Reader(f)
     while True:
         try:
             hid_data = jsonl_reader.read()
@@ -71,16 +78,22 @@ with open(hid_rec_path, 'r') as f:
 NO_CONTENT = -1
 for hid_index, frame_index in sorted_seq:
     print(hid_index, frame_index)
-    assert not all([e == NO_CONTENT for e in [hid_index, frame_index]]), "at least one type of content is active"
-    assert not all([e != NO_CONTENT for e in [hid_index, frame_index]]), "cannot have two types of active content sharing the same index"
+    assert not all(
+        [e == NO_CONTENT for e in [hid_index, frame_index]]
+    ), "at least one type of content is active"
+    assert not all(
+        [e != NO_CONTENT for e in [hid_index, frame_index]]
+    ), "cannot have two types of active content sharing the same index"
     if hid_index != NO_CONTENT:
         hid_data = hid_data_list[hid_index]
         print(hid_data)
     elif frame_index != NO_CONTENT:
         suc, frame = video_cap.read()
-        assert suc, f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
+        assert (
+            suc
+        ), f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
         print(frame.shape)
-        cv2.imshow('win',frame)
+        cv2.imshow("win", frame)
         cv2.waitKey(1)
     else:
         raise Exception("Something impossible has happened.")
