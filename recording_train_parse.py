@@ -16,6 +16,17 @@ video_timestamp = load_json(video_timestamp_path)
 
 import numpy as np
 
+def getVideoFrameIndexSynced(x, y):
+    """
+    Params:
+        x:
+        y: Index list to be synced against.
+    
+    Output:
+        synced_frames
+    """
+    
+
 hidseq = np.zeros(shape=(2, len(hid_timestamp)))-1
 hidseq[0] = np.array(range(len(hid_timestamp)))
 
