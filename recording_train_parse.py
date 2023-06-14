@@ -7,6 +7,19 @@ video_timestamp_path = f"{basePath}video_timestamps.json"
 import json
 
 
+import cv2
+import jsonlines
+
+video_path = f"{basePath}video_record.mp4"
+hid_rec_path = f"{basePath}hid_record.jsonl"
+
+video_cap = cv2.VideoCapture(video_path)
+# breakpoint()
+# 318 frames? only got 266 timestamps!
+frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+print("FRAME COUNT?", frame_count)
+
+
 def load_json(filename):
     with open(filename, "r") as f:
         return json.load(f)
@@ -45,8 +58,12 @@ hidseq[0] = np.array(range(len(hid_timestamp)))
 videoseq = np.zeros(shape=(2, len(video_timestamp))) - 1
 
 # videoseq[1] = np.array(range(len(video_timestamp)))
-actual_video_frame_indexs = np.array(range(len(video_timestamp)))
-getVideoFrameIndexSynced(actual_video_frame_indexs)
+index_list_to_be_synced_against = np.array(range(len(video_timestamp)))
+actual_video_frame_indexs = np.array(range(frame_count))
+
+videoseq[1] = getVideoFrameIndexSynced(
+    actual_video_frame_indexs, index_list_to_be_synced_against
+)
 
 seq = np.hstack((hidseq, videoseq))
 print("SEQ SHAPE?", seq.shape)
@@ -58,19 +75,6 @@ sorted_seq = seq[:, sorted_indexes].T.astype(int)
 # print(sorted_seq)
 
 # now, attempt to parse them.
-
-import cv2
-import jsonlines
-
-video_path = f"{basePath}video_record.mp4"
-hid_rec_path = f"{basePath}hid_record.jsonl"
-
-video_cap = cv2.VideoCapture(video_path)
-# breakpoint()
-# 318 frames? only got 266 timestamps!
-frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
-print("FRAME COUNT?", frame_count)
-
 hid_data_list = []
 with open(hid_rec_path, "r") as f:
     jsonl_reader = jsonlines.Reader(f)
