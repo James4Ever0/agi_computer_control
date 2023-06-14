@@ -59,7 +59,7 @@ videoseq = np.zeros(shape=(2, len(video_timestamp))) - 1
 
 # videoseq[1] = np.array(range(len(video_timestamp)))
 index_list_to_be_synced_against = np.array(range(len(video_timestamp)))
-actual_video_frame_indexs = np.array(range(frame_count))
+actual_video_frame_indexs = np.array(range(int(frame_count)))
 
 videoseq[1] = getVideoFrameIndexSynced(
     actual_video_frame_indexs, index_list_to_be_synced_against
