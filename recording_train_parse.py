@@ -19,11 +19,11 @@ import numpy as np
 def getVideoFrameIndexSynced(x, y):
     """
     Params:
-        x:
+        x: Actual video frame indexes.
         y: Index list to be synced against.
     
     Output:
-        synced_frames
+        x_: Synced frame indexs. (len(x_) == len(y))
     """
     
 
