@@ -18,8 +18,9 @@ video_timestamp = load_json(video_timestamp_path)
 import numpy as np
 from typing import Union, List
 
+
 def getVideoFrameIndexSynced(
-    x: Union[List[int], np.ndarray], y: Union[List[int], np.ndarray]
+    x: Union[List[int], np.ndarray], y: Union[List[int], np.ndarray], EPS: float = 1e-10
 ) -> List[int]:
     """
     Params:
@@ -29,7 +30,7 @@ def getVideoFrameIndexSynced(
     Output:
         x_: Synced frame indexs. (len(x_) == len(y))
     """
-    x_ = np.linspace(x[0], x[-1] + 0.9999, len(y))
+    x_ = np.linspace(x[0], x[-1] + (1 - EPS), len(y))
     x_ = np.floor(x_).astype(int).tolist()
     return x_
 
