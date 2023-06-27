@@ -1035,7 +1035,7 @@ def trainModelWithDataBasePath(
                 if action_type in HIDActionBase.keyboard_action_types:
                     action_args = HIDActionBase.uncover_keycode(action_args)
                     if action_args is None:
-                        print("Skipping")
+                        print("Skipping:", action)
                         continue
                 mHIDAction = HIDAction.from_action_json(
                     [action_type, action_args],
