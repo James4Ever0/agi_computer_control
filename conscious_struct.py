@@ -1005,6 +1005,7 @@ from recording_train_parse import getTrainingData
 
 # this process is actually training it.
 def trainModelWithDataBasePath(basePath:str, sequentialTrainingQueue: ...):
+    # read perspective width & height.
     for trainingDataFrame in getTrainingData(basePath):
         if trainingDataFrame.datatype == 'hid':
             encoded_actions = []
@@ -1071,6 +1072,7 @@ def trainModelWithDataBasePath(basePath:str, sequentialTrainingQueue: ...):
             assert False, f"wrong datatype: {trainingDataFrame.datatype}"
     sequentialTrainingQueue.clear()
 
+basePath = "recordings/2023-06-02T07_59_45.711256/"
 
 #########################################
 #  CONSISTENCY WITH RECORDER AND ACTOR  #
