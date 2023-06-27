@@ -1006,17 +1006,26 @@ from recording_train_parse import getTrainingData
 import json
 import re
 import parse
+
 # this process is actually training it.
 def trainModelWithDataBasePath(
     basePath: str, sequentialTrainingQueue: SequentialTrainingQueue
 ):
     # read perspective width & height from basepath.
-    fpath = os.path.join(basePath,"video_record_script.sh")
-    with open(fpath, 'r') as f:
+    fpath = os.path.join(basePath, "video_record_script.sh")
+    with open(fpath, "r") as f:
         data = json.load(f)
-        parse_target = re.finditer(r'\b\d+x\d+\b', data).__next__().group()
-        parsed_data = parse.parse("{perspective_width}")
-        perspective_width, perspective_height = parsed_data['perspective_width'], parsed_data['perspective_height']
+        parse_target = re.finditer(r"\b\d+x\d+\b", data).__next__().group()
+        parsed_data = parse.parse(
+            "{perspective_width}x{perspective_height}", parse_target
+        )
+        if parsed_data:
+            perspective_width, perspective_height = (
+                parsed_data["perspective_width"],
+                parsed_data["perspective_height"],
+            )
+        else:
+            raise Exception(f"Cannot parse perspective size from file: {fpath}")
     for trainingDataFrame in getTrainingData(basePath):
         if trainingDataFrame.datatype == "hid":
             encoded_actions = []
