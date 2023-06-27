@@ -1004,16 +1004,19 @@ desired_size = 224 * 4
 # with VideoCaptureContextManager(videoPath) as cap:
 from recording_train_parse import getTrainingData
 import json
-
+import re
+import parse
 # this process is actually training it.
 def trainModelWithDataBasePath(
     basePath: str, sequentialTrainingQueue: SequentialTrainingQueue
 ):
     # read perspective width & height from basepath.
-    fpath = os.path.join(basePath,"")
+    fpath = os.path.join(basePath,"video_record_script.sh")
     with open(fpath, 'r') as f:
         data = json.load(f)
-        perspective_width, perspective_height = data['perspective_width'], data['perspective_height']
+        parse_target = re.finditer(r'\b\d+x\d+\b', data).__next__().group()
+        parsed_data = parse.parse("{perspective_width}")
+        perspective_width, perspective_height = parsed_data['perspective_width'], parsed_data['perspective_height']
     for trainingDataFrame in getTrainingData(basePath):
         if trainingDataFrame.datatype == "hid":
             encoded_actions = []
