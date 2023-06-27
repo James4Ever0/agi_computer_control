@@ -997,6 +997,9 @@ def resizeImage(im, desired_size):
 desired_size = 224*4
 
 
+# get perspective width/height with:
+# pyautogui.size()
+
 # with VideoCaptureContextManager(videoPath) as cap:
 from recording_train_parse import getTrainingData
 
