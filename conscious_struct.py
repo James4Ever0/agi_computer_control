@@ -730,6 +730,7 @@ class ConsciousBase:
 
 # can it be consciousnessless?
 
+
 class ConsciousBlock(BaseModel, ConsciousBase):
     data_type: Union[Literal["image"], Literal["HIDAction"]]  # 2 bits, required
     special_token: Union[
@@ -994,7 +995,7 @@ def resizeImage(im, desired_size):
 # READING DATA #
 ################
 
-desired_size = 224*4
+desired_size = 224 * 4
 
 # get perspective width/height with:
 # pyautogui.size()
@@ -1004,12 +1005,16 @@ desired_size = 224*4
 from recording_train_parse import getTrainingData
 
 # this process is actually training it.
-def trainModelWithDataBasePath(basePath:str, sequentialTrainingQueue: ...):
-    # read perspective width & height.
+def trainModelWithDataBasePath(
+    basePath: str, sequentialTrainingQueue: SequentialTrainingQueue
+):
+    # read perspective width & height from basepath.
+    fpath = os.path.join(basePath,"")
+    pWidth, pHeight = ...
     for trainingDataFrame in getTrainingData(basePath):
-        if trainingDataFrame.datatype == 'hid':
+        if trainingDataFrame.datatype == "hid":
             encoded_actions = []
-            actions = trainingDataFrame.data['HIDEvents']
+            actions = trainingDataFrame.data["HIDEvents"]
             for action in actions:
                 action_type, action_args = action
                 if action_type in HIDActionBase.keyboard_action_types:
@@ -1025,52 +1030,56 @@ def trainModelWithDataBasePath(basePath:str, sequentialTrainingQueue: ...):
                 mHIDActionNDArray = mHIDAction.to_ndarray()
                 print(mHIDActionNDArray.shape)
                 encoded_actions.append(mHIDActionNDArray)
-        
+
             for index, EA in enumerate(encoded_actions):
                 st = None
-                if index+1 == len(encoded_actions):
+                if index + 1 == len(encoded_actions):
                     st = "action_end"
-                consciousBlock = ConsciousBlock(data_type = "HIDAction", special_token=st, action_data = EA)
+                consciousBlock = ConsciousBlock(
+                    data_type="HIDAction", special_token=st, action_data=EA
+                )
                 sequentialTrainingQueue.enqueue(consciousBlock)
-        elif trainingDataFrame.datatype == 'image':
+        elif trainingDataFrame.datatype == "image":
             image = trainingDataFrame.data
-        
+
             image_resized = resizeImage(image, desired_size)
             image_reshaped = einops.rearrange(image_resized, "h w c -> c h w")
-    #             image_reshaped = np.rollaxis(image_resized, 2, 0) # (3, 896, 896)
+            #             image_reshaped = np.rollaxis(image_resized, 2, 0) # (3, 896, 896)
             image_sliced = [
-                image_reshaped[:,\
-                                                    x*224:(x+1)*224,\
-                                                    y*224:(y+1)*224
-                                                    ] for x in range(4) for y in range(4)
-            ] #) # c h w
-            
+                image_reshaped[:, x * 224 : (x + 1) * 224, y * 224 : (y + 1) * 224]
+                for x in range(4)
+                for y in range(4)
+            ]  # ) # c h w
+
             # IMAGE RESHAPED: (896, 3, 896)?
             # IMAGE RESHAPED: (896, 896, 3)
-    #             print('IMAGE RESHAPED:', image_reshaped.shape)
-    #             print('IMAGE SLICED:', image_sliced.shape)
-    #     (16, 3, 224, 224)
-    # hell?
+            #             print('IMAGE RESHAPED:', image_reshaped.shape)
+            #             print('IMAGE SLICED:', image_sliced.shape)
+            #     (16, 3, 224, 224)
+            # hell?
             for index, im in enumerate(image_sliced):
                 im = einops.rearrange(im, "c h w -> (c h w)")
                 st = None
                 if index == 15:
                     st = "image_end"
-                elif index !=0 and (index+1)%4 == 0:
+                elif index != 0 and (index + 1) % 4 == 0:
                     st = "image_newline"
-                    
+
                 # BUG 4: tuple
                 # FIX 4: remove .to_tensor() method call
-                consciousBlock = ConsciousBlock(data_type='image', special_token=st, image_data=im)
-    #                 print(consciousBlock)
+                consciousBlock = ConsciousBlock(
+                    data_type="image", special_token=st, image_data=im
+                )
+                #                 print(consciousBlock)
                 sequentialTrainingQueue.enqueue(consciousBlock)
-    #             last_output = torch.zeros(1, output_size)
+            #             last_output = torch.zeros(1, output_size)
             del image
             del image_reshaped
             del image_resized
         else:
             assert False, f"wrong datatype: {trainingDataFrame.datatype}"
     sequentialTrainingQueue.clear()
+
 
 basePath = "recordings/2023-06-02T07_59_45.711256/"
 
