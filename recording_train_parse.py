@@ -1,122 +1,149 @@
-basePath = "recordings/2023-06-02T07_59_45.711256/"
-
-hid_timestamp_path = f"{basePath}hid_timestamps.json"
-
-video_timestamp_path = f"{basePath}video_timestamps.json"
-
-import json
-
-
-import cv2
-import jsonlines
-
-video_path = f"{basePath}video_record.mp4"
-hid_rec_path = f"{basePath}hid_record.jsonl"
-
-video_cap = cv2.VideoCapture(video_path)
-# breakpoint()
-# 318 frames? only got 266 timestamps!
-frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
-print("FRAME COUNT?", frame_count)
-
-
-def load_json(filename):
-    with open(filename, "r") as f:
-        return json.load(f)
-
-
-hid_timestamp = load_json(hid_timestamp_path)
-video_timestamp = load_json(video_timestamp_path)
-
+# from collections import namedtuple
+try:
+    from typing import TypedDict
+except:
+    from typing_extensions import TypedDict
+try:
+    from typing import Literal
+except:
+    from typing import Literal
+try:
+    from typing import NamedTuple
+except:
+    from typing_extensions import NamedTuple
 import numpy as np
-from typing import Union, List
+from typing import Union, cast, overload
 
+class HIDStruct(TypedDict):
+    HIDEvents: list
 
-def getVideoFrameIndexSynced(
-    x: Union[List[int], np.ndarray], y: Union[List[int], np.ndarray], EPS: float = 1e-10
-) -> List[int]:
-    """
+class TrainingFrame(NamedTuple):
+    datatype: Literal['hid','image']
+    data: Union[HIDStruct, np.ndarray]
 
-    Notes:
-        All input arrays and output array are positive and increasing.
+# we just need the basepath.
+def getTrainingData(basePath: str):
+    hid_timestamp_path = f"{basePath}hid_timestamps.json"
+    video_timestamp_path = f"{basePath}video_timestamps.json"
 
-    Params:
-        x: Actual video frame indexes.
-        y: Index list to be synced against.
+    video_path = f"{basePath}video_record.mp4"
+    hid_rec_path = f"{basePath}hid_record.jsonl"
+    
+    import json
 
-    Output:
-        x_: Synced frame indexs. (len(x_) == len(y))
-    """
-    x_ = np.linspace(x[0], x[-1] + (1 - EPS), len(y))
-    x_ = np.floor(x_).astype(int).tolist()
-    return x_
+    import cv2
+    import jsonlines
 
+    video_cap = cv2.VideoCapture(video_path)
+    # breakpoint()
+    # 318 frames? only got 266 timestamps!
+    frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    print("FRAME COUNT?", frame_count)
 
-hidseq = np.zeros(shape=(2, len(hid_timestamp))) - 1
-hidseq[0] = np.array(range(len(hid_timestamp)))
+    def load_json(filename):
+        with open(filename, "r") as f:
+            return json.load(f)
 
-videoseq = np.zeros(shape=(2, len(video_timestamp))) - 1
+    hid_timestamp = load_json(hid_timestamp_path)
+    video_timestamp = load_json(video_timestamp_path)
 
-# videoseq[1] = np.array(range(len(video_timestamp)))
-index_list_to_be_synced_against = np.array(range(len(video_timestamp)))
-actual_video_frame_indexs = np.array(range(int(frame_count)))
+    from typing import List, Union
 
-videoseq[1] = getVideoFrameIndexSynced(
-    actual_video_frame_indexs, index_list_to_be_synced_against
-)
+    import numpy as np
 
-seq = np.hstack((hidseq, videoseq))
-print("SEQ SHAPE?", seq.shape)
+    def getVideoFrameIndexSynced(
+        x: Union[List[int], np.ndarray],
+        y: Union[List[int], np.ndarray],
+        EPS: float = 1e-10,
+    ) -> List[int]:
+        """
 
-timeseq = np.array(hid_timestamp + video_timestamp)
-sorted_indexes = np.argsort(timeseq)
+        Notes:
+            All input arrays and output array are positive and increasing.
 
-sorted_seq = seq[:, sorted_indexes].T.astype(int)
-# print(sorted_seq)
+        Params:
+            x: Actual video frame indexes.
+            y: Index list to be synced against.
 
-# now, attempt to parse them.
-hid_data_list = []
-with open(hid_rec_path, "r") as f:
-    jsonl_reader = jsonlines.Reader(f)
-    while True:
-        try:
-            hid_data = jsonl_reader.read()
-            hid_data_list.append(hid_data)
-        except:
-            break
+        Output:
+            x_: Synced frame indexs. (len(x_) == len(y))
+        """
+        x_ = np.linspace(x[0], x[-1] + (1 - EPS), len(y))
+        x_ = np.floor(x_).astype(int).tolist()
+        return x_
 
-# maybe you should "yield" data through these iterators.
+    hidseq = np.zeros(shape=(2, len(hid_timestamp))) - 1
+    hidseq[0] = np.array(range(len(hid_timestamp)))
 
-NO_CONTENT = -1
+    videoseq = np.zeros(shape=(2, len(video_timestamp))) - 1
 
-suc, frame = video_cap.read()
-frame_index_cursor = 0
+    # videoseq[1] = np.array(range(len(video_timestamp)))
+    index_list_to_be_synced_against = np.array(range(len(video_timestamp)))
+    actual_video_frame_indexs = np.array(range(int(frame_count)))
 
-for hid_index, frame_index in sorted_seq:
-    print(hid_index, frame_index)
-    assert not all(
-        [e == NO_CONTENT for e in [hid_index, frame_index]]
-    ), "at least one type of content is active"
-    assert not all(
-        [e != NO_CONTENT for e in [hid_index, frame_index]]
-    ), "cannot have two types of active content sharing the same index"
-    if hid_index != NO_CONTENT:
-        hid_data = hid_data_list[hid_index]
-        print(hid_data)
-    elif frame_index != NO_CONTENT:
-        while frame_index_cursor != frame_index:
-            suc, frame = video_cap.read()
-            frame_index_cursor += 1
-        assert (
-            suc
-        ), f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
-        print(frame.shape)
-        cv2.imshow("win", frame)
-        cv2.waitKey(1)
-    else:
-        raise Exception("Something impossible has happened.")
+    videoseq[1] = getVideoFrameIndexSynced(
+        actual_video_frame_indexs, index_list_to_be_synced_against
+    )
 
-# breakpoint()
-video_cap.release()
-# success, frame = video_cap.read()
-# print(frame.shape) # (768, 1280, 3)
+    seq = np.hstack((hidseq, videoseq))
+    print("SEQ SHAPE?", seq.shape)
+
+    timeseq = np.array(hid_timestamp + video_timestamp)
+    sorted_indexes = np.argsort(timeseq)
+
+    sorted_seq = seq[:, sorted_indexes].T.astype(int)
+    # print(sorted_seq)
+
+    # now, attempt to parse them.
+    hid_data_list = []
+    with open(hid_rec_path, "r") as f:
+        jsonl_reader = jsonlines.Reader(f)
+        while True:
+            try:
+                hid_data = jsonl_reader.read()
+                hid_data_list.append(hid_data)
+            except:
+                break
+
+    # maybe you should "yield" data through these iterators.
+
+    NO_CONTENT = -1
+
+    suc, frame = video_cap.read()
+    frame_index_cursor = 0
+
+    for hid_index, frame_index in sorted_seq:
+        print(hid_index, frame_index)
+        assert not all(
+            [e == NO_CONTENT for e in [hid_index, frame_index]]
+        ), "at least one type of content is active"
+        assert not all(
+            [e != NO_CONTENT for e in [hid_index, frame_index]]
+        ), "cannot have two types of active content sharing the same index"
+        if hid_index != NO_CONTENT:
+            hid_data = hid_data_list[hid_index]
+            print(hid_data)
+            yield TrainingFrame(datatype='hid', data=cast(HIDStruct, hid_data))
+        elif frame_index != NO_CONTENT:
+            while frame_index_cursor != frame_index:
+                suc, frame = video_cap.read()
+                frame_index_cursor += 1
+            assert (
+                suc
+            ), f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
+            print("FRAME SHAPE:", frame.shape)
+            yield TrainingFrame(datatype='image', data=frame)
+            # cv2.imshow("win", frame)
+            # cv2.waitKey(1)
+        else:
+            raise Exception("Something impossible has happened.")
+
+    # breakpoint()
+    video_cap.release()
+    # success, frame = video_cap.read()
+    # print(frame.shape) # (768, 1280, 3)
+
+if __name__ == "__main__":
+    basePath = "recordings/2023-06-02T07_59_45.711256/"
+    for trainingDataFrame in getTrainingData(basePath):
+        print(trainingDataFrame)

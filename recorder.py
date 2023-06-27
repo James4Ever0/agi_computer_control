@@ -7,7 +7,13 @@ import pyautogui
 # let's first record them separately.
 
 
-frame = dict(image = image, keystate=keystate, mouseloc=mouseloc, mousestate=mousestate, sound=sound)
+frame = dict(
+    image=image,
+    keystate=keystate,
+    mouseloc=mouseloc,
+    mousestate=mousestate,
+    sound=sound,
+)
 
 # no other feelings, currently.
 # this computer only has cpu, no nvidia gpu.
