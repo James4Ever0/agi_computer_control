@@ -1011,7 +1011,7 @@ def trainModelWithDataBasePath(
 ):
     # read perspective width & height from basepath.
     fpath = os.path.join(basePath,"")
-    with open(fpath, 'w') as f:
+    with open(fpath, 'r') as f:
         data = json.load(f)
         perspective_width, perspective_height = data['perspective_width'], data['perspective_height']
     for trainingDataFrame in getTrainingData(basePath):
