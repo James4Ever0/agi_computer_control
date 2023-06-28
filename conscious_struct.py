@@ -1029,7 +1029,8 @@ def trainModelWithDataBasePath(
     # read perspective width & height from basepath.
     fpath = os.path.join(basePath, "video_record_script.sh")
     with open(fpath, "r") as f:
-        data = json.load(f)
+        data = f.read()
+        # data = json.load(f)
         parse_target = re.finditer(r"\b\d+x\d+\b", data).__next__().group()
         parsed_data = parse.parse(
             "{perspective_width}x{perspective_height}", parse_target
