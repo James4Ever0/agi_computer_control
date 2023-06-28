@@ -1098,6 +1098,10 @@ def trainModelWithDataBasePath(
 
 basePath = "recordings/2023-06-02T07_59_45.711256/"
 
+
+if __name__ == "__main__":
+    # fake trainer and sequentialqueue.
+    
 #########################################
 #  CONSISTENCY WITH RECORDER AND ACTOR  #
 #########################################
