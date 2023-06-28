@@ -891,6 +891,15 @@ from typing import Protocol
 class Enqueue(Protocol):
     def enqueue(self, data): ...
 
+class TestEnqueue(Enqueue):
+    def __init__(self):
+        ...
+        # self.queue = []
+    def enqueue(self, data):
+        print("DATA QUEUE:")
+        print(data)
+        print()
+
 class SequentialTrainingQueue:
     def __init__(self, context_length: int, batch_size: int, trainer: Trainer):
         self.context_length = context_length
@@ -1106,6 +1115,7 @@ basePath = "recordings/2023-06-02T07_59_45.711256/"
 
 
 if __name__ == "__main__":
+    myQueue = TestEnqueue()
     # fake sequentialqueue.
     trainModelWithDataBasePath
     
