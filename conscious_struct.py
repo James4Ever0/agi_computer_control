@@ -1041,7 +1041,7 @@ def trainModelWithDataBasePath(
                     [action_type, action_args],
                     max_x=perspective_width,
                     max_y=perspective_height,
-                )  # related to mouse coordinates.
+                ) # related to mouse coordinates.
                 mHIDActionNDArray = mHIDAction.to_ndarray()
                 print(mHIDActionNDArray.shape)
                 encoded_actions.append(mHIDActionNDArray)
