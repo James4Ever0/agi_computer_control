@@ -886,6 +886,10 @@ class Trainer:
         self.optimizer.step()
         self.optimizer.zero_grad()
 
+from typing import Protocol
+
+class Enqueue(Protocol):
+    def enqueue(self, data): ...
 
 class SequentialTrainingQueue:
     def __init__(self, context_length: int, batch_size: int, trainer: Trainer):
@@ -1009,7 +1013,9 @@ import parse
 
 # this process is actually training it.
 def trainModelWithDataBasePath(
-    basePath: str, sequentialTrainingQueue: SequentialTrainingQueue
+    basePath: str, 
+    sequentialTrainingQueue: Enqueue
+    # sequentialTrainingQueue: SequentialTrainingQueue
 ):
     # read perspective width & height from basepath.
     fpath = os.path.join(basePath, "video_record_script.sh")
@@ -1101,6 +1107,7 @@ basePath = "recordings/2023-06-02T07_59_45.711256/"
 
 if __name__ == "__main__":
     # fake sequentialqueue.
+    trainModelWithDataBasePath
     
 #########################################
 #  CONSISTENCY WITH RECORDER AND ACTOR  #
