@@ -6,7 +6,10 @@ sys.path.append("../")
 
 import logging
 
+filename = "mytest.log"
+
 # may log to other places.
+# append to lower places.
 logging.basicConfig(
     filename = filename,
     level=logging.getLogger().getEffectiveLevel(), 
