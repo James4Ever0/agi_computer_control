@@ -9,12 +9,13 @@ import logging
 filename = "mytest.log"
 
 # may log to other places.
-# append to lower places.
+# infinite append.
+
 logging.basicConfig(
-    filename = filename,
-    level=logging.getLogger().getEffectiveLevel(), 
+    filename=filename,
+    level=logging.getLogger().getEffectiveLevel(),
     # stream=sys.stderr,
-    force=True
+    force=True,
 )
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
