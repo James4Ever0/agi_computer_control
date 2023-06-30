@@ -6,8 +6,12 @@ sys.path.append("../")
 
 import logging
 
+# may log to other places.
 logging.basicConfig(
-    level=logging.getLogger().getEffectiveLevel(), stream=sys.stderr, force=True
+    filename = filename,
+    level=logging.getLogger().getEffectiveLevel(), 
+    # stream=sys.stderr,
+    force=True
 )
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
