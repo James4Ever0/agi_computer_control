@@ -425,10 +425,11 @@ class HIDAction(BaseModel, HIDActionBase):
         
         # BUG: convert single char keys to quoted format.
         # TODO: make sure ' ' is converted into Key.Space
-        if len(action_args) == 1:
-            action_args = repr(action_args)
-        if action_args == repr(" "):
-            action_args = "Key.space"
+        if action_type.startswith("key"):
+            if len(action_args) == 1:
+                action_args = repr(action_args)
+            if action_args == repr(" "):
+                action_args = "Key.space"
 
         if action_type == "key_press":
             assert action_args in HIDActionBase.keys
