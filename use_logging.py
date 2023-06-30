@@ -1,6 +1,8 @@
 import logging
 import sys
 
+# can format arbitrary object into string.
+
 logging.warning("abc %s", (1,2)) # default level: warning.
 
 # can only set once, unless using "force" to override.
