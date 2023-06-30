@@ -142,8 +142,3 @@ def getTrainingData(basePath: str):
     video_cap.release()
     # success, frame = video_cap.read()
     # print(frame.shape) # (768, 1280, 3)
-
-if __name__ == "__main__":
-    basePath = "recordings/2023-06-02T07_59_45.711256/"
-    for trainingDataFrame in getTrainingData(basePath):
-        print(trainingDataFrame)
