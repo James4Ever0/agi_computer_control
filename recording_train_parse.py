@@ -22,7 +22,7 @@ class TrainingFrame(NamedTuple):
     data: Union[HIDStruct, np.ndarray]
 
 # we just need the basepath.
-def getTrainingData(basePath: str):
+def getTrainingData(basePath: str, debug:bool=False):
     hid_timestamp_path = f"{basePath}hid_timestamps.json"
     video_timestamp_path = f"{basePath}video_timestamps.json"
 
@@ -113,7 +113,8 @@ def getTrainingData(basePath: str):
     frame_index_cursor = 0
 
     for hid_index, frame_index in sorted_seq:
-        print(hid_index, frame_index)
+        if debug:
+            print(hid_index, frame_index)
         assert not all(
             [e == NO_CONTENT for e in [hid_index, frame_index]]
         ), "at least one type of content is active"
