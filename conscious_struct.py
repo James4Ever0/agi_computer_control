@@ -7,7 +7,7 @@ import cv2
 import ast
 from pydantic import BaseModel, validator
 from typing import Union, Mapping, List
-
+import logging
 from pydantic_numpy import NDArray
 import torch
 

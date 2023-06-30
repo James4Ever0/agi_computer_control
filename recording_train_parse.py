@@ -13,6 +13,7 @@ except:
     from typing_extensions import NamedTuple
 import numpy as np
 from typing import Union, cast, overload
+import logging
 
 class HIDStruct(TypedDict):
     HIDEvents: list
@@ -22,7 +23,7 @@ class TrainingFrame(NamedTuple):
     data: Union[HIDStruct, np.ndarray]
 
 # we just need the basepath.
-def getTrainingData(basePath: str, debug:bool=False):
+def getTrainingData(basePath: str):
     hid_timestamp_path = f"{basePath}hid_timestamps.json"
     video_timestamp_path = f"{basePath}video_timestamps.json"
 
@@ -38,7 +39,7 @@ def getTrainingData(basePath: str, debug:bool=False):
     # breakpoint()
     # 318 frames? only got 266 timestamps!
     frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
-    print("FRAME COUNT?", frame_count)
+    logging.info("FRAME COUNT?", frame_count)
 
     def load_json(filename):
         with open(filename, "r") as f:
@@ -86,7 +87,7 @@ def getTrainingData(basePath: str, debug:bool=False):
     )
 
     seq = np.hstack((hidseq, videoseq))
-    print("SEQ SHAPE?", seq.shape)
+    logging.info("SEQ SHAPE?", seq.shape)
 
     timeseq = np.array(hid_timestamp + video_timestamp)
     sorted_indexes = np.argsort(timeseq)
@@ -113,8 +114,7 @@ def getTrainingData(basePath: str, debug:bool=False):
     frame_index_cursor = 0
 
     for hid_index, frame_index in sorted_seq:
-        if debug:
-            print(hid_index, frame_index)
+        logging.debug(hid_index, frame_index)
         assert not all(
             [e == NO_CONTENT for e in [hid_index, frame_index]]
         ), "at least one type of content is active"
@@ -123,7 +123,7 @@ def getTrainingData(basePath: str, debug:bool=False):
         ), "cannot have two types of active content sharing the same index"
         if hid_index != NO_CONTENT:
             hid_data = hid_data_list[hid_index]
-            print(hid_data)
+            logging.debug(hid_data)
             yield TrainingFrame(datatype='hid', data=cast(HIDStruct, hid_data))
         elif frame_index != NO_CONTENT:
             while frame_index_cursor != frame_index:
@@ -132,7 +132,7 @@ def getTrainingData(basePath: str, debug:bool=False):
             assert (
                 suc
             ), f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
-            print("FRAME SHAPE:", frame.shape)
+            logging.debug("FRAME SHAPE:", frame.shape)
             yield TrainingFrame(datatype='image', data=frame)
             # cv2.imshow("win", frame)
             # cv2.waitKey(1)
