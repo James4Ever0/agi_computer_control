@@ -424,6 +424,7 @@ class HIDAction(BaseModel, HIDActionBase):
         construct_args = dict(max_x=max_x, max_y=max_y, action_type=action_type)
 
         if action_type == "key_press":
+            if len(action_args) # BUG: convert single char 
             assert action_args in HIDActionBase.keys
 
             construct_args.update(dict(key=action_args))
