@@ -5,6 +5,8 @@ import sys
 sys.path.append("../")
 
 import logging
+
+logging.basicConfig(level = logging.getLogger().getEffectiveLevel(), stream=sys.stderr, force=True)
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
 from recording_train_parse import getTrainingData
 
