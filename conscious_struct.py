@@ -1033,7 +1033,7 @@ def trainModelWithDataBasePath(
         # data = json.load(f)
         parse_target = re.finditer(r"\b\d+x\d+\b", data).__next__().group()
         parsed_data = parse.parse(
-            "{perspective_width}x{perspective_height}", parse_target
+            "{perspective_width:d}x{perspective_height:d}", parse_target
         )
         if parsed_data:
             perspective_width, perspective_height = (
