@@ -427,7 +427,10 @@ class HIDAction(BaseModel, HIDActionBase):
         # TODO: make sure ' ' is converted into Key.Space
         if action_type.startswith("key"):
             if len(action_args) == 1:
-                action_args = repr(action_args)
+                if action_args != "'":
+                    action_args = f"'{action_args}'"
+                else:
+                    action_args = f'"{action_args}"'
             if action_args == repr(" "):
                 action_args = "Key.space"
 
@@ -907,6 +910,8 @@ class TestEnqueue(Enqueue):
         print("DATA QUEUE:")
         print(data)
         print()
+    def clear(self):
+        ...
 
 class SequentialTrainingQueue:
     def __init__(self, context_length: int, batch_size: int, trainer: Trainer):
