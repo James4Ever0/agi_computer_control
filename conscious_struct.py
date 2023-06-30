@@ -1111,12 +1111,6 @@ def trainModelWithDataBasePath(
             assert False, f"wrong datatype: {trainingDataFrame.datatype}"
     sequentialTrainingQueue.clear()
 
-# test fetching training data.
-if __name__ == "__main__":
-    basePath = "recordings/2023-06-02T07_59_45.711256/"
-    myQueue = TestEnqueue()
-    # fake sequentialqueue.
-    trainModelWithDataBasePath(basePath, myQueue)
 
 #########################################
 #  CONSISTENCY WITH RECORDER AND ACTOR  #
