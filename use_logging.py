@@ -1,7 +1,7 @@
 import logging
 import sys
 
-logging.warning("abc", (1,2)) # default level: warning.
+logging.warning("abc %s", (1,2)) # default level: warning.
 
 # can only set once, unless using "force" to override.
 
