@@ -3,13 +3,12 @@ import sys
 
 # can format arbitrary object into string.
 
-
 def get_logging_level():
     logger = logging.getLogger('mylogger') # not root?
     logging_level = logger.getEffectiveLevel()
     level_name = logging.getLevelName(logging_level)
     # logging_level = logging.getLogger().getEffectiveLevel()
-    logging.critical("LOGGING LEVEL: %s (%d)",level_name, logging_level)
+    logger.critical("LOGGING LEVEL: %s (%d)",level_name, logging_level)
     return logging_level
 
 get_logging_level()
