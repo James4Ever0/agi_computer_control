@@ -5,9 +5,11 @@ import sys
 
 
 def get_logging_level():
-    logging_level = logging.getLogger().getEffectiveLevel()
+    logger = logging.getLogger('mylogger') # not root?
+    logging_level = logger.getEffectiveLevel()
+    level_name = logging.getLevelName(logging_level)
     # logging_level = logging.getLogger().getEffectiveLevel()
-    logging.critical("LOGGING LEVEL: %s", logging_level)
+    logging.critical("LOGGING LEVEL: %s (%d)",level_name, logging_level)
     return logging_level
 
 get_logging_level()
