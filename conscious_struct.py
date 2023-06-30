@@ -422,13 +422,15 @@ class HIDAction(BaseModel, HIDActionBase):
         action_args = action_json[1]
 
         construct_args = dict(max_x=max_x, max_y=max_y, action_type=action_type)
+        
+        # BUG: convert single char keys to quoted format.
+        # TODO: make sure ' ' is converted into Key.Space
+        if len(action_args) == 1:
+            action_args = repr(action_args)
+        if action_args == repr(" "):
+            action_args = "Key.space"
 
         if action_type == "key_press":
-            if len(action_args) == 1:
-                action_args = repr(action_args)
-                if action_args == ""
-            # BUG: convert single char keys to quoted format.
-            # TODO: make sure ' ' is converted into Key.Space
             assert action_args in HIDActionBase.keys
 
             construct_args.update(dict(key=action_args))
