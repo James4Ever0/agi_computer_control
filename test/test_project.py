@@ -5,7 +5,7 @@ import sys
 sys.path.append("../")
 
 import logging
-
+logging.basicConfig(level=logging.DEBUG)
 from recording_train_parse import getTrainingData
 
 import pytest
