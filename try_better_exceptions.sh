@@ -1,0 +1,1 @@
+env BETTER_EXCEPTIONS=1 python3 try_better_exceptions.py
