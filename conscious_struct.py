@@ -233,7 +233,7 @@ class HIDActionBase:
         keycode = unshift_keycodes.get(keycode, ctrl_keycodes.get(keycode, keycode))
         # still, this is something out of concern.
         if keycode.startswith("<") and keycode.endswith(">"):
-            print("Discarding unconvertable keycode: %s" % keycode)
+            logging.warning("Discarding unconvertable keycode: %s" % keycode)
             # keycode = pynput.keyboard.KeyCode(int(keycode[1:-1]))
             return
         return keycode
@@ -572,12 +572,12 @@ class HIDAction(BaseModel, HIDActionBase):
     def round_within(self, number: Union[int, float], number_name: str) -> int:
         result = round(number)
         if result > self.mouse_resolution:
-            print(f"Warning: {number_name} overflow")
-            print(f"Value {result} greater than {self.mouse_resolution}")
+            logging.warning(f"Warning: {number_name} overflow")
+            logging.warning(f"Value {result} greater than {self.mouse_resolution}")
             return self.mouse_resolution
         elif result < 0:
-            print(f"Warning: {number_name} overflow")
-            print(f"Value {result} smaller than 0")
+            logging.warning(f"Warning: {number_name} overflow")
+            logging.warning(f"Value {result} smaller than 0")
             return 0
         return result
 
@@ -693,7 +693,7 @@ class VideoCaptureContextManager:
         self.videoPath = videoPath
 
     def __enter__(self):
-        print("Entering the context...")
+        logging.info("Entering the context...")
         self.cap = cv2.VideoCapture(self.videoPath)
         return self.cap
 
@@ -704,7 +704,7 @@ class VideoCaptureContextManager:
             import gc
 
             gc.collect()
-            print("Leaving the context...")
+            logging.info("Leaving the context...")
         #  print(exc_type, exc_value, exc_tb, sep="\n")
 
 
@@ -888,8 +888,8 @@ class Trainer:
         # FIX 8: fixing keyword, adding default keyword argument
         model_output = self.model.forward(batched_input, target_output=batched_output)
         loss = self.loss_fn(model_output, batched_output)
-        print("LOSS?")
-        print(loss)
+        logging.debug("LOSS?")
+        logging.debug(loss)
 
         # this loss is incorrect. shall use some argmax stuff.
         # to ensure that this thing is the thing that we want.
@@ -907,9 +907,9 @@ class TestEnqueue(Enqueue):
         ...
         # self.queue = []
     def enqueue(self, data):
-        print("DATA QUEUE:")
-        print(data)
-        print()
+        logging.debug("DATA QUEUE:")
+        logging.debug(data)
+        logging.debug("")
     def clear(self):
         ...
 
@@ -1064,7 +1064,7 @@ def trainModelWithDataBasePath(
                 if action_type in HIDActionBase.keyboard_action_types:
                     action_args = HIDActionBase.uncover_keycode(action_args)
                     if action_args is None:
-                        print("Skipping:", action)
+                        logging.warning("Skipping:", action)
                         continue
                 mHIDAction = HIDAction.from_action_json(
                     [action_type, action_args],
@@ -1072,7 +1072,7 @@ def trainModelWithDataBasePath(
                     max_y=perspective_height,
                 ) # related to mouse coordinates.
                 mHIDActionNDArray = mHIDAction.to_ndarray()
-                print(mHIDActionNDArray.shape)
+                logging.debug(mHIDActionNDArray.shape)
                 encoded_actions.append(mHIDActionNDArray)
 
             for index, EA in enumerate(encoded_actions):

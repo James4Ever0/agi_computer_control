@@ -1,6 +1,9 @@
 import sys
 sys.path.append("../")
+import logging
+import docopt
 
+logging.basicConfig(level=level, )
 from recording_train_parse import getTrainingData
 
 import pytest
