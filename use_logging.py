@@ -34,3 +34,7 @@ print("2 abc")
 logging.debug("abc", (1, 2))
 
 logging.info("abc %s", {1: []})
+
+
+a = {1:"a"}
+print(a[2]) # must be error.
