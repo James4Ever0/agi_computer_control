@@ -6,9 +6,11 @@ import sys
 
 def get_logging_level():
     logging_level = logging.getLogger().getEffectiveLevel()
-    logging.critical("LOGGING LEVEL: %s" logging_level)
+    # logging_level = logging.getLogger().getEffectiveLevel()
+    logging.critical("LOGGING LEVEL: %s", logging_level)
     return logging_level
 
+get_logging_level()
 
 logging.warning("abc %s", (1, 2))  # default level: warning.
 
