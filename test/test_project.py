@@ -17,7 +17,7 @@ def basePath():
 def test_get_training_data(basePath:str):
     for trainingDataFrame in getTrainingData(basePath):
         logging.debug(trainingDataFrame)
-        
+
 # test fetching training data.
 
 def test_fetching_training_data(basePath:str):
