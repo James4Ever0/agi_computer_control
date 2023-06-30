@@ -13,7 +13,7 @@ filename = "mytest.log"
 from logging.handlers import RotatingFileHandler
 
 myHandler = RotatingFileHandler(
-    filename, maxBytes=10240, backupCount=3, encoding="utf-8"
+    filename, maxBytes=1024 * 1024 * 3, backupCount=3, encoding="utf-8"
 )
 
 logging.basicConfig(
