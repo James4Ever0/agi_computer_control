@@ -1,7 +1,7 @@
 import logging
 import sys
 
-logging.warning("abc") # default level: warning.
+logging.warning("abc", (1,2)) # default level: warning.
 
 # can only set once, unless using "force" to override.
 
@@ -14,4 +14,4 @@ print('2 abc')
 
 # cannot override?
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True) # force overriding. you can set it somewhere.
-logging.debug("abc")
+logging.debug("abc", (1,2))
