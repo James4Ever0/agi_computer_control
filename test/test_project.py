@@ -13,9 +13,9 @@ def test_get_training_data(basePath:str):
         print(trainingDataFrame)
         
 # test fetching training data.
-from conscious_struct import trainModelWithDataBasePath, TestEnqueue
 
 def test_fetching_training_data(basePath:str):
+    from conscious_struct import trainModelWithDataBasePath, TestEnqueue
     myQueue = TestEnqueue()
     # fake sequentialqueue.
     trainModelWithDataBasePath(basePath, myQueue)
