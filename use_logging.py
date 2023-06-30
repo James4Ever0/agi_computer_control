@@ -3,6 +3,8 @@ import sys
 
 logging.warning("abc") # default level: warning.
 
+# can only set once, unless using "force" to override.
+
 # logging.basicConfig(level=logging.INFO, stream=sys.stdout) # suppress debug output.
 # level priority: DEBUG < INFO < WARNING < ERROR < CRITICAL
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
