@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
 from recording_train_parse import getTrainingData
 
 import pytest
+
 @pytest.fixture()
 def basePath():
     return "../recordings/2023-06-02T07_59_45.711256/"
