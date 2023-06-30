@@ -39,7 +39,7 @@ def getTrainingData(basePath: str):
     # breakpoint()
     # 318 frames? only got 266 timestamps!
     frame_count = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
-    logging.info("FRAME COUNT?", frame_count)
+    logging.info("FRAME COUNT: %d", frame_count)
 
     def load_json(filename):
         with open(filename, "r") as f:
@@ -87,7 +87,7 @@ def getTrainingData(basePath: str):
     )
 
     seq = np.hstack((hidseq, videoseq))
-    logging.info("SEQ SHAPE?", seq.shape)
+    logging.info("SEQ SHAPE: %s", seq.shape)
 
     timeseq = np.array(hid_timestamp + video_timestamp)
     sorted_indexes = np.argsort(timeseq)
@@ -114,7 +114,7 @@ def getTrainingData(basePath: str):
     frame_index_cursor = 0
 
     for hid_index, frame_index in sorted_seq:
-        logging.debug(hid_index, frame_index)
+        logging.debug("HID INDEX: %d, FRAME INDEX: %d", hid_index, frame_index)
         assert not all(
             [e == NO_CONTENT for e in [hid_index, frame_index]]
         ), "at least one type of content is active"
@@ -123,7 +123,7 @@ def getTrainingData(basePath: str):
         ), "cannot have two types of active content sharing the same index"
         if hid_index != NO_CONTENT:
             hid_data = hid_data_list[hid_index]
-            logging.debug(hid_data)
+            logging.debug("HID DATA: %s", hid_data)
             yield TrainingFrame(datatype='hid', data=cast(HIDStruct, hid_data))
         elif frame_index != NO_CONTENT:
             while frame_index_cursor != frame_index:
@@ -132,7 +132,7 @@ def getTrainingData(basePath: str):
             assert (
                 suc
             ), f"Video '{video_path}' failed to read frame #{frame_index} (index starting from zero)"
-            logging.debug("FRAME SHAPE:", frame.shape)
+            logging.debug("FRAME SHAPE: %s", frame.shape)
             yield TrainingFrame(datatype='image', data=frame)
             # cv2.imshow("win", frame)
             # cv2.waitKey(1)
