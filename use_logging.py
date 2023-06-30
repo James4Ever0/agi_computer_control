@@ -3,6 +3,9 @@ import sys
 
 # can format arbitrary object into string.
 
+def get_logging_level():
+    logging_level = ...
+    return logging_level
 logging.warning("abc %s", (1,2)) # default level: warning.
 
 # can only set once, unless using "force" to override.
