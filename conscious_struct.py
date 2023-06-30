@@ -888,8 +888,7 @@ class Trainer:
         # FIX 8: fixing keyword, adding default keyword argument
         model_output = self.model.forward(batched_input, target_output=batched_output)
         loss = self.loss_fn(model_output, batched_output)
-        logging.debug("LOSS?")
-        logging.debug(loss)
+        logging.debug("LOSS? %s", loss)
 
         # this loss is incorrect. shall use some argmax stuff.
         # to ensure that this thing is the thing that we want.
@@ -907,8 +906,7 @@ class TestEnqueue(Enqueue):
         ...
         # self.queue = []
     def enqueue(self, data):
-        logging.debug("DATA QUEUE:")
-        logging.debug(data)
+        logging.debug("DATA QUEUE: %s", data)
         logging.debug("")
     def clear(self):
         ...
@@ -1064,7 +1062,7 @@ def trainModelWithDataBasePath(
                 if action_type in HIDActionBase.keyboard_action_types:
                     action_args = HIDActionBase.uncover_keycode(action_args)
                     if action_args is None:
-                        logging.warning("Skipping:", action)
+                        logging.warning("Skipping: %s", action)
                         continue
                 mHIDAction = HIDAction.from_action_json(
                     [action_type, action_args],
@@ -1072,7 +1070,7 @@ def trainModelWithDataBasePath(
                     max_y=perspective_height,
                 ) # related to mouse coordinates.
                 mHIDActionNDArray = mHIDAction.to_ndarray()
-                logging.debug(mHIDActionNDArray.shape)
+                logging.debug("HID NDArray shape: %s", mHIDActionNDArray.shape)
                 encoded_actions.append(mHIDActionNDArray)
 
             for index, EA in enumerate(encoded_actions):
