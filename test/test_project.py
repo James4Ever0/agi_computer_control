@@ -11,11 +11,14 @@ filename = "mytest.log"
 # may log to other places.
 # infinite append.
 
+myHandler = ...
+
 logging.basicConfig(
     filename=filename,
     level=logging.getLogger().getEffectiveLevel(),
     # stream=sys.stderr,
     force=True,
+    handlers = [myHandler]
 )
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
