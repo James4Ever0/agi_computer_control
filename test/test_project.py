@@ -10,15 +10,18 @@ filename = "mytest.log"
 
 # may log to other places.
 # infinite append.
+from logging.handlers import RotatingFileHandler
 
-myHandler = ...
+myHandler = RotatingFileHandler(
+    filename, maxBytes=10240, backupCount=3, encoding="utf-8"
+)
 
 logging.basicConfig(
-    filename=filename,
+    # filename=filename,
     level=logging.getLogger().getEffectiveLevel(),
     # stream=sys.stderr,
     force=True,
-    handlers = [myHandler]
+    handlers=[myHandler],
 )
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
