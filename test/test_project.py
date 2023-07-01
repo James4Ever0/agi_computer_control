@@ -17,7 +17,8 @@ myHandler = RotatingFileHandler(
 )
 myHandler.setLevel(logging.DEBUG)
 # myHandler.setLevel(logging.INFO) # will it log less things? yes.
-FORMAT = "<%(name)s:%(levelname)s> [%(filename)s:%(lineno)s - %(funcName)s() ] %(message)s"
+FORMAT = "<%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s() ] %(message)s"
+# FORMAT = "<%(name)s:%(levelname)s> [%(filename)s:%(lineno)s - %(funcName)s() ] %(message)s"
 myFormatter = logging.Formatter(fmt = FORMAT)
 myHandler.setFormatter(myFormatter)
 
