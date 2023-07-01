@@ -16,7 +16,8 @@ myHandler = RotatingFileHandler(
     filename, maxBytes=1024 * 1024 * 3, backupCount=3, encoding="utf-8"
 )
 
-myHandler.setFormatter(myFormattere)
+myHandler.setLevel(logging.INFO) # will it log less things?
+myHandler.setFormatter(myFormatter)
 
 logging.basicConfig(
     # filename=filename,
@@ -28,7 +29,10 @@ logging.basicConfig(
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
 from recording_train_parse import getTrainingData
-
+logging.critical("")
+import datetime
+current_time = datetime.datetime.now().isoformat()
+logging.critical("logging starts: {}")
 import pytest
 
 
