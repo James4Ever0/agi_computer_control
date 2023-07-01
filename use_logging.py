@@ -55,4 +55,4 @@ import loguru
 ulogger = loguru.logger
 
 mylogger = ulogger.bind(foo = 1)
-mylogger.info("anything %s", (1,)) # not formatted.
+mylogger.info("anything {}", (1,)) # use {} instead of %
