@@ -31,11 +31,11 @@ logging.basicConfig(
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
 from recording_train_parse import getTrainingData
-logging.critical("")
+# logging.critical("")
 import datetime
 current_time = datetime.datetime.now().isoformat()
-logging.critical(f"logging starts: {current_time}".center(20,"="))
-logging.critical("")
+logging.critical(f"logging starts: {current_time}".center(100,"="))
+# logging.critical("")
 import pytest
 
 
