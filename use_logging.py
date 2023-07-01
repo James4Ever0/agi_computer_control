@@ -5,7 +5,6 @@ import sys
 
 # can format arbitrary object into string.
 
-
 def get_logging_level():
     logger = logging.getLogger("mylogger")  # not root?
     logging_level = logger.getEffectiveLevel()
@@ -44,11 +43,15 @@ logging.info("abc %s", {1: []})
 
 import structlog
 
-logger: structlog.stdlib.BoundLogger = structlog.get_logger()
-log = logger.bind(val = 1)
+slogger: structlog.stdlib.BoundLogger = structlog.get_logger()
+log = slogger.bind(val = 1)
 log.bind(bar = 1)
 log.info("anything %s", (1,2))
 
 # test 3
 
 import loguru
+
+ulogger = loguru.logger
+
+# ulogger.
