@@ -33,6 +33,7 @@ print("2 abc")
 
 # cannot override?
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True) # force overriding. you can set it somewhere.
+
 logging.debug("abc", (1, 2)) # though illegal, will be executed as well.
 
 logging.info("abc %s", {1: []})
