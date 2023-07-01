@@ -5,13 +5,15 @@ import sys
 
 # can format arbitrary object into string.
 
+
 def get_logging_level():
-    logger = logging.getLogger('mylogger') # not root?
+    logger = logging.getLogger("mylogger")  # not root?
     logging_level = logger.getEffectiveLevel()
     level_name = logging.getLevelName(logging_level)
     # logging_level = logging.getLogger().getEffectiveLevel()
-    logger.critical("LOGGING LEVEL: %s (%d)",level_name, logging_level)
+    logger.critical("LOGGING LEVEL: %s (%d)", level_name, logging_level)
     return logging_level
+
 
 get_logging_level()
 
@@ -34,7 +36,7 @@ print("2 abc")
 # cannot override?
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True) # force overriding. you can set it somewhere.
 
-logging.debug("abc", (1, 2)) # though illegal, will be executed as well.
+logging.debug("abc", (1, 2))  # though illegal, will be executed as well.
 
 logging.info("abc %s", {1: []})
 
@@ -42,11 +44,11 @@ logging.info("abc %s", {1: []})
 
 import structlog
 
-logger: structlog.stdlib.BoundLogger  = structlog.get_logger()
-log = logger.bind()
+logger: structlog.stdlib.BoundLogger = structlog.get_logger()
+log = logger.bind(val = 1)
+log.bind(bar = 1)
+log.info("anything %s", (1,2))
 
 # test 3
 
 import loguru
-
-
