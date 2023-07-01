@@ -38,7 +38,6 @@ logging.critical(f"logging starts: {current_time}".center(100,"="))
 # logging.critical("")
 import pytest
 
-
 @pytest.fixture()
 def basePath():
     return "../recordings/2023-06-02T07_59_45.711256/"
