@@ -17,6 +17,7 @@ myHandler = RotatingFileHandler(
 )
 
 myHandler.setLevel(logging.INFO) # will it log less things?
+myFormatter = logging.Formatter(fmt = "")
 myHandler.setFormatter(myFormatter)
 
 logging.basicConfig(
