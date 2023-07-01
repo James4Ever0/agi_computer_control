@@ -32,7 +32,8 @@ from recording_train_parse import getTrainingData
 logging.critical("")
 import datetime
 current_time = datetime.datetime.now().isoformat()
-logging.critical("logging starts: {}")
+logging.critical(f"logging starts: {current_time}".center(20,"="))
+logging.critical("")
 import pytest
 
 
