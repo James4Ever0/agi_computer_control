@@ -17,7 +17,8 @@ myHandler = RotatingFileHandler(
 )
 
 myHandler.setLevel(logging.INFO) # will it log less things?
-myFormatter = logging.Formatter(fmt = "")
+FORMAT = "<%(name)s:%(levelname)s>[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
+myFormatter = logging.Formatter(fmt = FORMAT)
 myHandler.setFormatter(myFormatter)
 
 logging.basicConfig(
