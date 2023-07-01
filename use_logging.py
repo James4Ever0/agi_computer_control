@@ -42,8 +42,8 @@ logging.info("abc %s", {1: []})
 
 import structlog
 
-logger = structlog.get_logger()
-logger.bind()
+logger: structlog.stdlib.BoundLogger  = structlog.get_logger()
+log = logger.bind()
 
 # test 3
 
