@@ -86,4 +86,4 @@ c口数据线观测中
 
 ---
 
-to resolve the display resolution/mouse coordinate range matching issue, use pyautogui to get the
+to resolve the display resolution/mouse coordinate range matching issue, use pyautogui to get the resolution then capture display using that resolution (resize to it)
