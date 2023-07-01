@@ -1,6 +1,4 @@
-
 ![Cybergod logo](propaganda/logos/cybergod_2.png)
-
 
 https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-4d2b-835d-0ffc9a5a458e
 
@@ -77,10 +75,15 @@ https://github.com/TotallWAR/spice_protocol
 
 remmina
 
-----
+---
 
 掉盘问题： `cd .`
 
 (建议直接换个盘 或者换C口的数据线 A口不稳定 或者把硬盘取出来更新固件？)
 
 c口数据线观测中
+
+
+---
+
+to resolve the display resolution/mouse coordinate range matching issue, use pyautogui to get the
