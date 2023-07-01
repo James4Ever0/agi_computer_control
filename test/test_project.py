@@ -15,7 +15,8 @@ from logging.handlers import RotatingFileHandler
 myHandler = RotatingFileHandler(
     filename, maxBytes=1024 * 1024 * 3, backupCount=3, encoding="utf-8"
 )
-myHandler.setLevel(logging.INFO) # will it log less things?
+myHandler.setLevel(logging.DEBUG)
+# myHandler.setLevel(logging.INFO) # will it log less things? yes.
 FORMAT = "<%(name)s:%(levelname)s> [%(filename)s:%(lineno)s - %(funcName)s() ] %(message)s"
 myFormatter = logging.Formatter(fmt = FORMAT)
 myHandler.setFormatter(myFormatter)
