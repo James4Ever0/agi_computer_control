@@ -80,7 +80,7 @@ def vit_model_path():
 
 @pytest.fixture
 def vit_model(vit_model_path:str):
-    import torchvision.
+    import torchvision
 
     # code from OA bot
     # return torchvision.models.vit_b_16(pretrained=True)
@@ -94,14 +94,20 @@ def model(vit_model:  VisionTransformer):
     model = CustomModel(vit_model)
     return model
 
-def test_train_model_with_training_data(basePath: str, model:CustomModel):
-
+@pytest.fixture
+def loss_fn():
     from torch.nn import CrossEntropyLoss
+    
+    return CrossEntropyLoss(reduction="mean")
+
+@pytest.fixture
+def optimizer(model: CustomModel):
     from torch.optim import Adam
 
     lr = 0.00001
-    loss_fn = CrossEntropyLoss(reduction="mean")
-    optimizer = Adam(model.parameters(), lr=lr)
+    return Adam(model.parameters(), lr=lr)
+
+def test_train_model_with_training_data(basePath: str, model:CustomModel):
 
     context_length = 10
     batch_size = 3
