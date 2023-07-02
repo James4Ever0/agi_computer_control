@@ -56,3 +56,4 @@ ulogger = loguru.logger
 
 mylogger = ulogger.bind(foo = 1)
 mylogger.info("anything {}", (1,)) # use {} instead of %
+
