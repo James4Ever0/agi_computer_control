@@ -59,7 +59,7 @@ def basePath():
     return "../recordings/2023-06-02T07_59_45.711256/vit_b_16-c867db91.pth"
 
 
-def test_get_training_data():
+def test_get_training_data(basePath:str):
     for trainingDataFrame in getTrainingData(basePath):
         logging.debug("training data frame: %s", trainingDataFrame)
 
@@ -67,7 +67,7 @@ def test_get_training_data():
 # test fetching training data.
 
 
-def test_fetching_training_data():
+def test_fetching_training_data(basePath:str):
     from conscious_struct import trainModelWithDataBasePath, TestEnqueue
 
     myQueue = TestEnqueue()
@@ -76,10 +76,10 @@ def test_fetching_training_data():
 
 @pytest.fixture
 def vit_model_path():
-    return "/Volumes/Toshiba XG3/model_cache/"
+    return "/Volumes/Toshiba XG3/model_cache/vit_b_16-c867db91.pth"
 
 @pytest.fixture
-def vit_model():
+def vit_model(vit_model_path:str):
     import torchvision
 
     # code from OA bot
@@ -91,7 +91,7 @@ def vit_model():
 
 from torchvision.models import VisionTransformer
 @pytest.fixture
-def model():
+def model(vit_model:VisionTransformer):
     model = CustomModel(vit_model)
     return model
 
@@ -102,12 +102,12 @@ def loss_fn():
     return CrossEntropyLoss(reduction="mean")
 
 @pytest.fixture
-def optimizer():
+def optimizer(model:CustomModel):
     from torch.optim import Adam
     lr = 0.00001
     return Adam(model.parameters(), lr=lr)
 
-def test_train_model_with_training_data():
+def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str):
 
     context_length = 10
     batch_size = 3
