@@ -58,3 +58,6 @@ def test_fetching_training_data(basePath: str):
     myQueue = TestEnqueue()
     # fake sequentialqueue.
     trainModelWithDataBasePath(basePath, myQueue)
+
+def test_train_model_with_training_data(basePath:str):
+    ...
