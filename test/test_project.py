@@ -1,5 +1,8 @@
 # use "--log-level" in pytest.
 
+# with this limited model structure, you may not find it "evolving".
+# you must let the AI design itself, evolve on its own.
+
 import sys
 
 sys.path.append("../")
