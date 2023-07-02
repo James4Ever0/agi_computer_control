@@ -24,11 +24,12 @@ class TrainingFrame(NamedTuple):
 
 # we just need the basepath.
 def getTrainingData(basePath: str):
-    hid_timestamp_path = f"{basePath}hid_timestamps.json"
-    video_timestamp_path = f"{basePath}video_timestamps.json"
+    import os
+    hid_timestamp_path = os.path.join(basePath,"hid_timestamps.json")
+    video_timestamp_path = os.path.join(basePath,"video_timestamps.json")
 
-    video_path = f"{basePath}video_record.mp4"
-    hid_rec_path = f"{basePath}hid_record.jsonl"
+    video_path = os.path.join(basePath,"video_record.mp4")
+    hid_rec_path = os.path.join(basePath,"hid_record.jsonl")
     
     import json
 
