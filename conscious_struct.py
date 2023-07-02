@@ -907,6 +907,9 @@ class TestEnqueue(Enqueue):
         # self.queue = []
     def enqueue(self, data):
         logging.debug("DATA QUEUE: %s", data)
+        # may you print the data shape.
+        
+        logging.debug("DATA SHAPE: %s", data.action_data.shape)
         logging.debug("")
     def clear(self):
         ...
