@@ -73,18 +73,25 @@ def test_train_model_with_training_data(basePath: str):
         trainModelWithDataBasePath,
         Trainer,
         SequentialTrainingQueue,
-        CustomModel
+        CustomModel,
     )
     import torchvision
+
     vit_model = torchvision.models.vit_b_16(pretrained=True)
     model = CustomModel(vit_model)
-    
+
     from torch.nn import CrossEntropyLoss
+    from torch.optim import Adam
+
     lr = 0.00001
-    from torch.nn import Adam
-    loss_fn = CrossEntropyLoss(reduction='mean')
-    optimizer= Adam(model.parameters(), lr=lr)
+    loss_fn = CrossEntropyLoss(reduction="mean")
+    optimizer = Adam(model.parameters(), lr=lr)
+
+    context_length = 10
+    batch_size = 3
 
     myTrainer = Trainer(model=model, loss_fn=loss_fn, optimizer=optimizer)
-    myQueue = SequentialTrainingQueue(context_length=..., batch_size=..., trainer=myTrainer)
+    myQueue = SequentialTrainingQueue(
+        context_length=context_length, batch_size=batch_size, trainer=myTrainer
+    )
     trainModelWithDataBasePath(basePath, myQueue)
