@@ -80,7 +80,12 @@ def vit_model_path():
 @fixture
 def vit_model(vit_model_path):
     import torchvision
-    return torchvision.models.vit_b_16(pretrained=True)
+
+    # code from OA bot
+    # return torchvision.models.vit_b_16(pretrained=True)
+    vmodel = torchvision.models.vit_b_16()
+    mStateDict = torch.load
+    vmodel.load_state_dict(mStateDict)
 
 @fixture
 def model(vit_model):
