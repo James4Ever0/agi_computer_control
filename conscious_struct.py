@@ -819,7 +819,12 @@ class ConsciousBlock(BaseModel, ConsciousBase):
             # BUG 2: comparing ndarray to None
             # FIX 2: change "!=" into "is not"
             assert self.image_data is not None
-            assert self.image_data.shape == (ConsciousBase.image_length,)
+            logging.debug("Image data shape:", self.image_data.shape)
+            logging.debug(
+                "Expected data shape:",
+                expected_data_shape := (ConsciousBase.image_length,),
+            )
+            assert self.image_data.shape == expected_data_shape
             assert self.special_token != "action_end"
 
             image_data = torch.Tensor(self.image_data)
