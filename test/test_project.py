@@ -79,8 +79,11 @@ def test_train_model_with_training_data(basePath: str):
     vit_model = torchvision.models.vit_b_16(pretrained=True)
     model = CustomModel(vit_model)
     
-    loss_fn = ...
-    optimizer = ...
+    from torch.nn import CrossEntropyLoss
+    lr = 0.00001
+    from torch.nn import Adam
+    loss_fn = CrossEntropyLoss(reduction='mean')
+    optimizer= Adam(model.parameters(), lr=lr)
 
     myTrainer = Trainer(model=model, loss_fn=loss_fn, optimizer=optimizer)
     myQueue = SequentialTrainingQueue(context_length=..., batch_size=..., trainer=myTrainer)
