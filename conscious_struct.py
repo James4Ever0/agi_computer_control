@@ -908,8 +908,10 @@ class TestEnqueue(Enqueue):
     def enqueue(self, data):
         logging.debug("DATA QUEUE: %s", data)
         # may you print the data shape.
-        
-        logging.debug("DATA SHAPE: %s", data.action_data.shape)
+        if data.action_data is not None:
+            logging.debug("ACTION DATA SHAPE: %s", data.action_data.shape)
+        elif data.image_data is not None:
+            logging.debug('IMAGE DATA SHAPE: %s', data.image_data.shape)
         logging.debug("")
     def clear(self):
         ...
