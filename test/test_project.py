@@ -15,6 +15,12 @@ filename = "mytest.log"
 # infinite append.
 from logging.handlers import RotatingFileHandler
 
+
+from conscious_struct import (
+        trainModelWithDataBasePath,
+        Trainer,
+        SequentialTrainingQueue,
+        CustomModel,)
 myHandler = RotatingFileHandler(
     filename, maxBytes=1024 * 1024 * 3, backupCount=3, encoding="utf-8"
 )
@@ -67,18 +73,21 @@ def test_fetching_training_data(basePath: str):
     # fake sequentialqueue.
     trainModelWithDataBasePath(basePath, myQueue)
 
+@fixture()
+def vit_model_path():
+    return "/Volumes/Toshiba XG3/model_cache/"
 
-def test_train_model_with_training_data(basePath: str):
-    from conscious_struct import (
-        trainModelWithDataBasePath,
-        Trainer,
-        SequentialTrainingQueue,
-        CustomModel,
-    )
+@fixture
+def vit_model(vit_model_path):
     import torchvision
+    return torchvision.models.vit_b_16(pretrained=True)
 
-    vit_model = torchvision.models.vit_b_16(pretrained=True)
+@fixture
+def model(vit_model):
     model = CustomModel(vit_model)
+
+def test_train_model_with_training_data(basePath: str, model):
+
 
     from torch.nn import CrossEntropyLoss
     from torch.optim import Adam
