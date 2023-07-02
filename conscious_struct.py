@@ -833,10 +833,11 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         elif self.data_type == "HIDAction":
             assert self.action_data is not None
             logging.debug("Action data shape: %s", self.action_data.shape)
+            # BUG: actual: (4110, 1)
             logging.debug(
-                "Expected data shape: %s", expected_hid_shape := (HIDActionBase.length,)
-            )
-            assert self.action_data.shape == expected_hid_shape
+                "Expected data shape: %s", expected_data_shape := (HIDActionBase.length,)
+            ) # TODO: expected shape is (4110, )? how to make this typed?
+            assert self.action_data.shape == expected_data_shape
             assert self.special_token not in ["image_newline", "image_end"]
 
             action_data = torch.Tensor(self.action_data)
