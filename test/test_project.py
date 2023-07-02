@@ -54,12 +54,12 @@ logging.critical(f"logging starts: {current_time}".center(100, "="))
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture
 def basePath():
     return "../recordings/2023-06-02T07_59_45.711256/"
 
 
-def test_get_training_data(basePath: str):
+def test_get_training_data():
     for trainingDataFrame in getTrainingData(basePath):
         logging.debug("training data frame: %s", trainingDataFrame)
 
@@ -67,7 +67,7 @@ def test_get_training_data(basePath: str):
 # test fetching training data.
 
 
-def test_fetching_training_data(basePath: str):
+def test_fetching_training_data():
     from conscious_struct import trainModelWithDataBasePath, TestEnqueue
 
     myQueue = TestEnqueue()
@@ -79,7 +79,7 @@ def vit_model_path():
     return "/Volumes/Toshiba XG3/model_cache/"
 
 @pytest.fixture
-def vit_model(vit_model_path:str):
+def vit_model():
     import torchvision
 
     # code from OA bot
@@ -88,9 +88,10 @@ def vit_model(vit_model_path:str):
     mStateDict = torch.load(vit_model_path)
     vmodel.load_state_dict(mStateDict)
     return vmodel
+
 from torchvision.models import VisionTransformer
 @pytest.fixture
-def model(vit_model:  VisionTransformer):
+def model():
     model = CustomModel(vit_model)
     return model
 
@@ -101,7 +102,7 @@ def loss_fn():
     return CrossEntropyLoss(reduction="mean")
 
 @pytest.fixture
-def optimizer(model: CustomModel):
+def optimizer():
     from torch.optim import Adam
 
     lr = 0.00001
