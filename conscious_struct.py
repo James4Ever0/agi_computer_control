@@ -936,6 +936,7 @@ class SequentialTrainingQueue:
         #         print(consciousBlock)
         #         print(type(consciousBlock))
         consciousVector = consciousBlock.to_tensor()
+        logging.debug("CONSCIOUS VECTOR SHAPE: %s", consciousVector.shape)
         self.consciousVectors.append(consciousVector)
 
         if not clear:
@@ -1137,3 +1138,185 @@ def trainModelWithDataBasePath(
 # PROCESS_PER_MONITOR_DPI_AWARE = 2
 
 # ctypes.windll.shcore.SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE)
+
+#########
+# MODEL #
+#########
+
+# notice: when in online mode only image will be backpropagated.
+# like using some upside down mirror.
+
+
+class CustomModel(torch.nn.Module):
+    def __init__(self, vit_model, hidden_size_vit=1000, vit_block_size=228):
+#     def __init__(self, rwkv_model, vit_model, tokenizer, hidden_size_rwkv, hidden_size_vit, output_size, vit_times = 4, vit_block_size=228):
+        super(CustomModel, self).__init__()
+#         self.rwkv_model = rwkv_model # processing language, generate actions.
+        self.vit_model = vit_model
+        self.vit_block_size = vit_block_size # this is default.
+#         self.vit_times = vit_times
+        
+        # seq2seq alike.
+#         self.hidden_size = hidden_size_rwkv+hidden_size_vit
+        self.hidden_size = hidden_size_vit
+    
+        self.HIDEncoder = torch.nn.Linear(HIDActionBase.length, 1000)
+        self.HIDDecoder = torch.nn.Linear(1000, HIDActionBase.length) # use torch.where or something 
+        # sparse matrix?
+        
+        # some magic going elsewhere.
+        self.ViTDecoder = torch.nn.Conv2d(in_channels=9, out_channels=3, kernel_size=22, stride=4, dilation=5) # n c h w
+    
+        # FIX 13: change 1000 to ConsciousBase.data_type_length+ConsciousBase.special_token_length+1000
+        io_h_size=ConsciousBase.data_type_length+ConsciousBase.special_token_length+1000
+        self.rnn = torch.nn.LSTM(input_size=io_h_size, hidden_size = io_h_size, batch_first=True)
+
+        # use tensor.
+    def forward(self, conscious_stream:torch.Tensor, target_output:Union[None, torch.Tensor]=None):
+        # if have target, and our datatype bits are wrong, we only optimize the datatype bits, making image/action bits identical
+        # otherwise just calculate all bits from the model.
+        
+        # conscious_stream: [batch_size, (ConsciousBase.length) data_type+special_tokens+image_bits+action_bits]
+        # you need another pydantic model for it. 
+        
+        # BUG 9: input shape error
+        # FIX 9: check input and output shape
+#         print(conscious_stream.shape, ConsciousBase.length, )
+#         if target_output is not None:
+#             print(target_output.shape)
+        batch_size, seq_length, dim_block = conscious_stream.shape
+        assert dim_block == ConsciousBase.length
+        
+        conscious_stream_reshaped = einops.rearrange(conscious_stream, "b s d -> (b s) d")
+        
+        datatype_bits, special_bits, image_bits, action_bits = einops.unpack(conscious_stream_reshaped, [[s] for s in ConsciousBase.split_sizes],"b *")
+#         datatype_bits, special_bits, image_bits, action_bits = size_splits(conscious_stream_reshaped, ConsciousBase.split_sizes,dim=1)
+#         desired_size = self.vit_block_size*self.vit_times
+
+        datatypes = torch.argmax(datatype_bits, dim=1)
+        image_indexs = datatypes == 0
+        action_indexs = datatypes == 1
+        
+        special_tokens = torch.argmax(special_bits, dim=1)
+        image_newline_indexs = special_tokens == 0
+        image_end_indexs = special_tokens == 1
+        action_end_indexs = special_tokens == 2
+        nop_indexs = special_tokens == 3
+        
+#         4+2+1000
+        
+        # you are gonna take actions.
+        # prepare some zeros.
+        
+        # BUG 10: len() on int
+        # FIX 10: find and fix incorrect len() calls
+        batched_rnn_input = torch.zeros((batch_size*seq_length, ConsciousBase.data_type_length+ConsciousBase.special_token_length+1000))
+        
+        batched_rnn_input[image_indexs, 0] = 1
+        batched_rnn_input[action_indexs, 1] = 1
+        
+        # BUG 11: indexs not defined
+        # FIX 11: indexes -> indexs
+        batched_rnn_input[image_newline_indexs, 2] = 1
+        batched_rnn_input[image_end_indexs, 3] = 1
+        batched_rnn_input[action_end_indexs, 4] = 1
+        batched_rnn_input[nop_indexs, 5] = 1
+        
+        # process this.
+        datatype_and_special_token_length = ConsciousBase.data_type_length + ConsciousBase.special_token_length
+        
+        # BUG 12: unannotated unknown axes in einops.rearrange
+        # FIX 12: annotate these axes
+        selected_image_bits = image_bits[image_indexs, :]
+        transformed_image_bits = einops.rearrange(selected_image_bits, "b (c h w) -> b c h w", h = ConsciousBase.image_dim, w = ConsciousBase.image_dim, c = ConsciousBase.image_channels)
+        processed_image_bits = self.vit_model(transformed_image_bits)
+        batched_rnn_input[image_indexs, datatype_and_special_token_length:] = processed_image_bits
+        
+        selected_action_bits = action_bits[action_indexs, :]
+        processed_action_bits = self.HIDEncoder(selected_action_bits)
+        batched_rnn_input[action_indexs, datatype_and_special_token_length:] = processed_action_bits
+        
+        batched_rnn_input_reshaped = einops.rearrange(batched_rnn_input, "(b s) d -> b s d", b = batch_size, s = seq_length)
+        
+        # BUG 13: mismatched shape for rnn
+        _, (h1, c1) = self.rnn(batched_rnn_input_reshaped)
+        
+        # shape of h1: [batch_size, dim_block]
+        
+        if target_output is not None:
+            target_datatype_bits, target_special_bits, target_image_bits, target_action_bits = einops.unpack(target_output, [[s] for s in ConsciousBase.split_sizes], "b *")
+        
+        output_datatype_bits, output_special_bits, output_data_bits = einops.unpack(einops.rearrange(h1, "b s d -> (b s) d"), [[s] for s in [ConsciousBase.data_type_length, ConsciousBase.special_token_length, 1000]] , "b *")
+#         output_datatype_bits, output_special_bits, output_data_bits = size_splits(h1, [ConsciousBase.data_type_length, ConsciousBase.special_token_length, 1000] ,dim=1)
+        output_datatypes = torch.argmax(output_datatype_bits, dim=1)
+        
+        output_image_indexs = output_datatypes == 0
+        output_action_indexs = output_datatypes == 1
+        
+        if target_output is not None:
+            target_output_datatypes = torch.argmax(target_datatype_bits, dim=1)
+            
+            target_output_image_indexs = target_output_datatypes == 0
+            target_output_action_indexs = target_output_datatypes == 1
+            
+            common_output_image_indexs = torch.logical_and(target_output_image_indexs, output_image_indexs)
+            common_output_action_indexs = torch.logical_and(target_output_action_indexs, output_action_indexs)
+            
+            common_output_indexs = torch.logical_or(common_output_image_indexs, common_output_action_indexs)
+            
+            target_exclusive_output_image_indexs = torch.logical_and(target_output_image_indexs, torch.logical_not(output_image_indexs))
+            target_exclusive_output_action_indexs = torch.logical_and(target_output_action_indexs, torch.logical_not(output_action_indexs))
+            
+            target_exclusive_output_indexs = torch.logical_or(target_exclusive_output_image_indexs, target_exclusive_output_action_indexs)
+        
+        if target_output is not None:
+            selected_output_image_bits = output_data_bits[common_output_image_indexs, :]
+        else:
+            selected_output_image_bits = output_data_bits[output_image_indexs, :]
+        processed_output_image_bits = einops.repeat(selected_output_image_bits, "b d -> b d 9")
+        processed_output_image_bits = einops.einsum(processed_output_image_bits, processed_output_image_bits,"b h c, b w c -> b c h w")
+        processed_output_image_bits = self.ViTDecoder(processed_output_image_bits)
+        processed_output_image_bits = einops.rearrange(processed_output_image_bits, "b c h w -> b (c h w)")
+        
+        if target_output is not None:
+            selected_output_action_bits = output_data_bits[common_output_action_indexs,:]
+        else:
+            selected_output_action_bits = output_data_bits[output_action_indexs,:]
+        processed_output_action_bits = self.HIDDecoder(selected_output_action_bits)
+        
+        # preparing blank output
+        output_0 = torch.zeros((batch_size, ConsciousBase.length))
+        
+        output_datatype_bits_0, output_special_token_bits_0, output_image_bits_0, output_action_bits_0 = einops.unpack(output_0, [[s] for s in ConsciousBase.split_sizes], "b *")
+#         output_datatype_bits_0, output_special_token_bits_0, output_image_bits_0, output_action_bits_0 = size_splits(output, ConsciousBase.split_sizes, dim=1)
+        
+        if target_output is not None:
+            output_datatype_bits_0[target_exclusive_output_indexs,:] = target_datatype_bits[target_exclusive_output_indexs,:]
+            output_datatype_bits_0[common_output_indexs,:] = output_datatype_bits[common_output_indexs,:]
+            
+            output_special_token_bits_0[target_exclusive_output_indexs,:] = output_special_bits[target_exclusive_output_indexs,:]
+            output_special_token_bits_0[common_output_indexs,:] = output_special_bits[common_output_indexs,:]
+            
+            output_special_token_bits_0[common_output_image_indexs,2] = 0
+            output_special_token_bits_0[common_output_action_indexs,:2] = 0
+            
+            output_image_bits_0[target_exclusive_output_image_indexs,:] = target_image_bits[target_exclusive_output_image_indexs,:]
+            output_action_bits_0[target_exclusive_output_action_indexs, :] = target_action_bits[target_exclusive_output_action_indexs,:]
+        
+            output_image_bits_0[common_output_image_indexs,:] = processed_output_image_bits
+            output_action_bits_0[common_output_action_indexs, :] = processed_output_action_bits
+        else:
+            output_datatype_bits_0 = output_datatype_bits
+            
+            output_special_bits_0 = output_special_bits
+            
+            output_special_bits_0[output_image_indexs, 2] = 0
+            output_special_bits_0[output_action_indexs, :2] = 0
+        
+            output_image_bits_0[output_image_indexs, :] = processed_output_image_bits
+            output_action_bits_0[output_action_indexs, :] = processed_output_action_bits
+        
+        output, _ = einops.pack((output_datatype_bits_0, output_special_token_bits_0, output_image_bits_0, output_action_bits_0), "b *")
+#         output = torch.concat((output_datatype_bits_0, output_special_token_bits_0, output_image_bits_0, output_action_bits_0), dim=1)
+        
+        return output
