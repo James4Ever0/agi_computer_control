@@ -17,9 +17,11 @@ myHandler = RotatingFileHandler(
 )
 myHandler.setLevel(logging.DEBUG)
 # myHandler.setLevel(logging.INFO) # will it log less things? yes.
-FORMAT = "<%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s() ] %(message)s"
+FORMAT = (
+    "<%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s() ] %(message)s"
+)
 # FORMAT = "<%(name)s:%(levelname)s> [%(filename)s:%(lineno)s - %(funcName)s() ] %(message)s"
-myFormatter = logging.Formatter(fmt = FORMAT)
+myFormatter = logging.Formatter(fmt=FORMAT)
 myHandler.setFormatter(myFormatter)
 
 logging.basicConfig(
@@ -32,12 +34,15 @@ logging.basicConfig(
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
 from recording_train_parse import getTrainingData
+
 # logging.critical("")
 import datetime
+
 current_time = datetime.datetime.now().isoformat()
-logging.critical(f"logging starts: {current_time}".center(100,"="))
+logging.critical(f"logging starts: {current_time}".center(100, "="))
 # logging.critical("")
 import pytest
+
 
 @pytest.fixture()
 def basePath():
@@ -59,5 +64,14 @@ def test_fetching_training_data(basePath: str):
     # fake sequentialqueue.
     trainModelWithDataBasePath(basePath, myQueue)
 
-def test_train_model_with_training_data(basePath:str):
-    ...
+
+def test_train_model_with_training_data(basePath: str):
+    from conscious_struct import (
+        trainModelWithDataBasePath,
+        Trainer,
+        SequentialTrainingQueue,
+    )
+
+    myTrainer = Trainer(model=..., loss_fn=..., optimizer=...)
+    myQueue = SequentialTrainingQueue(context_length=..., batch_size=..., trainer=...)
+    trainModelWithDataBasePath(basePath, myQueue)
