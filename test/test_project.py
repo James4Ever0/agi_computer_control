@@ -110,6 +110,7 @@ def optimizer(model:CustomModel):
 def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str):
     
     # TODO: annotate our code with "nptyping" & "torchtyping"
+    # TODO: haskell? functional python?
 
     context_length = 10
     batch_size = 3
