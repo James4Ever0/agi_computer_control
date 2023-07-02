@@ -936,7 +936,7 @@ class SequentialTrainingQueue:
         #         print(consciousBlock)
         #         print(type(consciousBlock))
         consciousVector = consciousBlock.to_tensor()
-        logging.debug("CONSCIOUS VECTOR SHAPE: %s", consciousVector.shape)
+        logging.debug("CONSCIOUS VECTOR [TYPE: %s SHAPE: %s]", ...,consciousVector.shape)
         self.consciousVectors.append(consciousVector)
 
         if not clear:
