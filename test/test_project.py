@@ -108,9 +108,9 @@ def optimizer(model:CustomModel):
     return Adam(model.parameters(), lr=lr)
 
 def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str):
-    
-    # TODO: annotate our code with "nptyping" & "torchtyping"
+    # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
     # TODO: haskell? functional python?
+    # (variadic types) ref: https://peps.python.org/pep-0646/
 
     context_length = 10
     batch_size = 3
