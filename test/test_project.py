@@ -68,12 +68,16 @@ def test_fetching_training_data(basePath: str):
     trainModelWithDataBasePath(basePath, myQueue)
 
 
-# def test_train_model_with_training_data(basePath: str):
-#     from conscious_struct import (
-#         trainModelWithDataBasePath,
-#         Trainer,
-#         SequentialTrainingQueue,
-#     )
+def test_train_model_with_training_data(basePath: str):
+    from conscious_struct import (
+        trainModelWithDataBasePath,
+        Trainer,
+        SequentialTrainingQueue,
+        CustomModel
+    )
+    vit_model = ...
+    model = CustomModel(vit_model)
+
 
 #     myTrainer = Trainer(model=..., loss_fn=..., optimizer=...)
 #     myQueue = SequentialTrainingQueue(context_length=..., batch_size=..., trainer=...)
