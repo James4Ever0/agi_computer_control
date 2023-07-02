@@ -56,7 +56,7 @@ import pytest
 
 @pytest.fixture
 def basePath():
-    return "../recordings/2023-06-02T07_59_45.711256/"
+    return "../recordings/2023-06-02T07_59_45.711256/vit_b_16-c867db91.pth"
 
 
 def test_get_training_data():
@@ -104,11 +104,10 @@ def loss_fn():
 @pytest.fixture
 def optimizer():
     from torch.optim import Adam
-
     lr = 0.00001
     return Adam(model.parameters(), lr=lr)
 
-def test_train_model_with_training_data(basePath: str, model:CustomModel):
+def test_train_model_with_training_data():
 
     context_length = 10
     batch_size = 3
