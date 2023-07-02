@@ -78,7 +78,10 @@ def test_train_model_with_training_data(basePath: str):
     import torchvision
     vit_model = torchvision.models.vit_b_16(pretrained=True)
     model = CustomModel(vit_model)
+    
+    loss_fn = ...
+    optimizer = ...
 
-    myTrainer = Trainer(model= model, loss_fn=..., optimizer=...)
-#     myQueue = SequentialTrainingQueue(context_length=..., batch_size=..., trainer=...)
-#     trainModelWithDataBasePath(basePath, myQueue)
+    myTrainer = Trainer(model=model, loss_fn=loss_fn, optimizer=optimizer)
+    myQueue = SequentialTrainingQueue(context_length=..., batch_size=..., trainer=myTrainer)
+    trainModelWithDataBasePath(basePath, myQueue)
