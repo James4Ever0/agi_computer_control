@@ -57,3 +57,4 @@ ulogger = loguru.logger
 mylogger = ulogger.bind(foo = 1)
 mylogger.info("anything {}", (1,)) # use {} instead of %
 
+ulogger.critical("something wrong {}", (1,2))
