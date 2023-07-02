@@ -8,6 +8,7 @@ import sys
 sys.path.append("../")
 
 import logging
+import torch
 
 filename = "mytest.log"
 
@@ -73,26 +74,27 @@ def test_fetching_training_data(basePath: str):
     # fake sequentialqueue.
     trainModelWithDataBasePath(basePath, myQueue)
 
-@fixture()
+@pytest.fixture
 def vit_model_path():
     return "/Volumes/Toshiba XG3/model_cache/"
 
-@fixture
-def vit_model(vit_model_path):
-    import torchvision
+@pytest.fixture
+def vit_model(vit_model_path:str):
+    import torchvision.
 
     # code from OA bot
     # return torchvision.models.vit_b_16(pretrained=True)
     vmodel = torchvision.models.vit_b_16()
-    mStateDict = torch.load
+    mStateDict = torch.load(vit_model_path)
     vmodel.load_state_dict(mStateDict)
-
-@fixture
-def model(vit_model):
+    return vmodel
+from torchvision.models import VisionTransformer
+@pytest.fixture
+def model(vit_model:  VisionTransformer):
     model = CustomModel(vit_model)
+    return model
 
-def test_train_model_with_training_data(basePath: str, model):
-
+def test_train_model_with_training_data(basePath: str, model:CustomModel):
 
     from torch.nn import CrossEntropyLoss
     from torch.optim import Adam
