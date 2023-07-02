@@ -56,7 +56,7 @@ import pytest
 
 @pytest.fixture
 def basePath():
-    return "../recordings/2023-06-02T07_59_45.711256/vit_b_16-c867db91.pth"
+    return "../recordings/2023-06-02T07_59_45.711256/"
 
 
 def test_get_training_data(basePath:str):
