@@ -63,5 +63,7 @@ class Array(Generic[DType, Unpack[Shape]]):
 
     def __add__(self, other: Array[DType, Unpack[Shape]]) -> Array[DType, Unpack[Shape]]: ...
 
-arr9 : Array[int, Unpack[1,3]] = np.array([[1, 2, 3]])
+from typing import Literal
+
+arr9 : Array[int, Literal[1], Literal[3]] = np.array([[1, 2, 3]])
 
