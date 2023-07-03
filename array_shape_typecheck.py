@@ -15,11 +15,12 @@ import beartype  # type:ignore
 
 @beartype.beartype # check before run?
 def add_arrays(
-    arr1: NDArray[Shape["5,10"], Any], arr2: NDArray[Shape["5,10"], Any]
-) -> NDArray[Shape["5,10"], Any]:
+    arr1: NDArray[Shape["5, 10"], Any], arr2: NDArray[Shape["5, 10"], Any]
+) -> NDArray[Shape["5, 10"], Any]:
     result = arr1 + arr2
     return result
 
 
-myarr = add_arrays(arr, arr2)  # no issue?
+# myarr = add_arrays(arr, arr)  # no issue?
+myarr = add_arrays(arr, arr2) # only beartype shows issue.
 reveal_type(myarr)
