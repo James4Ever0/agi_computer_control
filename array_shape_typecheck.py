@@ -28,25 +28,25 @@ reveal_type(myarr)
 
 # from jaxtyping import Array
 # not typechecking. import from jax.
-from jax import Array  # type: ignore
+# from jax import Array  # type: ignore
 
-import jaxtyping  # type: ignore
-from typing_extensions import TypeAlias
+# import jaxtyping  # type: ignore
+# from typing_extensions import TypeAlias
 from typing import cast
 
-mTypeAlias: TypeAlias = jaxtyping.Float[Array, "dim1 dim2"]
-arr3 = cast(mTypeAlias, np.array([[1, 2, 3]]))
-# arr3: mTypeAlias = np.array([[1, 2, 3]])
-arr4: jaxtyping.Float[Array, "dim1 dim3"] = np.array([[1, 2, 3, 5]])
+# mTypeAlias: TypeAlias = jaxtyping.Float[Array, "dim1 dim2"]
+# arr3 = cast(mTypeAlias, np.array([[1, 2, 3]]))
+# # arr3: mTypeAlias = np.array([[1, 2, 3]])
+# arr4: jaxtyping.Float[Array, "dim1 dim3"] = np.array([[1, 2, 3, 5]])
 
 
-@beartype.beartype
-def add2(a: mTypeAlias, b: mTypeAlias) -> mTypeAlias:
-    return a + b
+# @beartype.beartype
+# def add2(a: mTypeAlias, b: mTypeAlias) -> mTypeAlias:
+#     return a + b
 
 
-# arr5 = add2(arr3, arr4)
-arr5 = add2(arr3, arr3)  # still not working.
+# # arr5 = add2(arr3, arr4)
+# arr5 = add2(arr3, arr3)  # still not working.
 
 
 from typing import TypeVar, Generic
@@ -71,5 +71,5 @@ from typing import Literal
 arr9 = cast(Array[int, Literal[1], Literal[3]], np.array([[1, 2, 3]]))
 arr10 = cast(Array[int, Literal[1], Literal[4]], np.array([[1, 2, 3, 4]]))
 
-# arr11 = arr9+arr10 # checked!
-arr11 = arr9+arr9
+arr11 = arr9+arr10 # checked!
+# arr11 = arr9+arr9
