@@ -24,3 +24,8 @@ def add_arrays(
 # myarr = add_arrays(arr, arr)  # no issue?
 myarr = add_arrays(arr, arr2) # only beartype shows issue.
 reveal_type(myarr)
+
+
+import jaxtyping
+
+arr3:jaxtyping.Float[jaxtyping.Array
