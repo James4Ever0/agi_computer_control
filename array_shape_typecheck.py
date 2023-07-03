@@ -28,16 +28,20 @@ reveal_type(myarr)
 
 # from jaxtyping import Array
 # not typechecking. import from jax.
-from jax import Array # type: ignore
+from jax import Array  # type: ignore
 
 import jaxtyping  # type: ignore
 from typing_extensions import TypeAlias
+
 mTypeAlias: TypeAlias = jaxtyping.Float[Array, "dim1 dim2"]
 arr3: mTypeAlias = np.array([[1, 2, 3]])
 arr4: jaxtyping.Float[Array, "dim1 dim3"] = np.array([[1, 2, 3, 5]])
+
+
 @beartype.beartype
-def add2(a: mTypeAlias, b: mTypeAlias)-> mTypeAlias:
+def add2(a: mTypeAlias, b: mTypeAlias) -> mTypeAlias:
     return a + b
 
 
-arr5 = add2(arr3, arr4)
+# arr5 = add2(arr3, arr4)
+arr5 = add2(arr3, arr3)
