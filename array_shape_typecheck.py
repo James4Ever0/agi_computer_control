@@ -26,11 +26,15 @@ myarr = add_arrays(arr, arr2)  # only beartype shows issue.
 reveal_type(myarr)
 
 
-import jaxtyping # type: ignore
-
-arr3: jaxtyping.Float[jaxtyping.Array, "dim1 dim2"] = np.array([[1, 2, 3]])
+import jaxtyping  # type: ignore
+from typing_extensions import TypeAlias
+mTypeAlias: TypeAlias = jaxtyping.Float[jaxtyping.Array, "dim1 dim2"]
+arr3: mTypeAlias = np.array([[1, 2, 3]])
 arr4: jaxtyping.Float[jaxtyping.Array, "dim1 dim3"] = np.array([[1, 2, 3, 5]])
 
-def add2(a,b):
-    ...
-arr5 = arr3+arr4
+
+def add2(a, b):
+    return a + b
+
+
+arr5 = arr3 + arr4
