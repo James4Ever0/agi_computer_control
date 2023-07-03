@@ -79,4 +79,6 @@ from typing_extensions import Annotated
 myType = Annotated[np.ndarray, 20, 30]
 myArr: myType = np.zeros((20, 30))
 # how to get that annotated value?
-print('ANNOTATION?',myArr.__annotations__)
+# print('ANNOTATION?',myArr.__annotations__)
+print(__annotations__)
+# {'arr': NDArray[Shape['5, 10'], Any], 'arr2': NDArray[Shape['10, 5'], Any], 'myArr': typing_extensions.Annotated[numpy.ndarray, 20, 30]}
