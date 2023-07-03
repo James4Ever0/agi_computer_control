@@ -26,7 +26,9 @@ myarr = add_arrays(arr, arr)  # no issue?
 # myarr = add_arrays(arr, arr2)  # only beartype shows issue.
 reveal_type(myarr)
 
-from jaxtyping import Array
+# from jaxtyping import Array
+# not typechecking. import from jax.
+from jax import Array # type: ignore
 
 import jaxtyping  # type: ignore
 from typing_extensions import TypeAlias
