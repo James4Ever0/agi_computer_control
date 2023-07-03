@@ -47,3 +47,21 @@ def add2(a: mTypeAlias, b: mTypeAlias) -> mTypeAlias:
 
 # arr5 = add2(arr3, arr4)
 arr5 = add2(arr3, arr3) # still not working.
+
+
+
+
+from typing import TypeVar, Generic
+from typing_extensions import TypeVarTuple, Unpack
+
+DType = TypeVar('DType')
+Shape = TypeVarTuple('Shape')
+
+class Array(Generic[DType, Unpack[Shape]]):
+
+    def __abs__(self) -> Array[DType, Unpack[Shape]]: ...
+
+    def __add__(self, other: Array[DType, Unpack[Shape]]) -> Array[DType, Unpack[Shape]]: ...
+
+arr9 : Array[int, Unpack[1,3]] = np.array([[1, 2, 3]])
+
