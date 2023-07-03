@@ -22,8 +22,8 @@ def add_arrays(
     return result
 
 
-# myarr = add_arrays(arr, arr)  # no issue?
-myarr = add_arrays(arr, arr2)  # only beartype shows issue.
+myarr = add_arrays(arr, arr)  # no issue?
+# myarr = add_arrays(arr, arr2)  # only beartype shows issue.
 reveal_type(myarr)
 
 # from jaxtyping import Array
@@ -49,31 +49,34 @@ from typing import cast
 # arr5 = add2(arr3, arr3)  # still not working.
 
 
-from typing import TypeVar, Generic
-from typing_extensions import TypeVarTuple, Unpack
+# from typing import TypeVar, Generic
+# from typing_extensions import TypeVarTuple, Unpack
 
-DType = TypeVar("DType")
-Shape = TypeVarTuple("Shape")
-
-
-class Array(Generic[DType, Unpack[Shape]]):
-    def __abs__(self) -> Array[DType, Unpack[Shape]]:
-        ...
-
-    def __add__(
-        self, other: Array[DType, Unpack[Shape]]
-    ) -> Array[DType, Unpack[Shape]]:
-        ...
+# DType = TypeVar("DType")
+# Shape = TypeVarTuple("Shape")
 
 
-from typing import Literal
+# class Array(Generic[DType, Unpack[Shape]]):
+#     def __abs__(self) -> Array[DType, Unpack[Shape]]:
+#         ...
 
-arr9 = cast(Array[int, Literal[1], Literal[3]], np.array([[1, 2, 3]]))
-arr10 = cast(Array[int, Literal[1], Literal[4]], np.array([[1, 2, 3, 4]]))
+#     def __add__(
+#         self, other: Array[DType, Unpack[Shape]]
+#     ) -> Array[DType, Unpack[Shape]]:
+#         ...
 
-arr11 = arr9+arr10 # checked!
+
+# from typing import Literal
+
+# arr9 = cast(Array[int, Literal[1], Literal[3]], np.array([[1, 2, 3]]))
+# arr10 = cast(Array[int, Literal[1], Literal[4]], np.array([[1, 2, 3, 4]]))
+
+# arr11 = arr9 + arr10  # checked!
 # arr11 = arr9+arr9
 
 from typing_extensions import Annotated
 
-myType = Annotated[np.ndarray, 20,30]
+myType = Annotated[np.ndarray, 20, 30]
+myArr: myType = np.zeros((20, 30))
+# how to get that annotated value?
+print('ANNOTATION?',myArr.__annotations__)
