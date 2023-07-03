@@ -73,3 +73,7 @@ arr10 = cast(Array[int, Literal[1], Literal[4]], np.array([[1, 2, 3, 4]]))
 
 arr11 = arr9+arr10 # checked!
 # arr11 = arr9+arr9
+
+from typing_extensions import Annotated
+
+myType = Annotated[np.ndarray, 20,30]
