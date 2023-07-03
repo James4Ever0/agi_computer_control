@@ -13,7 +13,7 @@ arr2: NDArray[Shape["10, 5"], Any] = np.zeros((N, M))
 import beartype  # type:ignore
 
 
-@beartype.beartype # check before run?
+@beartype.beartype  # check before run?
 def add_arrays(
     arr1: NDArray[Shape["5, 10"], Any], arr2: NDArray[Shape["5, 10"], Any]
 ) -> NDArray[Shape["5, 10"], Any]:
@@ -22,10 +22,15 @@ def add_arrays(
 
 
 # myarr = add_arrays(arr, arr)  # no issue?
-myarr = add_arrays(arr, arr2) # only beartype shows issue.
+myarr = add_arrays(arr, arr2)  # only beartype shows issue.
 reveal_type(myarr)
 
 
-import jaxtyping
+import jaxtyping # type: ignore
 
-arr3:jaxtyping.Float[jaxtyping.Array
+arr3: jaxtyping.Float[jaxtyping.Array, "dim1 dim2"] = np.array([[1, 2, 3]])
+arr4: jaxtyping.Float[jaxtyping.Array, "dim1 dim3"] = np.array([[1, 2, 3, 5]])
+
+def add2(a,b):
+    ...
+arr5 = arr3+arr4
