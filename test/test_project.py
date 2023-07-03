@@ -111,6 +111,7 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
     # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
     # TODO: haskell? functional python?
     # (variadic types) ref: https://peps.python.org/pep-0646/
+    # use sympy for symbolic checks?
 
     context_length = 10
     batch_size = 3
