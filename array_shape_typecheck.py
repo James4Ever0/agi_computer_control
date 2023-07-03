@@ -10,8 +10,10 @@ M = 5
 N = 10
 arr: NDArray[Shape["5, 10"], Any] = np.zeros((M, N))
 arr2: NDArray[Shape["10, 5"], Any] = np.zeros((N, M))
-import beartype
+import beartype # type:ignore
 @beartype.beartype
-def add_arr(arr1, arr2) -> arr
-myarr = arr + arr2  # no issue?
+def add_arr(arr1: NDArray[Shape['5,10'], Any], arr2: NDArray[Shape['5,10'], Any]) -> NDArray[Shape['5,10'], Any]:
+    myarr = arr1 + arr2  # no issue?
+    return myarr
+myarr = add_arr(arr, arr2) # no issue?
 reveal_type(myarr)
