@@ -82,3 +82,5 @@ myArr: myType = np.zeros((20, 30))
 # print('ANNOTATION?',myArr.__annotations__)
 print(__annotations__)
 # {'arr': NDArray[Shape['5, 10'], Any], 'arr2': NDArray[Shape['10, 5'], Any], 'myArr': typing_extensions.Annotated[numpy.ndarray, 20, 30]}
+
+# one such way to prevent errors is to delegate some type checking/annotation work to jinja2. use macro to generate annotations.
