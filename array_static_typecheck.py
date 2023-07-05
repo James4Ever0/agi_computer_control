@@ -41,12 +41,12 @@ def rand_normal_matrix(shape: ShapeNDType) -> NDArray[ShapeNDType, np.float64]:
 LENGTH = Literal[2]
 
 cube: NDArray[Shape3D[LENGTH, LENGTH, LENGTH], np.float64] = rand_normal_matrix((2,2,2))
-
+myshape = (2,2,2) # tuple[Literal[2], Literal[2], Literal[2]]
 print(cube)
 
 SIDE = Literal[4]
 
-
+arr : NDArray[Tuple[Literal[2], Literal[2]], np.int256] = np.zeros(shape=(2,2,2), dtype=np.int256)
 # Uh oh the shapes won't match!
 
 square: NDArray[Shape2D[SIDE, SIDE], np.float64] = rand_normal_matrix((3,3))
