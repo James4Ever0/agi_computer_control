@@ -10,6 +10,10 @@ ScalarType = TypeVar("ScalarType", bound=np.generic, covariant=True)
 
 # if TYPE_CHECKING or sys.version_info >= (3, 9):
 
+ScalarType = TypeVar("ScalarType", bound=np.generic, covariant=True)
+
+Shape = TypeVarTuple("Shape")
+
 _DType = np.dtype[ScalarType]
 
-NDArray = np.ndarray[Any, np.dtype[ScalarType]]
+NDArray = np.ndarray[*Shape, np.dtype[ScalarType]]
