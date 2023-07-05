@@ -4,6 +4,8 @@ import numpy as np
 
 from typing import Any
 from typing_extensions import Unpack, TypeVarTuple
+Shape = TypeVarTuple("Shape")
+
 NDArray = np.ndarray[Unpack[Shape], np.dtype]
 # from numpy.typing import NDArray
 
@@ -19,12 +21,9 @@ T3 = TypeVar("T3", bound=int)
 
 # Dimension types represented as typles
 
-Shape = TypeVarTuple("Shape")
-
-ShapeNDType = TypeVar("ShapeNDType", bound=ShapeND)
 
 
-def rand_normal_matrix(shape: ShapeNDType) -> NDArray[ShapeNDType, np.float64]:
+def rand_normal_matrix(shape: Tuple[Unpack[Shape]]) -> NDArray[Unpack[Shape], np.float64]:
 
     """Return a random ND normal matrix."""
 
@@ -35,7 +34,7 @@ def rand_normal_matrix(shape: ShapeNDType) -> NDArray[ShapeNDType, np.float64]:
 
 LENGTH = Literal[2]
 
-cube: NDArray[Shape3D[LENGTH, LENGTH, LENGTH], np.float64] = rand_normal_matrix((2,2,2))
+cube: NDArray[LENGTH, LENGTH, LENGTH, np.float64] = rand_normal_matrix((2,2,2))
 myshape = (2,2,2) # tuple[Literal[2], Literal[2], Literal[2]]
 print(cube)
 
