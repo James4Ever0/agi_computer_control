@@ -44,7 +44,6 @@ cube: NDArray[Shape3D[LENGTH, LENGTH, LENGTH], np.float64] = rand_normal_matrix(
 
 print(cube)
 
-
 SIDE = Literal[4]
 
 
