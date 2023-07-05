@@ -4,14 +4,14 @@
 
 
 from typing import TypeVar, Generic
-from typing_extensions import TypeVarTuple
+from typing_extensions import TypeVarTuple, Unpack, Self
 
 DType = TypeVar('DType')
 Shape = TypeVarTuple('Shape')
 
-class Array(Generic[DType, *Shape]):
+class Array(Generic[DType, Unpack[Shape]]):
 
-    def __abs__(self) -> Array[DType, *Shape]: ...
+    def __abs__(self) -> Self[DType, Unpack[Shape]]: ...
 
-    def __add__(self, other: Array[DType, *Shape]) -> Array[DType, *Shape]: ...
+    def __add__(self, other: Self[DType, Unpack[Shape]]) -> Self[DType, Unpack[Shape]]: ...
 
