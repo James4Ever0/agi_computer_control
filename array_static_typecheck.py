@@ -18,6 +18,8 @@ class Array(Generic[DType, Unpack[Shape]]):
 
 Height = NewType('Height', int)
 Width = NewType('Width', int)
-x: Array[Height, Width] = Array()
-y: Array[Literal[1], Literal[1]] = Array()
+x: Array[float, Height, Width] = Array()
+y: Array[float, Literal[1], Literal[1]] = Array()
 z = abs(y)
+
+h = x+y
