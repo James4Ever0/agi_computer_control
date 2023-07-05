@@ -1,48 +1,17 @@
 # link: https://taoa.io/posts/Shape-typing-numpy-with-pyright-and-variadic-generics
-
-import numpy as np
-
-from typing import TypeVar
-from typing_extensions import Unpack, TypeVarTuple
-Shape = TypeVarTuple("Shape")
-ScalarType = TypeVar("ScalarType", bound=np.generic, covariant=True)
-
-NDArray = np.ndarray[Unpack[Shape], ScalarType]
-# from numpy.typing import NDArray
-
-from typing import Tuple, TypeVar, Literal
-
-# Generic dimension sizes types
-
-T1 = TypeVar("T1", bound=int)
-
-T2 = TypeVar("T2", bound=int)
-
-T3 = TypeVar("T3", bound=int)
-
-# Dimension types represented as typles
+# PEP 646: https://peps.python.org/pep-0646/
 
 
 
-def rand_normal_matrix(shape: Tuple[Unpack[Shape]]) -> NDArray[Unpack[Shape], np.float64]:
+from typing import TypeVar, Generic
+from typing_extensions import TypeVarTuple
 
-    """Return a random ND normal matrix."""
+DType = TypeVar('DType')
+Shape = TypeVarTuple('Shape')
 
-    return np.random.standard_normal(size=shape)
+class Array(Generic[DType, *Shape]):
 
+    def __abs__(self) -> Array[DType, *Shape]: ...
 
-# Yay correctly typed 2x2x2 cube!
+    def __add__(self, other: Array[DType, *Shape]) -> Array[DType, *Shape]: ...
 
-LENGTH = Literal[2]
-
-cube: NDArray[LENGTH, LENGTH, LENGTH, np.float64] = rand_normal_matrix((2,2,2))
-myshape = (2,2,2) # tuple[Literal[2], Literal[2], Literal[2]]
-print(cube)
-
-SIDE = Literal[4]
-arr : NDArray[Literal[2], Literal[2],Literal[2], np.int256] = np.zeros(shape=(2,2,2), dtype=np.int256)
-# Uh oh the shapes won't match!
-
-square: NDArray[SIDE, SIDE, np.float64] = rand_normal_matrix((3,3))
-
-print(square)
