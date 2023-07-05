@@ -2,7 +2,10 @@
 
 import numpy as np
 
-from numpy.typing import NDArray
+from typing import Any
+from typing_extensions import Unpack, TypeVarTuple
+NDArray = np.ndarray[Unpack[Shape], np.dtype]
+# from numpy.typing import NDArray
 
 from typing import Tuple, TypeVar, Literal
 
@@ -16,15 +19,7 @@ T3 = TypeVar("T3", bound=int)
 
 # Dimension types represented as typles
 
-Shape = Tuple
-
-Shape1D = Shape[T1]
-
-Shape2D = Shape[T1, T2]
-
-Shape3D = Shape[T1, T2, T3]
-
-ShapeND = Shape[T1, ...]
+Shape = TypeVarTuple("Shape")
 
 ShapeNDType = TypeVar("ShapeNDType", bound=ShapeND)
 
@@ -45,7 +40,6 @@ myshape = (2,2,2) # tuple[Literal[2], Literal[2], Literal[2]]
 print(cube)
 
 SIDE = Literal[4]
-
 arr : NDArray[Tuple[Literal[2], Literal[2]], np.int256] = np.zeros(shape=(2,2,2), dtype=np.int256)
 # Uh oh the shapes won't match!
 
