@@ -4,7 +4,7 @@
 # mypy --enable-incomplete-feature=Unpack --enable-incomplete-feature=TypeVarTuple  array_static_typecheck.py
 
 from typing import TypeVar, Generic, NewType, Literal
-from typing_extensions import TypeVarTuple, Unpack, Self
+from typing_extensions import TypeVarTuple, Unpack, Self, Annotated
 
 DType = TypeVar('DType')
 Shape = TypeVarTuple('Shape')
@@ -12,6 +12,9 @@ Shape = TypeVarTuple('Shape')
 class Array(Generic[DType, Unpack[Shape]]):
 
     def __abs__(self) -> Self: ...
+    
+    def special_ops(self,a:Annotated[int,2,3])-> Annotated[int, 1,2]:
+        ...
 
     def __add__(self, other: Self) -> Self: ...
 
@@ -23,3 +26,6 @@ y: Array[float, Literal[1], Literal[1]] = Array()
 z = abs(y)
 
 h = x+y
+
+a0 = 1
+x.special_ops(a0) # annotated will not be checked here.
