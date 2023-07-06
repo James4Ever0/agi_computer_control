@@ -834,6 +834,7 @@ class ConsciousBlock(BaseModel, ConsciousBase):
             assert self.action_data is not None
             logging.debug("Action data shape: %s", self.action_data.shape)
             # BUG: actual: (4110, 1)
+            # shall we reshape this.
             logging.debug(
                 "Expected data shape: %s", expected_data_shape := (HIDActionBase.length,)
             ) # TODO: expected shape is (4110, )? how to make this typed?
