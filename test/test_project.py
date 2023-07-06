@@ -15,6 +15,9 @@ filename = "mytest.log"
 # may log to other places.
 # infinite append.
 from logging.handlers import RotatingFileHandler
+from logging import StreamHandler
+
+stdout_handler = StreamHandler(sys.stdout)
 
 
 from conscious_struct import (
@@ -39,8 +42,9 @@ logging.basicConfig(
     level=logging.getLogger().getEffectiveLevel(),
     # stream=sys.stderr,
     force=True,
-    handlers=[myHandler],
+    handlers=[myHandler, stdout_handler],
 )
+
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
 from recording_train_parse import getTrainingData
