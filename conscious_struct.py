@@ -819,9 +819,9 @@ class ConsciousBlock(BaseModel, ConsciousBase):
             # BUG 2: comparing ndarray to None
             # FIX 2: change "!=" into "is not"
             assert self.image_data is not None
-            logging.debug("Image data shape:", self.image_data.shape)
+            logging.debug("Image data shape: %s", self.image_data.shape)
             logging.debug(
-                "Expected data shape:",
+                "Expected data shape: %s",
                 expected_data_shape := (ConsciousBase.image_length,),
             )
             assert self.image_data.shape == expected_data_shape
