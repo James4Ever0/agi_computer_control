@@ -34,4 +34,6 @@ x.special_ops(a0)  # annotated will not be checked here.
 
 val: int
 val2: 'annotated_info' # <ast.Constant object at 0x101306290>
-val3: Annotated[]
+T = TypeVar("T")
+T2 = TypeVar("T2")
+val3: Annotated[int, T*T2] # which can only be understood by some type checker.
