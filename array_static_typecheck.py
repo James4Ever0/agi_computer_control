@@ -40,3 +40,4 @@ val3: Annotated[
     int, T * T2
 ]  # which can only be understood by some type checker. passing this to sympy will be much better.
 val4: Annotated[int, "T*T2"]
+val4: Annotated[int, "T*T3"] # this is valid, for now.
