@@ -1,0 +1,2 @@
+import pyanalyze
+pyanalyze.extensions.CustomCheck
