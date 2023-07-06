@@ -8,4 +8,7 @@ with open(code_path, "r") as f:
     tree = ast.parse(content)
     for el in tree.body:
         # rich.print(dir(el))
-        print(getattr(el, ""))
+        print(ann:=getattr(el, "annotation", None))
+        if ann:
+            print(ast.unparse(el), el) # ast.AnnAssign
+            print(ann.body)
