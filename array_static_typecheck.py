@@ -32,3 +32,4 @@ h = x + y
 a0: Annotated[float, 1, 2] = 1
 x.special_ops(a0)  # annotated will not be checked here.
 
+val: int

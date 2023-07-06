@@ -11,4 +11,3 @@ with open(code_path, "r") as f:
         print(ann:=getattr(el, "annotation", None))
         if ann:
             print(ast.unparse(el), el) # ast.AnnAssign
-            print(ann.body)
