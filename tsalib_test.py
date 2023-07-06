@@ -18,3 +18,4 @@ x: 'b,c,h//2,w//2' = maxpool(x)
 assert x.size() == (B, C, H // 2, W // 2)
 #or, check selected dimensions
 size_assert(x.size(), (B,C,H//2,W//2), dims=[1,2,3])
+mytensor = torch.randn(1, 2, 2, 3 , names=('N', 'C', 'H', 'W')) # still, not annotated. cannot check statically?
