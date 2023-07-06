@@ -832,6 +832,8 @@ class ConsciousBlock(BaseModel, ConsciousBase):
 
         elif self.data_type == "HIDAction":
             assert self.action_data is not None
+            if len(self.action_data.shape)>1:
+                self.action_data = self.action_data.reshape((-1,))
             logging.debug("Action data shape: %s", self.action_data.shape)
             # BUG: actual: (4110, 1)
             # shall we reshape this.
