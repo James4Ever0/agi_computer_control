@@ -49,6 +49,8 @@ import dill
 @pytest.mark.parametrize("mylambda", [lambda x: x == 0, lambda x: x < 0])
 def test_0(mylambda):
     # a = lambda x: x<0
-    a_source = inspect.getsource(mylambda)  # full source being dumped. not the lambda expression alone.
-    print(a_source)
-    tree = ast.parse(a_source)
+    # print(dill.dumps(mylambda))
+    print(dill.source.dumpsource(mylambda))
+    # a_source = inspect.getsource(mylambda)  # full source being dumped. not the lambda expression alone.
+    # print(a_source)
+    # tree = ast.parse(a_source)
