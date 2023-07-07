@@ -27,3 +27,5 @@ if var:
 print(res)
 
 import mock
+
+@mock.call("")
