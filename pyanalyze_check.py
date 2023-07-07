@@ -1,7 +1,8 @@
 # from typing import TYPE_CHECKING
-import typing
-typing.TYPE_CHECKING = True
-from pyanalyze.extensions import *
+# import typing
+# typing.TYPE_CHECKING = True
+from pyanalyze.value import Value, CanAssign,CanAssignContext
+from pyanalyze.extensions import CustomCheck
 
 # from pyanalyze.extensions import CustomCheck, Value, CanAssignContext, CanAssign
 import pyanalyze
