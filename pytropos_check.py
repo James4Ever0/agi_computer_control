@@ -28,4 +28,6 @@ print(res)
 
 import mock
 
+from unittest.mock import MagicMock # replace class.
+
 mock.patch()
