@@ -33,5 +33,7 @@ import mock
 from unittest.mock import *
 # mock.patch()
 
-import pytest
-pytest.fixture
+# common fixture!
+
+def test_monkey(monkeypatch):
+    ...
