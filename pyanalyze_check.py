@@ -9,6 +9,7 @@ import pyanalyze
 from typing_extensions import Annotated
 import rich
 
+
 class LiteralOnly(CustomCheck):
     def can_assign(self, value: Value, ctx: CanAssignContext) -> CanAssign:
         rich.print(value.__dict__)
@@ -43,9 +44,11 @@ if __name__ == "__main__":
 import inspect
 import ast
 import pytest
-@pytest.mark.parametrize("mylambda", [lambda x: x==0, lambda x: x<0])
+
+import dill
+@pytest.mark.parametrize("mylambda", [lambda x: x == 0, lambda x: x < 0])
 def test_0(mylambda):
     # a = lambda x: x<0
-    a_source = inspect.getsource(mylambda) # full source being dumped.
+    a_source = inspect.getsource(mylambda)  # full source being dumped. not the lambda expression alone.
     print(a_source)
     tree = ast.parse(a_source)
