@@ -4,6 +4,8 @@ import mypy.api as api
 
 # you may ensure compatibility between non-mock based operation, or ensure all functions are mock calls.
 
+# mock functions shall be lru_cached, to speedup overheads.
+
 result = api.run(...)  # commandline args.
 
 import tensorflow as tf
