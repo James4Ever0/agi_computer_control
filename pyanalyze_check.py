@@ -26,6 +26,11 @@ def some_call():
     print("CALLING FUNCTION")
     return "abc"
 
+def anotherfunc():
+    func("x")  # ok
+    func(str(some_call()))  # error
 
-func("x")  # ok
-func(str(some_call()))  # error
+# actually will not run the code, only if putting in between definitions.
+# anotherfunc() # will run
+if __name__ == "__main__":
+    anotherfunc() # will not run
