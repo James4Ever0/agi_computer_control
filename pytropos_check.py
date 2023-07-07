@@ -28,6 +28,7 @@ print(res)
 
 import mock
 
-from unittest.mock import MagicMock # replace class.
+# from unittest.mock import MagicMock # replace class.
 
-mock.patch()
+from unittest.mock import *
+# mock.patch()
