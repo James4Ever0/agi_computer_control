@@ -28,4 +28,4 @@ print(res)
 
 import mock
 
-@mock.call("")
+mock.patch()
