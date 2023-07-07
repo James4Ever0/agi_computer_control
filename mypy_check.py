@@ -2,6 +2,8 @@ import mypy.api as api
 
 # you may use mock testing, similar to symbolic execution.
 
+# you may ensure compatibility between non-mock based operation, or ensure all functions are mock calls.
+
 result = api.run(...)  # commandline args.
 
 import tensorflow as tf
