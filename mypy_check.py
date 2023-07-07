@@ -14,6 +14,17 @@ Batch, Time = Annotated[axes.Batch, 3], Annotated[axes.Time, 5] # problem is, ho
 
 MyAxis = NewType("MyAxis", axes.Axis)
 
+from pycontract import contract
+
+@contract
+def my_function(a, b):
+    """ Function description.
+        :type a: int,>0
+        :type b: list[N],N>0
+        :rtype: list[N]
+    """
+    ...
+
 
 def sample_batch() -> ttf.Tensor2[uint8, Time, Batch]:
     return tf.zeros((3, 5))
