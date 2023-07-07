@@ -41,6 +41,12 @@ if __name__ == "__main__":
     anotherfunc()  # will not run
 
 import inspect
-a = lambda x: x<0
-a_source = inspect.getsource(a)
-print(a_source)
+import ast
+import pytest
+@pytest.fixture("mylambda", [lambda x: x==0, lambda x: x<0])
+def test_0(mylambda):
+    
+# a = lambda x: x<0
+    a_source = inspect.getsource(mylambda)
+    print(a_source)
+    tree = ast.parse(a_source)
