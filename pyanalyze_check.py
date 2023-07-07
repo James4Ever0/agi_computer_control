@@ -39,3 +39,8 @@ def anotherfunc():
 # anotherfunc() # will run
 if __name__ == "__main__":
     anotherfunc()  # will not run
+
+import inspect
+a = lambda x: x<0
+a_source = inspect.getsource(a)
+print(a_source)
