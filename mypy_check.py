@@ -1,5 +1,7 @@
 import mypy.api as api
 
+# you may use mock testing, similar to symbolic execution.
+
 result = api.run(...)  # commandline args.
 
 import tensorflow as tf
