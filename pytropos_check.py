@@ -37,3 +37,6 @@ from unittest.mock import *
 
 def test_monkey(monkeypatch):
     ...
+    
+from hypothesis import given
+from hypothesis.strategies import text
