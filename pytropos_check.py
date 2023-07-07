@@ -25,3 +25,5 @@ if var:
     res = np.dot(b, a)  # fails here
 
 print(res)
+
+import mock
