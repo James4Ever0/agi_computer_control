@@ -28,10 +28,14 @@ def patch(exc_info, exprinfo):
     text = "".join(textlist)
     keyword = "in pytest_pyfunc_call"
     text = text.split("\n")
+    last_index = -20
     for i, t in enumerate(text):
-        
+        if keyword in t:
+            last_index = i
+            break
     text = text[last_index:]
     text = "\n".join(text)
+    print()
     print(text)  # great. this could be the hook.
     return cls(exc_info, text, _ispytest=True)
 
