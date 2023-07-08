@@ -6,6 +6,9 @@ import better_exceptions
 # # import unittest
 from pytest import ExceptionInfo
 
+def max_traceback_limit(tb, max_limit = 3):
+    
+
 import rich
 def patch(exc_info, exprinfo):
     tb = exc_info[2]
