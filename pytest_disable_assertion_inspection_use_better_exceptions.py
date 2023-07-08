@@ -5,9 +5,12 @@
 import better_exceptions
 # # import unittest
 from pytest import ExceptionInfo
-def patch(cls, exc_info, exprinfo):
+
+def patch(exc_info, exprinfo):
+    cls = ExceptionInfo
     textlist = better_exceptions.format_exception(*exc_info)
     text = "".join(textlist)
+    print(text) # great.
     return cls(exc_info, text, _ispytest=True)
 
 ExceptionInfo.from_exc_info = patch
