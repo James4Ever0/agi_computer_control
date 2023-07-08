@@ -26,6 +26,8 @@
 
 # print(res)
 
+from hypothesis import given
+from hypothesis.strategies import text
 import mock
 from pytest import MonkeyPatch
 # from unittest.mock import MagicMock # replace class.
@@ -35,12 +37,11 @@ from unittest.mock import *
 
 # common fixture!
 
-def test_monkey(monkeypatch):
-    ...
-    
-from hypothesis import given
-from hypothesis.strategies import text
 
-@given(s = text(), s0=text())
-def test_myfun(s,s0):
-    print(s, s0) # lots of charactors.
+def test_monkey(monkeypatch: MonkeyPatch):
+    monkeypatch.
+
+
+@given(s=text(), s0=text())
+def test_myfun(s, s0):
+    print(s, s0)  # lots of charactors.
