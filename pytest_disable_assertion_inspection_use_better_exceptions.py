@@ -2,6 +2,7 @@
 # env BETTER_EXCEPTIONS=1 python3 -m pytest --full-capture --assert=plain pytest_disable_assertion_inspection_use_better_exceptions.py
 # env BETTER_EXCEPTIONS=1 python3 -m pytest pytest_disable_assertion_inspection_use_better_exceptions.py
 
+import numpy as np
 from re import L
 import better_exceptions
 # # import unittest
@@ -38,24 +39,26 @@ def patch(exc_info, exprinfo):
     text = text[last_index:]
     text = "\n".join(text)
     print()
-    print(text) # great. this could be the hook.
+    print(text)  # great. this could be the hook.
     return cls(exc_info, text, _ispytest=True)
 
 
 ExceptionInfo.from_exc_info = patch
 # better_exceptions.hook()
 
-import numpy as np
 
 def create_array():
-    a = np.array([1,2,3])
-    b = np.array([1,2,3,4])
+    a = np.array([1, 2, 3])
+    b = np.array([1, 2, 3, 4])
     c = a+b
+    return c
 
+from pytest import MonkeyPatch
 
-def test_mytest():
+def test_mytest(monkeypatch:MonkeyPatch):
     a = 1
     b = {}
+    create_array()
     # print(b[1])
     # assert b[2] == a
 
