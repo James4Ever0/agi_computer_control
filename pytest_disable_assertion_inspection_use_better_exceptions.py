@@ -2,8 +2,8 @@
 # env BETTER_EXCEPTIONS=1 python3 -m pytest --full-capture --assert=plain pytest_disable_assertion_inspection_use_better_exceptions.py
 # env BETTER_EXCEPTIONS=1 python3 -m pytest pytest_disable_assertion_inspection_use_better_exceptions.py
 
+from pytest import MonkeyPatch
 import numpy as np
-from re import L
 import better_exceptions
 # # import unittest
 from pytest import ExceptionInfo
@@ -53,9 +53,9 @@ def create_array():
     c = a+b
     return c
 
-from pytest import MonkeyPatch
 
-def test_mytest(monkeypatch:MonkeyPatch):
+def test_mytest(monkeypatch: MonkeyPatch):
+    monkeypatch.setitem
     a = 1
     b = {}
     create_array()
