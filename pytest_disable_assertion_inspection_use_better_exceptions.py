@@ -6,17 +6,18 @@ import better_exceptions
 # # import unittest
 from pytest import ExceptionInfo
 
-def max_traceback_limit(tb, max_limit = 3):
-    if getattr(tb, 'tb_next',None):
-        if max_limit == 0:
-            tb.tb_next = None
-        else:
-            max_traceback_limit(tb.tb_next, max_limit = max_limit-1)
+# def max_traceback_limit(tb, max_limit = 3):
+#     if getattr(tb, 'tb_next',None):
+#         if max_limit == 0:
+#             tb.tb_next = None
+#         else:
+#             max_traceback_limit(tb.tb_next, max_limit = max_limit-1)
 
-import rich
+# import rich
 def patch(exc_info, exprinfo):
     tb = exc_info[2]
-    max_traceback_limit(tb)
+    # max_traceback_limit(tb)
+    # traceback is staring from the root cause. deal it in the end.
     # rich.print(tb)
     # breakpoint()
     cls = ExceptionInfo
