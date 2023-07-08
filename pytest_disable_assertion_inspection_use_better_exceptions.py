@@ -25,6 +25,7 @@ def patch(exc_info, exprinfo):
         exc=exc_info[0], value=exc_info[1], tb=tb)
     # textlist = better_exceptions.format_exception(*exc_info)
     text = "".join(textlist)
+    text = "\n".join(text.split("\n")[-10:])
     print(text)  # great. this could be the hook.
     return cls(exc_info, text, _ispytest=True)
 
