@@ -1,0 +1,1 @@
+datamodel-codegen -i mydatamodel.yml 
