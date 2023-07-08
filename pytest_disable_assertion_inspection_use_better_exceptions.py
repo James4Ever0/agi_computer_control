@@ -7,13 +7,18 @@ import better_exceptions
 from pytest import ExceptionInfo
 
 def max_traceback_limit(tb, max_limit = 3):
-    
+    if getattr(tb, 'tb_next',None):
+        if max_limit == 0:
+            tb.tb_next = None
+        else:
+            max_traceback_limit(tb.tb_next, max_limit = max_limit-1)
 
 import rich
 def patch(exc_info, exprinfo):
     tb = exc_info[2]
-    rich.print(tb)
-    breakpoint()
+    max_traceback_limit(tb)
+    # rich.print(tb)
+    # breakpoint()
     cls = ExceptionInfo
     textlist = better_exceptions.format_exception(
         exc=exc_info[0], value=exc_info[1], tb=tb)
