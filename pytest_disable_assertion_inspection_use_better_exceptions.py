@@ -8,7 +8,8 @@ from pytest import ExceptionInfo
 
 def patch(exc_info, exprinfo):
     cls = ExceptionInfo
-    textlist = better_exceptions.format_exception(*exc_info)
+    textlist = better_exceptions.format_exception(exc,)
+    # textlist = better_exceptions.format_exception(*exc_info)
     text = "".join(textlist)
     print(text) # great. this could be the hook.
     return cls(exc_info, text, _ispytest=True)
