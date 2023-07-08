@@ -15,6 +15,8 @@ from pytest import ExceptionInfo
 #             max_traceback_limit(tb.tb_next, max_limit = max_limit-1)
 
 # import rich
+
+
 def patch(exc_info, exprinfo):
     tb = exc_info[2]
     # max_traceback_limit(tb)
@@ -36,20 +38,27 @@ def patch(exc_info, exprinfo):
     text = text[last_index:]
     text = "\n".join(text)
     print()
-    print(text)  # great. this could be the hook.
+    print(text) # great. this could be the hook.
     return cls(exc_info, text, _ispytest=True)
 
 
 ExceptionInfo.from_exc_info = patch
 # better_exceptions.hook()
 
+import numpy as np
+
+def create_array():
+    a = np.array([1,2,3])
+    b = np.array([1,2,3,4])
+    c = a+b
+
 
 def test_mytest():
     a = 1
     b = {}
-    print(b[1])
+    # print(b[1])
     # assert b[2] == a
 
 
-if __name__ == "__main__":
-    test_mytest()
+# if __name__ == "__main__":
+#     test_mytest()
