@@ -29,7 +29,7 @@
 from hypothesis import given
 from hypothesis.strategies import text
 import mock
-from pytest import MonkeyPatch
+from pytest import MonkeyPatch, FixtureRequest
 # from unittest.mock import MagicMock # replace class.
 
 from unittest.mock import *
@@ -38,8 +38,9 @@ from unittest.mock import *
 # common fixture!
 
 
-def test_monkey(monkeypatch: MonkeyPatch):
-    monkeypatch.
+def test_monkey(monkeypatch: MonkeyPatch, request: FixtureRequest):
+    # now you finally have a better view on fixtures.
+    monkeypatch.setitem
 
 
 @given(s=text(), s0=text())
