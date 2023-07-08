@@ -10,7 +10,7 @@ def patch(exc_info, exprinfo):
     cls = ExceptionInfo
     textlist = better_exceptions.format_exception(*exc_info)
     text = "".join(textlist)
-    print(text) # great.
+    print(text) # great. this could be the hook.
     return cls(exc_info, text, _ispytest=True)
 
 ExceptionInfo.from_exc_info = patch
@@ -20,8 +20,8 @@ ExceptionInfo.from_exc_info = patch
 def test_mytest():
     a = 1
     b = {}
-    # print(b[1])
-    assert b[2] == a
+    print(b[1])
+    # assert b[2] == a
 
 
 if __name__ == "__main__":
