@@ -2,6 +2,7 @@
 # env BETTER_EXCEPTIONS=1 python3 -m pytest --full-capture --assert=plain pytest_disable_assertion_inspection_use_better_exceptions.py
 # env BETTER_EXCEPTIONS=1 python3 -m pytest pytest_disable_assertion_inspection_use_better_exceptions.py
 
+from re import L
 import better_exceptions
 # # import unittest
 from pytest import ExceptionInfo
@@ -25,7 +26,12 @@ def patch(exc_info, exprinfo):
         exc=exc_info[0], value=exc_info[1], tb=tb)
     # textlist = better_exceptions.format_exception(*exc_info)
     text = "".join(textlist)
-    text = "\n".join(text.split("\n")[-10:])
+    keyword = "in pytest_pyfunc_call"
+    text = text.split("\n")
+    for i, t in enumerate(text):
+        
+    text = text[last_index:]
+    text = "\n".join(text)
     print(text)  # great. this could be the hook.
     return cls(exc_info, text, _ispytest=True)
 
