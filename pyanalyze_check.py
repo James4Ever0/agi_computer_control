@@ -1,6 +1,10 @@
 # from typing import TYPE_CHECKING
 # import typing
 # typing.TYPE_CHECKING = True
+import dill
+import pytest
+import ast
+import inspect
 from pyanalyze.value import Value, CanAssign, CanAssignContext
 from pyanalyze.extensions import CustomCheck
 
@@ -41,11 +45,7 @@ def anotherfunc():
 if __name__ == "__main__":
     anotherfunc()  # will not run
 
-import inspect
-import ast
-import pytest
 
-import dill
 @pytest.mark.parametrize("mylambda", [lambda x: x == 0, lambda x: x < 0])
 def test_0(mylambda):
     # a = lambda x: x<0
