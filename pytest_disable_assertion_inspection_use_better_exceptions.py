@@ -60,9 +60,11 @@ import numpy
 
 
 class marray:
-    def __init__(self, input_shape):
-        print("CREATING ARRAY WITH SHAPE:", input_shape)
-        return "CREATED_ARRAY"
+    def __init__(self, content):
+        print("CREATING ARRAY WITH CONTENT:", content)
+        # how do you inspect that after patched the original method?
+        # shall you return "None"
+        # return "CREATED_ARRAY"
 
 
 def test_mytest(monkeypatch: MonkeyPatch):
