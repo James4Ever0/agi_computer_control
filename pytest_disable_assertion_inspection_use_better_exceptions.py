@@ -58,7 +58,6 @@ def create_array():
 
 import numpy
 
-
 class marray:
     def __init__(self, content):
         print("CREATING ARRAY WITH CONTENT:", content)
@@ -69,7 +68,8 @@ class marray:
 
 def test_mytest(monkeypatch: MonkeyPatch):
     # monkeypatch.setitem(numpy.__dict__, "array", marray) # patched!
-    monkeypatch.setattr(numpy, "array", marray)
+    monkeypatch.setattr(numpy, "array", marray) # again, patched!
+    monkeypatch.setenv("BETTER_EXCEPTIONS","1") # still, no "better" exception.
     a = 1
     b = {}
     create_array()
