@@ -27,7 +27,8 @@ def patch(exc_info, exprinfo):
     # breakpoint()
     cls = ExceptionInfo
     textlist = better_exceptions.format_exception(
-        exc=exc_info[0], value=exc_info[1], tb=tb)
+        exc=exc_info[0], value=exc_info[1], tb=tb
+    )
     # textlist = better_exceptions.format_exception(*exc_info)
     text = "".join(textlist)
     keyword = "in pytest_pyfunc_call"
@@ -51,12 +52,21 @@ ExceptionInfo.from_exc_info = patch
 def create_array():
     a = np.array([1, 2, 3])
     b = np.array([1, 2, 3, 4])
-    c = a+b
+    c = a + b
     return c
 
 
+import numpy
+
+
+class marray:
+    def __init__(self, input_shape):
+        print("CREATING ARRAY WITH SHAPE:", input_shape)
+        return "CREATED_ARRAY"
+
+
 def test_mytest(monkeypatch: MonkeyPatch):
-    monkeypatch.setitem
+    monkeypatch.setitem(numpy.__dict__, "array", marray)
     a = 1
     b = {}
     create_array()
