@@ -68,7 +68,8 @@ class marray:
 
 
 def test_mytest(monkeypatch: MonkeyPatch):
-    monkeypatch.setitem(numpy.__dict__, "array", marray)
+    # monkeypatch.setitem(numpy.__dict__, "array", marray) # patched!
+    monkeypatch.setattr(numpy, "array", marray)
     a = 1
     b = {}
     create_array()
