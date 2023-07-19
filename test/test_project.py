@@ -118,7 +118,12 @@ def optimizer(model:CustomModel):
     from torch.optim import Adam
     lr = 0.00001
     return Adam(model.parameters(), lr=lr)
-import hypothesis
+
+from hypothesis import given
+from hypothesis.strategies import integers
+
+
+@given(text())
 def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str):
     # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
     # TODO: haskell? functional python?
