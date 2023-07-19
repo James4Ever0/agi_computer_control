@@ -122,7 +122,7 @@ def optimizer(model:CustomModel):
 from hypothesis import given
 from hypothesis.strategies import integers
 
-import stopit
+from stopit import Timeout
 @given(random_seed=integers())
 def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str, random_seed:int):
     # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
@@ -139,5 +139,6 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
     )
     # TODO: allow timeout exception to be raised, disallow any other exceptions.
     # you might want to shuffle its order, for testing.
-    with stopit.Timeout
-    trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
+    stopit.Time
+    with stopit.TimeOut(10):
+        trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
