@@ -1066,9 +1066,12 @@ import random
 def trainModelWithDataBasePath(
     basePath: str,
     sequentialTrainingQueue: Enqueue,
-    shuffle_for_test:bool=False
+    shuffle_for_test:bool=False,
+    random_seed:int = 43 # pass hypothesis param here!
     # sequentialTrainingQueue: SequentialTrainingQueue
 ):
+    if shuffle_for_test:
+        random.seed(random_seed)
     # read perspective width & height from basepath.
     fpath = os.path.join(basePath, "video_record_script.sh")
     with open(fpath, "r") as f:
