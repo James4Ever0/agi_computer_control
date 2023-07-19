@@ -132,4 +132,6 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
     myQueue = SequentialTrainingQueue(
         context_length=context_length, batch_size=batch_size, trainer=myTrainer
     )
+    # allow timeout exception to be raised, disallow any other exceptions.
+    # you might want to shuffle its order, for testing.
     trainModelWithDataBasePath(basePath, myQueue)

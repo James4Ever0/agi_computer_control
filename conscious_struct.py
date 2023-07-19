@@ -1064,7 +1064,8 @@ import parse
 # this process is actually training it.
 def trainModelWithDataBasePath(
     basePath: str,
-    sequentialTrainingQueue: Enqueue
+    sequentialTrainingQueue: Enqueue,
+    shuffle_for_test:bool=False
     # sequentialTrainingQueue: SequentialTrainingQueue
 ):
     # read perspective width & height from basepath.
@@ -1084,6 +1085,7 @@ def trainModelWithDataBasePath(
         else:
             raise Exception(f"Cannot parse perspective size from file: {fpath}")
     for trainingDataFrame in getTrainingData(basePath):
+        if shuffle_for_test:
         if trainingDataFrame.datatype == "hid":
             encoded_actions = []
             actions = trainingDataFrame.data["HIDEvents"]
