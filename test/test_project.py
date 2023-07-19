@@ -78,9 +78,16 @@ def test_fetching_training_data(basePath:str):
     # fake sequentialqueue.
     trainModelWithDataBasePath(basePath, myQueue)
 
+import os
+from pathlib import Path
+
 @pytest.fixture
 def vit_model_path():
-    return "/Volumes/Toshiba XG3/model_cache/vit_b_16-c867db91.pth"
+    path = Path(os.path.abspath(relpath:="../../../model_cache/vit_b_16-c867db91.pth"))
+    if not path.exists():
+        raise Exception(f"Current directory: {os.curdir}\nModel weight does not exist: {path}")
+    # return "/Volumes/Toshiba XG3/model_cache/vit_b_16-c867db91.pth"
+    return path
 
 @pytest.fixture
 def vit_model(vit_model_path:str):
@@ -89,6 +96,7 @@ def vit_model(vit_model_path:str):
     # code from OA bot
     # return torchvision.models.vit_b_16(pretrained=True)
     vmodel = torchvision.models.vit_b_16()
+    # breakpoint()
     mStateDict = torch.load(vit_model_path)
     vmodel.load_state_dict(mStateDict)
     return vmodel
