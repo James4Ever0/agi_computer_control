@@ -916,6 +916,8 @@ from typing import Protocol
 class Enqueue(Protocol):
     def enqueue(self, data, /):
         ...
+    def clear(self):
+        ...
 
 
 class TestEnqueue(Enqueue):
