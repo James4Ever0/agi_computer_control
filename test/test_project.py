@@ -119,11 +119,12 @@ def optimizer(model:CustomModel):
     lr = 0.00001
     return Adam(model.parameters(), lr=lr)
 
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis.strategies import integers
 
 import stopit
 @given(random_seed=integers())
+@settings(suppress_health_check=(,))
 def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str, random_seed:int):
     # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
     # TODO: haskell? functional python?
