@@ -1152,6 +1152,7 @@ def trainModelWithDataBasePath(
                 consciousBlock = ConsciousBlock(
                     data_type="image", special_token=st, image_data=im
                 )
+                consciousBlocks.append()
                 #                 print(consciousBlock)
                 sequentialTrainingQueue.enqueue(consciousBlock)
             #             last_output = torch.zeros(1, output_size)
