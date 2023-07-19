@@ -1060,6 +1060,7 @@ from recording_train_parse import getTrainingData
 import json
 import re
 import parse
+import random
 
 # this process is actually training it.
 def trainModelWithDataBasePath(
@@ -1084,11 +1085,18 @@ def trainModelWithDataBasePath(
             )
         else:
             raise Exception(f"Cannot parse perspective size from file: {fpath}")
-    for trainingDataFrame in getTrainingData(basePath):
-        if shuffle_for_test:
+    trainingDataGenerator = getTrainingData(basePath)
+    
+    if shuffle_for_test:
+        myGenerator = list(trainingDataGenerator)
+        random.shuffle(myGenerator)
+        
+    for trainingDataFrame in trainingDataGenerator:
+        
         if trainingDataFrame.datatype == "hid":
             encoded_actions = []
             actions = trainingDataFrame.data["HIDEvents"]
+            if shuffle_for_test: random.shuffle(actions)
             for action in actions:
                 action_type, action_args = action
                 if action_type in HIDActionBase.keyboard_action_types:
