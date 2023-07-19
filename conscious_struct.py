@@ -1092,7 +1092,6 @@ def trainModelWithDataBasePath(
         random.shuffle(myGenerator)
         
     for trainingDataFrame in trainingDataGenerator:
-        
         if trainingDataFrame.datatype == "hid":
             encoded_actions = []
             actions = trainingDataFrame.data["HIDEvents"]
@@ -1139,6 +1138,7 @@ def trainModelWithDataBasePath(
             #             print('IMAGE SLICED:', image_sliced.shape)
             #     (16, 3, 224, 224)
             # hell?
+            consciousBlocks = []
             for index, im in enumerate(image_sliced):
                 im = einops.rearrange(im, "c h w -> (c h w)")
                 st = None
@@ -1152,10 +1152,15 @@ def trainModelWithDataBasePath(
                 consciousBlock = ConsciousBlock(
                     data_type="image", special_token=st, image_data=im
                 )
-                consciousBlocks.append()
+                if shuffle_for_test:
+                    consciousBlocks.append(consciousBlock)
+                else:
                 #                 print(consciousBlock)
-                sequentialTrainingQueue.enqueue(consciousBlock)
+                    sequentialTrainingQueue.enqueue(consciousBlock)
             #             last_output = torch.zeros(1, output_size)
+            if shuffle_for_test:
+                for consciousBlock in consciousBlocks:
+                    sequentialTrainingQueue.enqueue(consciousBlock)
             del image
             del image_reshaped
             del image_resized
