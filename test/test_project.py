@@ -121,10 +121,11 @@ def optimizer(model:CustomModel):
 
 from hypothesis import given, settings
 from hypothesis.strategies import integers
+from hypothesis import HealthCheck
 
 import stopit
 @given(random_seed=integers())
-@settings(suppress_health_check=(,))
+@settings(suppress_health_check=(HealthCheck.function_scoped_fixture,))
 def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str, random_seed:int):
     # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
     # TODO: haskell? functional python?
