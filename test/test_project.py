@@ -123,8 +123,8 @@ from hypothesis import given
 from hypothesis.strategies import integers
 
 
-@given(text())
-def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str):
+@given(random_seed=integers())
+def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str, random_seed:int):
     # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
     # TODO: haskell? functional python?
     # (variadic types) ref: https://peps.python.org/pep-0646/
