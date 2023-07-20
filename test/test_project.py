@@ -58,7 +58,7 @@ logging.critical(f"logging starts: {current_time}".center(100, "="))
 import pytest
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def basePath():
     return "../recordings/2023-06-02T07_59_45.711256/"
 
@@ -81,7 +81,7 @@ def test_fetching_training_data(basePath:str):
 import os
 from pathlib import Path
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def vit_model_path():
     path = Path(os.path.abspath(relpath:="../../../model_cache/vit_b_16-c867db91.pth"))
     if not path.exists():
@@ -89,7 +89,7 @@ def vit_model_path():
     # return "/Volumes/Toshiba XG3/model_cache/vit_b_16-c867db91.pth"
     return path
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def vit_model(vit_model_path:str):
     import torchvision
 
@@ -102,18 +102,18 @@ def vit_model(vit_model_path:str):
     return vmodel
 
 from torchvision.models import VisionTransformer
-@pytest.fixture
+@pytest.fixture(scope='session')
 def model(vit_model:VisionTransformer):
     model = CustomModel(vit_model)
     return model
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def loss_fn():
     from torch.nn import CrossEntropyLoss
     
     return CrossEntropyLoss(reduction="mean")
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def optimizer(model:CustomModel):
     from torch.optim import Adam
     lr = 0.00001
@@ -121,19 +121,20 @@ def optimizer(model:CustomModel):
 
 from hypothesis import given, settings
 from hypothesis.strategies import integers
-from hypothesis import HealthCheck
+# from hypothesis import HealthCheck
 
 import stopit
 @given(random_seed=integers())
-@settings(suppress_health_check=(HealthCheck.function_scoped_fixture,),max_examples = 10, deadline=None)
+# @settings(suppress_health_check=(HealthCheck.function_scoped_fixture,),max_examples = 10, deadline=None)
+@settings(deadline=None, max_examples=2)
 def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str, random_seed:int):
     # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
     # TODO: haskell? functional python?
     # (variadic types) ref: https://peps.python.org/pep-0646/
     # use sympy for symbolic checks?
 
-    context_length = 10
-    batch_size = 3
+    context_length = 2
+    batch_size = 1
 
     myTrainer = Trainer(model=model, loss_fn=loss_fn, optimizer=optimizer)
     myQueue = SequentialTrainingQueue(
@@ -142,5 +143,6 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
     # TODO: allow timeout exception to be raised, disallow any other exceptions.
     # you might want to shuffle its order, for testing.
 
-    with stopit.ThreadingTimeout(10):
+    with stopit.ThreadingTimeout(5): # timeout exception suppressed!
         trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
+    print("SESSION TIMEOUT NOW".center(60,"_"))

@@ -6,3 +6,5 @@ parse
 mss
 opencv-python
 pydantic-numpy
+hypothesis
+stopit
