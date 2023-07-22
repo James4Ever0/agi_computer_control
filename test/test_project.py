@@ -105,7 +105,10 @@ from torchvision.models import VisionTransformer
 @pytest.fixture(scope='session')
 def model(vit_model:VisionTransformer):
     model = CustomModel(vit_model)
-    return model
+    yield model
+    del model
+
+@pytest.fixture(scope='session')
 
 @pytest.fixture(scope='session')
 def loss_fn():
@@ -146,3 +149,6 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
     with stopit.ThreadingTimeout(5): # timeout exception suppressed!
         trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
     print("SESSION TIMEOUT NOW".center(60,"_"))
+
+def test_act_with_model_weight():
+    # load the weight, take some input from training data.
