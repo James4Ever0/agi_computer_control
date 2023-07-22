@@ -1047,11 +1047,12 @@ def resizeImage(im, desired_size):
 
 
 class SequentialEvalQueue:
-    # init data (visual+hid actions) -> predict till end -> update visual and action data
-    # visual data is inserted in a regular basis.
+    # loop: init data (visual+hid actions) -> predict till end or limit -> update visual and action data
+    # visual data are inserted in a regular basis.
     # human action data/bot action data will be inserted in between visual data.
     # limit max machine predict token count per interval to 5. forcing it to end anyway.
     # what about the machine trying to spit out some visual prediction?
+    # we just shadow it. forcing it to resolve into actions.
     ...
 ################
 # READING DATA #
