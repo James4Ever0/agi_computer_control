@@ -8,6 +8,7 @@ import sys
 sys.path.append("../")
 
 import logging
+from typing import Generator, Union, AsyncGenerator, AwaitableGenerator
 import torch
 
 filename = "mytest.log"
@@ -60,7 +61,8 @@ import pytest
 
 def auto_teardown(func):
     def inner_func(*args, **kwargs):
-        val = 
+        val = func(*args, **kwargs)
+        if val()
 
 @pytest.fixture(scope='session')
 def basePath():
