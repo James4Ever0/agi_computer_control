@@ -178,4 +178,4 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
 
 def test_act_with_model(model: CustomModel):
     ...
-    # load the weight, take some input from training data.
+    # do not load any weight yet.
