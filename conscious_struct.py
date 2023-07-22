@@ -936,6 +936,7 @@ class TestEnqueue(Enqueue):
 
     def clear(self):
         ...
+        
 
 
 class SequentialTrainingQueue:
@@ -1045,6 +1046,8 @@ def resizeImage(im, desired_size):
     return new_im
 
 
+class SequentialEvalQueue:
+    ...
 ################
 # READING DATA #
 ################
