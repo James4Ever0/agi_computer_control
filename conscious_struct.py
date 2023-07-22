@@ -1052,7 +1052,7 @@ class SequentialEvalQueue:
     # human action data/bot action data will be inserted in between visual data.
     # limit max machine predict token count per interval to 5. forcing it to end anyway.
     # what about the machine trying to spit out some visual prediction?
-    # we just shadow it. forcing it to resolve into actions.
+    # we just shadow it. (do not act! just dream. maybe you can use that as continuous training basis?)
     ...
 ################
 # READING DATA #
