@@ -176,6 +176,7 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
         trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
     print("SESSION TIMEOUT NOW".center(60,"_"))
 
-def test_act_with_model(model: CustomModel):
+def test_eval_with_model(model: CustomModel):
     ...
     # do not load any weight yet. just use its random state.
+    # do not execute anything in this test! just get the predicted things out.
