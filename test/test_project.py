@@ -59,10 +59,15 @@ logging.critical(f"logging starts: {current_time}".center(100, "="))
 # logging.critical("")
 import pytest
 
-def auto_teardown(func):
-    def inner_func(*args, **kwargs):
-        val = func(*args, **kwargs)
-        if val()
+# TODO: modify function at source code level, not here!
+# def auto_teardown(func):
+#     def inner_func(*args, **kwargs):
+#         val = func(*args, **kwargs)
+#         if not isinstance(val, Union[Generator, AsyncGenerator, AwaitableGenerator]):
+#             yield val
+#             del val
+#         return val
+#     return inner_func
 
 @pytest.fixture(scope='session')
 def basePath():
