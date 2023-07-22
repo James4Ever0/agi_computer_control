@@ -1047,9 +1047,7 @@ def resizeImage(im, desired_size):
 
 
 class SequentialEvalQueue:
-    # two modes
-    # mode 1: one is without 
-    # init data -> 
+    # init data (visual) -> predict till end
     ...
 ################
 # READING DATA #
