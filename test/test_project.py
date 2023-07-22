@@ -58,6 +58,9 @@ logging.critical(f"logging starts: {current_time}".center(100, "="))
 # logging.critical("")
 import pytest
 
+def auto_teardown(func):
+    def inner_func(*args, **kwargs):
+        val = 
 
 @pytest.fixture(scope='session')
 def basePath():
@@ -100,7 +103,8 @@ def vit_model(vit_model_path:str):
     # breakpoint()
     mStateDict = torch.load(vit_model_path)
     vmodel.load_state_dict(mStateDict)
-    return vmodel
+    yield vmodel
+    del vmodel
 
 from torchvision.models import VisionTransformer
 @pytest.fixture(scope='session')
@@ -127,7 +131,7 @@ def loss_fn():
     
     loss = CrossEntropyLoss(reduction="mean")
     yield loss
-    return loss
+    del loss
 
 @pytest.fixture(scope='session')
 def optimizer(model:CustomModel):
@@ -165,5 +169,6 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
         trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
     print("SESSION TIMEOUT NOW".center(60,"_"))
 
-def test_act_with_model_weight(model_pretrained:CustomModel):
+def test_act_with_model(model: CustomModel):
+    ...
     # load the weight, take some input from training data.
