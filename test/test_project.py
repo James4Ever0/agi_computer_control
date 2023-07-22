@@ -24,7 +24,9 @@ from conscious_struct import (
         trainModelWithDataBasePath,
         Trainer,
         SequentialTrainingQueue,
-        CustomModel,)
+        CustomModel
+)
+
 myHandler = RotatingFileHandler(
     filename, maxBytes=1024 * 1024 * 3, backupCount=3, encoding="utf-8"
 )
@@ -44,7 +46,6 @@ logging.basicConfig(
     force=True,
     handlers=[myHandler, stdout_handler],
 )
-
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
 from recording_train_parse import getTrainingData
@@ -122,13 +123,17 @@ def model_pretrained(model:CustomModel,pretrained_model_path:str):
 def loss_fn():
     from torch.nn import CrossEntropyLoss
     
-    return CrossEntropyLoss(reduction="mean")
+    loss = CrossEntropyLoss(reduction="mean")
+    yield loss
+    return loss
 
 @pytest.fixture(scope='session')
 def optimizer(model:CustomModel):
     from torch.optim import Adam
     lr = 0.00001
-    return Adam(model.parameters(), lr=lr)
+    opt = Adam(model.parameters(), lr=lr)
+    yield opt
+    del opt
 
 from hypothesis import given, settings
 from hypothesis.strategies import integers
