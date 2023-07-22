@@ -108,7 +108,15 @@ def model(vit_model:VisionTransformer):
     yield model
     del model
 
+def pretrained_model_path():
+    path = ...
+    return path
+
 @pytest.fixture(scope='session')
+def model_pretrained(model:CustomModel,pretrained_model_path:str):
+    model.load_state_dict(torch.load(pretrained_model_path))
+    yield model
+    del model
 
 @pytest.fixture(scope='session')
 def loss_fn():
@@ -150,5 +158,5 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
         trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
     print("SESSION TIMEOUT NOW".center(60,"_"))
 
-def test_act_with_model_weight():
+def test_act_with_model_weight(model_pretrained:CustomModel):
     # load the weight, take some input from training data.
