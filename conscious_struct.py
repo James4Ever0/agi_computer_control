@@ -1047,7 +1047,9 @@ def resizeImage(im, desired_size):
 
 
 class SequentialEvalQueue:
-    # init data (visual) -> predict till end
+    # init data (visual+hid actions) -> predict till end -> update visual and action data
+    # visual data is inserted in a regular basis.
+    # human action data/bot action data will be inserted in between visual data.
     ...
 ################
 # READING DATA #
