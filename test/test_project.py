@@ -84,7 +84,7 @@ from pathlib import Path
 
 @pytest.fixture(scope='session')
 def vit_model_path():
-    path = Path(os.path.abspath(relpath:="../../../model_cache/vit_b_16-c867db91.pth"))
+    path = Path(os.path.abspath(relpath:="../../../model_cache/vit_b_16-c867db91.pth")) 
     if not path.exists():
         raise Exception(f"Current directory: {os.curdir}\nModel weight does not exist: {path}")
     # return "/Volumes/Toshiba XG3/model_cache/vit_b_16-c867db91.pth"
@@ -109,15 +109,17 @@ def model(vit_model:VisionTransformer):
     yield model
     del model
 
-def pretrained_model_path():
-    path = ...
-    return path
+# def pretrained_model_path():
+#     path = ...
+#     return path
 
-@pytest.fixture(scope='session')
-def model_pretrained(model:CustomModel,pretrained_model_path:str):
-    model.load_state_dict(torch.load(pretrained_model_path))
-    yield model
-    del model
+# @pytest.fixture(scope='session')
+# def model_pretrained(model:CustomModel,pretrained_model_path:str):
+#     model.load_state_dict(torch.load(pretrained_model_path))
+#     yield model
+#     del model
+
+# you don't need the model to be trained at all to act.
 
 @pytest.fixture(scope='session')
 def loss_fn():
