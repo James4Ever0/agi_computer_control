@@ -1266,7 +1266,7 @@ class CustomModel(torch.nn.Module):
         action_end_indexs = special_tokens == 2
         nop_indexs = special_tokens == 3
 
-        #         4+2+1000
+        # 4+2+1000
 
         # you are gonna take actions.
         # prepare some zeros.
