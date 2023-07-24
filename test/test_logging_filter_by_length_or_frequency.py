@@ -23,3 +23,7 @@ class MessageLengthAndFrequencyFilter:
             print("MSG IN FILTER?", msg)
         return accepted
 
+from logging import StreamHandler
+import sys
+
+stdout_handler = StreamHandler(sys.stdout) # test with this!
