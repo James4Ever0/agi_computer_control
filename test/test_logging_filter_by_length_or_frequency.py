@@ -13,21 +13,23 @@ def refresh_logger_lock():
 schedule.every(1).seconds.do(refresh_logger_lock)
 
 
-class MessageLengthAndFrequencyFilter:
-    @staticmethod
-    def filter(record: logging.LogRecord):
-        global allow_logging
-        schedule.run_pending()
-        # print(dir(record))
-        accepted = False
-        if allow_logging:  # only if accepted we assign False to this variable.
-            msg = record.msg
-            # print("MSG IN FILTER?", msg)
-            if len(msg) < 100:
-                # print("ACCEPTED")
-                accepted = True
-                allow_logging = False
-        return accepted
+# class MessageLengthAndFrequencyFilter:
+    
+#     @staticmethod
+def messageLengthAndFrequencyFilter(record: logging.LogRecord):
+    # def filter(record: logging.LogRecord):
+    global allow_logging
+    schedule.run_pending()
+    # print(dir(record))
+    accepted = False
+    if allow_logging:  # only if accepted we assign False to this variable.
+        msg = record.msg
+        # print("MSG IN FILTER?", msg)
+        if len(msg) < 100:
+            # print("ACCEPTED")
+            accepted = True
+            allow_logging = False
+    return accepted
 
 
 from logging import StreamHandler
@@ -35,7 +37,8 @@ import sys
 
 stdout_handler = StreamHandler(sys.stdout)  # test with this!
 stdout_handler.setLevel(logging.DEBUG)
-stdout_handler.addFilter(MessageLengthAndFrequencyFilter)
+# stdout_handler.addFilter(MessageLengthAndFrequencyFilter)
+stdout_handler.addFilter(messageLengthAndFrequencyFilter) # method also works!
 # do not use default logger!
 logger = logging.getLogger(__name__)
 logger.setLevel("DEBUG")
