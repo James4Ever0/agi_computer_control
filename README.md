@@ -91,3 +91,7 @@ to resolve the display resolution/mouse coordinate range matching issue, use pya
 ----
 
 GPT4 is using MoE as its architecture.
+
+----
+
+the main objective of AGI is to create another version of itself.
