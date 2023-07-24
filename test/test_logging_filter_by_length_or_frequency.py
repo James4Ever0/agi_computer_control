@@ -40,17 +40,16 @@ stdout_handler.addFilter(MessageLengthAndFrequencyFilter)
 logger = logging.getLogger(__name__)
 logger.setLevel("DEBUG")
 logger.addHandler(stdout_handler)
-logger.force=True
-logging.basicConfig(
-    # filename=filename,
-    # level=logging.getLogger().getEffectiveLevel(),
-    level="DEBUG",
-    # stream=sys.stderr
-    force=True,
-    handlers=[stdout_handler],
-)
+# logging.basicConfig(
+#     # filename=filename,
+#     # level=logging.getLogger().getEffectiveLevel(),
+#     level="DEBUG",
+#     # stream=sys.stderr
+#     force=True, # overridding root logger, which is deprecated.
+#     handlers=[stdout_handler],
+# )
 
 import time
 for i in range(100):
     time.sleep(0.1)
-    logging.debug(f"test debug message {i}")
+    logger.debug(f"test debug message {i}")
