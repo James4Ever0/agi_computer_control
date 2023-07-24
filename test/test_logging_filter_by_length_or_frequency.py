@@ -10,7 +10,7 @@ def refresh_logger_lock():
 
 schedule.every(3).seconds.do(refresh_logger_lock)
 
-class MyFilter:
+class MessageLengthAndFrequencyFilter:
     @staticmethod
     def filter(record:logging.LogRecord):
         schedule.run_pending()
