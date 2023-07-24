@@ -10,7 +10,7 @@ def refresh_logger_lock():
     allow_logging = True
 
 
-schedule.every(0.2).seconds.do(refresh_logger_lock)
+schedule.every(1).seconds.do(refresh_logger_lock)
 
 
 class MessageLengthAndFrequencyFilter:
@@ -46,10 +46,6 @@ logging.basicConfig(
 )
 
 import time
-for i in range(10):
+for i in range(100):
     time.sleep(0.1)
-logging.debug("test debug message")
-logging.debug("test debug message")
-logging.debug("test debug message")
-logging.debug("test debug message")
-logging.debug("test debug message")
+    logging.debug(f"test debug message {i}")
