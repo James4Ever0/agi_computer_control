@@ -10,7 +10,7 @@ def refresh_logger_lock():
     allow_logging = True
 
 
-schedule.every(1).seconds.do(refresh_logger_lock)
+schedule.every(0.2).seconds.do(refresh_logger_lock)
 
 
 class MessageLengthAndFrequencyFilter:
@@ -26,6 +26,7 @@ class MessageLengthAndFrequencyFilter:
             if len(msg) < 100:
                 # print("ACCEPTED")
                 accepted = True
+                allow_logging = False
         return accepted
 
 
@@ -44,4 +45,11 @@ logging.basicConfig(
     handlers=[stdout_handler],
 )
 
+import time
+for i in range(10):
+    time.sleep(0.1)
+logging.debug("test debug message")
+logging.debug("test debug message")
+logging.debug("test debug message")
+logging.debug("test debug message")
 logging.debug("test debug message")
