@@ -19,20 +19,22 @@ class MessageLengthAndFrequencyFilter:
         global allow_logging
         schedule.run_pending()
         accepted = False
-        if allow_logging:
+        if allow_logging:  # only if accepted we assign False to this variable.
             msg = record.message
             print("MSG IN FILTER?", msg)
         return accepted
 
+
 from logging import StreamHandler
 import sys
 
-stdout_handler = StreamHandler(sys.stdout) # test with this!
+stdout_handler = StreamHandler(sys.stdout)  # test with this!
 stdout_handler.setLevel(logging.DEBUG)
+stdout_handler.setFilter
 logging.basicConfig(
     # filename=filename,
     # level=logging.getLogger().getEffectiveLevel(),
-    level = "DEBUG",
+    level="DEBUG",
     # stream=sys.stderr,
     force=True,
     handlers=[stdout_handler],
