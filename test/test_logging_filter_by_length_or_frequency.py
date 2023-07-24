@@ -38,7 +38,9 @@ stdout_handler.setLevel(logging.DEBUG)
 stdout_handler.addFilter(MessageLengthAndFrequencyFilter)
 # do not use default logger!
 logger = logging.getLogger(__name__)
-logger.
+logger.setLevel("DEBUG")
+logger.addHandler(stdout_handler)
+logger.force=True
 logging.basicConfig(
     # filename=filename,
     # level=logging.getLogger().getEffectiveLevel(),
