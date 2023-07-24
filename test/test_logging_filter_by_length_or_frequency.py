@@ -1,6 +1,3 @@
 import logging
-import time
+import schedule
 
-last_logged = time.time()
-
-def log_by_
