@@ -27,3 +27,13 @@ from logging import StreamHandler
 import sys
 
 stdout_handler = StreamHandler(sys.stdout) # test with this!
+logging.basicConfig(
+    # filename=filename,
+    # level=logging.getLogger().getEffectiveLevel(),
+    level = "DEBUG"
+    # stream=sys.stderr,
+    force=True,
+    handlers=[stdout_handler],
+)
+
+logging.DEBUG()
