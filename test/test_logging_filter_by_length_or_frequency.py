@@ -16,6 +16,7 @@ schedule.every(3).seconds.do(refresh_logger_lock)
 class MessageLengthAndFrequencyFilter:
     @staticmethod
     def filter(record: logging.LogRecord):
+        global allow_logging
         schedule.run_pending()
         accepted = False
         if allow_logging:
@@ -27,13 +28,14 @@ from logging import StreamHandler
 import sys
 
 stdout_handler = StreamHandler(sys.stdout) # test with this!
+stdout_handler.setLevel(logging.DEBUG)
 logging.basicConfig(
     # filename=filename,
     # level=logging.getLogger().getEffectiveLevel(),
-    level = "DEBUG"
+    level = "DEBUG",
     # stream=sys.stderr,
     force=True,
     handlers=[stdout_handler],
 )
 
-logging.DEBUG()
+logging.debug("test debug message")
