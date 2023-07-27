@@ -964,20 +964,22 @@ class {{s2cu(hid_action_type)}}(BaseModel):
         {% set datatype = elem[1] %}
     {{name}}: {{datatype}}
         {% do self_arglist.append("self.{}".format(name)) %}
-        {% do create_kwargs.append("{} = lst[{}]".format(name, i)) %}
+        {% do create_kwargs.append("{} = action_args[{}]".format(name, i)) %}
     {% endfor %}
 
     def to_list(self) -> List:
-        return [self._action_type, {{", ".join(self_arglist)}}]
+        return [self._action_type, [{{", ".join(self_arglist)}}]]
 
     @classmethod
     def from_list(cls, lst:List):
-        assert len(lst) == {{len(self_arglist)+1}}
-        assert lst[0] == cls._action_type
+        action_type = lst[0]
+        action_args = lst[1]
+        assert len(action_args) == {{len(self_arglist)}}
+        assert action_type == cls._action_type
 
         {% for i in range(len(self_arglist)) %}
             {% set elem = data[i] %}
-        assert isinstance(lst[{{i}}], {{elem[1]}})
+        assert isinstance(action_args[{{i}}], {{elem[1]}})
         {% endfor %}
 
         return cls({{", ".join(create_kwargs)}})
