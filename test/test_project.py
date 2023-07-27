@@ -4,13 +4,20 @@
 # you must let the AI design itself, evolve on its own.
 
 import sys
+import numpy as np
 
 sys.path.append("../")
 
 # import logging
-from log_utils import logger
+from log_utils import logger_print
+
 # import log_utils
-from typing import Generator, Union, AsyncGenerator, AwaitableGenerator
+# it is been commented out.
+# from typing import Generator, Union, AsyncGenerator
+# try:
+#     from typing import AwaitableGenerator
+# except:
+#     from typing_extensions import AwaitableGenerator
 import torch
 
 # may log to other places.
@@ -21,14 +28,14 @@ import torch
 
 
 from conscious_struct import (
-        trainModelWithDataBasePath,
-        Trainer,
-        SequentialTrainingQueue,
-        CustomModel,
-        ConsciousFlow, # consists of `ConsciousBlock`
-        ConsciousBlock,
-        HIDAction,
-        ConsciousBase
+    trainModelWithDataBasePath,
+    Trainer,
+    SequentialTrainingQueue,
+    CustomModel,
+    ConsciousFlow,  # consists of `ConsciousBlock`
+    ConsciousBlock,
+    HIDAction,
+    ConsciousBase,
 )
 
 # logging.basicConfig(
@@ -46,7 +53,7 @@ from recording_train_parse import getTrainingData
 import datetime
 
 current_time = datetime.datetime.now().isoformat()
-logger.critical(f"logging starts: {current_time}".center(100, "="))
+logger_print(f"logging starts: {current_time}".center(100, "="))
 # logging.critical("")
 import pytest
 
@@ -60,39 +67,47 @@ import pytest
 #         return val
 #     return inner_func
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def basePath():
     return "../recordings/2023-06-02T07_59_45.711256/"
 
 
-def test_get_training_data(basePath:str):
+def test_get_training_data(basePath: str):
     for trainingDataFrame in getTrainingData(basePath):
-        logger.debug("training data frame: %s", trainingDataFrame)
+        logger_print("training data frame:", trainingDataFrame)
 
 
 # test fetching training data.
 
 
-def test_fetching_training_data(basePath:str):
+def test_fetching_training_data(basePath: str):
     from conscious_struct import trainModelWithDataBasePath, TestEnqueue
 
     myQueue = TestEnqueue()
     # fake sequentialqueue.
     trainModelWithDataBasePath(basePath, myQueue)
 
+
 import os
 from pathlib import Path
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def vit_model_path():
-    path = Path(os.path.abspath(relpath:="../../../model_cache/vit_b_16-c867db91.pth")) 
+    path = Path(
+        os.path.abspath(relpath := "../../../model_cache/vit_b_16-c867db91.pth")
+    )
     if not path.exists():
-        raise Exception(f"Current directory: {os.curdir}\nModel weight does not exist: {path}")
+        raise Exception(
+            f"Current directory: {os.curdir}\nModel weight does not exist: {path}"
+        )
     # return "/Volumes/Toshiba XG3/model_cache/vit_b_16-c867db91.pth"
     return path
 
-@pytest.fixture(scope='session')
-def vit_model(vit_model_path:str):
+
+@pytest.fixture(scope="session")
+def vit_model(vit_model_path: str):
     import torchvision
 
     # code from OA bot
@@ -104,12 +119,16 @@ def vit_model(vit_model_path:str):
     yield vmodel
     del vmodel
 
+
 from torchvision.models import VisionTransformer
-@pytest.fixture(scope='session')
-def model(vit_model:VisionTransformer):
+
+
+@pytest.fixture(scope="session")
+def model(vit_model: VisionTransformer):
     model = CustomModel(vit_model)
     yield model
     del model
+
 
 # def pretrained_model_path():
 #     path = ...
@@ -123,31 +142,40 @@ def model(vit_model:VisionTransformer):
 
 # you don't need the model to be trained at all to act.
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def loss_fn():
     from torch.nn import CrossEntropyLoss
-    
+
     loss = CrossEntropyLoss(reduction="mean")
     yield loss
     del loss
 
-@pytest.fixture(scope='session')
-def optimizer(model:CustomModel):
+
+@pytest.fixture(scope="session")
+def optimizer(model: CustomModel):
     from torch.optim import Adam
+
     lr = 0.00001
     opt = Adam(model.parameters(), lr=lr)
     yield opt
     del opt
 
+
 from hypothesis import given, settings
 from hypothesis.strategies import integers
+
 # from hypothesis import HealthCheck
 
 import stopit
+
+
 @given(random_seed=integers())
 # @settings(suppress_health_check=(HealthCheck.function_scoped_fixture,),max_examples = 10, deadline=None)
 @settings(deadline=None, max_examples=2)
-def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, basePath:str, random_seed:int):
+def test_train_model_with_training_data(
+    model: CustomModel, loss_fn, optimizer, basePath: str, random_seed: int
+):
     # TODO: annotate our code with "nptyping" & "torchtyping" | "jaxtyping"
     # TODO: haskell? functional python?
     # (variadic types) ref: https://peps.python.org/pep-0646/
@@ -163,23 +191,55 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
     # TODO: allow timeout exception to be raised, disallow any other exceptions.
     # you might want to shuffle its order, for testing.
 
-    with stopit.ThreadingTimeout(5): # timeout exception suppressed!
-        trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
-    print("SESSION TIMEOUT NOW".center(60,"_"))
+    with stopit.ThreadingTimeout(5):  # timeout exception suppressed!
+        trainModelWithDataBasePath(
+            basePath, myQueue, shuffle_for_test=True, random_seed=random_seed
+        )
+    logger_print("SESSION TIMEOUT NOW".center(60, "_"))
+
 
 import einops
+from conscious_struct import KeyPress, KeyRelease, MouseMove, MouseScroll, MouseClick
 
-def test_eval_with_model(model: CustomModel):
+
+@pytest.parametrize(
+    "HIDActionObj",
+    [
+        MouseClick(x=993, y=659, button="Button.Left", pressed=True),
+        MouseMove(x=10, y=20),
+        MouseScroll(x=10, y=10, dx=10, dy=-10),
+        KeyPress(key="""'9'"""),
+        KeyRelease(key="""'8'"""),
+    ],
+)
+def test_eval_with_model(model: CustomModel, HIDActionObj):
     model.eval()
     # it is been observed by video recording script.
     max_x, max_y = 1280, 768
-    mouseActionJson = ['mouse_click', [993, 659]]
-    actionData = HIDAction.from_action_json(mouseActionJson, max_x = max_x,  max_y = max_y).to_ndarray()
-    randomImageData = np.random.random((ConsciousBase.image_channels,ConsciousBase.image_dim, ConsciousBase.image_dim))
-    imageData = einops.pack(randomImageData, "*") # just what shape shall this be?
-    actionConsciousBlock = ConsciousBlock(data_type='HIDAction', special_token=None, action_data = actionData)
-    imageConsciousBlock = ConsciousBlock(data_type = "image", special_token=None, image_data = imageData)
-    cs = ConsciousFlow(consciousBlocks = [actionConsciousBlock, imageConsciousBlock])
-    result = model.forward(conscious_stream = cs)
+    HIDActionJson = HIDActionObj.to_list()
+    # HIDActionJsonList = [HIDActionObj.to_list() for HIDActionObj in HIDActionObjList]
+    actionData = HIDAction.from_action_json(
+        HIDActionJson, max_x=max_x, max_y=max_y
+    ).to_ndarray()
+    # actionDataList = [HIDAction.from_action_json(
+    #     HIDActionJson, max_x=max_x, max_y=max_y
+    # ).to_ndarray() for HIDActionJson in HIDActionJsonList]
+    randomImageData = np.random.random(
+        (ConsciousBase.image_channels, ConsciousBase.image_dim, ConsciousBase.image_dim)
+    )
+    imageData = einops.pack(randomImageData, "*")  # just what shape shall this be?
+    # actionConsciousBlocks = [ConsciousBlock(
+    #     data_type="HIDAction", special_token=None, action_data=actionData
+    # ) for actionData in actionDataList]
+    actionConsciousBlock = ConsciousBlock(
+        data_type="HIDAction", special_token=None, action_data=actionData
+    )
+    imageConsciousBlock = ConsciousBlock(
+        data_type="image", special_token=None, image_data=imageData
+    )
+    # cs = ConsciousFlow(consciousBlocks=[*actionConsciousBlocks, imageConsciousBlock])
+    cs = ConsciousFlow(consciousBlocks=[actionConsciousBlock, imageConsciousBlock])
+    result = model.forward(conscious_stream=cs.to_tensor())
+    logger_print(result)
     # do not load any weight yet. just use its random state.
     # do not execute anything in this test! just get the predicted things out.

@@ -4,10 +4,9 @@ import einops
 import os
 import numpy as np
 import cv2
-import ast
+import ast 
 from pydantic import BaseModel, validator
 from typing import Union, Mapping, List
-
 # import logging
 from log_utils import logger
 from pydantic_numpy import NDArray
@@ -27,7 +26,6 @@ except:
 ##############
 #  HID BASE  #
 ##############
-
 
 class HIDActionTypes:
     keyboard_action_types: TypeAlias = Literal[
@@ -160,6 +158,129 @@ class HIDActionBase:
     action_types = list(HIDActionTypes.action_types.__args__)
     mouse_buttons = list(HIDActionTypes.mouse_buttons.__args__)
     keys = list(HIDActionTypes.keys.__args__)
+    {# keyboard_action_types = [
+        "key_press",
+        "key_release",
+    ]
+    mouse_action_types = [
+        "mouse_move",
+        "mouse_click",
+        "mouse_scroll",
+    ]
+    action_types = [
+        *keyboard_action_types,
+        *mouse_action_types,
+        # None,  # end of action
+        # there is no such thing here. do it externally.
+    ]
+    mouse_buttons = [
+        "Button.left",
+        "Button.middle",
+        "Button.right",
+    ]
+    keys = [
+        """','""",
+        """'.'""",
+        """'/'""",
+        """';'""",
+        """\"'\"""",
+        """'['""",
+        """']'""",
+        """'\\'""",
+        """'='""",
+        """'-'""",
+        """'0'""",
+        """'9'""",
+        """'8'""",
+        """'7'""",
+        """'6'""",
+        """'5'""",
+        """'4'""",
+        """'3'""",
+        """'2'""",
+        """'1'""",
+        """'`'""",
+        """'a'""",
+        """'b'""",
+        """'c'""",
+        """'d'""",
+        """'e'""",
+        """'f'""",
+        """'g'""",
+        """'h'""",
+        """'i'""",
+        """'j'""",
+        """'k'""",
+        """'l'""",
+        """'m'""",
+        """'n'""",
+        """'o'""",
+        """'p'""",
+        """'q'""",
+        """'r'""",
+        """'s'""",
+        """'t'""",
+        """'u'""",
+        """'v'""",
+        """'w'""",
+        """'x'""",
+        """'y'""",
+        """'z'""",
+        "Key.alt",
+        "Key.alt",
+        "Key.alt_r",
+        "Key.alt_r",
+        "Key.backspace",
+        "Key.caps_lock",
+        "Key.cmd",
+        "Key.cmd",
+        "Key.cmd_r",
+        "Key.ctrl",
+        "Key.ctrl",
+        "Key.ctrl_r",
+        "Key.delete",
+        "Key.down",
+        "Key.end",
+        "Key.enter",
+        "Key.esc",
+        "Key.f1",
+        "Key.f2",
+        "Key.f3",
+        "Key.f4",
+        "Key.f5",
+        "Key.f6",
+        "Key.f7",
+        "Key.f8",
+        "Key.f9",
+        "Key.f10",
+        "Key.f11",
+        "Key.f12",
+        "Key.f13",
+        "Key.f14",
+        "Key.f15",
+        "Key.f16",
+        "Key.f17",
+        "Key.f18",
+        "Key.f19",
+        "Key.f20",
+        "Key.home",
+        "Key.left",
+        "Key.page_down",
+        "Key.page_up",
+        "Key.right",
+        "Key.shift",
+        "Key.shift",
+        "Key.shift_r",
+        "Key.space",
+        "Key.tab",
+        "Key.up",
+        "Key.media_play_pause",
+        "Key.media_volume_mute",
+        "Key.media_volume_down",
+        "Key.media_volume_up",
+        "Key.media_previous",
+        "Key.media_next",
+    ] #}
 
     length = (
         len(action_types)
@@ -274,7 +395,7 @@ class HIDAction(BaseModel, HIDActionBase):
     # instance method: to_action
     max_x: int
     max_y: int
-    action_type: Literal[
+    action_type:Literal[
         "key_press",  # ["key_press", "'w'"]
         "key_release",  # ["key_release", "'r'"]
         "mouse_move",  # ["mouse_move", [176.7734375, 580.40625]], "timeStamp": 1680247557.125498}
@@ -282,11 +403,219 @@ class HIDAction(BaseModel, HIDActionBase):
         "mouse_scroll",  # ["mouse_scroll", [938.76171875, 318.75, 0, 0]]
         #         None,  # end_of_action
     ]  # you need to specify this.
-    key: Union[
-        HIDActionTypes.keys,
+    {# _key_types: TypeAlias = Literal[
+        """','""",
+        """'.'""",
+        """'/'""",
+        """';'""",
+        """\"'\"""",
+        """'['""",
+        """']'""",
+        """'\\'""",
+        """'='""",
+        """'-'""",
+        """'0'""",
+        """'9'""",
+        """'8'""",
+        """'7'""",
+        """'6'""",
+        """'5'""",
+        """'4'""",
+        """'3'""",
+        """'2'""",
+        """'1'""",
+        """'`'""",
+        """'a'""",
+        """'b'""",
+        """'c'""",
+        """'d'""",
+        """'e'""",
+        """'f'""",
+        """'g'""",
+        """'h'""",
+        """'i'""",
+        """'j'""",
+        """'k'""",
+        """'l'""",
+        """'m'""",
+        """'n'""",
+        """'o'""",
+        """'p'""",
+        """'q'""",
+        """'r'""",
+        """'s'""",
+        """'t'""",
+        """'u'""",
+        """'v'""",
+        """'w'""",
+        """'x'""",
+        """'y'""",
+        """'z'""",
+        "Key.alt",
+        "Key.alt",
+        "Key.alt_r",
+        "Key.alt_r",
+        "Key.backspace",
+        "Key.caps_lock",
+        "Key.cmd",
+        "Key.cmd",
+        "Key.cmd_r",
+        "Key.ctrl",
+        "Key.ctrl",
+        "Key.ctrl_r",
+        "Key.delete",
+        "Key.down",
+        "Key.end",
+        "Key.enter",
+        "Key.esc",
+        "Key.f1",
+        "Key.f2",
+        "Key.f3",
+        "Key.f4",
+        "Key.f5",
+        "Key.f6",
+        "Key.f7",
+        "Key.f8",
+        "Key.f9",
+        "Key.f10",
+        "Key.f11",
+        "Key.f12",
+        "Key.f13",
+        "Key.f14",
+        "Key.f15",
+        "Key.f16",
+        "Key.f17",
+        "Key.f18",
+        "Key.f19",
+        "Key.f20",
+        "Key.home",
+        "Key.left",
+        "Key.page_down",
+        "Key.page_up",
+        "Key.right",
+        "Key.shift",
+        "Key.shift",
+        "Key.shift_r",
+        "Key.space",
+        "Key.tab",
+        "Key.up",
+        "Key.media_play_pause",
+        "Key.media_volume_mute",
+        "Key.media_volume_down",
+        "Key.media_volume_up",
+        "Key.media_previous",
+        "Key.media_next",
+    ] #}
+    key: Union[HIDActionTypes.keys,
+        {#
+        Literal["""','"""],
+        Literal["""'.'"""],
+        Literal["""'/'"""],
+        Literal["""';'"""],
+        Literal["""\"'\""""],
+        Literal["""'['"""],
+        Literal["""']'"""],
+        Literal["""'\\'"""],
+        Literal["""'='"""],
+        Literal["""'-'"""],
+        Literal["""'0'"""],
+        Literal["""'9'"""],
+        Literal["""'8'"""],
+        Literal["""'7'"""],
+        Literal["""'6'"""],
+        Literal["""'5'"""],
+        Literal["""'4'"""],
+        Literal["""'3'"""],
+        Literal["""'2'"""],
+        Literal["""'1'"""],
+        Literal["""'`'"""],
+        Literal["""'a'"""],
+        Literal["""'b'"""],
+        Literal["""'c'"""],
+        Literal["""'d'"""],
+        Literal["""'e'"""],
+        Literal["""'f'"""],
+        Literal["""'g'"""],
+        Literal["""'h'"""],
+        Literal["""'i'"""],
+        Literal["""'j'"""],
+        Literal["""'k'"""],
+        Literal["""'l'"""],
+        Literal["""'m'"""],
+        Literal["""'n'"""],
+        Literal["""'o'"""],
+        Literal["""'p'"""],
+        Literal["""'q'"""],
+        Literal["""'r'"""],
+        Literal["""'s'"""],
+        Literal["""'t'"""],
+        Literal["""'u'"""],
+        Literal["""'v'"""],
+        Literal["""'w'"""],
+        Literal["""'x'"""],
+        Literal["""'y'"""],
+        Literal["""'z'"""],
+        Literal["Key.alt"],
+        Literal["Key.alt"],
+        Literal["Key.alt_r"],
+        Literal["Key.alt_r"],
+        Literal["Key.backspace"],
+        Literal["Key.caps_lock"],
+        Literal["Key.cmd"],
+        Literal["Key.cmd"],
+        Literal["Key.cmd_r"],
+        Literal["Key.ctrl"],
+        Literal["Key.ctrl"],
+        Literal["Key.ctrl_r"],
+        Literal["Key.delete"],
+        Literal["Key.down"],
+        Literal["Key.end"],
+        Literal["Key.enter"],
+        Literal["Key.esc"],
+        Literal["Key.f1"],
+        Literal["Key.f2"],
+        Literal["Key.f3"],
+        Literal["Key.f4"],
+        Literal["Key.f5"],
+        Literal["Key.f6"],
+        Literal["Key.f7"],
+        Literal["Key.f8"],
+        Literal["Key.f9"],
+        Literal["Key.f10"],
+        Literal["Key.f11"],
+        Literal["Key.f12"],
+        Literal["Key.f13"],
+        Literal["Key.f14"],
+        Literal["Key.f15"],
+        Literal["Key.f16"],
+        Literal["Key.f17"],
+        Literal["Key.f18"],
+        Literal["Key.f19"],
+        Literal["Key.f20"],
+        Literal["Key.home"],
+        Literal["Key.left"],
+        Literal["Key.page_down"],
+        Literal["Key.page_up"],
+        Literal["Key.right"],
+        Literal["Key.shift"],
+        Literal["Key.shift"],
+        Literal["Key.shift_r"],
+        Literal["Key.space"],
+        Literal["Key.tab"],
+        Literal["Key.up"],
+        Literal["Key.media_play_pause"],
+        Literal["Key.media_volume_mute"],
+        Literal["Key.media_volume_down"],
+        Literal["Key.media_volume_up"],
+        Literal["Key.media_previous"],
+        Literal["Key.media_next"], 
+        #}
         None,
     ] = None
-    mouse_button: Union[HIDActionTypes.mouse_buttons, None] = None
+    {# _mouse_button_types = Literal["Button.left", "Button.middle","Button.right"] #}
+    mouse_button: Union[
+        HIDActionTypes.mouse_buttons, None
+    ] = None
     mouse_pressed: Union[bool, None] = None
     x: Union[float, None] = None
     y: Union[float, None] = None
@@ -589,116 +918,125 @@ class HIDAction(BaseModel, HIDActionBase):
             action_json = None
         return action_json
 
-
 #########################
 #  HID DATA VALIDATION  #
 #########################
 
+{# from typing import Unpack #}
 from pydantic import confloat
 
+{% set non_negative_float = "confloat(ge=0)" %}
+{% set hid_action_types = ["key_press", "key_release", "mouse_click", "mouse_move", "mouse_scroll"] %}
+{% set hid_data_type_dict = {} %}
+{% for hid_action_type in hid_action_types %}
+    {% set data_list = [] %}
+    {% if hid_action_type.startswith("key") %}
+        {% do data_list.append(
+            ("key", "HIDActionTypes.keys")
+            )
+        %}
+    {% elif hid_action_type.startswith("mouse")%}
+        {% do data_list.append(("x", non_negative_float)) %}
+        {% do data_list.append(("y", non_negative_float)) %}
+        {% if hid_action_type == 'mouse_scroll'%}
+            {% do data_list.append(("dx", non_negative_float)) %}
+            {% do data_list.append(("dy", non_negative_float)) %}
+        {% elif hid_action_type == 'mouse_click'%}
+            {% do data_list.append(("button", "HIDActionTypes.mouse_buttons"))%}
+            {% do data_list.append(("pressed", "bool"))%}
+        {% endif %}
+    {% else %}
+        {% error("Unknown HID action type: '{}'".format(hid_action_type)) %}
+    {% endif %}
+    {% do hid_data_type_dict.update({hid_action_type: data_list}) %}
+{% endfor %}
 
-class KeyPress(BaseModel):
-    _action_type = "key_press"
 
-    key: HIDActionTypes.keys
+{% for hid_action_type, data in hid_data_type_dict.items() %}
+class {{s2cu(hid_action_type)}}(BaseModel):
+    _action_type = {{repr(hid_action_type)}}
+
+    {% set self_arglist = []%}
+    {% set create_kwargs = [] %}
+    {% for i in range(len(data)) %}
+        {% set elem = data[i] %}
+        {% set name = elem[0] %}
+        {% set datatype = elem[1] %}
+    {{name}}: {{datatype}}
+        {% do self_arglist.append("self.{}".format(name)) %}
+        {% do create_kwargs.append("{} = lst[{}]".format(name, i)) %}
+    {% endfor %}
 
     def to_list(self) -> List:
-        return [self._action_type, self.key]
+        return [self._action_type, {{", ".join(self_arglist)}}]
 
     @classmethod
-    def from_list(cls, lst: List):
-        assert len(lst) == 2
+    def from_list(cls, lst:List):
+        assert len(lst) == {{len(self_arglist)+1}}
         assert lst[0] == cls._action_type
 
-        assert isinstance(lst[0], HIDActionTypes.keys)
+        {% for i in range(len(self_arglist)) %}
+            {% set elem = data[i] %}
+        assert isinstance(lst[{{i}}], {{elem[1]}})
+        {% endfor %}
 
-        return cls(key=lst[0])
+        return cls({{", ".join(create_kwargs)}})
 
+{% endfor %}
+
+{# 
+class KeyPress(BaseModel):
+    _action_type = "key_press"
+    key: Literal[Unpack[HIDActionBase.keys]]
+    def to_list(self):
+        return [self._action_type, self.key]
+    @classmethod
+    def from_list(cls, lst):
+        assert len(lst) == 2
+        assert lst[0] == cls._action_type
+        assert isinstance(lst[1], Literal[Unpack[HIDActionBase.keys]])
+        return cls(key = lst[1])
 
 class KeyRelease(BaseModel):
     _action_type = "key_release"
+    key: Literal[Unpack[HIDActionBase.keys]]
 
-    key: HIDActionTypes.keys
-
-    def to_list(self) -> List:
+    def to_list(self):
         return [self._action_type, self.key]
 
     @classmethod
-    def from_list(cls, lst: List):
+    def from_list(cls, lst):
         assert len(lst) == 2
         assert lst[0] == cls._action_type
+        assert isinstance(lst[1], Literal[Unpack[HIDActionBase.keys]])
+        return cls(key = lst[1])
 
-        assert isinstance(lst[0], HIDActionTypes.keys)
-
-        return cls(key=lst[0])
-
-
-class MouseClick(BaseModel):
-    _action_type = "mouse_click"
-
-    x: confloat(ge=0)
-    y: confloat(ge=0)
-    button: HIDActionTypes.mouse_buttons
-    pressed: bool
-
-    def to_list(self) -> List:
-        return [self._action_type, self.x, self.y, self.button, self.pressed]
-
-    @classmethod
-    def from_list(cls, lst: List):
-        assert len(lst) == 5
-        assert lst[0] == cls._action_type
-
-        assert isinstance(lst[0], confloat(ge=0))
-        assert isinstance(lst[1], confloat(ge=0))
-        assert isinstance(lst[2], HIDActionTypes.mouse_buttons)
-        assert isinstance(lst[3], bool)
-
-        return cls(x=lst[0], y=lst[1], button=lst[2], pressed=lst[3])
-
+from pydantic import confloat
 
 class MouseMove(BaseModel):
     _action_type = "mouse_move"
-
     x: confloat(ge=0)
     y: confloat(ge=0)
-
-    def to_list(self) -> List:
+    def to_list(self):
         return [self._action_type, self.x, self.y]
 
-    @classmethod
-    def from_list(cls, lst: List):
-        assert len(lst) == 3
-        assert lst[0] == cls._action_type
-
-        assert isinstance(lst[0], confloat(ge=0))
-        assert isinstance(lst[1], confloat(ge=0))
-
-        return cls(x=lst[0], y=lst[1])
-
+class MouseClick(BaseModel):
+    _action_type = "mouse_click"
+    x: confloat(ge=0)
+    y: confloat(ge=0)
+    button: Literal[Unpack[HIDActionBase.mouse_buttons]]
+    def to_list(self):
+        return [self._action_type, self.x, self.y, self.button]
 
 class MouseScroll(BaseModel):
     _action_type = "mouse_scroll"
-
     x: confloat(ge=0)
     y: confloat(ge=0)
     dx: confloat(ge=0)
     dy: confloat(ge=0)
-
-    def to_list(self) -> List:
+    def to_list(self):
         return [self._action_type, self.x, self.y, self.dx, self.dy]
-
-    @classmethod
-    def from_list(cls, lst: List):
-        assert len(lst) == 5
-        assert lst[0] == cls._action_type
-
-        assert isinstance(lst[0], confloat(ge=0))
-        assert isinstance(lst[1], confloat(ge=0))
-        assert isinstance(lst[2], confloat(ge=0))
-        assert isinstance(lst[3], confloat(ge=0))
-
-        return cls(x=lst[0], y=lst[1], dx=lst[2], dy=lst[3])
+#}
 
 
 #################
@@ -742,7 +1080,7 @@ class ConsciousBase:
 
     data_type_length = len(data_types)
     special_token_length = len(special_tokens)
-    image_length = image_dim * image_dim * image_channels  # obviously flattened.
+    image_length = image_dim * image_dim * image_channels # obviously flattened.
 
     # FIX 1: plus to colon.
     split_sizes = [
@@ -850,15 +1188,14 @@ class ConsciousBlock(BaseModel, ConsciousBase):
 
         elif self.data_type == "HIDAction":
             assert self.action_data is not None
-            if len(self.action_data.shape) > 1:
+            if len(self.action_data.shape)>1:
                 self.action_data = self.action_data.reshape((-1,))
             logger.debug("Action data shape: %s", self.action_data.shape)
             # BUG: actual: (4110, 1)
             # shall we reshape this.
             logger.debug(
-                "Expected data shape: %s",
-                expected_data_shape := (HIDActionBase.length,),
-            )  # TODO: expected shape is (4110, )? how to make this typed?
+                "Expected data shape: %s", expected_data_shape := (HIDActionBase.length,)
+            ) # TODO: expected shape is (4110, )? how to make this typed?
             assert self.action_data.shape == expected_data_shape
             assert self.special_token not in ["image_newline", "image_end"]
 
@@ -935,7 +1272,6 @@ from typing import Protocol
 class Enqueue(Protocol):
     def enqueue(self, data, /):
         ...
-
     def clear(self):
         ...
 
@@ -956,6 +1292,7 @@ class TestEnqueue(Enqueue):
 
     def clear(self):
         ...
+        
 
 
 class SequentialTrainingQueue:
@@ -979,9 +1316,7 @@ class SequentialTrainingQueue:
         #         print(type(consciousBlock))
         consciousVector = consciousBlock.to_tensor()
         logger.debug(
-            "CONSCIOUS VECTOR [TYPE: %s SHAPE: %s]",
-            type(consciousVector),
-            consciousVector.shape,
+            "CONSCIOUS VECTOR [TYPE: %s SHAPE: %s]", type(consciousVector), consciousVector.shape
         )
         self.consciousVectors.append(consciousVector)
 
@@ -1076,8 +1411,6 @@ class SequentialEvalQueue:
     # what about the machine trying to spit out some visual prediction?
     # we just shadow it. (do not act! just dream. compare to current visual ground truth and perform gradient descent. maybe you can use that as continuous training basis? or redesign the model so it can choose to skip (by retrievable positional encoding) some blocks of visual data and perform descent only on selected area?)
     ...
-
-
 ################
 # READING DATA #
 ################
@@ -1095,13 +1428,12 @@ import re
 import parse
 import random
 
-
 # this process is actually training it.
 def trainModelWithDataBasePath(
     basePath: str,
     sequentialTrainingQueue: Enqueue,
-    shuffle_for_test: bool = False,
-    random_seed: int = 43  # pass hypothesis param here!
+    shuffle_for_test:bool=False,
+    random_seed:int = 43 # pass hypothesis param here!
     # sequentialTrainingQueue: SequentialTrainingQueue
 ):
     if shuffle_for_test:
@@ -1123,17 +1455,16 @@ def trainModelWithDataBasePath(
         else:
             raise Exception(f"Cannot parse perspective size from file: {fpath}")
     trainingDataGenerator = getTrainingData(basePath)
-
+    
     if shuffle_for_test:
         myGenerator = list(trainingDataGenerator)
         random.shuffle(myGenerator)
-
+        
     for trainingDataFrame in trainingDataGenerator:
         if trainingDataFrame.datatype == "hid":
             encoded_actions = []
             actions = trainingDataFrame.data["HIDEvents"]
-            if shuffle_for_test:
-                random.shuffle(actions)
+            if shuffle_for_test: random.shuffle(actions)
             for action in actions:
                 action_type, action_args = action
                 if action_type in HIDActionBase.keyboard_action_types:
@@ -1193,7 +1524,7 @@ def trainModelWithDataBasePath(
                 if shuffle_for_test:
                     consciousBlocks.append(consciousBlock)
                 else:
-                    #                 print(consciousBlock)
+                #                 print(consciousBlock)
                     sequentialTrainingQueue.enqueue(consciousBlock)
             #             last_output = torch.zeros(1, output_size)
             if shuffle_for_test:
