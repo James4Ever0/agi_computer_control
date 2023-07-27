@@ -603,16 +603,18 @@ class KeyPress(BaseModel):
     key: HIDActionTypes.keys
 
     def to_list(self) -> List:
-        return [self._action_type, self.key]
+        return [self._action_type, [self.key]]
 
     @classmethod
     def from_list(cls, lst: List):
-        assert len(lst) == 2
-        assert lst[0] == cls._action_type
+        action_type = lst[0]
+        action_args = lst[1]
+        assert len(action_args) == 1
+        assert action_type == cls._action_type
 
-        assert isinstance(lst[0], HIDActionTypes.keys)
+        assert isinstance(action_args[0], HIDActionTypes.keys)
 
-        return cls(key=lst[0])
+        return cls(key=action_args[0])
 
 
 class KeyRelease(BaseModel):
@@ -621,16 +623,18 @@ class KeyRelease(BaseModel):
     key: HIDActionTypes.keys
 
     def to_list(self) -> List:
-        return [self._action_type, self.key]
+        return [self._action_type, [self.key]]
 
     @classmethod
     def from_list(cls, lst: List):
-        assert len(lst) == 2
-        assert lst[0] == cls._action_type
+        action_type = lst[0]
+        action_args = lst[1]
+        assert len(action_args) == 1
+        assert action_type == cls._action_type
 
-        assert isinstance(lst[0], HIDActionTypes.keys)
+        assert isinstance(action_args[0], HIDActionTypes.keys)
 
-        return cls(key=lst[0])
+        return cls(key=action_args[0])
 
 
 class MouseClick(BaseModel):
@@ -642,19 +646,26 @@ class MouseClick(BaseModel):
     pressed: bool
 
     def to_list(self) -> List:
-        return [self._action_type, self.x, self.y, self.button, self.pressed]
+        return [self._action_type, [self.x, self.y, self.button, self.pressed]]
 
     @classmethod
     def from_list(cls, lst: List):
-        assert len(lst) == 5
-        assert lst[0] == cls._action_type
+        action_type = lst[0]
+        action_args = lst[1]
+        assert len(action_args) == 4
+        assert action_type == cls._action_type
 
-        assert isinstance(lst[0], confloat(ge=0))
-        assert isinstance(lst[1], confloat(ge=0))
-        assert isinstance(lst[2], HIDActionTypes.mouse_buttons)
-        assert isinstance(lst[3], bool)
+        assert isinstance(action_args[0], confloat(ge=0))
+        assert isinstance(action_args[1], confloat(ge=0))
+        assert isinstance(action_args[2], HIDActionTypes.mouse_buttons)
+        assert isinstance(action_args[3], bool)
 
-        return cls(x=lst[0], y=lst[1], button=lst[2], pressed=lst[3])
+        return cls(
+            x=action_args[0],
+            y=action_args[1],
+            button=action_args[2],
+            pressed=action_args[3],
+        )
 
 
 class MouseMove(BaseModel):
@@ -664,17 +675,19 @@ class MouseMove(BaseModel):
     y: confloat(ge=0)
 
     def to_list(self) -> List:
-        return [self._action_type, self.x, self.y]
+        return [self._action_type, [self.x, self.y]]
 
     @classmethod
     def from_list(cls, lst: List):
-        assert len(lst) == 3
-        assert lst[0] == cls._action_type
+        action_type = lst[0]
+        action_args = lst[1]
+        assert len(action_args) == 2
+        assert action_type == cls._action_type
 
-        assert isinstance(lst[0], confloat(ge=0))
-        assert isinstance(lst[1], confloat(ge=0))
+        assert isinstance(action_args[0], confloat(ge=0))
+        assert isinstance(action_args[1], confloat(ge=0))
 
-        return cls(x=lst[0], y=lst[1])
+        return cls(x=action_args[0], y=action_args[1])
 
 
 class MouseScroll(BaseModel):
@@ -686,19 +699,23 @@ class MouseScroll(BaseModel):
     dy: float
 
     def to_list(self) -> List:
-        return [self._action_type, self.x, self.y, self.dx, self.dy]
+        return [self._action_type, [self.x, self.y, self.dx, self.dy]]
 
     @classmethod
     def from_list(cls, lst: List):
-        assert len(lst) == 5
-        assert lst[0] == cls._action_type
+        action_type = lst[0]
+        action_args = lst[1]
+        assert len(action_args) == 4
+        assert action_type == cls._action_type
 
-        assert isinstance(lst[0], confloat(ge=0))
-        assert isinstance(lst[1], confloat(ge=0))
-        assert isinstance(lst[2], float)
-        assert isinstance(lst[3], float)
+        assert isinstance(action_args[0], confloat(ge=0))
+        assert isinstance(action_args[1], confloat(ge=0))
+        assert isinstance(action_args[2], float)
+        assert isinstance(action_args[3], float)
 
-        return cls(x=lst[0], y=lst[1], dx=lst[2], dy=lst[3])
+        return cls(
+            x=action_args[0], y=action_args[1], dx=action_args[2], dy=action_args[3]
+        )
 
 
 #################

@@ -968,12 +968,22 @@ class {{s2cu(hid_action_type)}}(BaseModel):
     {% endfor %}
 
     def to_list(self) -> List:
-        return [self._action_type, [{{", ".join(self_arglist)}}]]
+        return [self._action_type,
+    {% if not hid_action_type.startswith("key") %}
+         [{{", ".join(self_arglist)}}]
+    {% else %}
+         {{", ".join(self_arglist)}}
+    {% endif %}
+        ]
 
     @classmethod
     def from_list(cls, lst:List):
         action_type = lst[0]
+    {% if not hid_action_type.startswith("key") %}
         action_args = lst[1]
+    {% else %}
+        action_args = lst[1]
+    {% endif %}
         assert len(action_args) == {{len(self_arglist)}}
         assert action_type == cls._action_type
 
