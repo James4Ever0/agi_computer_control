@@ -956,7 +956,7 @@ from pydantic import confloat
 class {{s2cu(hid_action_type)}}(BaseModel):
     _action_type = {{repr(hid_action_type)}}
 
-    {% set self_arglist = []%}
+    {% set self_arglist = [] %}
     {% set create_kwargs = [] %}
     {% for i in range(len(data)) %}
         {% set elem = data[i] %}
@@ -996,6 +996,7 @@ class {{s2cu(hid_action_type)}}(BaseModel):
 
 {% endfor %}
 
+{# `Unpack` does not work here. #}
 {# 
 class KeyPress(BaseModel):
     _action_type = "key_press"
