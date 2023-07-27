@@ -780,9 +780,11 @@ class ConsciousBase:
 class ConsciousBlock(BaseModel, ConsciousBase):
     data_type: Literal["image", "HIDAction"] # 2 bits, required
     special_token: Union[
+        Literal[
         "image_newline",
         "image_end",
         "action_end",  # change some of these bits into -torch.inf, so you won't have paradox like results.
+        ]
         None,
     ] = None  # 4 bits
     image_data: Union[
