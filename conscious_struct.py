@@ -603,12 +603,12 @@ class KeyPress(BaseModel):
     key: HIDActionTypes.keys
 
     def to_list(self) -> List:
-        return [self._action_type, [self.key]]
+        return [self._action_type, self.key]
 
     @classmethod
     def from_list(cls, lst: List):
         action_type = lst[0]
-        action_args = lst[1]
+        action_args = [lst[1]]
         assert len(action_args) == 1
         assert action_type == cls._action_type
 
@@ -623,12 +623,12 @@ class KeyRelease(BaseModel):
     key: HIDActionTypes.keys
 
     def to_list(self) -> List:
-        return [self._action_type, [self.key]]
+        return [self._action_type, self.key]
 
     @classmethod
     def from_list(cls, lst: List):
         action_type = lst[0]
-        action_args = lst[1]
+        action_args = [lst[1]]
         assert len(action_args) == 1
         assert action_type == cls._action_type
 

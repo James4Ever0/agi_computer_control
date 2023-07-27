@@ -982,7 +982,7 @@ class {{s2cu(hid_action_type)}}(BaseModel):
     {% if not hid_action_type.startswith("key") %}
         action_args = lst[1]
     {% else %}
-        action_args = lst[1]
+        action_args = [lst[1]]
     {% endif %}
         assert len(action_args) == {{len(self_arglist)}}
         assert action_type == cls._action_type
@@ -1111,13 +1111,11 @@ class ConsciousBase:
 
 
 class ConsciousBlock(BaseModel, ConsciousBase):
-    data_type: Union[Literal["image"], Literal["HIDAction"]]  # 2 bits, required
+    data_type: Literal["image", "HIDAction"] # 2 bits, required
     special_token: Union[
-        Literal["image_newline"],
-        Literal["image_end"],
-        Literal[
-            "action_end"
-        ],  # change some of these bits into -torch.inf, so you won't have paradox like results.
+        "image_newline",
+        "image_end",
+        "action_end",  # change some of these bits into -torch.inf, so you won't have paradox like results.
         None,
     ] = None  # 4 bits
     image_data: Union[
@@ -1213,6 +1211,8 @@ class ConsciousBlock(BaseModel, ConsciousBase):
 
             action_data = torch.Tensor(self.action_data)
             special_bits[ConsciousBase.special_tokens.index(self.special_token)] = 1
+        else:
+            raise Exception("Unknown data_type:", data_type)
 
         mTensor, _ = einops.pack(
             (data_bits, special_bits, image_data, action_data), "*"
