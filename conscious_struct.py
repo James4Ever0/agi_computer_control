@@ -7,7 +7,8 @@ import cv2
 import ast 
 from pydantic import BaseModel, validator
 from typing import Union, Mapping, List
-import logging
+# import logging
+from log_utils import logger
 from pydantic_numpy import NDArray
 import torch
 
@@ -233,7 +234,7 @@ class HIDActionBase:
         keycode = unshift_keycodes.get(keycode, ctrl_keycodes.get(keycode, keycode))
         # still, this is something out of concern.
         if keycode.startswith("<") and keycode.endswith(">"):
-            logging.warning("Discarding unconvertable keycode: %s" % keycode)
+            logger.warning("Discarding unconvertable keycode: %s" % keycode)
             # keycode = pynput.keyboard.KeyCode(int(keycode[1:-1]))
             return
         return keycode
@@ -572,12 +573,12 @@ class HIDAction(BaseModel, HIDActionBase):
     def round_within(self, number: Union[int, float], number_name: str) -> int:
         result = round(number)
         if result > self.mouse_resolution:
-            logging.warning(f"Warning: {number_name} overflow")
-            logging.warning(f"Value {result} greater than {self.mouse_resolution}")
+            logger.warning(f"Warning: {number_name} overflow")
+            logger.warning(f"Value {result} greater than {self.mouse_resolution}")
             return self.mouse_resolution
         elif result < 0:
-            logging.warning(f"Warning: {number_name} overflow")
-            logging.warning(f"Value {result} smaller than 0")
+            logger.warning(f"Warning: {number_name} overflow")
+            logger.warning(f"Value {result} smaller than 0")
             return 0
         return result
 
@@ -693,7 +694,7 @@ class VideoCaptureContextManager:
         self.videoPath = videoPath
 
     def __enter__(self):
-        logging.info("Entering the context...")
+        logger.info("Entering the context...")
         self.cap = cv2.VideoCapture(self.videoPath)
         return self.cap
 
@@ -704,7 +705,7 @@ class VideoCaptureContextManager:
             import gc
 
             gc.collect()
-            logging.info("Leaving the context...")
+            logger.info("Leaving the context...")
         #  print(exc_type, exc_value, exc_tb, sep="\n")
 
 
@@ -724,7 +725,7 @@ class ConsciousBase:
 
     data_type_length = len(data_types)
     special_token_length = len(special_tokens)
-    image_length = image_dim * image_dim * image_channels
+    image_length = image_dim * image_dim * image_channels # obviously flattened.
 
     # FIX 1: plus to colon.
     split_sizes = [
@@ -819,8 +820,8 @@ class ConsciousBlock(BaseModel, ConsciousBase):
             # BUG 2: comparing ndarray to None
             # FIX 2: change "!=" into "is not"
             assert self.image_data is not None
-            logging.debug("Image data shape: %s", self.image_data.shape)
-            logging.debug(
+            logger.debug("Image data shape: %s", self.image_data.shape)
+            logger.debug(
                 "Expected data shape: %s",
                 expected_data_shape := (ConsciousBase.image_length,),
             )
@@ -834,10 +835,10 @@ class ConsciousBlock(BaseModel, ConsciousBase):
             assert self.action_data is not None
             if len(self.action_data.shape)>1:
                 self.action_data = self.action_data.reshape((-1,))
-            logging.debug("Action data shape: %s", self.action_data.shape)
+            logger.debug("Action data shape: %s", self.action_data.shape)
             # BUG: actual: (4110, 1)
             # shall we reshape this.
-            logging.debug(
+            logger.debug(
                 "Expected data shape: %s", expected_data_shape := (HIDActionBase.length,)
             ) # TODO: expected shape is (4110, )? how to make this typed?
             assert self.action_data.shape == expected_data_shape
@@ -901,7 +902,7 @@ class Trainer:
         # FIX 8: fixing keyword, adding default keyword argument
         model_output = self.model.forward(batched_input, target_output=batched_output)
         loss = self.loss_fn(model_output, batched_output)
-        logging.debug("LOSS? %s", loss)
+        logger.debug("LOSS? %s", loss)
 
         # this loss is incorrect. shall use some argmax stuff.
         # to ensure that this thing is the thing that we want.
@@ -926,13 +927,13 @@ class TestEnqueue(Enqueue):
         # self.queue = []
 
     def enqueue(self, data):
-        logging.debug("DATA QUEUE: %s", data)
+        logger.debug("DATA QUEUE: %s", data)
         # may you print the data shape.
         if data.action_data is not None:
-            logging.debug("ACTION DATA SHAPE: %s", data.action_data.shape)
+            logger.debug("ACTION DATA SHAPE: %s", data.action_data.shape)
         elif data.image_data is not None:
-            logging.debug("IMAGE DATA SHAPE: %s", data.image_data.shape)
-        logging.debug("")
+            logger.debug("IMAGE DATA SHAPE: %s", data.image_data.shape)
+        logger.debug("")
 
     def clear(self):
         ...
@@ -959,7 +960,7 @@ class SequentialTrainingQueue:
         #         print(consciousBlock)
         #         print(type(consciousBlock))
         consciousVector = consciousBlock.to_tensor()
-        logging.debug(
+        logger.debug(
             "CONSCIOUS VECTOR [TYPE: %s SHAPE: %s]", type(consciousVector), consciousVector.shape
         )
         self.consciousVectors.append(consciousVector)
@@ -973,6 +974,7 @@ class SequentialTrainingQueue:
             self.clear()
 
     def train(self, clear: bool = False):
+        # TODO: use `ConsciousFlow` to replace logic here.
         # train the model and clear the queue.
         # size of queue before: self.context_length+self.batch_size (should be? at least geq to self.length+1)
         # size of queue after training: self.context_length
@@ -1113,7 +1115,7 @@ def trainModelWithDataBasePath(
                 if action_type in HIDActionBase.keyboard_action_types:
                     action_args = HIDActionBase.uncover_keycode(action_args)
                     if action_args is None:
-                        logging.warning("Skipping: %s", action)
+                        logger.warning("Skipping: %s", action)
                         continue
                 mHIDAction = HIDAction.from_action_json(
                     [action_type, action_args],
@@ -1121,7 +1123,7 @@ def trainModelWithDataBasePath(
                     max_y=perspective_height,
                 )  # related to mouse coordinates.
                 mHIDActionNDArray = mHIDAction.to_ndarray()
-                logging.debug("HID NDArray shape: %s", mHIDActionNDArray.shape)
+                logger.debug("HID NDArray shape: %s", mHIDActionNDArray.shape)
                 encoded_actions.append(mHIDActionNDArray)
 
             for index, EA in enumerate(encoded_actions):

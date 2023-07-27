@@ -7,46 +7,37 @@ import sys
 
 sys.path.append("../")
 
-import logging
+# import logging
+from log_utils import logger
+# import log_utils
 from typing import Generator, Union, AsyncGenerator, AwaitableGenerator
 import torch
 
-filename = "mytest.log"
-
 # may log to other places.
 # infinite append.
-from logging.handlers import RotatingFileHandler
-from logging import StreamHandler
+# from logging import StreamHandler
 
-stdout_handler = StreamHandler(sys.stdout)
+# stdout_handler = StreamHandler(sys.stdout)
 
 
 from conscious_struct import (
         trainModelWithDataBasePath,
         Trainer,
         SequentialTrainingQueue,
-        CustomModel
+        CustomModel,
+        ConsciousFlow, # consists of `ConsciousBlock`
+        ConsciousBlock,
+        HIDAction,
+        ConsciousBase
 )
 
-myHandler = RotatingFileHandler(
-    filename, maxBytes=1024 * 1024 * 3, backupCount=3, encoding="utf-8"
-)
-myHandler.setLevel(logging.DEBUG)
-# myHandler.setLevel(logging.INFO) # will it log less things? yes.
-FORMAT = (
-    "<%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s() ] %(message)s"
-)
-# FORMAT = "<%(name)s:%(levelname)s> [%(filename)s:%(lineno)s - %(funcName)s() ] %(message)s"
-myFormatter = logging.Formatter(fmt=FORMAT)
-myHandler.setFormatter(myFormatter)
-
-logging.basicConfig(
-    # filename=filename,
-    level=logging.getLogger().getEffectiveLevel(),
-    # stream=sys.stderr,
-    force=True,
-    handlers=[myHandler, stdout_handler],
-)
+# logging.basicConfig(
+#     # filename=filename,
+#     level=logging.getLogger().getEffectiveLevel(),
+#     # stream=sys.stderr,
+#     force=True,
+#     handlers=[myHandler, stdout_handler],
+# )
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
 from recording_train_parse import getTrainingData
@@ -55,7 +46,7 @@ from recording_train_parse import getTrainingData
 import datetime
 
 current_time = datetime.datetime.now().isoformat()
-logging.critical(f"logging starts: {current_time}".center(100, "="))
+logger.critical(f"logging starts: {current_time}".center(100, "="))
 # logging.critical("")
 import pytest
 
@@ -76,7 +67,7 @@ def basePath():
 
 def test_get_training_data(basePath:str):
     for trainingDataFrame in getTrainingData(basePath):
-        logging.debug("training data frame: %s", trainingDataFrame)
+        logger.debug("training data frame: %s", trainingDataFrame)
 
 
 # test fetching training data.
@@ -176,8 +167,19 @@ def test_train_model_with_training_data(model:CustomModel, loss_fn, optimizer, b
         trainModelWithDataBasePath(basePath, myQueue, shuffle_for_test=True, random_seed=random_seed)
     print("SESSION TIMEOUT NOW".center(60,"_"))
 
+import einops
+
 def test_eval_with_model(model: CustomModel):
     model.eval()
-    model.forward(conscious_stream = ...)
+    # it is been observed by video recording script.
+    max_x, max_y = 1280, 768
+    mouseActionJson = ['mouse_click', [993, 659]]
+    actionData = HIDAction.from_action_json(mouseActionJson, max_x = max_x,  max_y = max_y).to_ndarray()
+    randomImageData = np.random.random((ConsciousBase.image_channels,ConsciousBase.image_dim, ConsciousBase.image_dim))
+    imageData = einops.pack(randomImageData, "*") # just what shape shall this be?
+    actionConsciousBlock = ConsciousBlock(data_type='HIDAction', special_token=None, action_data = actionData)
+    imageConsciousBlock = ConsciousBlock(data_type = "image", special_token=None, image_data = imageData)
+    cs = ConsciousFlow(consciousBlocks = [actionConsciousBlock, imageConsciousBlock])
+    result = model.forward(conscious_stream = cs)
     # do not load any weight yet. just use its random state.
     # do not execute anything in this test! just get the predicted things out.
