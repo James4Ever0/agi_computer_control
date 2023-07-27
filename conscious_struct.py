@@ -682,8 +682,8 @@ class MouseScroll(BaseModel):
 
     x: confloat(ge=0)
     y: confloat(ge=0)
-    dx: confloat(ge=0)
-    dy: confloat(ge=0)
+    dx: float
+    dy: float
 
     def to_list(self) -> List:
         return [self._action_type, self.x, self.y, self.dx, self.dy]
@@ -695,8 +695,8 @@ class MouseScroll(BaseModel):
 
         assert isinstance(lst[0], confloat(ge=0))
         assert isinstance(lst[1], confloat(ge=0))
-        assert isinstance(lst[2], confloat(ge=0))
-        assert isinstance(lst[3], confloat(ge=0))
+        assert isinstance(lst[2], float)
+        assert isinstance(lst[3], float)
 
         return cls(x=lst[0], y=lst[1], dx=lst[2], dy=lst[3])
 

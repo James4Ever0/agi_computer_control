@@ -939,8 +939,8 @@ from pydantic import confloat
         {% do data_list.append(("x", non_negative_float)) %}
         {% do data_list.append(("y", non_negative_float)) %}
         {% if hid_action_type == 'mouse_scroll'%}
-            {% do data_list.append(("dx", non_negative_float)) %}
-            {% do data_list.append(("dy", non_negative_float)) %}
+            {% do data_list.append(("dx", "float")) %}
+            {% do data_list.append(("dy", "float")) %}
         {% elif hid_action_type == 'mouse_click'%}
             {% do data_list.append(("button", "HIDActionTypes.mouse_buttons"))%}
             {% do data_list.append(("pressed", "bool"))%}

@@ -202,10 +202,10 @@ import einops
 from conscious_struct import KeyPress, KeyRelease, MouseMove, MouseScroll, MouseClick
 
 
-@pytest.parametrize(
+@pytest.mark.parametrize(
     "HIDActionObj",
     [
-        MouseClick(x=993, y=659, button="Button.Left", pressed=True),
+        MouseClick(x=993, y=659, button="Button.left", pressed=True),
         MouseMove(x=10, y=20),
         MouseScroll(x=10, y=10, dx=10, dy=-10),
         KeyPress(key="""'9'"""),
