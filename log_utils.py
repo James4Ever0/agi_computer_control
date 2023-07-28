@@ -6,6 +6,7 @@ To use 'managed' loggers, you must import 'logger' from this file and pass it to
 from typing import Union
 
 import sys  # recommend: 3.11.2
+
 MIN_PY_VERSION = (3, 8)
 if sys.version_info < MIN_PY_VERSION:
     raise Exception(f"Please use Python {'.'.join(MIN_PY_VERSION)} and above.")
@@ -131,7 +132,10 @@ def logger_print(*args):
 import datetime
 
 logger_print(
-    f"[START LOGGING AT: {datetime.datetime.now().isoformat()}]".center(70 - 2, "+")
+    f"[START LOGGING AT: {datetime.datetime.now().isoformat()}]".center(
+        os.get_terminal_size().columns, "+"
+    )
+    # f"[START LOGGING AT: {datetime.datetime.now().isoformat()}]".center(70 - 2, "+")
 )
 # logging.basicConfig(
 #     # filename=filename,
