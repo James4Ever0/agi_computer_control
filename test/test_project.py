@@ -240,7 +240,10 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
     )
     # cs = ConsciousFlow(consciousBlocks=[*actionConsciousBlocks, imageConsciousBlock])
     cs = ConsciousFlow(consciousBlocks=[actionConsciousBlock, imageConsciousBlock])
-    result = model.forward(conscious_stream=cs.to_tensor())
-    logger_print(result)
+    # must be 3d, not 2d.
+    print(cs.to_tensor().shape)
+    breakpoint()
+    # result = model.forward(conscious_stream=cs.to_tensor())
+    # logger_print(result)
     # do not load any weight yet. just use its random state.
     # do not execute anything in this test! just get the predicted things out.
