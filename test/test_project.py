@@ -228,7 +228,7 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
         (ConsciousBase.image_channels, ConsciousBase.image_dim, ConsciousBase.image_dim)
     )
     # imageData = einops.pack(randomImageData, "*")  # just what shape shall this be?
-    imageData = einops.rearrange(imageData, "c h w -> (c h w)")
+    imageData = einops.rearrange(randomImageData, "c h w -> (c h w)")
     # actionConsciousBlocks = [ConsciousBlock(
     #     data_type="HIDAction", special_token=None, action_data=actionData
     # ) for actionData in actionDataList]
