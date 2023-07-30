@@ -4,3 +4,5 @@
 # when using devmapper, make sure size is greater than 10G (default)
 # https://docs.docker.com/storage/storagedriver/device-mapper-driver/#configure-direct-lvm-mode-for-production
 docker run --storage-opt size=11G --rm -it alpine
+
+# zfs, vfs (not a unionfs, but for testing) supports disk quota.
