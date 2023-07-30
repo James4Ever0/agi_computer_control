@@ -6,3 +6,4 @@
 docker run --storage-opt size=11G --rm -it alpine
 
 # zfs, vfs (not a unionfs, but for testing) supports disk quota.
+# change "data-root" to somewhere else in /etc/docker/daemon.json.
