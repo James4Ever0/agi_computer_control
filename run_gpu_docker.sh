@@ -1,1 +1,1 @@
-docker run --rm -it --gpu 1 ubuntu:22.04 nvidia-smi
+docker run --rm -it --gpus 1 ubuntu:22.04 nvidia-smi # working!
