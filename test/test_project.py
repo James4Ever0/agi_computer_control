@@ -259,5 +259,6 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
 
     logger_print("printing result")
     logger_print(result) # with gradient! shall be shape of (d,), "data_dimension"
+    logger_print('result shape:', result.shape)
 
     # now decode!
