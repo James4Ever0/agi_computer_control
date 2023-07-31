@@ -119,7 +119,11 @@ def logger_print(*args):
         logger.debug(
             format_string,
             *[
-                pretty_repr(arg) if not isinstance(arg, Union[bytes, str]) else arg
+                # fallback for older versions:
+                pretty_repr(arg)
+                if not any(isinstance(arg, t) for t in [bytes, str])
+                else arg
+                # pretty_repr(arg) if not isinstance(arg, Union[bytes, str]) else arg
                 for arg in args
             ],
             stacklevel=2,
