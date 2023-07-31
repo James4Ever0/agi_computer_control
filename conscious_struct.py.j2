@@ -1233,22 +1233,22 @@ class {{classNameUpper}}(BaseModel, ConsciousBase):
 
     @staticmethod
     def from_json(data: List[Mapping]):
-        mList = [ConsciousBlock.from_json(j) for j in data]
-        m{{classNameUpper}} = {{classNameUpper}}(consciousBlocks=mList)
+        mList = [{{subClassNameUpper}}.from_json(j) for j in data]
+        m{{classNameUpper}} = {{classNameUpper}}({{subClassNameLower}}s=mList)
         return m{{classNameUpper}}
 
     def to_json(self) -> List[Mapping]:
-        mJson = [c.to_json() for c in self.consciousBlocks]
+        mJson = [c.to_json() for c in self.{{subClassNameLower}}s]
         return mJson
 
     @staticmethod
     def from_tensor(tensor: torch.Tensor):
-        consciousBlockCount, vector_length = tensor.shape
+        {{subClassNameLower}}Count, {{"_," if classNameUpper == "ConsciousStream" else ""}} vector_length = tensor.shape
         assert vector_length == ConsciousBase.length
-        mConsciousBlocks = []
+        m{{subClassUpper}}s = []
         for i in range(consciousBlockCount):
             arr = tensor[i, :]
-            mConsciousBlock = ConsciousBlock.from_tensor(arr)
+            m{{subClassUpper}} = {{subClassUpper}}.from_tensor(arr)
             mConsciousBlocks.append(mConsciousBlock)
         m{{classNameUpper}} = {{classNameUpper}}(consciousBlocks=mConsciousBlocks)
         return m{{classNameUpper}}
