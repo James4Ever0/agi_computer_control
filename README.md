@@ -99,4 +99,8 @@ the main objective of AGI is to create another version of itself.
 
 ways of connection:
 
-vnc, ssh, tty, tmux, hdmi capture & hid emulator
+vnc, ssh, tty, tmux, hdmi capture & hid emulator, window capture and directed inputs (os specific)
+
+----
+
+the point is not making this exhaustive. it is about making some standard i/o and adapt to every situation.
