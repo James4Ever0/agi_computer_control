@@ -917,9 +917,15 @@ class ConsciousFlow(BaseModel, ConsciousBase):
 
     def to_tensor(self) -> torch.Tensor:
         mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousBlocks], "* d")
-        #         mTensor = torch.Tensor([c.to_tensor() for c in self.consciousBlocks])
         return mTensor
 
+
+class ConsciousStream(BaseModel, ConsciousBase):
+    consciousFlows: List[ConsciousFlow]
+
+    @staticmethod
+    def from_json(data: List[Mapping]):
+        mList = 
 
 #####################
 # TRAINER & DATASET #
