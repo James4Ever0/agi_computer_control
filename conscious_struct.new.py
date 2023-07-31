@@ -784,7 +784,7 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         "image_newline",
         "image_end",
         "action_end",  # change some of these bits into -torch.inf, so you won't have paradox like results.
-        ]
+        ],
         None,
     ] = None  # 4 bits
     image_data: Union[
@@ -890,15 +890,14 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         del mTensorBase
         return mTensor
 
-
-class ConsciousFlow(BaseModel, ConsciousBase):
-    consciousBlocks: List[ConsciousBlock]
+class Consciousflow(BaseModel, ConsciousBase):
+    consciousBlocks : List[Consciousblock]
 
     @staticmethod
     def from_json(data: List[Mapping]):
-        mList = [ConsciousBlock.from_json(j) for j in data]
-        mConsciousFlow = ConsciousFlow(consciousBlocks=mList)
-        return mConsciousFlow
+        mList = [Consciousblock.from_json(j) for j in data]
+        mConsciousflow = Consciousflow(consciousBlocks=mList)
+        return mConsciousflow
 
     def to_json(self) -> List[Mapping]:
         mJson = [c.to_json() for c in self.consciousBlocks]
@@ -906,19 +905,47 @@ class ConsciousFlow(BaseModel, ConsciousBase):
 
     @staticmethod
     def from_tensor(tensor: torch.Tensor):
-        consciousBlockCount, vector_length = tensor.shape
+        consciousBlockCount,  vector_length = tensor.shape
         assert vector_length == ConsciousBase.length
-        mConsciousBlocks = []
+        mConsciousblocks = []
         for i in range(consciousBlockCount):
-            arr = tensor[i, :]
-            mConsciousBlock = ConsciousBlock.from_tensor(arr)
-            mConsciousBlocks.append(mConsciousBlock)
-        mConsciousFlow = ConsciousFlow(consciousBlocks=mConsciousBlocks)
-        return mConsciousFlow
+            arr = tensor[i, :] # dimension reduction.
+            mConsciousblock = Consciousblock.from_tensor(arr)
+            mConsciousblocks.append(mConsciousblock)
+        mConsciousflow = Consciousflow(consciousBlocks=mConsciousblocks)
+        return mConsciousflow
 
     def to_tensor(self) -> torch.Tensor:
-        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousBlocks], "* d")
-        #         mTensor = torch.Tensor([c.to_tensor() for c in self.consciousBlocks])
+        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousFlows], '* s d')
+        return mTensor
+
+class Consciousstream(BaseModel, ConsciousBase):
+    consciousFlows : List[Consciousflow]
+
+    @staticmethod
+    def from_json(data: List[Mapping]):
+        mList = [Consciousflow.from_json(j) for j in data]
+        mConsciousstream = Consciousstream(consciousFlows=mList)
+        return mConsciousstream
+
+    def to_json(self) -> List[Mapping]:
+        mJson = [c.to_json() for c in self.consciousFlows]
+        return mJson
+
+    @staticmethod
+    def from_tensor(tensor: torch.Tensor):
+        consciousFlowCount,  vector_length = tensor.shape
+        assert vector_length == ConsciousBase.length
+        mConsciousflows = []
+        for i in range(consciousFlowCount):
+            arr = tensor[i, :] # dimension reduction.
+            mConsciousflow = Consciousflow.from_tensor(arr)
+            mConsciousflows.append(mConsciousflow)
+        mConsciousstream = Consciousstream(consciousFlows=mConsciousflows)
+        return mConsciousstream
+
+    def to_tensor(self) -> torch.Tensor:
+        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousStreams], '* s d')
         return mTensor
 
 
@@ -1024,25 +1051,13 @@ class SequentialTrainingQueue:
             # FIX 7: change "torch.Tensor([])" into einops.pack
 
             #             print(self.consciousVectors)
-            batched_input, _ = einops.pack(
-                [
-                    #             batched_input = torch.Tensor([
-                    einops.pack(
-                        self.consciousVectors[i : i + self.context_length], "* d"
-                    )[0]
-                    for i in range(batch_size)
-                    #                     torch.Tensor(self.consciousVectors[i:i+self.context_length]) for i in range(batch_size)
-                ],
-                "* s d",
-            )
-            batched_output, _ = einops.pack(
-                [
-                    #             batched_output = torch.Tensor([
-                    self.consciousVectors[self.context_length + i]
-                    for i in range(batch_size)
-                ],
-                "* d",
-            )
+
+            batched_input = ConsciousStream(consciousFlows = [ConsciousFlow(consciousBlocks = self.consciousVectors[i : i + self.context_length]) for i in range(batch_size)]).to_tensor()
+
+
+            batched_output = ConsciousFlow(consciousBlocks=[self.consciousVectors[self.context_length + i] for i in range(batch_size)])
+
+
             self.trainer.step(batched_input, batched_output)
 
             if not clear:

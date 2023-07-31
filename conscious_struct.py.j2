@@ -1224,8 +1224,8 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         del mTensorBase
         return mTensor
 
-{% set consciousClasses = ["consciousBlock", "consciousFlow", "consciousStream"] %}
-{% for subClassNameLower, classNameLower in zip(consciousClasses[:-1], consciousClasses[1:]) %}
+{% set consciousStructNames = ["consciousBlock", "consciousFlow", "consciousStream"] %}
+{% for subClassNameLower, classNameLower in zip(consciousStructNames[:-1], consciousStructNames[1:]) %}
 {% set classNameUpper = classNameLower.title() %}
 {% set subClassNameUpper = subClassNameLower.title() %}
 class {{classNameUpper}}(BaseModel, ConsciousBase):
@@ -1249,7 +1249,7 @@ class {{classNameUpper}}(BaseModel, ConsciousBase):
         for i in range({{subClassNameLower}}Count):
             arr = tensor[i,{{":," if classNameUpper == "ConsciousStream"}} :] # dimension reduction.
             m{{subClassNameUpper}} = {{subClassNameUpper}}.from_tensor(arr)
-            m{{subClassNameUpper}}s.append(m{{subClassUpper}})
+            m{{subClassNameUpper}}s.append(m{{subClassNameUpper}})
         m{{classNameUpper}} = {{classNameUpper}}({{subClassNameLower}}s=m{{subClassNameUpper}}s)
         return m{{classNameUpper}}
 
@@ -1363,7 +1363,7 @@ class SequentialTrainingQueue:
 
             #             print(self.consciousVectors)
 
-            batched_input = ConsciousStream(consciousFlows = [ConsciousFlow(consciousBlocks = self.consciousVectors[i : i + self.context_length) for i in range(batch_size)]).to_tensor()
+            batched_input = ConsciousStream(consciousFlows = [ConsciousFlow(consciousBlocks = self.consciousVectors[i : i + self.context_length]) for i in range(batch_size)]).to_tensor()
 
             {# batched_input, _ = einops.pack(
                 [
