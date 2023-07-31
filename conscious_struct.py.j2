@@ -1224,7 +1224,7 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         del mTensorBase
         return mTensor
 
-{% set consciosClasses = ["consciousBlock", "consciousFlow", "consciousStream"] %}
+{% set consciousClasses = ["consciousBlock", "consciousFlow", "consciousStream"] %}
 {% for subClassNameLower, classNameLower in zip(consciousClasses[:-1], consciousClasses[1:]) %}
 {% set classNameUpper = classNameLower.title() %}
 {% set subClassNameUpper = subClassNameLower.title() %}
@@ -1362,7 +1362,10 @@ class SequentialTrainingQueue:
             # FIX 7: change "torch.Tensor([])" into einops.pack
 
             #             print(self.consciousVectors)
-            batched_input, _ = einops.pack(
+
+            batched_input = ConsciousStream(consciousFlows = [ConsciousFlow(consciousBlocks = self.consciousVectors[i : i + self.context_length) for i in range(batch_size)]).to_tensor()
+
+            {# batched_input, _ = einops.pack(
                 [
                     #             batched_input = torch.Tensor([
                     einops.pack(
@@ -1372,15 +1375,19 @@ class SequentialTrainingQueue:
                     #                     torch.Tensor(self.consciousVectors[i:i+self.context_length]) for i in range(batch_size)
                 ],
                 "* s d",
-            )
-            batched_output, _ = einops.pack(
+            ) #}
+
+            batched_output = ConsciousFlow(consciousBlocks=[self.consciousVectors[self.context_length + i] for i in range(batch_size)])
+
+            {# batched_output, _ = einops.pack(
                 [
                     #             batched_output = torch.Tensor([
                     self.consciousVectors[self.context_length + i]
                     for i in range(batch_size)
                 ],
                 "* d",
-            )
+            ) #}
+
             self.trainer.step(batched_input, batched_output)
 
             if not clear:
