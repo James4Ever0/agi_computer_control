@@ -1255,7 +1255,7 @@ class {{classNameUpper}}(BaseModel, ConsciousBase):
         return m{{classNameUpper}}
 
     def to_tensor(self) -> torch.Tensor:
-        mTensor, _ = einops.pack([c.to_tensor() for c in self.{{classNameLower}}s], {{repr("* d" if classNameUpper == "ConsciousFlow" else "* s d")}})
+        mTensor, _ = einops.pack([c.to_tensor() for c in self.{{subClassNameLower}}s], {{repr("* d" if classNameUpper == "ConsciousFlow" else "* s d")}})
         {# mTensor = torch.Tensor([c.to_tensor() for c in self.consciousBlocks]) #}
         return mTensor
 
