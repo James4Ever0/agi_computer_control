@@ -4,7 +4,10 @@
 # you must let the AI design itself, evolve on its own.
 
 # shall you use pydantic v1 or be incompatible with hypothesis.
+import sys
+import numpy as np
 
+sys.path.append("../")
 import einops
 import stopit
 from hypothesis.strategies import integers
@@ -29,10 +32,7 @@ from conscious_struct import (
 )
 import torch
 from log_utils import logger_print
-import sys
-import numpy as np
 
-sys.path.append("../")
 
 # import logging
 
