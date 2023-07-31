@@ -1034,7 +1034,7 @@ class SequentialTrainingQueue:
                     for i in range(batch_size)
                     #                     torch.Tensor(self.consciousVectors[i:i+self.context_length]) for i in range(batch_size)
                 ],
-                "* s d",
+                "* s d", # b s d
             )
             batched_output, _ = einops.pack(
                 [

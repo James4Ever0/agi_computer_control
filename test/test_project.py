@@ -246,11 +246,11 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
     )
     # cs = ConsciousFlow(consciousBlocks=[actionConsciousBlock, imageConsciousBlock])
     # must be 3d, not 2d.
-    print(actionConsciousBlock.to_tensor().shape)
-    print(imageConsciousBlock.to_tensor().shape)
-    print(cf.to_tensor().shape) # torch.Size([2, 154639])
-    breakpoint()
-    result = model.forward(conscious_stream=cf.to_tensor())
+    # print(actionConsciousBlock.to_tensor().shape) # torch.Size([154639]) ~ d
+    # print(imageConsciousBlock.to_tensor().shape) # torch.Size([154639]) ~ d
+    # print(cf.to_tensor().shape) # torch.Size([2, 154639]) ~ s d
+    # breakpoint()
+    result = model.forward(conscious_stream=einops.batchedcf.to_tensor()) # b s d
     logger_print(result)
     # do not load any weight yet. just use its random state.
     # do not execute anything in this test! just get the predicted things out.
