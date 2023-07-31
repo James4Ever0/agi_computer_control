@@ -1224,15 +1224,18 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         del mTensorBase
         return mTensor
 
-{% set consciosClasses = ["consciousBlock", "consciousFlow", 
-class ConsciousFlow(BaseModel, ConsciousBase):
-    consciousBlocks: List[ConsciousBlock]
+{% set consciosClasses = ["consciousBlock", "consciousFlow", "consciousStream"] %}
+{% for subClassNameLower, classNameLower in zip(consciousClasses[:-1], consciousClasses[1:]) %}
+{% set classNameUpper = classNameLower.title() %}
+{% set subClassNameUpper = subClassNameLower.title() %}
+class {{classNameUpper}}(BaseModel, ConsciousBase):
+    {{subClassNameLower}}s : List[{{subClassNameUpper}}]
 
     @staticmethod
     def from_json(data: List[Mapping]):
         mList = [ConsciousBlock.from_json(j) for j in data]
-        mConsciousFlow = ConsciousFlow(consciousBlocks=mList)
-        return mConsciousFlow
+        m{{classNameUpper}} = {{classNameUpper}}(consciousBlocks=mList)
+        return m{{classNameUpper}}
 
     def to_json(self) -> List[Mapping]:
         mJson = [c.to_json() for c in self.consciousBlocks]
@@ -1247,14 +1250,15 @@ class ConsciousFlow(BaseModel, ConsciousBase):
             arr = tensor[i, :]
             mConsciousBlock = ConsciousBlock.from_tensor(arr)
             mConsciousBlocks.append(mConsciousBlock)
-        mConsciousFlow = ConsciousFlow(consciousBlocks=mConsciousBlocks)
-        return mConsciousFlow
+        m{{classNameUpper}} = {{classNameUpper}}(consciousBlocks=mConsciousBlocks)
+        return m{{classNameUpper}}
 
     def to_tensor(self) -> torch.Tensor:
         mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousBlocks], "* d")
         #         mTensor = torch.Tensor([c.to_tensor() for c in self.consciousBlocks])
         return mTensor
 
+{% endfor %}
 
 #####################
 # TRAINER & DATASET #
