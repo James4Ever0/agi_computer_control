@@ -1,0 +1,1 @@
+# figure out what debian version is for kali 2022.2
