@@ -261,4 +261,7 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
     logger_print(result) # with gradient! shall be shape of (b (batch size), d (data length))
     logger_print('result shape:', result.shape) # torch.Size([1, 154639])
 
+    cf_result = ConsciousFlow.from_tensor(result.detach())
+    logger_print("decoded result:", cf_result)
+
     # now decode!
