@@ -3,7 +3,7 @@
 # with this limited model structure, you may not find it "evolving".
 # you must let the AI design itself, evolve on its own.
 
-# shall you use pydantic v1 or be incompatible with hypothesis.
+# shall you use pydantic v1 () or be incompatible with hypothesis.
 import sys
 import numpy as np
 
