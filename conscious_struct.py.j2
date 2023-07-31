@@ -1246,16 +1246,16 @@ class {{classNameUpper}}(BaseModel, ConsciousBase):
         {{subClassNameLower}}Count, {{"_," if classNameUpper == "ConsciousStream"}} vector_length = tensor.shape
         assert vector_length == ConsciousBase.length
         m{{subClassNameUpper}}s = []
-        for i in range(consciousBlockCount):
+        for i in range({{subClassNameLower}}Count):
             arr = tensor[i,{{":," if classNameUpper == "ConsciousStream"}} :] # dimension reduction.
             m{{subClassNameUpper}} = {{subClassNameUpper}}.from_tensor(arr)
             m{{subClassNameUpper}}s.append(m{{subClassUpper}})
-        m{{classNameUpper}} = {{classNameUpper}}({{subClassNameLower}}s=mConsciousBlocks)
+        m{{classNameUpper}} = {{classNameUpper}}({{subClassNameLower}}s=m{{subClassNameUpper}}s)
         return m{{classNameUpper}}
 
     def to_tensor(self) -> torch.Tensor:
-        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousBlocks], "* d")
-        #         mTensor = torch.Tensor([c.to_tensor() for c in self.consciousBlocks])
+        mTensor, _ = einops.pack([c.to_tensor() for c in self.{{classNameLower}}s], {{repr("* d" if classNameUpper == "ConsciousFlow" else "* s d")}})
+        {# mTensor = torch.Tensor([c.to_tensor() for c in self.consciousBlocks]) #}
         return mTensor
 
 {% endfor %}
