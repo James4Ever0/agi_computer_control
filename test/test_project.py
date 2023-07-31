@@ -3,7 +3,6 @@
 # with this limited model structure, you may not find it "evolving".
 # you must let the AI design itself, evolve on its own.
 
-from conscious_struct import KeyPress, KeyRelease, MouseMove, MouseScroll, MouseClick
 import einops
 import stopit
 from hypothesis.strategies import integers
@@ -24,6 +23,7 @@ from conscious_struct import (
     ConsciousStream,  # newly created wrapper!
     HIDAction,
     ConsciousBase,
+    KeyPress, KeyRelease, MouseMove, MouseScroll, MouseClick
 )
 import torch
 from log_utils import logger_print
