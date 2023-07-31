@@ -267,7 +267,7 @@ class HIDActionBase:
             return keycode
 
 
-class HIDAction(BaseModel, HIDActionBase):
+class HIDAction(BaseModel):
     # static method: from_action
     # static method: from_ndarray
     # instance method: to_ndarray
