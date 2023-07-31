@@ -1224,7 +1224,7 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         del mTensorBase
         return mTensor
 
-
+{% set consciosClasses = ["consciousBlock", "consciousFlow", 
 class ConsciousFlow(BaseModel, ConsciousBase):
     consciousBlocks: List[ConsciousBlock]
 
