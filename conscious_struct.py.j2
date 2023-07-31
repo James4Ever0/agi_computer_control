@@ -1171,7 +1171,8 @@ class ConsciousBlock(BaseModel, ConsciousBase):
                 action_data=action_data,
             )
         else:
-            raise Exception("Unknown data_type:", data_type)
+            # FIX: found by pyright (UndefinedVariable)
+            raise Exception("Unknown data_type:", self.data_type)
         return mConsciousBlock
 
     def to_tensor(self) -> torch.Tensor:
@@ -1215,7 +1216,7 @@ class ConsciousBlock(BaseModel, ConsciousBase):
             action_data = torch.Tensor(self.action_data)
             special_bits[ConsciousBase.special_tokens.index(self.special_token)] = 1
         else:
-            raise Exception("Unknown data_type:", data_type)
+            raise Exception("Unknown data_type:", self.data_type)
 
         mTensor, _ = einops.pack(
             (data_bits, special_bits, image_data, action_data), "*"
@@ -1226,8 +1227,8 @@ class ConsciousBlock(BaseModel, ConsciousBase):
 
 {% set consciousStructNames = ["consciousBlock", "consciousFlow", "consciousStream"] %}
 {% for subClassNameLower, classNameLower in zip(consciousStructNames[:-1], consciousStructNames[1:]) %}
-{% set classNameUpper = classNameLower.title() %}
-{% set subClassNameUpper = subClassNameLower.title() %}
+{% set classNameUpper = classNameLower[0].upper()+classNameLower[1:] %}
+{% set subClassNameUpper = subClassNameLower[0].upper()+subClassNameLower[1:] %}
 class {{classNameUpper}}(BaseModel, ConsciousBase):
     {{subClassNameLower}}s : List[{{subClassNameUpper}}]
 

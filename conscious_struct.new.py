@@ -890,14 +890,14 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         del mTensorBase
         return mTensor
 
-class Consciousflow(BaseModel, ConsciousBase):
-    consciousBlocks : List[Consciousblock]
+class ConsciousFlow(BaseModel, ConsciousBase):
+    consciousBlocks : List[ConsciousBlock]
 
     @staticmethod
     def from_json(data: List[Mapping]):
-        mList = [Consciousblock.from_json(j) for j in data]
-        mConsciousflow = Consciousflow(consciousBlocks=mList)
-        return mConsciousflow
+        mList = [ConsciousBlock.from_json(j) for j in data]
+        mConsciousFlow = ConsciousFlow(consciousBlocks=mList)
+        return mConsciousFlow
 
     def to_json(self) -> List[Mapping]:
         mJson = [c.to_json() for c in self.consciousBlocks]
@@ -907,26 +907,26 @@ class Consciousflow(BaseModel, ConsciousBase):
     def from_tensor(tensor: torch.Tensor):
         consciousBlockCount,  vector_length = tensor.shape
         assert vector_length == ConsciousBase.length
-        mConsciousblocks = []
+        mConsciousBlocks = []
         for i in range(consciousBlockCount):
             arr = tensor[i, :] # dimension reduction.
-            mConsciousblock = Consciousblock.from_tensor(arr)
-            mConsciousblocks.append(mConsciousblock)
-        mConsciousflow = Consciousflow(consciousBlocks=mConsciousblocks)
-        return mConsciousflow
+            mConsciousBlock = ConsciousBlock.from_tensor(arr)
+            mConsciousBlocks.append(mConsciousBlock)
+        mConsciousFlow = ConsciousFlow(consciousBlocks=mConsciousBlocks)
+        return mConsciousFlow
 
     def to_tensor(self) -> torch.Tensor:
-        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousFlows], '* s d')
+        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousFlows], '* d')
         return mTensor
 
-class Consciousstream(BaseModel, ConsciousBase):
-    consciousFlows : List[Consciousflow]
+class ConsciousStream(BaseModel, ConsciousBase):
+    consciousFlows : List[ConsciousFlow]
 
     @staticmethod
     def from_json(data: List[Mapping]):
-        mList = [Consciousflow.from_json(j) for j in data]
-        mConsciousstream = Consciousstream(consciousFlows=mList)
-        return mConsciousstream
+        mList = [ConsciousFlow.from_json(j) for j in data]
+        mConsciousStream = ConsciousStream(consciousFlows=mList)
+        return mConsciousStream
 
     def to_json(self) -> List[Mapping]:
         mJson = [c.to_json() for c in self.consciousFlows]
@@ -934,15 +934,15 @@ class Consciousstream(BaseModel, ConsciousBase):
 
     @staticmethod
     def from_tensor(tensor: torch.Tensor):
-        consciousFlowCount,  vector_length = tensor.shape
+        consciousFlowCount, _, vector_length = tensor.shape
         assert vector_length == ConsciousBase.length
-        mConsciousflows = []
+        mConsciousFlows = []
         for i in range(consciousFlowCount):
-            arr = tensor[i, :] # dimension reduction.
-            mConsciousflow = Consciousflow.from_tensor(arr)
-            mConsciousflows.append(mConsciousflow)
-        mConsciousstream = Consciousstream(consciousFlows=mConsciousflows)
-        return mConsciousstream
+            arr = tensor[i,:, :] # dimension reduction.
+            mConsciousFlow = ConsciousFlow.from_tensor(arr)
+            mConsciousFlows.append(mConsciousFlow)
+        mConsciousStream = ConsciousStream(consciousFlows=mConsciousFlows)
+        return mConsciousStream
 
     def to_tensor(self) -> torch.Tensor:
         mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousStreams], '* s d')
