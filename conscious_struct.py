@@ -889,7 +889,6 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         del mTensorBase
         return mTensor
 
-{% for class, subclass in [["ConsciousFlow", "ConsciousBlock"], ["
 class ConsciousFlow(BaseModel, ConsciousBase):
     consciousBlocks: List[ConsciousBlock]
 

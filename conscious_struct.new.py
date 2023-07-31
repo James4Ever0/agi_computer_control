@@ -837,7 +837,8 @@ class ConsciousBlock(BaseModel, ConsciousBase):
                 action_data=action_data,
             )
         else:
-            raise Exception("Unknown data_type:", data_type)
+            # FIX: found by pyright (UndefinedVariable)
+            raise Exception("Unknown data_type:", self.data_type)
         return mConsciousBlock
 
     def to_tensor(self) -> torch.Tensor:
@@ -881,7 +882,7 @@ class ConsciousBlock(BaseModel, ConsciousBase):
             action_data = torch.Tensor(self.action_data)
             special_bits[ConsciousBase.special_tokens.index(self.special_token)] = 1
         else:
-            raise Exception("Unknown data_type:", data_type)
+            raise Exception("Unknown data_type:", self.data_type)
 
         mTensor, _ = einops.pack(
             (data_bits, special_bits, image_data, action_data), "*"

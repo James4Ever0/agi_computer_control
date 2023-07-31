@@ -152,8 +152,8 @@ def load_render_and_format(
         os.utime(
             output_path,
             times=(
-                os.path.getatime(template_path) - 1,
-                os.path.getmtime(template_path) - 1,
+                os.path.getatime(template_path) - 1000000,
+                os.path.getmtime(template_path) - 1000000,
             ),
         )  # to make this older than template, must update!
 
