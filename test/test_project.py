@@ -3,7 +3,9 @@
 # with this limited model structure, you may not find it "evolving".
 # you must let the AI design itself, evolve on its own.
 
-# shall you use pydantic v1 () or be incompatible with hypothesis.
+# shall you use pydantic v1 (>=1.10) or be incompatible with hypothesis.
+# ref: https://github.com/explosion/spaCy/issues/12659
+# lower the version of typing_extensions
 import sys
 import numpy as np
 
