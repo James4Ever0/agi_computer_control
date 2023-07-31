@@ -239,7 +239,11 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
         data_type="image", special_token=None, image_data=imageData
     )
     # cs = ConsciousFlow(consciousBlocks=[*actionConsciousBlocks, imageConsciousBlock])
-    cs = ConsciousFlow(consciousBlocks=[actionConsciousBlock, imageConsciousBlock])
+    cs = ConsciousFlow(consciousBlocks=[ # not here but inside.
+        actionConsciousBlock, 
+        # imageConsciousBlock,
+        ])
+    # cs = ConsciousFlow(consciousBlocks=[actionConsciousBlock, imageConsciousBlock])
     # must be 3d, not 2d.
     print(cs.to_tensor().shape) # torch.Size([2, 154639])
     # breakpoint()
