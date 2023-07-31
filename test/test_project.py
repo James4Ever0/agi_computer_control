@@ -258,7 +258,7 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
     # do not execute anything in this test! just get the predicted things out.
 
     logger_print("printing result")
-    logger_print(result) # with gradient! shall be shape of (d,), "data_dimension"
-    logger_print('result shape:', result.shape)
+    logger_print(result) # with gradient! shall be shape of (b (batch size), d (data length))
+    logger_print('result shape:', result.shape) # torch.Size([1, 154639])
 
     # now decode!
