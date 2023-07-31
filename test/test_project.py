@@ -256,6 +256,7 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
     cs = ConsciousStream(consciousFlows=[cf])
     result = model.forward(conscious_stream=cs.to_tensor())
     # result = model.forward(conscious_stream=einops.pack([cf.to_tensor()], "* s d")) # b s d
+    logger_print("printing result")
     logger_print(result)
     # do not load any weight yet. just use its random state.
     # do not execute anything in this test! just get the predicted things out.

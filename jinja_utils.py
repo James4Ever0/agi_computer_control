@@ -12,34 +12,39 @@ import re
 
 # live share's triple quote issue isn't fixed.
 
+import humps # default to snake case!
+
 
 # ref: https://www.geeksforgeeks.org/python-program-to-convert-camel-case-string-to-snake-case/
 def c2s(_str):
     """
     Camel case to snake case.
     """
-    res = [_str[0].lower()]
-    for c in _str[1:]:
-        if c in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
-            res.append("_")
-            res.append(c.lower())
-        else:
-            res.append(c)
+    # return humps.kebabize(_str).replace("-", "_")
+    # res = [_str[0].lower()]
+    # for c in _str[1:]:
+    #     if c in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+    #         res.append("_")
+    #         res.append(c.lower())
+    #     else:
+    #         res.append(c)
 
-    return "".join(res)
+    # return "".join(res)
+    return humps.decamelize(_str)
 
 
 def s2c(_str, lower: bool):
     """
     Snake case to camel case.
     """
-    assert not _str.startswith("_")
-    lst = _str.split("_")
-    first_letter = lst[0][0]
-    lst[0] = (first_letter.lower() if lower else first_letter.upper()) + lst[0][1:]
-    for i in range(1, len(lst)):
-        lst[i] = lst[i].title()
-    return "".join(lst)
+    # assert not _str.startswith("_")
+    # lst = _str.split("_")
+    # first_letter = lst[0][0]
+    # lst[0] = (first_letter.lower() if lower else first_letter.upper()) + lst[0][1:]
+    # for i in range(1, len(lst)):
+    #     lst[i] = lst[i].title()
+    # return "".join(lst)
+    return getattr(humps, "camelize" if lower else "pascalize")(_str)
 
 
 def s2cl(_str):
