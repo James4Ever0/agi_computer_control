@@ -1243,14 +1243,14 @@ class {{classNameUpper}}(BaseModel, ConsciousBase):
 
     @staticmethod
     def from_tensor(tensor: torch.Tensor):
-        {{subClassNameLower}}Count, {{"_," if classNameUpper == "ConsciousStream" else ""}} vector_length = tensor.shape
+        {{subClassNameLower}}Count, {{"_," if classNameUpper == "ConsciousStream"}} vector_length = tensor.shape
         assert vector_length == ConsciousBase.length
-        m{{subClassUpper}}s = []
+        m{{subClassNameUpper}}s = []
         for i in range(consciousBlockCount):
-            arr = tensor[i, :]
-            m{{subClassUpper}} = {{subClassUpper}}.from_tensor(arr)
-            mConsciousBlocks.append(mConsciousBlock)
-        m{{classNameUpper}} = {{classNameUpper}}(consciousBlocks=mConsciousBlocks)
+            arr = tensor[i,{{":," if classNameUpper == "ConsciousStream"}} :] # dimension reduction.
+            m{{subClassNameUpper}} = {{subClassNameUpper}}.from_tensor(arr)
+            m{{subClassNameUpper}}s.append(m{{subClassUpper}})
+        m{{classNameUpper}} = {{classNameUpper}}({{subClassNameLower}}s=mConsciousBlocks)
         return m{{classNameUpper}}
 
     def to_tensor(self) -> torch.Tensor:
