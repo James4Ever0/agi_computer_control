@@ -258,6 +258,6 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
     # do not execute anything in this test! just get the predicted things out.
 
     logger_print("printing result")
-    logger_print(result) # with gradient! shall be shape of (d,) (aka data_dim)
+    logger_print(result) # with gradient! shall be shape of (d,), "data_dimension"
 
     # now decode!
