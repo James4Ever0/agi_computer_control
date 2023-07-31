@@ -3,13 +3,36 @@
 # with this limited model structure, you may not find it "evolving".
 # you must let the AI design itself, evolve on its own.
 
+from conscious_struct import KeyPress, KeyRelease, MouseMove, MouseScroll, MouseClick
+import einops
+import stopit
+from hypothesis.strategies import integers
+from hypothesis import given, settings
+from torchvision.models import VisionTransformer
+from pathlib import Path
+import os
+import pytest
+import datetime
+from recording_train_parse import getTrainingData
+from conscious_struct import (
+    trainModelWithDataBasePath,
+    Trainer,
+    SequentialTrainingQueue,
+    CustomModel,
+    ConsciousFlow,  # consists of `ConsciousBlock`
+    ConsciousBlock,
+    ConsciousStream,  # newly created wrapper!
+    HIDAction,
+    ConsciousBase,
+)
+import torch
+from log_utils import logger_print
 import sys
 import numpy as np
 
 sys.path.append("../")
 
 # import logging
-from log_utils import logger_print
 
 # import log_utils
 # it is been commented out.
@@ -18,7 +41,6 @@ from log_utils import logger_print
 #     from typing import AwaitableGenerator
 # except:
 #     from typing_extensions import AwaitableGenerator
-import torch
 
 # may log to other places.
 # infinite append.
@@ -26,18 +48,6 @@ import torch
 
 # stdout_handler = StreamHandler(sys.stdout)
 
-
-from conscious_struct import (
-    trainModelWithDataBasePath,
-    Trainer,
-    SequentialTrainingQueue,
-    CustomModel,
-    ConsciousFlow,  # consists of `ConsciousBlock`
-    ConsciousBlock,
-    ConsciousStream, # newly created wrapper!
-    HIDAction,
-    ConsciousBase,
-)
 
 # logging.basicConfig(
 #     # filename=filename,
@@ -48,15 +58,12 @@ from conscious_struct import (
 # )
 
 # logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, force=True)
-from recording_train_parse import getTrainingData
 
 # logging.critical("")
-import datetime
 
 current_time = datetime.datetime.now().isoformat()
 logger_print(f"logging starts: {current_time}".center(100, "="))
 # logging.critical("")
-import pytest
 
 # TODO: modify function at source code level, not here!
 # def auto_teardown(func):
@@ -90,14 +97,11 @@ def test_fetching_training_data(basePath: str):
     trainModelWithDataBasePath(basePath, myQueue)
 
 
-import os
-from pathlib import Path
-
-
 @pytest.fixture(scope="session")
 def vit_model_path():
     path = Path(
-        os.path.abspath(relpath := "../../../model_cache/vit_b_16-c867db91.pth")
+        os.path.abspath(
+            relpath := "../../../model_cache/vit_b_16-c867db91.pth")
     )
     if not path.exists():
         raise Exception(
@@ -119,9 +123,6 @@ def vit_model(vit_model_path: str):
     vmodel.load_state_dict(mStateDict)
     yield vmodel
     del vmodel
-
-
-from torchvision.models import VisionTransformer
 
 
 @pytest.fixture(scope="session")
@@ -163,12 +164,7 @@ def optimizer(model: CustomModel):
     del opt
 
 
-from hypothesis import given, settings
-from hypothesis.strategies import integers
-
 # from hypothesis import HealthCheck
-
-import stopit
 
 
 @given(random_seed=integers())
@@ -197,10 +193,6 @@ def test_train_model_with_training_data(
             basePath, myQueue, shuffle_for_test=True, random_seed=random_seed
         )
     logger_print("SESSION TIMEOUT NOW".center(60, "_"))
-
-
-import einops
-from conscious_struct import KeyPress, KeyRelease, MouseMove, MouseScroll, MouseClick
 
 
 @pytest.mark.parametrize(
@@ -241,11 +233,12 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
     )
     # cs = ConsciousFlow(consciousBlocks=[*actionConsciousBlocks, imageConsciousBlock])
     # cf = ConsciousFlow(consciousBlocks=[ # not here but inside.
-    #     actionConsciousBlock, 
+    #     actionConsciousBlock,
     #     # imageConsciousBlock,
     #     ]
     # )
-    cf = ConsciousFlow(consciousBlocks=[actionConsciousBlock, imageConsciousBlock])
+    cf = ConsciousFlow(
+        consciousBlocks=[actionConsciousBlock, imageConsciousBlock])
     # must be 3d, not 2d.
     # print(actionConsciousBlock.to_tensor().shape) # torch.Size([154639]) ~ d
     # print(imageConsciousBlock.to_tensor().shape) # torch.Size([154639]) ~ d
