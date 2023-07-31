@@ -83,15 +83,20 @@ remmina
 
 c口数据线观测中
 
-
 ---
 
 to resolve the display resolution/mouse coordinate range matching issue, use pyautogui to get the resolution then capture display using that resolution (resize to it)
 
-----
+---
 
 GPT4 is using MoE as its architecture.
 
-----
+---
 
 the main objective of AGI is to create another version of itself.
+
+---
+
+ways of connection:
+
+vnc, ssh, tty, tmux, hdmi capture & hid emulator
