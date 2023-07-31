@@ -6,20 +6,8 @@
 # shall you use pydantic v1 (>=1.10) or be incompatible with hypothesis.
 # ref: https://github.com/explosion/spaCy/issues/12659
 # lower the version of typing_extensions
-import sys
-import numpy as np
-
-sys.path.append("../")
-import einops
-import stopit
-from hypothesis.strategies import integers
-from hypothesis import given, settings
-from torchvision.models import VisionTransformer
-from pathlib import Path
-import os
-import pytest
-import datetime
-from recording_train_parse import getTrainingData
+from log_utils import logger_print
+import torch
 from conscious_struct import (
     trainModelWithDataBasePath,
     Trainer,
@@ -32,8 +20,20 @@ from conscious_struct import (
     ConsciousBase,
     KeyPress, KeyRelease, MouseMove, MouseScroll, MouseClick
 )
-import torch
-from log_utils import logger_print
+from recording_train_parse import getTrainingData
+import datetime
+import pytest
+import os
+from pathlib import Path
+from torchvision.models import VisionTransformer
+from hypothesis import given, settings
+from hypothesis.strategies import integers
+import stopit
+import einops
+import sys
+import numpy as np
+
+sys.path.append("../")
 
 
 # import logging
@@ -258,10 +258,12 @@ def test_eval_with_model(model: CustomModel, HIDActionObj):
     # do not execute anything in this test! just get the predicted things out.
 
     logger_print("printing result")
-    logger_print(result) # with gradient! shall be shape of (b (batch size), d (data length))
-    logger_print('result shape:', result.shape) # torch.Size([1, 154639])
+    # with gradient! shall be shape of (b (batch size), d (data length))
+    logger_print(result)
+    logger_print('result shape:', result.shape)  # torch.Size([1, 154639])
 
+    # now decode!
     cf_result = ConsciousFlow.from_tensor(result.detach())
     logger_print("decoded result:", cf_result)
 
-    # now decode!
+    # consider running this stuff in real world.
