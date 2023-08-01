@@ -19,7 +19,8 @@ for d in hid.enumerate():
 h = hid.device()
 try:
     print("Opening the device")
-    h.open(0x534C, 0x0001)  # TREZOR VendorID/ProductID
+    h.open()
+    # h.open(0x534C, 0x0001)  # TREZOR VendorID/ProductID
 
     print("Manufacturer: %s" % h.get_manufacturer_string())
     print("Product: %s" % h.get_product_string())
