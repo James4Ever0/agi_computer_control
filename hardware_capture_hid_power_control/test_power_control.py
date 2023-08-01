@@ -16,7 +16,7 @@ ser = serial.Serial(serialDevices["power"], timeout=0.1)
 # print(ser.name) # /dev/serial/by-id/usb-1a86_5523-if00-port0
 
 # ser.write(b"hello")
-ser.write(b"CH3=?")
+ser.write(b"CH3=?") # CH3 does not exist.
 print("READING")
 # b'CH1=OFF' 
 res = ser.readall()
