@@ -5,6 +5,9 @@ import time
 
 # enumerate USB devices
 
+# manufacturer_string -> "winkeyless.kr"
+# shall be what we expect.
+
 for d in hid.enumerate():
     keys = list(d.keys())
     keys.sort()
