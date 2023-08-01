@@ -1,3 +1,4 @@
+# deprecated. use serial for both controllers
 from __future__ import print_function
 
 import hid
