@@ -8,6 +8,8 @@ power: `/dev/serial/by-id`
 
 hid: `/dev/hidraw*` (need to find by provider name)
 
+install `hidapi` from pypi
+
 ----
 
 video capture: ...
