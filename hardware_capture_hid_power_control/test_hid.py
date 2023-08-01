@@ -23,6 +23,7 @@ devices = {
 # the same!
 
 # try opening a device, then perform write and read
+# may you write keyboard and mouse commands to different devices, by using `h.open(d)`
 h = hid.device()
 try:
     print("Opening the device")
@@ -32,7 +33,6 @@ try:
     # print(dir(h))
     # 'get_feature_report', 'get_indexed_string', 'get_input_report', 'get_manufacturer_string', 'get_product_string', 'get_serial_number_string',
     # print(h.open_path)
-    print(h.get_input_report())
 
     print("Manufacturer: %s" % h.get_manufacturer_string())
     print("Product: %s" % h.get_product_string())
@@ -42,6 +42,7 @@ try:
     h.set_nonblocking(1)
 
     # write some data to the device
+    # what data is this anyway?
     print("Write the data")
     h.write([0, 63, 35, 35] + [0] * 61)
 
