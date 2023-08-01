@@ -15,6 +15,11 @@ for d in hid.enumerate():
         print("%s : %s" % (key, d[key]))
     print()
 
+devices = {
+    {"vendor_id":, "product_id":, },
+    {"vendor_id":, "product_id":, },
+}
+
 # try opening a device, then perform write and read
 h = hid.device()
 try:
