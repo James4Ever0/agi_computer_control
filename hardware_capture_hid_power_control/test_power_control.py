@@ -15,5 +15,6 @@ ser = serial.Serial(serialDevices["power"])
 
 # print(ser.name) # /dev/serial/by-id/usb-1a86_5523-if00-port0
 
-ser.write(b"hello")
+# ser.write(b"hello")
+ser.write(b"")
 ser.close()
