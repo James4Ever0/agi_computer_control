@@ -29,6 +29,10 @@ try:
     h.open(devices[0]["vendor_id"], devices[0]["product_id"])
     # h.open(0x534C, 0x0001)  # TREZOR VendorID/ProductID
 
+    print(dir(h))
+    # 'get_feature_report', 'get_indexed_string', 'get_input_report', 'get_manufacturer_string', 'get_product_string', 'get_serial_number_string',
+    # print(h.open_path)
+
     print("Manufacturer: %s" % h.get_manufacturer_string())
     print("Product: %s" % h.get_product_string())
     print("Serial No: %s" % h.get_serial_number_string())
