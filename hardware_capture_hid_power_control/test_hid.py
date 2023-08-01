@@ -16,15 +16,17 @@ for d in hid.enumerate():
     print()
 
 devices = {
-    {"vendor_id":, "product_id":, },
-    {"vendor_id":, "product_id":, },
+    0: {"vendor_id": 8352, "product_id": 16941, },  # 0, could be mouse.
+    1: {"vendor_id": 8352, "product_id": 16941, },  # 1
 }
+
+# the same!
 
 # try opening a device, then perform write and read
 h = hid.device()
 try:
     print("Opening the device")
-    h.open()
+    h.open(devices[0]["vendor_id"], devices[0]["product_id"])
     # h.open(0x534C, 0x0001)  # TREZOR VendorID/ProductID
 
     print("Manufacturer: %s" % h.get_manufacturer_string())
