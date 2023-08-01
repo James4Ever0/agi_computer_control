@@ -23,7 +23,7 @@ devices = {
 # the same!
 
 # try opening a device, then perform write and read
-# may you write keyboard and mouse commands to different devices, by using `h.open(d)`
+# may you write keyboard and mouse commands to different devices, by using `h.open(d)` (may still be the same as below)
 h = hid.device()
 try:
     print("Opening the device")
