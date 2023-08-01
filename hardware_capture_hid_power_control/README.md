@@ -2,7 +2,9 @@ you may check out ROS and find some control related packages
 
 ----
 
-power: `/dev/serial/by-id`
+power: `/dev/serial/by-id/*`
+
+install `pyserial`
 
 ----
 
