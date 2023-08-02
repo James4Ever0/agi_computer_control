@@ -7,6 +7,7 @@ from typing_extensions import TypeAlias
 from beartype.door import is_bearable
 from enum import Enum, auto
 from functools import reduce
+from typing import Union
 
 one_byte: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 1]]
 two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
@@ -77,7 +78,8 @@ elif deviceType == "hid":
 
     @beartype
     def reduce_opcodes(opcodes:List[one_byte]):
-        reduce(
+        opcode = reduce(lambda x, y: x | y, opcodes)
+        return opcode
 
     @beartype
     def changeID(vid: two_bytes, pid: two_bytes):
@@ -118,6 +120,13 @@ elif deviceType == "hid":
         button_code = reduce_opcodes(button_codes)
         data_code = button_code + x_code+ y_code+ scroll_code # all 1byte
         kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, 4)
+
+    class MultimediaButton(Enum):
+        
+
+    @beartype
+    def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
+        ...
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
