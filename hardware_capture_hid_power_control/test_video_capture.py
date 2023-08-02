@@ -24,6 +24,7 @@ camera_id = 2
 
 cap = cv2.VideoCapture(camera_id)
 
+# resolution not right...
 
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1920)
