@@ -3,6 +3,7 @@ import beartype
 from beartype.vale import Is
 from typing import Annotated
 from typing_extensions import TypeAlias
+from beartype.door import is_bearable # for bra
 
 two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
 four_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 4]]
