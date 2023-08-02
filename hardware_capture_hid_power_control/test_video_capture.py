@@ -1,4 +1,4 @@
-# lsusb
+# lsusb -v
 # Actions Microelectronics Co. Display capture-UVC05
 
 # ls /dev/video*
