@@ -2,6 +2,7 @@ import serial
 import beartype
 from typing import ByteString
 
+ByteString[2]
 # confusing!
 serialDevices = {
     "power": "/dev/serial/by-id/usb-1a86_5523-if00-port0",
