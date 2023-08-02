@@ -70,8 +70,13 @@ elif deviceType == "hid":
         print("change VID=%s, PID=%s" % (vid, pid))
         write_and_read(modifyIDHeader+vid+pid)
 
+    # use int.to_bytes afterwards.
     class ControlCode(Enum):
-        b"
+    0x01
+    0x02
+    0x04
+    0x08
+    0
 
     @beartype
     def keyboard():
