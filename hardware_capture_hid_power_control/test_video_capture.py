@@ -23,7 +23,8 @@ camera_id = 2 # use the smallest camera id of particular device (the only workin
 # camera_id = 0
 # cam 1,3 not working.
 
-cap = cv2.VideoCapture(camera_id) # oops. not working for cam2
+cap = cv2.VideoCapture(camera_id)
+# oops. not working for cam2, cause we are using it in obs? (yes! and cv2 will reset this thing to 640x480 just after opening the camera.)
 
 # resolution not right...
 
