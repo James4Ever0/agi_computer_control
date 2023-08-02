@@ -7,6 +7,7 @@ from typing_extensions import TypeAlias
 from beartype.door import is_bearable
 from enum import Enum, auto
 
+one_byte: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 1]]
 two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
 four_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 4]]
 six_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 6]]
@@ -85,8 +86,9 @@ elif deviceType == "hid":
         RIGHT_GUI = auto()
 
     @beartype
-    def keyboard():
-        ...
+    def keyboard(control_code: one_byte): # check for "HID Usage ID"
+        reserved_byte = b"\x00"
+        control_code + reserved_byte
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
