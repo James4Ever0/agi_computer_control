@@ -1,5 +1,5 @@
 import serial
-import beartype
+from beartype import beartype
 from beartype.vale import Is
 from typing import Annotated
 from typing_extensions import TypeAlias

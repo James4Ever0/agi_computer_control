@@ -26,5 +26,6 @@ print("CV_CAP_PROP_FRAME_FORMAT : '{}'".format(cap.get(cv2.CAP_PROP_FORMAT)))
 ret, frame = cap.read()
 
 # Display the resulting frame
-cv2.imshow('frame', frame)
-cv2.waitKey(0)
+cv2.imwrite("output.png",)
+# cv2.imshow('frame', frame)
+# cv2.waitKey(0)
