@@ -7,7 +7,7 @@ from typing_extensions import TypeAlias
 from beartype.door import is_bearable
 from enum import Enum, auto
 from functools import reduce
-from typing import Union, List
+from typing import Union, List, Literal
 
 one_byte: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 1]]
 two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
@@ -163,14 +163,14 @@ elif deviceType == "hid":
         Record = auto()
         Rewind = auto()
 
-    assert len(MultimediaKey.__members__)) == 3*8
+    assert len(MultimediaKey.__members__) == 3*8
 
     # @beartype
     # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
     
     @beartype
     def multimedia(multimedia_keys: List[MultimediaKey]):
-        data_code = reduce_opcodes(multimedia_keys)
+        data_code = reduce_opcodes_to_bytes(multimedia_keys)
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
