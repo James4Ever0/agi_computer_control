@@ -1,1 +1,1 @@
-v4l2-ctl 
+v4l2-ctl --set-fmt-video=width=1920,height=1088,pixelformat=4 
