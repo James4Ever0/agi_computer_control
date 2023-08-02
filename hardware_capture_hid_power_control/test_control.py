@@ -67,7 +67,7 @@ elif deviceType == "hid":
         mouseRelativeHeader = commonHeader+b"\x02"  # +4bytes
 
         # below only working for KCOM3
-        mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bytes
+        multimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bytes
         mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bytes
 
     @beartype
@@ -125,6 +125,7 @@ elif deviceType == "hid":
         @staticmethod
         def _generate_next_value_(name, start, count, last_values):
             return 2 ** (count)
+        # row 1
         VolumeUp
         VolumeDown
         Mute
@@ -133,13 +134,27 @@ elif deviceType == "hid":
         PreviousTrack
         CDStop
         Eject
+
+        # row 2
         EMail
         WWWSearch
         WWWFavourites
+        WWWHome
+        WWWBack
+        WWWForward
+        WWWStop
+        Refresh
+
+        # row 3
+        Media
+        
+    
+    assert len(MultimediaButton.__members__)) == 3*8,  
+
 
     @beartype
     def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
-        kcom_write_and_read(KCOMHeader.mouseRelativeHeader
+        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code)
     
     @beartype
     def multimedia(multimedia_buttons: List[MultimediaButton]):
