@@ -100,9 +100,12 @@ elif deviceType == "hid":
         RIGHT_SHIFT = auto()
         RIGHT_ALT = auto()
         RIGHT_GUI = auto()
+    
+    class KeyboardKey(Enum):
+        ...
 
     @beartype
-    def keyboard_raw(control_codes: List[ControlCode], keycodes: Annotated[List[one_byte], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
+    def keyboard(control_codes: List[ControlCode], keycodes: Annotated[List[Key], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
         reserved_byte = b"\x00"
         data_code = control_code + reserved_byte + b"".join(keycodes + ([b"\x00"]*(6-len(keycodes))))
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
@@ -116,12 +119,13 @@ elif deviceType == "hid":
         MIDDLE = auto()
 
     @beartype
-    def mouse_common_raw(button_codes: List[MouseButton], x_code:Union[two_bytes, one_byte], y_code: Union[two_bytes, one_byte], scroll_code: one_byte, length: Literal[4, 6]):
-        button_code = reduce_opcodes(button_codes)
+    def mouse_common(button_codes: List[MouseButton], x_code:Union[two_bytes, one_byte], y_code: Union[two_bytes, one_byte], scroll_code: one_byte, length: Literal[4, 6]):
+        button_opcode = reduce_opcodes(button_codes)
+        button_code = button_opcode.to_bytes()
         data_code = button_code + x_code+ y_code+ scroll_code # all 1byte
         kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, length)
 
-    class MultimediaButton(Enum):
+    class MultimediaKey(Enum):
         @staticmethod
         def _generate_next_value_(name, start, count, last_values):
             return 2 ** (count)
@@ -155,16 +159,16 @@ elif deviceType == "hid":
         Record = auto()
         Rewind = auto()
 
-    assert len(MultimediaButton.__members__)) == 3*8
+    assert len(MultimediaKey.__members__)) == 3*8
 
 
     # @beartype
     # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
     
     @beartype
-    def multimedia(multimedia_buttons: List[MultimediaButton]):
-        opcode = reduce_opcodes(multimedia_buttons)
-        data_code = 
+    def multimedia(multimedia_keys: List[MultimediaKey]):
+        multimedia_opcode = reduce_opcodes(multimedia_keys)
+        data_code = multimedia_opcode.to_bytes(1 if opcode <= 0xff else 2)
         # multimedia_raw(data_code)
         kcom_write_and_read(KCOMHeader.multimediaHeader, data_code)
     
