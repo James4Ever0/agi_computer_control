@@ -58,18 +58,24 @@ if deviceType == "power":
     write_and_read(f"CH{channel}=?".encode())
 elif deviceType == "hid":
     commonHeader = b"\x57\xab"
-    modifyIDHeader = commonHeader+b"\x10"  # +4bits, (2bits VID, 2bits PID)
-    keyboardHeader = commonHeader+b"\x01"  # +8bits
-    mouseRelativeHeader = commonHeader+b"\x02"  # +4bits
 
-    # below only working for KCOM3
-    mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bits
-    mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
+    class KCOMHeader(Enum):
+        modifyIDHeader = commonHeader+b"\x10"  # +4bits, (2bits VID, 2bits PID)
+        keyboardHeader = commonHeader+b"\x01"  # +8bits
+        mouseRelativeHeader = commonHeader+b"\x02"  # +4bits
+
+        # below only working for KCOM3
+        mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bits
+        mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
+
+    @beartype
+    def kcom_write_and_read(header:KCOMHeader, data_code:bytes):
+        write_and_read(header+data_code)
 
     @beartype
     def changeID(vid: two_bytes, pid: two_bytes):
         print("change VID=%s, PID=%s" % (vid, pid))
-        write_and_read(modifyIDHeader+vid+pid)
+        kcom_write_and_read(KCOMHeader.modifyIDHeader, vid+pid)
 
     # use int.to_bytes afterwards.
     class ControlCode(Enum):
@@ -88,8 +94,11 @@ elif deviceType == "hid":
     @beartype
     def keyboard_raw(control_code: one_byte, keycodes: Annotated[List[one_byte], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
         reserved_byte = b"\x00"
-        code = control_code + reserved_byte + b"".join(keycodes + ([b"\x00"]*(6-len(keycodes))))
-        write_and_read(code)
+        data_code = control_code + reserved_byte + b"".join(keycodes + ([b"\x00"]*(6-len(keycodes))))
+        kcom_write_and_read(KCOMHeader.keyboardHeader, data_code)
+
+    @beartype
+    def mouse_relative
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
