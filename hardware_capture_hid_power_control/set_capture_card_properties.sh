@@ -1,3 +1,7 @@
+# maybe you shall install python bindings
+# pip3 install v4l2-python3
+# pip3 install v4l2py
+
 v4l2-ctl -d 2 --set-fmt-video=width=1920,height=1080,pixelformat=MJPG
 
 # get fps
