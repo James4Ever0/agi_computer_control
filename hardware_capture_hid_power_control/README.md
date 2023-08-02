@@ -16,6 +16,10 @@ use kcom2/kcom3 or ch9392
 
 [pycomkb](https://gitee.com/NetPuppetLib/pycomkb)
 
+[ch9329comm](https://github.com/beijixiaohu/CH9329_COMM) (also on pypi)
+
+[9329keyboardremote](https://github.com/Blue-Beaker/9329KeyboardRemotehttps://github.com/Blue-Beaker/9329KeyboardRemote)
+
 ----
 
 video capture: ...
