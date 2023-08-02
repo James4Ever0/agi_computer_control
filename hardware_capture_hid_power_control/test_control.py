@@ -86,7 +86,7 @@ elif deviceType == "hid":
         RIGHT_GUI = auto()
 
     @beartype
-    def keyboard(control_code: one_byte): # check for "HID Usage ID"
+    def keyboard(control_code: one_byte, ): # check for "HID Usage ID"
         reserved_byte = b"\x00"
         control_code + reserved_byte
 
