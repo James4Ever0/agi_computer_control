@@ -5,7 +5,7 @@ from typing import Annotated
 from typing_extensions import TypeAlias
 # for branching; ref: https://beartype.readthedocs.io/en/latest/api_door/
 from beartype.door import is_bearable
-from enum import Enum
+from enum import Enum, auto
 
 two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
 four_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 4]]
@@ -72,11 +72,17 @@ elif deviceType == "hid":
 
     # use int.to_bytes afterwards.
     class ControlCode(Enum):
-    0x01
-    0x02
-    0x04
-    0x08
-    0
+        @staticmethod
+        def _generate_next_value_(name, start, count, last_values):
+            return 2 ** (count)
+        LEFT_CONTROL = auto()
+        LEFT_SHIFT = auto()
+        LEFT_ALT = auto()
+        LEFT_GUI = auto()
+        RIGHT_CONTROL = auto()
+        RIGHT_SHIFT = auto()
+        RIGHT_ALT = auto()
+        RIGHT_GUI = auto()
 
     @beartype
     def keyboard():
