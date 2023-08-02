@@ -7,7 +7,7 @@ from typing_extensions import TypeAlias
 from beartype.door import is_bearable
 from enum import Enum, auto
 from functools import reduce
-from typing import Union
+from typing import Union, List
 
 one_byte: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 1]]
 two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
@@ -22,8 +22,8 @@ serialDevices = {
     # another hid device will be: ch9392
 }
 
-# deviceType = "power"
-deviceType = "hid"  # 为了保证数据能正常传输，两条数据发送间隔最低要有5ms 的延时；意思就是你发送一个数据后延时5ms 再发下一条数据。
+deviceType = "power"
+# deviceType = "hid"  # 为了保证数据能正常传输，两条数据发送间隔最低要有5ms 的延时；意思就是你发送一个数据后延时5ms 再发下一条数据。
 
 ser = serial.Serial(serialDevices[deviceType], timeout=0.01,
                     **({'baudrate': 57600} if deviceType == 'hid' else {}))
@@ -105,7 +105,7 @@ elif deviceType == "hid":
         ...
 
     @beartype
-    def keyboard(control_codes: List[ControlCode], keycodes: Annotated[List[Key], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
+    def keyboard(control_codes: List[ControlCode], keycodes: Annotated[List[KeyboardKey], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
         reserved_byte = b"\x00"
         data_code = control_code + reserved_byte + b"".join(keycodes + ([b"\x00"]*(6-len(keycodes))))
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
