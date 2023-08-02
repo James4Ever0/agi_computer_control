@@ -4,10 +4,10 @@ from beartype.vale import Is
 from typing import Annotated
 from typing_extensions import TypeAlias
 
-two_bytes = Annotated[bytes, Is[lambda b: len(b) == 2]]
-four_bytes = Annotated[bytes, Is[lambda b: len(b) == 2]]
-six_bytes = Annotated[bytes, Is[lambda b: len(b) == 2]]
-eight_bytes = Annotated[bytes, Is[lambda b: len(b) == 2]]
+two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
+four_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 4]]
+six_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 6]]
+eight_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 8]]
 
 # confusing!
 serialDevices = {
@@ -31,6 +31,7 @@ print("Serial device: %s" % deviceType)
 # print(ser.name) # /dev/serial/by-id/usb-1a86_5523-if00-port0
 
 # ser.write(b"hello")
+
 
 @beartype
 def write_and_read(_bytes: bytes):
@@ -59,8 +60,10 @@ elif deviceType == "hid":
     mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
 
     @beartype
-    def changeID(vid:Annotated[bytes, pid:bytes):
-        assert 
+    def changeID(vid: two_bytes, pid:two_bytes):
+        print("change VID=%s, PID=%s" % (vid, pid))
+        write_and_read(modifyIDHeader+vid+pid)
+    
 else:
     raise Exception("Unknown device type: {deviceType}".format(
         deviceType=deviceType))
