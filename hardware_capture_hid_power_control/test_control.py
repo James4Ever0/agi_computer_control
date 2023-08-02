@@ -52,12 +52,18 @@ if deviceType == "power":
     # will reset on reboot
     channel = 1  # CH3 does not exist. CH2 is placeholder. (virtually working)
     # channel = 2
-    state = "ON"
-    # state = "OFF"
 
-    write_and_read(f"CH{channel}=?".encode())
-    write_and_read(f"CH{channel}={state}".encode())
-    write_and_read(f"CH{channel}=?".encode())
+    # state = "ON"
+    # # state = "OFF"
+
+    # write_and_read(f"CH{channel}=?".encode())
+    # write_and_read(f"CH{channel}={state}".encode())
+    # write_and_read(f"CH{channel}=?".encode())
+
+    # just toggle.
+    write_and_read(f"CH{channel}=OFF".encode())
+    write_and_read(f"CH{channel}=ON".encode())
+
 elif deviceType == "hid":
     commonHeader = b"\x57\xab"
 
