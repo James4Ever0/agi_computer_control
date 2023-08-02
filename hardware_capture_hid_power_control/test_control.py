@@ -1,8 +1,8 @@
 import serial
 import beartype
-from typing import ByteString
+from beartype.vale import Is
+from typing import Annotated
 
-ByteString[2]
 # confusing!
 serialDevices = {
     "power": "/dev/serial/by-id/usb-1a86_5523-if00-port0",
@@ -26,7 +26,7 @@ print("Serial device: %s" % deviceType)
 
 # ser.write(b"hello")
 
-
+@bea
 def write_and_read(_bytes: bytes):
     ser.write(_bytes)
     print(f"w> {repr(_bytes)}")
