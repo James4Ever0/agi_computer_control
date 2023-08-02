@@ -86,9 +86,9 @@ elif deviceType == "hid":
         RIGHT_GUI = auto()
 
     @beartype
-    def keyboard(control_code: one_byte, ): # check for "HID Usage ID"
+    def keyboard(control_code: one_byte, keycodes: Annotated[List[one_byte], Is[lambda l: len(l) <= and len(l) >=]): # check for "HID Usage ID"
         reserved_byte = b"\x00"
-        control_code + reserved_byte
+        control_code + reserved_byte + b"".join(keycodes)
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
