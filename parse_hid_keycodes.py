@@ -12,9 +12,12 @@ table_entry = Annotated[str, Is[lambda s: len(s) > 0 and len(s) < 30]]
 
 table_header_count = 7
 
+
 with open(input_path, "r", encoding="utf-8") as f:
     for line in f.readlines():
         line = line.strip()
 
         if is_bearable(line, null_string):
             header_index=-1
+        elif is_bearable(line, table_entry):
+            header_index +=1
