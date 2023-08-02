@@ -5,6 +5,7 @@ from typing import Annotated
 from typing_extensions import TypeAlias
 # for branching; ref: https://beartype.readthedocs.io/en/latest/api_door/
 from beartype.door import is_bearable
+from enum import Enum
 
 two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
 four_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 4]]
@@ -68,6 +69,13 @@ elif deviceType == "hid":
     def changeID(vid: two_bytes, pid: two_bytes):
         print("change VID=%s, PID=%s" % (vid, pid))
         write_and_read(modifyIDHeader+vid+pid)
+
+    class ControlCode(Enum):
+        b"
+
+    @beartype
+    def keyboard():
+        ...
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
