@@ -42,12 +42,12 @@ if deviceType == "power":
     write_and_read(f"CH{channel}={state}".encode())
     write_and_read(f"CH{channel}=?".encode())
 elif deviceType == "hid":
-    commonHeader = ""
-    modifyIDHeader = b"\x57\xab\x10" # +4bits, (2bits VID, 2bits PID)
-    keyboardHeader = b"\x57\xab\x01" # +8bits
-    mouseRelativeHeader = b"\x57\xab\x02" # +4bits
-    mouseMultimediaHeader = b"\x57\xab\x03" # +(2 or 4)bits
-    mouseAbsoluteHeader = b"\x57\xab\x04" # +4bits
+    commonHeader = b"\x57\xab"
+    modifyIDHeader = commonHeader+b"\x10"  # +4bits, (2bits VID, 2bits PID)
+    keyboardHeader = commonHeader+b"\x01"  # +8bits
+    mouseRelativeHeader = commonHeader+b"\x02"  # +4bits
+    mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bits
+    mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
 else:
     raise Exception("Unknown device type: {deviceType}".format(
         deviceType=deviceType))
