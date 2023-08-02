@@ -6,8 +6,8 @@ serialDevices = {
     "hid": "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0",
 }
 
-deviceType = "power"
-# deviceType = "hid"
+# deviceType = "power"
+deviceType = "hid"
 
 ser = serial.Serial(serialDevices[deviceType], timeout=0.01)
 print("Serial device: %s" % deviceType)
