@@ -19,7 +19,7 @@ with open(input_path, "r", encoding="utf-8") as f:
         line = line.strip()
 
         if is_bearable(line, null_string):
-            if header_index == table_header_count:
+            if header_index == table_header_count-1:
                 table_rows.append(row.copy())
                 row = []
             header_index=-1
