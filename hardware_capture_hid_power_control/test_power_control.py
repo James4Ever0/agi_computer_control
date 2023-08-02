@@ -16,13 +16,16 @@ ser = serial.Serial(serialDevices["power"], timeout=0.1)
 # print(ser.name) # /dev/serial/by-id/usb-1a86_5523-if00-port0
 
 # ser.write(b"hello")
-channel=2  # CH3 does not exist.
-b"CH3=?"
+channel=1  # CH3 does not exist.
+
 def write_and_read(_bytes:bytes):
     ser.write(_bytes)
     print(f"w> {repr(_bytes)}")
     res = ser.readall()
     print(f"r> {repr(res)}")
 
+write_and_read(f"CH{channel}=?".encode())
+write_and_read(f"CH{channel}=ON".encode())
+write_and_read(f"CH{channel}=?".encode())
 
 ser.close()
