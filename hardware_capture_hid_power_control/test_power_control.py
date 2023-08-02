@@ -17,11 +17,12 @@ ser = serial.Serial(serialDevices["power"], timeout=0.1)
 
 # ser.write(b"hello")
 channel=2  # CH3 does not exist.
-def 
-ser.write(b"CH3=?")
-print("READING")
-res = ser.readall()
-print(res)
+b"CH3=?"
+def write_and_read(_bytes:bytes):
+    ser.write(_bytes)
+    print(f"w> {repr(_bytes)}")
+    res = ser.readall()
+    print(f"r> {repr(res)}")
 
 
 ser.close()
