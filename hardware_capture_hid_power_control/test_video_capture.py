@@ -25,8 +25,15 @@ camera_id = 2
 cap = cv2.VideoCapture(camera_id)
 
 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1920)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1920)
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1024)
+
+# cannot strentch!
+# CV_CAP_PROP_FRAME_WIDTH: '1280.0'
+# CV_CAP_PROP_FRAME_HEIGHT : '1024.0'
 
 # showing values of the properties
 print("CV_CAP_PROP_FRAME_WIDTH: '{}'".format(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
