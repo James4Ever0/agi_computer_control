@@ -58,6 +58,8 @@ elif deviceType == "hid":
     modifyIDHeader = commonHeader+b"\x10"  # +4bits, (2bits VID, 2bits PID)
     keyboardHeader = commonHeader+b"\x01"  # +8bits
     mouseRelativeHeader = commonHeader+b"\x02"  # +4bits
+
+    # below only working for KCOM3
     mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bits
     mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
 
