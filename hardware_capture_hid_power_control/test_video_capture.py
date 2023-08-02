@@ -12,7 +12,7 @@
 import cv2
 
 # can't you reset?
-camera_id = 2
+camera_id = 2 # use first device 
 # CV_CAP_PROP_FRAME_WIDTH: '640.0'
 # CV_CAP_PROP_FRAME_HEIGHT : '480.0'
 # CV_CAP_PROP_FRAME_FPS : '30.0'
