@@ -42,6 +42,8 @@ if deviceType == "power":
     write_and_read(f"CH{channel}={state}".encode())
     write_and_read(f"CH{channel}=?".encode())
 elif deviceType == "hid":
+    commonHeader = ""
+    modifyIDHeader = b"\x57\xab\x10" # +4bits, (2bits VID, 2bits PID)
     keyboardHeader = b"\x57\xab\x01" # +8bits
     mouseRelativeHeader = b"\x57\xab\x02" # +4bits
     mouseMultimediaHeader = b"\x57\xab\x03" # +(2 or 4)bits
