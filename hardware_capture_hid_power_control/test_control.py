@@ -2,6 +2,12 @@ import serial
 import beartype
 from beartype.vale import Is
 from typing import Annotated
+from typing_extensions import TypeAlias
+
+two_bytes = Annotated[bytes, Is[lambda b: len(b) == 2]]
+four_bytes = Annotated[bytes, Is[lambda b: len(b) == 2]]
+six_bytes = Annotated[bytes, Is[lambda b: len(b) == 2]]
+eight_bytes = Annotated[bytes, Is[lambda b: len(b) == 2]]
 
 # confusing!
 serialDevices = {
@@ -26,7 +32,7 @@ print("Serial device: %s" % deviceType)
 
 # ser.write(b"hello")
 
-@bea
+@beartype
 def write_and_read(_bytes: bytes):
     ser.write(_bytes)
     print(f"w> {repr(_bytes)}")
@@ -51,7 +57,9 @@ elif deviceType == "hid":
     mouseRelativeHeader = commonHeader+b"\x02"  # +4bits
     mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bits
     mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
-    def changeID(vid:bytes, pid:bytes):
+
+    @beartype
+    def changeID(vid:Annotated[bytes, pid:bytes):
         assert 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
