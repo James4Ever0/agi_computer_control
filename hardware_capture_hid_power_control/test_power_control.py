@@ -9,7 +9,7 @@ serialDevices = {
 deviceType = "power"
 # deviceType = "hid"
 
-ser = serial.Serial(serialDevices[deviceType], timeout=0.1)
+ser = serial.Serial(serialDevices[deviceType], timeout=0.01)
 print("Serial device: %s" % deviceType)
 # print(dir(ser))
 # ['BAUDRATES', 'BAUDRATE_CONSTANTS', 'BYTESIZES', 'PARITIES', 'STOPBITS', '_SAVED_SETTINGS', ..., '_baudrate', '_break_state', '_bytesize', '_checkClosed', '_checkReadable', '_checkSeekable', '_checkWritable', '_dsrdtr', '_dtr_state', '_exclusive', '_inter_byte_timeout', '_parity', '_port', '_reconfigure_port', '_reset_input_buffer', '_rs485_mode', '_rts_state', '_rtscts', '_set_rs485_mode', '_set_special_baudrate', '_stopbits', '_timeout', '_update_break_state', '_update_dtr_state', '_update_rts_state', '_write_timeout', '_xonxoff', 'applySettingsDict', 'apply_settings', 'baudrate', 'break_condition', 'bytesize', 'cancel_read', 'cancel_write', 'cd', 'close', 'closed', 'cts', 'dsr', 'dsrdtr', 'dtr', 'exclusive', 'fd', 'fileno', 'flush', 'flushInput', 'flushOutput', 'getCD', 'getCTS', 'getDSR', 'getRI', 'getSettingsDict', 'get_settings', 'inWaiting', 'in_waiting', 'interCharTimeout', 'inter_byte_timeout', 'iread_until', 'isOpen', 'is_open', 'isatty', 'name', 'nonblocking', 'open', 'out_waiting', 'parity', 'pipe_abort_read_r', 'pipe_abort_read_w', 'pipe_abort_write_r', 'pipe_abort_write_w', 'port', 'portstr', 'read', 'read_all', 'read_until', 'readable', 'readall', 'readinto', 'readline', 'readlines', 'reset_input_buffer', 'reset_output_buffer', 'ri', 'rs485_mode', 'rts', 'rtscts', 'seek', 'seekable', 'sendBreak', 'send_break', 'setDTR', 'setPort', 'setRTS', 'set_input_flow_control', 'set_low_latency_mode', 'set_output_flow_control', 'stopbits', 'tell', 'timeout', 'truncate', 'writable', 'write', 'writeTimeout', 'write_timeout', 'writelines', 'xonxoff']
@@ -21,11 +21,13 @@ print("Serial device: %s" % deviceType)
 
 # ser.write(b"hello")
 
-def write_and_read(_bytes:bytes):
+
+def write_and_read(_bytes: bytes):
     ser.write(_bytes)
     print(f"w> {repr(_bytes)}")
     res = ser.readall()
     print(f"r> {repr(res)}")
+
 
 if deviceType == "power":
     # will reset on reboot
@@ -40,6 +42,7 @@ if deviceType == "power":
 elif deviceType == "hid":
     ...
 else:
-    raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
+    raise Exception("Unknown device type: {deviceType}".format(
+        deviceType=deviceType))
 
 ser.close()
