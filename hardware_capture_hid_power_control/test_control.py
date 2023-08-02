@@ -1,4 +1,6 @@
 import serial
+import beartype
+from typing import ByteString
 
 # confusing!
 serialDevices = {
@@ -48,6 +50,8 @@ elif deviceType == "hid":
     mouseRelativeHeader = commonHeader+b"\x02"  # +4bits
     mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bits
     mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
+    def changeID(vid:bytes, pid:bytes):
+        assert 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
         deviceType=deviceType))
