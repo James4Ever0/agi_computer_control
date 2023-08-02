@@ -15,6 +15,7 @@ eight_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 8]]
 serialDevices = {
     "power": "/dev/serial/by-id/usb-1a86_5523-if00-port0",
     "hid": "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0",
+    # another hid device will be: ch9392
 }
 
 # deviceType = "power"
