@@ -7,7 +7,7 @@ serialDevices = {
 }
 
 # deviceType = "power"
-deviceType = "hid"
+deviceType = "hid" #为了保证数据能正常传输，两条数据发送间隔最低要有5ms 的延时；意思就是你发送一个数据后延时5ms 再发下一条数据。
 
 ser = serial.Serial(serialDevices[deviceType], timeout=0.01)
 print("Serial device: %s" % deviceType)
