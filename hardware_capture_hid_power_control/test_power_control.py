@@ -19,11 +19,6 @@ ser = serial.Serial(serialDevices[deviceType], timeout=0.1)
 # print(ser.name) # /dev/serial/by-id/usb-1a86_5523-if00-port0
 
 # ser.write(b"hello")
-# will reset on reboot
-channel = 1  # CH3 does not exist. CH2 is placeholder. (virtually working)
-# channel = 2
-state = "ON"
-# state = "OFF"
 
 def write_and_read(_bytes:bytes):
     ser.write(_bytes)
@@ -31,9 +26,19 @@ def write_and_read(_bytes:bytes):
     res = ser.readall()
     print(f"r> {repr(res)}")
 
+if deviceType == "power":
+    # will reset on reboot
+    channel = 1  # CH3 does not exist. CH2 is placeholder. (virtually working)
+    # channel = 2
+    state = "ON"
+    # state = "OFF"
 
-# write_and_read(f"CH{channel}=?".encode())
-# write_and_read(f"CH{channel}={state}".encode())
-# write_and_read(f"CH{channel}=?".encode())
+    write_and_read(f"CH{channel}=?".encode())
+    write_and_read(f"CH{channel}={state}".encode())
+    write_and_read(f"CH{channel}=?".encode())
+elif deviceType == "hid":
+    ...
+else:
+    raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
 
 ser.close()
