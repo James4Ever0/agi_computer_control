@@ -5,6 +5,8 @@
 # fuck windows. how can i change capture device specs without using obs?
 # maybe you should spin up obs for cross-platform integration.
 
+# for macos (maybe?): https://github.com/jtfrey/uvc-util
+
 v4l2-ctl -d 2 --set-fmt-video=width=1920,height=1080,pixelformat=MJPG
 
 # get fps
