@@ -161,14 +161,13 @@ elif deviceType == "hid":
 
     assert len(MultimediaKey.__members__)) == 3*8
 
-
     # @beartype
     # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
     
     @beartype
     def multimedia(multimedia_keys: List[MultimediaKey]):
         multimedia_opcode = reduce_opcodes(multimedia_keys)
-        data_code = multimedia_opcode.to_bytes(1 if opcode <= 0xff else 2)
+        data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
         kcom_write_and_read(KCOMHeader.multimediaHeader, data_code)
     
