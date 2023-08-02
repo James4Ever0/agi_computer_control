@@ -77,9 +77,12 @@ elif deviceType == "hid":
         write_and_read(header+data_code)
 
     @beartype
-    def reduce_opcodes(opcodes:List[one_byte]):
+    def reduce_opcodes_to_bytes(opcodes:List[Union[one_byte, two_bytes]]):
         opcode = reduce(lambda x, y: x | y, opcodes)
-        return opcode
+        bytecode = 
+        return bytecode
+
+    
 
     @beartype
     def changeID(vid: two_bytes, pid: two_bytes):
@@ -105,8 +108,9 @@ elif deviceType == "hid":
         ...
 
     @beartype
-    def keyboard(control_codes: List[ControlCode], keycodes: Annotated[List[KeyboardKey], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
+    def keyboard(control_codes: List[ControlCode], keycodes: Annotated[List[KeyboardKey], Is[lambda l: len(l) <= 6 and len(l) >= 0]]): # check for "HID Usage ID"
         reserved_byte = b"\x00"
+        control_opcode = reduce_opcodes(control_codes)
         data_code = control_code + reserved_byte + b"".join(keycodes + ([b"\x00"]*(6-len(keycodes))))
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
 
