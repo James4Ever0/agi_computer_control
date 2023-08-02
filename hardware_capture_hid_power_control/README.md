@@ -12,7 +12,9 @@ hid: `/dev/hidraw*` (need to find by provider name)
 
 install `hidapi` from pypi
 
-use 
+use kcom2/kcom3 or ch9392
+
+[pycomkb](https://gitee.com/NetPuppetLib/pycomkb)
 
 ----
 
