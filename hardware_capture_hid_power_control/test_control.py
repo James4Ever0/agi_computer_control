@@ -6,6 +6,7 @@ from typing_extensions import TypeAlias
 # for branching; ref: https://beartype.readthedocs.io/en/latest/api_door/
 from beartype.door import is_bearable
 from enum import Enum, auto
+from functools import reduce
 
 one_byte: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 1]]
 two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
@@ -75,6 +76,10 @@ elif deviceType == "hid":
         write_and_read(header+data_code)
 
     @beartype
+    def reduce_opcodes(opcodes:List[one_byte]):
+        reduce(
+
+    @beartype
     def changeID(vid: two_bytes, pid: two_bytes):
         print("change VID=%s, PID=%s" % (vid, pid))
         data_code = vid+pid
@@ -110,7 +115,7 @@ elif deviceType == "hid":
 
     @beartype
     def mouse_relative_raw(button_codes: List[MouseButton], x_code:one_byte, y_code:one_byte, scroll_code: one_byte):
-        button_code = 
+        button_code = reduce_opcodes(button_codes)
         data_code = button_code + x_code+ y_code+ scroll_code # all 1byte
         kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, 4)
 
