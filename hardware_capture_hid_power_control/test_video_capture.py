@@ -15,8 +15,8 @@ cap = cv2.VideoCapture(camera_id)
 # showing values of the properties
 print("CV_CAP_PROP_FRAME_WIDTH: '{}'".format(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
 print("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-print("CV_CAP_PROP_FRAME_FPs : '{}'".format(cap.get(cv2.CAP_PROP_FPS)))
-cv2.CAP_
+print("CV_CAP_PROP_FRAME_FPS : '{}'".format(cap.get(cv2.CAP_PROP_FPS)))
+# cv2.CAP_PROP_SETTINGS
 ret, frame = cap.read()
 
 # Display the resulting frame
