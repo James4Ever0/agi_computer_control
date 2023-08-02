@@ -42,7 +42,7 @@ if deviceType == "power":
     write_and_read(f"CH{channel}={state}".encode())
     write_and_read(f"CH{channel}=?".encode())
 elif deviceType == "hid":
-    ...
+    keyboardHeader = b"\x57\xab\x01" # + 8 bits keyboard opcode
 else:
     raise Exception("Unknown device type: {deviceType}".format(
         deviceType=deviceType))
