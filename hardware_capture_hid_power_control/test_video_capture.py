@@ -26,12 +26,12 @@ cap = cv2.VideoCapture(camera_id)
 
 # resolution not right...
 
-# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
-# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1920)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1920)
 
 # it is not changing settings of the capture device.
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1024)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1024)
 
 # cannot strentch!
 # CV_CAP_PROP_FRAME_WIDTH: '1280.0'
