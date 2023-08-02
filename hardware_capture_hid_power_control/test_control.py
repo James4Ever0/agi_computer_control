@@ -60,13 +60,13 @@ elif deviceType == "hid":
     commonHeader = b"\x57\xab"
 
     class KCOMHeader(Enum):
-        modifyIDHeader = commonHeader+b"\x10"  # +4bits, (2bits VID, 2bits PID)
-        keyboardHeader = commonHeader+b"\x01"  # +8bits
-        mouseRelativeHeader = commonHeader+b"\x02"  # +4bits
+        modifyIDHeader = commonHeader+b"\x10"  # +4bytes, (2bytes VID, 2bytes PID)
+        keyboardHeader = commonHeader+b"\x01"  # +8bytes
+        mouseRelativeHeader = commonHeader+b"\x02"  # +4bytes
 
         # below only working for KCOM3
-        mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bits
-        mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
+        mouseMultimediaHeader = commonHeader+b"\x03"  # +(2 or 4)bytes
+        mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bytes
 
     @beartype
     def kcom_write_and_read(header:KCOMHeader, data_code:bytes, length: Union[int, None]):
@@ -95,14 +95,23 @@ elif deviceType == "hid":
         RIGHT_GUI = auto()
 
     @beartype
-    def keyboard_raw(control_code: one_byte, keycodes: Annotated[List[one_byte], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
+    def keyboard_raw(control_codes: List[ControlCode], keycodes: Annotated[List[one_byte], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
         reserved_byte = b"\x00"
         data_code = control_code + reserved_byte + b"".join(keycodes + ([b"\x00"]*(6-len(keycodes))))
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
 
+    class MouseButton(Enum):
+        @staticmethod
+        def _generate_next_value_(name, start, count, last_values):
+            return 2 ** (count)
+        LEFT = auto()
+        RIGHT = auto()
+        MIDDLE = auto()
+
     @beartype
-    def mouse_relative():
-        data_code = button_c
+    def mouse_relative_raw(button_codes: List[MouseButton], x_code:one_byte, y_code:one_byte, scroll_code: one_byte):
+        button_code = 
+        data_code = button_code + x_code+ y_code+ scroll_code # all 1byte
         kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, 4)
 
 else:
