@@ -31,7 +31,7 @@ cap = cv2.VideoCapture(camera_id)
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1920)
 
-# it is not changing settings of the capture device.
+# cv2 is not faithfully changing settings of the capture device.
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1024)
 
