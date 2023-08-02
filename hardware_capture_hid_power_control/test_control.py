@@ -122,11 +122,29 @@ elif deviceType == "hid":
         kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, 4)
 
     class MultimediaButton(Enum):
-        
+        @staticmethod
+        def _generate_next_value_(name, start, count, last_values):
+            return 2 ** (count)
+        VolumeUp
+        VolumeDown
+        Mute
+        PlayPause
+        NextTrack
+        PreviousTrack
+        CDStop
+        Eject
+        EMail
+        WWWSearch
+        WWWFavourites
 
     @beartype
     def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
-        ...
+        kcom_write_and_read(KCOMHeader.mouseRelativeHeader
+    
+    @beartype
+    def multimedia(multimedia_buttons: List[MultimediaButton]):
+        data_code = reduce_opcodes(multimedia_buttons)
+        multimedia_raw(data_code)
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
