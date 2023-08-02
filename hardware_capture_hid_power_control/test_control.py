@@ -60,10 +60,10 @@ elif deviceType == "hid":
     mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
 
     @beartype
-    def changeID(vid: two_bytes, pid:two_bytes):
+    def changeID(vid: two_bytes, pid: two_bytes):
         print("change VID=%s, PID=%s" % (vid, pid))
         write_and_read(modifyIDHeader+vid+pid)
-    
+
 else:
     raise Exception("Unknown device type: {deviceType}".format(
         deviceType=deviceType))
