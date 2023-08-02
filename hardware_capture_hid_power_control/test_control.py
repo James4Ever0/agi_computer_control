@@ -69,13 +69,16 @@ elif deviceType == "hid":
         mouseAbsoluteHeader = commonHeader+b"\x04"  # +4bits
 
     @beartype
-    def kcom_write_and_read(header:KCOMHeader, data_code:bytes):
+    def kcom_write_and_read(header:KCOMHeader, data_code:bytes, length: Union[int, None]):
+        if length:
+            assert (data_length:=len(data_code)) == length, f"Assumed data length: {data_length}\nActual length: {length}"
         write_and_read(header+data_code)
 
     @beartype
     def changeID(vid: two_bytes, pid: two_bytes):
         print("change VID=%s, PID=%s" % (vid, pid))
-        kcom_write_and_read(KCOMHeader.modifyIDHeader, vid+pid)
+        data_code = vid+pid
+        kcom_write_and_read(KCOMHeader.modifyIDHeader, data_code, 4)
 
     # use int.to_bytes afterwards.
     class ControlCode(Enum):
@@ -95,10 +98,12 @@ elif deviceType == "hid":
     def keyboard_raw(control_code: one_byte, keycodes: Annotated[List[one_byte], Is[lambda l: len(l) <= 6 and len(l) >= 0]): # check for "HID Usage ID"
         reserved_byte = b"\x00"
         data_code = control_code + reserved_byte + b"".join(keycodes + ([b"\x00"]*(6-len(keycodes))))
-        kcom_write_and_read(KCOMHeader.keyboardHeader, data_code)
+        kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
 
     @beartype
-    def mouse_relative
+    def mouse_relative():
+        data_code = button_c
+        kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, 4)
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
