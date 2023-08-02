@@ -115,8 +115,10 @@ elif deviceType == "hid":
         RIGHT = auto()
         MIDDLE = auto()
 
+    def mouse_common_raw(button_code, x_code:Union[one_ytes, y_code:Union[one_ytes, scroll_code
+
     @beartype
-    def mouse_relative_raw(button_codes: List[MouseButton], x_code:one_byte, y_code:one_byte, scroll_code: one_byte):
+    def mouse_common_raw(button_codes: List[MouseButton], x_code:Union[one_byte, y_code:one_byte, scroll_code: one_byte):
         button_code = reduce_opcodes(button_codes)
         data_code = button_code + x_code+ y_code+ scroll_code # all 1byte
         kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, 4)
@@ -126,29 +128,35 @@ elif deviceType == "hid":
         def _generate_next_value_(name, start, count, last_values):
             return 2 ** (count)
         # row 1
-        VolumeUp
-        VolumeDown
-        Mute
-        PlayPause
-        NextTrack
-        PreviousTrack
-        CDStop
-        Eject
+        VolumeUp = auto()
+        VolumeDown = auto()
+        Mute = auto()
+        PlayPause = auto()
+        NextTrack = auto()
+        PreviousTrack = auto()
+        CDStop = auto()
+        Eject = auto()
 
         # row 2
-        EMail
-        WWWSearch
-        WWWFavourites
-        WWWHome
-        WWWBack
-        WWWForward
-        WWWStop
-        Refresh
+        EMail = auto()
+        WWWSearch = auto()
+        WWWFavourites = auto()
+        WWWHome = auto()
+        WWWBack = auto()
+        WWWForward = auto()
+        WWWStop = auto()
+        Refresh = auto()
 
         # row 3
-        Media
-        
-    
+        Media = auto()
+        Explorer = auto()
+        Calculator = auto()
+        ScreenSave = auto()
+        MyComputer = auto()
+        Minimize = auto()
+        Record = auto()
+        Rewind = auto()
+
     assert len(MultimediaButton.__members__)) == 3*8,  
 
 
@@ -160,6 +168,10 @@ elif deviceType == "hid":
     def multimedia(multimedia_buttons: List[MultimediaButton]):
         data_code = reduce_opcodes(multimedia_buttons)
         multimedia_raw(data_code)
+    
+    @beartype
+    def mouse_absolute_raw(button_codes: List[MouseButton], x_code:two_bytes, y_code:two_bytes, scroll_code: one_byte):
+        button_code = 
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
