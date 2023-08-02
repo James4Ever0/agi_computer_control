@@ -115,13 +115,11 @@ elif deviceType == "hid":
         RIGHT = auto()
         MIDDLE = auto()
 
-    def mouse_common_raw(button_code, x_code:Union[one_ytes, y_code:Union[one_ytes, scroll_code
-
     @beartype
-    def mouse_common_raw(button_codes: List[MouseButton], x_code:Union[one_byte, y_code:one_byte, scroll_code: one_byte):
+    def mouse_common_raw(button_codes: List[MouseButton], x_code:Union[two_bytes, one_byte], y_code: Union[two_bytes, one_byte], scroll_code: one_byte, length: Literal[4, 6]):
         button_code = reduce_opcodes(button_codes)
         data_code = button_code + x_code+ y_code+ scroll_code # all 1byte
-        kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, 4)
+        kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, length)
 
     class MultimediaButton(Enum):
         @staticmethod
@@ -157,21 +155,19 @@ elif deviceType == "hid":
         Record = auto()
         Rewind = auto()
 
-    assert len(MultimediaButton.__members__)) == 3*8,  
+    assert len(MultimediaButton.__members__)) == 3*8
 
 
-    @beartype
-    def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
-        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code)
+    # @beartype
+    # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
     
     @beartype
     def multimedia(multimedia_buttons: List[MultimediaButton]):
-        data_code = reduce_opcodes(multimedia_buttons)
-        multimedia_raw(data_code)
+        opcode = reduce_opcodes(multimedia_buttons)
+        data_code = 
+        # multimedia_raw(data_code)
+        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code)
     
-    @beartype
-    def mouse_absolute_raw(button_codes: List[MouseButton], x_code:two_bytes, y_code:two_bytes, scroll_code: one_byte):
-        button_code = 
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(
