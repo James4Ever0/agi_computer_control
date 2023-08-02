@@ -13,6 +13,7 @@ import cv2
 
 # can't you reset?
 camera_id = 2 # use the smallest camera id of particular device (the only working one)
+# without setting!
 # CV_CAP_PROP_FRAME_WIDTH: '640.0'
 # CV_CAP_PROP_FRAME_HEIGHT : '480.0'
 # CV_CAP_PROP_FRAME_FPS : '30.0'
@@ -22,12 +23,12 @@ camera_id = 2 # use the smallest camera id of particular device (the only workin
 # camera_id = 0
 # cam 1,3 not working.
 
-cap = cv2.VideoCapture(camera_id)
+cap = cv2.VideoCapture(camera_id) # oops. not working for cam2
 
 # resolution not right...
 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1920)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1920)
 
 # it is not changing settings of the capture device.
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
