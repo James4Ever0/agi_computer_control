@@ -17,7 +17,9 @@ ser = serial.Serial(serialDevices["power"], timeout=0.1)
 
 # ser.write(b"hello")
 channel=1  # CH3 does not exist. CH2 is placeholder. (virtually working)
-
+# channel=2
+state = "ON"
+# state = "OFF"
 def write_and_read(_bytes:bytes):
     ser.write(_bytes)
     print(f"w> {repr(_bytes)}")
@@ -25,7 +27,7 @@ def write_and_read(_bytes:bytes):
     print(f"r> {repr(res)}")
 
 write_and_read(f"CH{channel}=?".encode())
-write_and_read(f"CH{channel}=OFF".encode())
+write_and_read(f"CH{channel}={state}".encode())
 write_and_read(f"CH{channel}=?".encode())
 
 ser.close()
