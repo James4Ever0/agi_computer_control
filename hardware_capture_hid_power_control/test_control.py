@@ -34,7 +34,7 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # confusing!
 @beartype
-def get_scroll_code(c_scroll: movement):
+def get_scroll_code(c_scroll: movement) ->bytes:
     if c_scroll < 0:
         c_scroll = -c_scroll + 0x80
     return c_scroll.to_bytes()
@@ -478,6 +478,54 @@ elif deviceType == DeviceType.ch9329:
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y, button_codes)
 
+            # 将字符转写为数据包
+            HEAD = b'\x57\xAB'  # 帧头
+            ADDR = b'\x00'  # 地址
+            CMD = b'\x04'  # 命令
+            LEN = b'\x07'  # 数据长度
+            DATA = bytearray(b'\x02')  # 数据
+
+            # 鼠标按键
+            if ctrl == '':
+                DATA.append(0)
+            elif isinstance(ctrl, int):
+                DATA.append(ctrl)
+            else:
+                DATA += self.hex_dict[ctrl]
+
+            # 坐标
+            X_Cur = (4096 * x) // self.X_MAX
+            Y_Cur = (4096 * y) // self.Y_MAX
+            DATA += X_Cur.to_bytes(2, byteorder='little')
+            DATA += Y_Cur.to_bytes(2, byteorder='little')
+
+            DATA+=get_scroll_code(scroll)
+
+            if len(DATA) < 7:
+                DATA += b'\x00' * (7 - len(DATA))
+            else:
+                DATA = DATA[:7]
+
+            # 分离HEAD中的值，并计算和
+            HEAD_hex_list = list(HEAD)
+            HEAD_add_hex_list = sum(HEAD_hex_list)
+
+            # 分离DATA中的值，并计算和
+            DATA_hex_list = list(DATA)
+            DATA_add_hex_list = sum(DATA_hex_list)
+
+            try:
+                SUM = sum([HEAD_add_hex_list, int.from_bytes(ADDR, byteorder='big'),
+                        int.from_bytes(CMD, byteorder='big'), int.from_bytes(LEN, byteorder='big'),
+                        DATA_add_hex_list]) % 256  # 校验和
+            except OverflowError:
+                print("int too big to convert")
+                return False
+            packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
+            port.ser.write(packet)  # 将命令代码写入串口
+            return True  # 如果成功，则返回True，否则引发异常
+
+
         def send_data_relatively(self,  x: int, y: int, scroll:movement, button_codes: List[MouseButton] = []):
             ctrl = self.get_ctrl(x,y,button_codes=button_codes, inbound=False)
             # currentFuncName = inspect.currentframe().f_code.co_name
@@ -518,7 +566,7 @@ elif deviceType == DeviceType.ch9329:
             else:
                 DATA += y.to_bytes(1, byteorder='big', signed=True)
             
-            DATA.append()
+            DATA+= get_scroll_code(scroll)
 
             DATA += b'\x00' * (5 - len(DATA)) if len(DATA) < 5 else DATA[:5]
 
