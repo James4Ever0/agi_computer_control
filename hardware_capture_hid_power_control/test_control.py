@@ -471,12 +471,13 @@ elif deviceType == DeviceType.ch9329:
             if ret == False:
                 raise Exception("Error calling super method: {}".format(funcName))
 
-        def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
-            ctrl = 
+        def send_data_absolute(self, x: non_neg_int, y: non_neg_int,scroll:movement, button_codes: List[MouseButton] = []):
+            ctrl = self.get_ctrl(x,y,button_codes=button_codes, inbound=True)
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y, button_codes)
 
         def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
+            ctrl = self.get_ctrl(x,y,button_codes=button_codes, inbound=False)
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y,
             #                        button_codes, inbound=False)
