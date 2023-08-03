@@ -103,9 +103,11 @@ elif deviceType == "hid":
 
         # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
         if byte_length is ...:
-            # byte_length = math.ceil(len(hex(opcode).strip("0x")) / 2)
-            byte_length = list(flags.__members__.values())[0].value
-1
+            byte_length = (get_byte_length := lambda _bytes: math.ceil(len(hex(_bytes).strip("0x")) / 2))(opcode)
+            for member in type(flags[0]).__members__.values():
+                if (val:=member.value)>byte_length:
+                    byte_length = val
+
         byte_code = opcode.to_bytes(byte_length, byteorder=byteorder)
 
         return bytecode
