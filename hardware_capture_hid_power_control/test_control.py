@@ -452,9 +452,10 @@ elif deviceType == DeviceType.ch9329:
             assert y <= self.Y_MAX, f"exceeding y limit ({self.Y_MAX}): {y}"
 
         @beartype
-        def send_data_absolute(self,  x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
+        def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
             self.assert_inbound(x, y)
             ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
+            super().send_data_absolute(x, y
 
         @beartype
         def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
