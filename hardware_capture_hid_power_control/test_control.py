@@ -71,7 +71,7 @@ def write_and_read(_bytes: bytes):
     print(f"r> {repr(res)}")
 
 
-if deviceType == DeviceType.power":
+if deviceType == DeviceType.power:
     # will reset on reboot
     channel = 1  # CH3 does not exist. CH2 is placeholder. (virtually working)
     # channel = 2
