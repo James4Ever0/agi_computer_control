@@ -169,13 +169,20 @@ elif deviceType == "hid":
         MIDDLE = auto()
 
     @beartype
+    def get_rel_code(c_rel:movement):
+        if c_rel <0:
+            c_rel = -c_rel + 0x80
+        return c_rel.to_bytes()
+
+    @beartype
     def mouse_common(
         button_codes: List[MouseButton],
         x_code: Union[two_bytes, one_byte],
         y_code: Union[two_bytes, one_byte],
-        scroll_code: one_byte,
+        scroll: movement,
         kcom_flag: Literal[KCOMHeader.mouseRelativeHeader, KCOMHeader.mouseAbsoluteHeader]
     ):
+        scroll_code = get_rel_code(scroll)
         button_code = reduce_flags_to_bytes(button_codes)
         # button_opcode = reduce_opcodes(button_codes)
         # button_code = button_opcode.to_bytes()
@@ -183,14 +190,12 @@ elif deviceType == "hid":
         kcom_write_and_read(kcom_flag, data_code, 4 if is_bearable(kcom_flag, KCOMHeader.mouseRelativeHeader else 6)
 
     @beartype
-    def get_rel_code(c_rel :movement):
-        if c_rel <0:
-            c_rel = -c_rel + 0x80
-        return c_rel.to_bytes()
+    def mouse_relative(button_codes: List[MouseButton], x:movement, y:movement, scroll: movement):
+        x_code = get_rel_code(x)
+        y_code = get_rel_code(y)
 
-    @beartype
-    def mouse_relative(button_codes: List[MouseButton], ):
-        
+        mouse_common(button_codes, x_code, y_code, scroll, kcom_flag=KCOMHeader.mouseRelativeHeader)
+
 
     @beartype
     def mouse_absolute(button_codes: List[MouseButton], coordinate:Tuple[non_neg_int, non_neg_int], resolution:Tuple[pos_int, pos_int], scroll:movement):
@@ -210,9 +215,9 @@ elif deviceType == "hid":
         x_code = get_abs_code(x_abs)
         y_code = get_abs_code(y_abs)
 
-        scroll_code = get_rel_code(scroll)
+        # scroll_code = get_rel_code(scroll)
 
-        mouse_common(button_codes, x_code, y_code, scroll_code, kcom_flag=KCOMHeader.mouseAbsoluteHeader)
+        mouse_common(button_codes, x_code, y_code, scroll, kcom_flag=KCOMHeader.mouseAbsoluteHeader)
 
 
     class MultimediaKey(Flag):
