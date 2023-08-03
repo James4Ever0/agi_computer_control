@@ -22,3 +22,7 @@ for record in kcom_keycodes:
 
 def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
     ...
+
+if __name__ == "__main__":
+    # coverage test.
+    for key_literal in HIDActionTypes.keys.
