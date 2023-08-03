@@ -24,8 +24,15 @@ for record in kcom_keycodes:
     keycode = bytes.fromhex(record["HID Usage ID"])
 
     possible_translations = []
+    
 
-    possible_translations.append(keyname.replace(" ", "_").lower())
+    base_trans= keyname.replace(" ", "_").lower()
+    base_trans = base_trans.replace("gui", "cmd")
+    possible_translations.append(base_trans)
+    for direction in ["right_", "left_"]:
+        if base_trans.startswith(direction):
+            base_trans = base_trans.replace(direction)+ f"_{direction[0]}"
+            possible_translations.append(base_trans)
     if (
         not possible_translations.startswith("F")
         and len(keyname) == 3
