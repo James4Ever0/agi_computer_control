@@ -95,8 +95,10 @@ elif deviceType == "hid":
 
     import math
     @beartype
-    def reduce_opcodes_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
-        opcode = reduce(lambda x, y: x | y, opcodes)
+    def reduce_flags_to_bytes(flags: List[Flag]):
+    # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
+        flag = reduce(lambda x, y: x | y, flags)
+        opcode = flag.value
 
         # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
         byte_length = math.ceil(len(hex(opcode).strip("0x")) / 2)
@@ -137,7 +139,7 @@ elif deviceType == "hid":
         ],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
-        control_code = reduce_opcodes_to_bytes(control_codes)
+        control_code = reduce_flags_to_bytes(control_codes)
         data_code = (
             control_code
             + reserved_byte
@@ -163,7 +165,7 @@ elif deviceType == "hid":
         scroll_code: one_byte,
         length: Literal[4, 6],
     ):
-        button_code = reduce_opcodes_to_bytes(button_codes)
+        button_code = reduce_flags_to_bytes(button_codes)
         # button_opcode = reduce_opcodes(button_codes)
         # button_code = button_opcode.to_bytes()
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
@@ -212,7 +214,7 @@ elif deviceType == "hid":
 
     @beartype
     def multimedia(multimedia_keys: List[MultimediaKey]):
-        data_code = reduce_opcodes_to_bytes(multimedia_keys)
+        data_code = reduce_flags_to_bytes(multimedia_keys)
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
