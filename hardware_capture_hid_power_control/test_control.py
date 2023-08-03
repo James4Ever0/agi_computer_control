@@ -217,10 +217,11 @@ elif deviceType == DeviceType.hid:
         if c_scroll < 0:
             c_scroll = -c_scroll + 0x80
         return c_scroll.to_bytes()
-    
-    def get_rel_code_kcom(c_rel:movement):
+
+    def get_rel_code_kcom(c_rel: movement):
         if c_rel < 0:
             c_rel = 0xFF + c_rel
+        return c_rel.to_bytes()
 
     @beartype
     def mouse_common(
@@ -247,8 +248,8 @@ elif deviceType == DeviceType.hid:
     def mouse_relative(
         x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = []
     ):
-        x_code = get_rel_code(x)
-        y_code = get_rel_code(y)
+        x_code = get_rel_code_kcom(x)
+        y_code = get_rel_code_kcom(y)
 
         mouse_common(
             x_code,
@@ -257,7 +258,9 @@ elif deviceType == DeviceType.hid:
             kcom_flag=KCOMHeader.mouseRelativeHeader,
             button_codes=button_codes,
         )
-
+    def get_abs_code(c_abs, res): return int((4096 * c_abs) / res).to_bytes(
+        2, byteorder="little"
+    )
     @beartype
     def mouse_absolute(
         coordinate: Tuple[non_neg_int, non_neg_int],
@@ -276,9 +279,7 @@ elif deviceType == DeviceType.hid:
         assert x_abs <= width, f"Invalid x: {x_abs}\nWidth: {width}"
         assert y_abs <= height, f"Invalid y: {y_abs}\nHeight: {height}"
 
-        def get_abs_code(c_abs, res): return int((4096 * c_abs) / res).to_bytes(
-            2, byteorder="little"
-        )
+
 
         x_code = get_abs_code(x_abs)
         y_code = get_abs_code(y_abs)
