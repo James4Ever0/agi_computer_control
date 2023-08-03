@@ -9,7 +9,7 @@ from beartype.door import is_bearable
 from enum import Enum, auto, Flag
 from functools import reduce
 from typing import Union, List, Literal, Tuple
-from common_keycodes import load_translation_table
+from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
 
 length_limit = lambda l: Is[lambda b: len(b) == l]
 byte_with_length_limit = lambda l: Annotated[bytes, length_limit(l)]
@@ -93,7 +93,7 @@ elif deviceType == "hid":
     def kcom_write_and_read(
         header: KCOMHeader, data_code: bytes, length: Union[int, List[int], None]
     ):
-        if isbearable(length, int):
+        if is_bearable(length, int):
             length = [length]
         if length:
             assert (
@@ -103,8 +103,9 @@ elif deviceType == "hid":
 
     import math
     @beartype
-    def reduce_flags_to_bytes(flags: List[Flag], byteorder:Literal['little','big'] = 'little', byte_length: Union[int, ...] = ...):
+    def reduce_flags_to_bytes(flags: List[Flag], byteorder:Literal['little','big'] = 'little', byte_length: Union[int, Ellipsis] = ...):
     # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
+        flag = reduce(lambda a,b: a|b, flags)
         opcode = flag.value
 
         # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
@@ -116,7 +117,7 @@ elif deviceType == "hid":
 
         byte_code = opcode.to_bytes(byte_length, byteorder=byteorder)
 
-        return bytecode
+        return byte_code
 
     @beartype
     def changeID(vid: two_bytes, pid: two_bytes):
@@ -140,19 +141,20 @@ elif deviceType == "hid":
         RIGHT_ALT = auto()
         RIGHT_GUI = auto()
 
-    class KeyboardKey(Enum):
-        ...
+    # class KeyboardKey(Enum):
+    #     ...
 
 
     @beartype
     def keyboard(
         control_codes: List[ControlCode],
-        keycodes: Annotated[
-            List[KeyboardKey], Is[lambda l: len(l) <= 6 and len(l) >= 0]
+        key_literals: Annotated[
+            List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
         ],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
         control_code = reduce_flags_to_bytes(control_codes)
+        keycodes = [v:=KeyLiteralToKCOMKeycode(key_literal) for key_literal in key_literals if v]
         data_code = (
             control_code
             + reserved_byte

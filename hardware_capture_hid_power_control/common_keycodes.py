@@ -21,16 +21,13 @@ def load_translation_table():
         data[tk] = {k: bytes.fromhex(v) for k, v in data[tk].items()}
         return data
 
-
 def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
     translation_data = load_translation_table()
     translation_table, missing = translation_data['translation_table'], translation_data['missing']
     if keyLiteral in translation_table.keys():
         return translation_table[keyLiteral]
-    elif 
-    else:
+    elif keyLiteral not in missing:
         raise Exception("Unknown keyLiteral: " + keyLiteral)
-
 
 if __name__ == "__main__":
     # import json5
