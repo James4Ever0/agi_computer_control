@@ -31,18 +31,18 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 class DeviceType(StrEnum):
     power = auto()
     hid = auto()
-    ch9392 = auto()
+    ch9329 = auto()
 
 
 serialDevices = {
     DeviceType.power: "/dev/serial/by-id/usb-1a86_5523-if00-port0",
     DeviceType.hid: "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0",
-    # another hid device will be: ch9392
-    DeviceType.ch9392: ...,
+    # another hid device will be: ch9329
+    DeviceType.ch9329: ...,
 }
 
 deviceType = DeviceType.power
-# deviceType = DeviceType.ch9392
+# deviceType = DeviceType.ch9329
 # deviceType = DeviceType.hid  # 为了保证数据能正常传输，两条数据发送间隔最低要有5ms 的延时；意思就是你发送一个数据后延时5ms 再发下一条数据。
 
 ser = serial.Serial(
@@ -331,7 +331,7 @@ elif deviceType == DeviceType.hid:
             KCOMHeader.multimediaHeader, data_code, 6 + (2 if isMultimediaKeys else 0)
         )
 
-elif deviceType == DeviceType.ch9392:
+elif deviceType == DeviceType.ch9329:
     ...
 else:
     raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
