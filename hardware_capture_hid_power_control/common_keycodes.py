@@ -10,9 +10,12 @@ with open("keys.json", 'r') as f:
 
 kcom_translation_table = {}
 
+
+
 for record in kcom_keycodes:
-    keyname = record[]
-    keycode = record[])
+    keyname = record['Key Name']
+    keycode = bytes.fromhex(record['HID Usage ID'])
 
 def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
+    ...
     
