@@ -214,7 +214,7 @@ elif deviceType == DeviceType.hid:
 
     @beartype
     def get_rel_code(c_rel: movement):
-        if c_rel < 0:
+        if c_recl < 0:
             c_rel = -c_rel + 0x80
         return c_rel.to_bytes()
 
@@ -228,7 +228,7 @@ elif deviceType == DeviceType.hid:
         ],
         button_codes: List[MouseButton] = [],
     ):
-        scroll_code = get_rel_code(scroll)
+        scroll_code = get_scroll_code(scroll)
         button_code = reduce_flags_to_bytes(button_codes, byte_length=1)
         # button_opcode = reduce_opcodes(button_codes)
         # button_code = button_opcode.to_bytes()
