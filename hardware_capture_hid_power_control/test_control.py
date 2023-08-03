@@ -358,17 +358,19 @@ elif deviceType == DeviceType.hid:
 elif deviceType == DeviceType.ch9329:
     import ch9329Comm
 
-    class CH
+    class CH9329Util:
+        ...
 
     # ref: https://github.com/beijixiaohu/CH9329_COMM
-    class Keyboard:
+    @beartype
+    class Keyboard(CH9329Util):
         def __init__(
             self,
             port: serial.Serial,
         ):
             self.port = port
 
-        @beartype
+
         def send_data(
             self,
             control_codes: List[ControlCode] = [],
@@ -448,7 +450,7 @@ elif deviceType == DeviceType.ch9329:
 
     # pass int to override.
     @beartype
-    class Mouse(ch9329Comm.mouse.DataComm):
+    class Mouse(ch9329Comm.mouse.DataComm, CH9329Util):
 
         def __init__(
             self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
