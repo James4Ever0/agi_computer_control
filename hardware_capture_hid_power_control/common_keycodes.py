@@ -1,6 +1,6 @@
 import sys
 
-sys.append("../")
+sys.path.append("../")
 
 from conscious_struct import HIDActionTypes
 import json
@@ -15,7 +15,8 @@ import re
 
 
 def subs_brackets(e):
-    s = re.subn(r"\(.*\)", "", e).strip()
+    s, _ = re.subn(r"\(.*\)", "", e)
+    s = s.strip()
     return s
 
 
@@ -24,23 +25,25 @@ for record in kcom_keycodes:
     keycode = bytes.fromhex(record["HID Usage ID"])
 
     possible_translations = []
-    
 
-    base_trans= keyname.replace(" ", "_").lower()
-    base_trans = base_trans.replace("gui", "cmd")
+    base_trans0 = keyname.replace(" ", "_").lower()
+    base_trans = base_trans0.replace("gui", "cmd")
     possible_translations.append(base_trans)
+    possible_translations.append(f"Key.{base_trans}")
     for direction in ["right_", "left_"]:
         if base_trans.startswith(direction):
-            base_trans = base_trans.replace(direction)+ f"_{direction[0]}"
+            base_trans = base_trans.replace(direction,"") + f"_{direction[0]}"
             possible_translations.append(base_trans)
     if (
-        not possible_translations.startswith("F")
-        and len(keyname) == 3
+        not base_trans0.startswith("F")
+    ):
+        if (len(keyname) == 3
         and keyname[1] == " "
     ):
-        val = keyname[0]
-        trans = f"""'{val}'""" if val != "'" else f'''"{val}"'''
-        possible_translations.append(trans)
+            val = keyname[0]
+            trans = f"""'{val}'""" if val != "'" else f'''"{val}"'''
+            possible_translations.append(trans)
+
 
     for translation in possible_translations:
         kcom_translation_table[translation] = keycode
