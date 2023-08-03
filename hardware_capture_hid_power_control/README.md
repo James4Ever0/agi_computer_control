@@ -1,3 +1,6 @@
+it is more of a computer-ai interface, just like the computer-brain interface.
+
+----
 
 you may check out ROS and find some control related packages
 
