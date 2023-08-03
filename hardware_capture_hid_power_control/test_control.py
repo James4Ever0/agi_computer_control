@@ -437,52 +437,53 @@ elif deviceType == DeviceType.ch9329:
     keyboard = Keyboard(port=ser)
 
     # pass int to override.
-
+    @beartype
     class Mouse(ch9329Comm.mouse.DataComm):
-        @beartype
+
         def __init__(
             self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
         ):
             self.port = port
             super().__init__(screen_width=screen_width, screen_height=screen_height)
 
-        @beartype
+        
         def assert_inbound(self, x: non_neg_int, y: non_neg_int):
             assert x <= self.X_MAX, f"exceeding x limit ({self.X_MAX}): {x}"
             assert y <= self.Y_MAX, f"exceeding y limit ({self.Y_MAX}): {y}"
 
-        @beartype
-        def get_ctrl(self, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True) -> int:
+        def get_ctrl(self, x: int, y: int, button_codes: List[MouseButton], inbound: bool) -> int:
             if inbound:
                 self.assert_inbound(x, y)
             ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
             return ctrl
         
-        def call_super_method(self, funcName:str, x:int, y:int, button_codes:List[MouseButton])
 
-        @beartype
+        def call_super_method(self, funcName:str, x:int, y:int, button_codes:List[MouseButton],inbound:bool=True):
+            
+
+
+
         def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
             ctrl = self.get_ctrl(x, y, button_codes)
             super().send_data_absolute(x, y, ctrl=ctrl, port=self.port)
 
-        @beartype
+
         def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
             ctrl = self.get_ctrl(x, y, button_codes, inbound=False)
             super().send_data_relatively(x, y, ctrl=ctrl, port=self.port)
 
-        @beartype
+
         def move_to_basic(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
 
             ctrl = self.get_ctrl(x, y, button_codes)
             super().move_to_basic(x, y, ctrl=ctrl, port=self.port)
 
-        @beartype
+
         def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes: List[MouseButton] = []):
             ctrl = self.get_ctrl(dest_x, dest_y, button_codes)
             super().move_to(dest_x, dest_y, ctrl=ctrl, port=self.port)
 
-        @beartype
         # this is right click. we need to override this.
         def click(self, button: MouseButton):
             self.send_data_relatively(0, 0, [button])
