@@ -346,12 +346,12 @@ elif deviceType == DeviceType.ch9329:
 
     # ref: https://github.com/beijixiaohu/CH9329_COMM
     class Keyboard:
-        def __init__(self, 
-        port:serial.Serial,
-                     
-                     ):
+        def __init__(
+            self,
+            port: serial.Serial,
+        ):
             self.port = port
-            
+
         @beartype
         def send_data(
             self,
@@ -422,96 +422,24 @@ elif deviceType == DeviceType.ch9329:
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
             self.port.write(packet)  # 将命令代码写入串口
             # return True  # 如果成功，则返回True，否则引发异常
-        
+
         def release(self):
             self.send_data()
 
     # keyboard = ch9329Comm.keyboard.DataComm()
-    keyboard = Keyboard(port = ser)
+    keyboard = Keyboard(port=ser)
 
-    class Mouse( ch9329Comm.mouse.DataComm):
+    class Mouse(ch9329Comm.mouse.DataComm):
         @beartype
-        def __init__(self, port, screen_width: pos_int, screen_height: pos_int):
-            super().__init__
+        def __init__(
+            self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
+        ):
+            self.port = port
+            super().__init__(screen_width=screen_width, screen_height=screen_height)
 
     # mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
 
-    # monkey patch some method.
-
-    @beartype
-    def send_data(
-        self,
-        port:serial.Serial,
-        control_codes: List[ControlCode] = [],
-        key_literals: Annotated[
-            List[HIDActionTypes.keys], Is[lambda l: len(l) <= 8 and len(l) >= 0]
-        ] = [],
-    ):
-        # 将字符转写为数据包
-        HEAD = b"\x57\xAB"  # 帧头
-        ADDR = b"\x00"  # 地址
-        CMD = b"\x02"  # 命令
-        LEN = b"\x08"  # 数据长度
-        DATA = b""  # 数据
-
-        # 控制键
-        control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
-        DATA += control_byte
-        # if ctrl == '':
-        #     DATA += b'\x00'
-        # elif isinstance(ctrl, int):
-        #     DATA += bytes([ctrl])
-        # else:
-        #     DATA += self.control_button_hex_dict[ctrl]
-
-        # DATA固定码
-        DATA += b"\x00"
-
-        # 读入data
-        # for i in range(0, len(data), 2):
-        #     DATA += self.normal_button_hex_dict[data[i:i + 2]]
-        for key_literal in key_literals:
-            DATA += KeyLiteralToKCOMKeycode(key_literal)
-        if len(DATA) < 8:
-            DATA += b"\x00" * (8 - len(DATA))
-        else:
-            DATA = DATA[:8]
-
-        # 分离HEAD中的值，并计算和
-        HEAD_hex_list = []
-        for byte in HEAD:
-            HEAD_hex_list.append(byte)
-        HEAD_add_hex_list = sum(HEAD_hex_list)
-
-        # 分离DATA中的值，并计算和
-        DATA_hex_list = []
-        for byte in DATA:
-            DATA_hex_list.append(byte)
-        DATA_add_hex_list = sum(DATA_hex_list)
-
-        #
-        try:
-            SUM = (
-                sum(
-                    [
-                        HEAD_add_hex_list,
-                        int.from_bytes(ADDR, byteorder="big"),
-                        int.from_bytes(CMD, byteorder="big"),
-                        int.from_bytes(LEN, byteorder="big"),
-                        DATA_add_hex_list,
-                    ]
-                )
-                % 256
-            )  # 校验和
-        except OverflowError:
-            raise Exception("int too big to convert")
-            # return False
-        packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
-        port.write(packet)  # 将命令代码写入串口
-        # return True  # 如果成功，则返回True，否则引发异常
-    
-    def release(self, port):
-        self.send_data(port=port)
+    # (deprecated) monkey patch some method.
 
     # from types import MethodType
 
