@@ -10,8 +10,11 @@ with open("keys.json", 'r') as f:
 
 kcom_translation_table = {}
 
-
-
+import re
+def (e)
+    s = re.search(r"\(.*\)", e)
+    if s:
+        return s.group()
 for record in kcom_keycodes:
     keyname = record['Key Name']
     keycode = bytes.fromhex(record['HID Usage ID'])
