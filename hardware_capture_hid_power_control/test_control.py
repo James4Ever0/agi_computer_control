@@ -97,14 +97,16 @@ elif deviceType == "hid":
 
     import math
     @beartype
-    def reduce_flags_to_bytes(flags: List[Flag]):
+    def reduce_flags_to_bytes(flags: List[Flag], byteorder:Literal['little','big'] = 'little', byte_length: Union[int, ...] = ...):
     # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
-        flag = reduce(lambda x, y: x | y, flags)
         opcode = flag.value
 
         # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
-        byte_length = math.ceil(len(hex(opcode).strip("0x")) / 2)
-        byte_code = opcode.to_bytes(byte_length)
+        if byte_length is ...:
+            # byte_length = math.ceil(len(hex(opcode).strip("0x")) / 2)
+            byte_length = list(flags.__members__.values())[0].value
+1
+        byte_code = opcode.to_bytes(byte_length, byteorder=byteorder)
 
         return bytecode
 
