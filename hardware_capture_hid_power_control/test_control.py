@@ -3,6 +3,7 @@ from beartype import beartype
 from beartype.vale import Is
 from typing import Annotated
 from typing_extensions import TypeAlias
+from enum import StrEnum
 
 # for branching; ref: https://beartype.readthedocs.io/en/latest/api_door/
 from beartype.door import is_bearable
@@ -14,11 +15,11 @@ from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
 length_limit = lambda l: Is[lambda b: len(b) == l]
 byte_with_length_limit = lambda l: Annotated[bytes, length_limit(l)]
 
-one_byte: TypeAlias = 1
-two_bytes: TypeAlias = 2
-four_bytes: TypeAlias = 4
-six_bytes: TypeAlias = 6
-eight_bytes: TypeAlias = 8
+one_byte: TypeAlias = byte_with_length_limit(1)
+two_bytes: TypeAlias = byte_with_length_limit(2)
+four_bytes: TypeAlias = byte_with_length_limit(4)
+six_bytes: TypeAlias = byte_with_length_limit(6)
+eight_bytes: TypeAlias = byte_with_length_limit(8)
 
 non_neg_int: TypeAlias = Annotated[int, Is[lambda i: i >= 0]]
 pos_int: TypeAlias = Annotated[int, Is[lambda i: i > 0]]
@@ -26,14 +27,23 @@ pos_int: TypeAlias = Annotated[int, Is[lambda i: i > 0]]
 movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # confusing!
+
+class DeviceType(StrEnum):
+    power = auto()
+    hid = auto()
+    ch9392 = auto()
+
+
 serialDevices = {
-    "power": "/dev/serial/by-id/usb-1a86_5523-if00-port0",
-    "hid": "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0",
+    DeviceType.power: "/dev/serial/by-id/usb-1a86_5523-if00-port0",
+    DeviceType.hid: "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0",
     # another hid device will be: ch9392
+    DeviceType.ch9392: ...,
 }
 
-deviceType = "power"
-# deviceType = "hid"  # 为了保证数据能正常传输，两条数据发送间隔最低要有5ms 的延时；意思就是你发送一个数据后延时5ms 再发下一条数据。
+deviceType = DeviceType.power
+# deviceType = DeviceType.ch9392
+# deviceType = DeviceType.hid  # 为了保证数据能正常传输，两条数据发送间隔最低要有5ms 的延时；意思就是你发送一个数据后延时5ms 再发下一条数据。
 
 ser = serial.Serial(
     serialDevices[deviceType],
@@ -61,7 +71,7 @@ def write_and_read(_bytes: bytes):
     print(f"r> {repr(res)}")
 
 
-if deviceType == "power":
+if deviceType == DeviceType.power":
     # will reset on reboot
     channel = 1  # CH3 does not exist. CH2 is placeholder. (virtually working)
     # channel = 2
@@ -77,7 +87,7 @@ if deviceType == "power":
     write_and_read(f"CH{channel}=OFF".encode())
     write_and_read(f"CH{channel}=ON".encode())
 
-elif deviceType == "hid":
+elif deviceType == DeviceType.hid:
     commonHeader = b"\x57\xab"
 
     class KCOMHeader(Enum):
@@ -320,6 +330,8 @@ elif deviceType == "hid":
             KCOMHeader.multimediaHeader, data_code, 6 + (2 if isMultimediaKeys else 0)
         )
 
+elif deviceType == DeviceType.ch9392:
+    ...
 else:
     raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
 
