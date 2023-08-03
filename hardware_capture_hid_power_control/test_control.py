@@ -211,17 +211,19 @@ elif deviceType == "hid":
 
     assert len(MultimediaKey.__members__) == 3 * 8
 
+    class ACPIKey(
+
     # @beartype
     # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
 
     @beartype
-    def multimedia(multimedia_keys: List[MultimediaKey]):
+    def multimedia(multimedia_keys: Union[List[ACPIKey], List[MultimediaKey]]):
         multimedia_code = reduce_flags_to_bytes(multimedia_keys)
         data_code = b"\x02" + "".join([b"\x00"]*(len(multimedi_code) - 3)) + multimedia_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
-        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code)
+        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code, [6,8])
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
