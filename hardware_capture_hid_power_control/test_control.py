@@ -339,7 +339,10 @@ elif deviceType == DeviceType.hid:
         )
 
 elif deviceType == DeviceType.ch9329:
-    ...
+    import ch9329Comm
+    
+    keyboard = ch9329Comm.keyboard.DataComm()
+    mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
 else:
     raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
 
