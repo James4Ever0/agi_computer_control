@@ -451,7 +451,9 @@ elif deviceType == DeviceType.ch9329:
             self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
         ):
             self.port = port
-            super().__init__(screen_width=screen_width, screen_height=screen_height)
+            initargs = dict(screen_width=screen_width, screen_height=screen_height)
+            super().__init__(**initargs)
+            self.super_class = ch9329Comm.mouse.DataComm(**initargs)
         
         # TODO: scroll support
 
@@ -465,9 +467,9 @@ elif deviceType == DeviceType.ch9329:
             ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
             return ctrl
 
-        def call_super_method(self, funcName: str, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True):
+        def call_super_method(self, funcName: str, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True, use_super_instance:bool=False):
             ctrl = self.get_ctrl(x, y, button_codes, inbound=inbound)
-            ret = getattr(super(), funcName)(x, y, ctrl=ctrl, port=self.port)
+            ret = (self.super_instance if use_super_instance else getattr(super(), funcName)(x, y, ctrl=ctrl, port=self.port)
             if ret == False:
                 raise Exception("Error calling super method: {}".format(funcName))
 
