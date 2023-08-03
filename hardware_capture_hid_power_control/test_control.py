@@ -108,7 +108,7 @@ elif deviceType == DeviceType.hid:
     ):
         if is_bearable(length, int):
             length = [length]
-        if length:
+        if length is not None:
             assert (
                 data_length := len(data_code)
             ) == length, f"Assumed data lengths: {length}\nActual length: {data_length}"
@@ -340,6 +340,7 @@ elif deviceType == DeviceType.hid:
 
 elif deviceType == DeviceType.ch9329:
     import ch9329Comm
+    # ref: https://github.com/beijixiaohu/CH9329_COMM
     
     keyboard = ch9329Comm.keyboard.DataComm()
     mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
