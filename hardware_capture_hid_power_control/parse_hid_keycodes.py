@@ -1,8 +1,7 @@
-input_path = (
-    "./resources/decompressed/Kcom3资料/keys.txt"
-)
+input_path = "./resources/decompressed/Kcom3资料/keys.txt"
 
 from typing import Annotated
+
 # import beartype
 from beartype.vale import Is
 from beartype.door import is_bearable
@@ -19,15 +18,15 @@ with open(input_path, "r", encoding="utf-8") as f:
         line = line.strip()
 
         if is_bearable(line, null_string):
-            if header_index == table_header_count-1:
+            if header_index == table_header_count - 1:
                 table_rows.append(row.copy())
             row = []
-            header_index=-1
+            header_index = -1
         elif is_bearable(line, table_entry):
-            if header_index !=-2:
-                header_index +=1
+            if header_index != -2:
+                header_index += 1
                 row.append(line)
-        else: # too long
+        else:  # too long
             header_index = -2
 
 # import rich
@@ -36,5 +35,15 @@ with open(input_path, "r", encoding="utf-8") as f:
 
 import pandas
 
-df = pandas.DataFrame(table_rows[1:], columns = table_rows[0])
+df = pandas.DataFrame(table_rows[1:], columns=table_rows[0])
 print(df)
+
+df.to_csv(outpath := "keys.csv")
+print("write to: " + outpath)
+
+for index, row in df.iterrows():
+    print("_______________________________________________________________")
+    print("index?", index,sep="\n")
+    print()
+    print("row?", row,sep="\n")
+    print()
