@@ -508,7 +508,9 @@ elif deviceType == DeviceType.ch9329:
                 DATA += x.to_bytes(1, byteorder='big', signed=True)
 
             # y坐标，这里为了符合坐标系直觉，将<0改为向下，>0改为向上
-            y = - y
+            # y = - y
+            # change your ass.
+            # after doing this, we shall perform unittests, to ensure it
             if y == 0:
                 DATA.append(0)
             elif y < 0:
@@ -532,7 +534,6 @@ elif deviceType == DeviceType.ch9329:
                         DATA_add_hex_list]) % 256  # 校验和
             except OverflowError:
                 raise Exception("int too big to convert")
-                return False
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
             self.port.write(packet)  # 将命令代码写入串口
             # return True  # 如果成功，则返回True，否则引发异常
