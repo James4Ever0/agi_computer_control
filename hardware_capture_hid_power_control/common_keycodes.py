@@ -11,12 +11,13 @@ with open("keys.json", 'r') as f:
 kcom_translation_table = {}
 
 import re
-def (e)
-    s = re.search(r"\(.*\)", e)
-    if s:
-        return s.group()
+
+def subs_brackets(e):
+    s = re.subn(r"\(.*\)", "", e).strip()
+    return s
+
 for record in kcom_keycodes:
-    keyname = record['Key Name']
+    keyname = subs_brackets(record['Key Name'])
     keycode = bytes.fromhex(record['HID Usage ID'])
 
 def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
