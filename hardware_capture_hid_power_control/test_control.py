@@ -459,26 +459,22 @@ elif deviceType == DeviceType.ch9329:
         
 
         def call_super_method(self, funcName:str, x:int, y:int, button_codes:List[MouseButton],inbound:bool=True):
-            
-
-
+            ctrl = self.get_ctrl(x, y, button_codes, inbound=inbound)
+            getattr(super(), funcName)(x, y, ctrl=ctrl, port=self.port)
 
         def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
-            ctrl = self.get_ctrl(x, y, button_codes)
-            super().send_data_absolute(x, y, ctrl=ctrl, port=self.port)
+            self.call_super_method(currentFuncName, x, y, button_codes)
 
 
         def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
-            ctrl = self.get_ctrl(x, y, button_codes, inbound=False)
-            super().send_data_relatively(x, y, ctrl=ctrl, port=self.port)
+            currentFuncName = inspect.currentframe().f_code.co_name
+            self.call_super_method(currentFuncName, x, y, button_codes, inbound=False)
 
 
         def move_to_basic(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
-
-            ctrl = self.get_ctrl(x, y, button_codes)
-            super().move_to_basic(x, y, ctrl=ctrl, port=self.port)
-
+            currentFuncName = inspect.currentframe().f_code.co_name
+            self.call_super_method(currentFuncName, x, y, button_codes)
 
         def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes: List[MouseButton] = []):
             ctrl = self.get_ctrl(dest_x, dest_y, button_codes)
