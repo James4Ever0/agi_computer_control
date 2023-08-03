@@ -169,13 +169,16 @@ elif deviceType == "hid":
         x_code: Union[two_bytes, one_byte],
         y_code: Union[two_bytes, one_byte],
         scroll_code: one_byte,
-        length: Literal[4, 6],
+        kcom_flag: Literal[KCOMHeader.mouseRelativeHeader, KCOMHeader.mouseAbsoluteHeader]
     ):
         button_code = reduce_flags_to_bytes(button_codes)
         # button_opcode = reduce_opcodes(button_codes)
         # button_code = button_opcode.to_bytes()
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
-        kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, length)
+        kcom_write_and_read(kcom_flag, data_code, 4 if is_bearable(kcom_flag, KCOMHeader.mouseRelativeHeader else 6)
+
+    @beartype
+    def mouse_absolute(
 
     class MultimediaKey(Flag):
     # class MultimediaKey(Enum):
@@ -216,9 +219,9 @@ elif deviceType == "hid":
     assert len(MultimediaKey.__members__) == 3 * 8
 
     class ACPIKey(Flag):
-        Power=auto()
-        Sleep=auto()
-        Wakeup=auto()
+        Power = auto()
+        Sleep = auto()
+        Wakeup = auto()
 
     # @beartype
     # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
