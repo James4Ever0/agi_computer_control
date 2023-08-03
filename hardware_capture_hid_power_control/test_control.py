@@ -1,3 +1,4 @@
+import math
 import serial
 from beartype import beartype
 from beartype.vale import Is
@@ -14,8 +15,10 @@ from functools import reduce
 from typing import Union, List, Literal, Tuple
 from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
 
-length_limit = lambda l: Is[lambda b: len(b) == l]
-byte_with_length_limit = lambda l: Annotated[bytes, length_limit(l)]
+
+def length_limit(l): return Is[lambda b: len(b) == l]
+def byte_with_length_limit(l): return Annotated[bytes, length_limit(l)]
+
 
 one_byte: TypeAlias = byte_with_length_limit(1)
 two_bytes: TypeAlias = byte_with_length_limit(2)
@@ -35,7 +38,6 @@ class DeviceType(StrEnum):
     power = auto()
     hid = auto()
     ch9329 = auto()
-
 
 
 serialDevices = {
@@ -91,6 +93,7 @@ class ControlCode(Flag):
     RIGHT_ALT = auto()
     RIGHT_GUI = auto()
 
+
 class MouseButton(Flag):
     # class MouseButton(Enum):
     # @staticmethod
@@ -101,8 +104,6 @@ class MouseButton(Flag):
     RIGHT = auto()
     MIDDLE = auto()
 
-import math
-
 
 @beartype
 def reduce_flags_to_bytes(
@@ -112,7 +113,8 @@ def reduce_flags_to_bytes(
 ):
     # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
     if flags == []:
-        assert is_bearable(int, byte_length), f"invalid byte_length: {byte_length}"
+        assert is_bearable(
+            int, byte_length), f"invalid byte_length: {byte_length}"
         return b"\x00" * byte_length
     flag = reduce(lambda a, b: a | b, flags)
     opcode = flag.value
@@ -155,7 +157,8 @@ elif deviceType == DeviceType.hid:
     commonHeader = b"\x57\xab"
 
     class KCOMHeader(Enum):
-        modifyIDHeader = commonHeader + b"\x10"  # +4bytes, (2bytes VID, 2bytes PID)
+        # +4bytes, (2bytes VID, 2bytes PID)
+        modifyIDHeader = commonHeader + b"\x10"
         keyboardHeader = commonHeader + b"\x01"  # +8bytes
         mouseRelativeHeader = commonHeader + b"\x02"  # +4bytes
 
@@ -189,7 +192,8 @@ elif deviceType == DeviceType.hid:
     def keyboard(
         control_codes: List[ControlCode] = [],
         key_literals: Annotated[
-            List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
+            List[HIDActionTypes.keys], Is[lambda l: len(
+                l) <= 6 and len(l) >= 0]
         ] = [],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
@@ -206,7 +210,6 @@ elif deviceType == DeviceType.hid:
             + b"".join(keycodes + ([b"\x00"] * (6 - len(keycodes))))
         )
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
-
 
     @beartype
     def get_rel_code(c_rel: movement):
@@ -268,7 +271,7 @@ elif deviceType == DeviceType.hid:
         assert x_abs <= width, f"Invalid x: {x_abs}\nWidth: {width}"
         assert y_abs <= height, f"Invalid y: {y_abs}\nHeight: {height}"
 
-        get_abs_code = lambda c_abs, res: int((4096 * c_abs) / res).to_bytes(
+        def get_abs_code(c_abs, res): return int((4096 * c_abs) / res).to_bytes(
             2, byteorder="little"
         )
 
@@ -360,7 +363,8 @@ elif deviceType == DeviceType.ch9329:
             self,
             control_codes: List[ControlCode] = [],
             key_literals: Annotated[
-                List[HIDActionTypes.keys], Is[lambda l: len(l) <= 8 and len(l) >= 0]
+                List[HIDActionTypes.keys], Is[lambda l: len(
+                    l) <= 8 and len(l) >= 0]
             ] = [],
         ):
             # 将字符转写为数据包
@@ -441,30 +445,34 @@ elif deviceType == DeviceType.ch9329:
         ):
             self.port = port
             super().__init__(screen_width=screen_width, screen_height=screen_height)
-        
+
         @beartype
-        def assert_inbound(self, x:non_neg_int, y:non_neg_int):
+        def assert_inbound(self, x: non_neg_int, y: non_neg_int):
             assert x <= self.X_MAX, f"exceeding x limit ({self.X_MAX}): {x}"
             assert y <= self.Y_MAX, f"exceeding y limit ({self.Y_MAX}): {y}"
-        
+
         @beartype
-        def send_data_absolute(self,  x: non_neg_int, y: non_neg_int, button_codes:List[MouseButton]=[]):
-            self.assert_inbound(x,y)
+        def send_data_absolute(self,  x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
+            self.assert_inbound(x, y)
+            ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
+
         @beartype
-        def send_data_relatively(self,  x: int, y: int, button_codes:List[MouseButton]=[]):
-            
+        def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
+
         @beartype
-        def move_to_basic(self,  x: non_neg_int, y: non_neg_int, button_codes:List[MouseButton]=[]):
-        
+        def move_to_basic(self,  x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
+            self.assert_inbound(x, y)
+
         @beartype
-        def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes:List[MouseButton]=[]):
-        
+        def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes: List[MouseButton] = []):
+            self.assert_inbound(x, y)
+
         @beartype
-        def click(self, button): # this is right click. we need to override this.
+        # this is right click. we need to override this.
+        def click(self, button):
             self.send_data_relatively(0, 0, button)
             time.sleep(random.uniform(0.1, 0.45))  # 100到450毫秒延迟
             self.send_data_relatively(0, 0)
-
 
     # mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
 
@@ -477,6 +485,7 @@ elif deviceType == DeviceType.ch9329:
     # keyboard.release = MethodType(release, keyboard)
 
 else:
-    raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
+    raise Exception("Unknown device type: {deviceType}".format(
+        deviceType=deviceType))
 
 ser.close()
