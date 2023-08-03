@@ -213,10 +213,14 @@ elif deviceType == DeviceType.hid:
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
 
     @beartype
-    def get_rel_code(c_rel: movement):
-        if c_recl < 0:
-            c_rel = -c_rel + 0x80
-        return c_rel.to_bytes()
+    def get_scroll_code(c_scroll: movement):
+        if c_scroll < 0:
+            c_scroll = -c_scroll + 0x80
+        return c_scroll.to_bytes()
+    
+    def get_rel_code_kcom(c_rel:movement):
+        if c_rel < 0:
+            c_rel = 0xFF + c_rel
 
     @beartype
     def mouse_common(
