@@ -33,8 +33,10 @@ pos_int: TypeAlias = Annotated[int, Is[lambda i: i > 0]]
 movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # confusing!
+
+
 @beartype
-def get_scroll_code(c_scroll: movement) ->one_byte:
+def get_scroll_code(c_scroll: movement) -> one_byte:
     if c_scroll < 0:
         c_scroll = -c_scroll + 0x80
     return c_scroll.to_bytes()
@@ -216,7 +218,6 @@ elif deviceType == DeviceType.hid:
             + b"".join(keycodes + ([b"\x00"] * (6 - len(keycodes))))
         )
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
-
 
     @beartype
     def get_rel_code_kcom(c_rel: movement):
@@ -441,7 +442,7 @@ elif deviceType == DeviceType.ch9329:
             self.send_data()
 
     # keyboard = ch9329Comm.keyboard.DataComm()
-    keyboard = Keyboard(port=ser) # TODO: multimedia key support
+    keyboard = Keyboard(port=ser)  # TODO: multimedia key support
 
     # pass int to override.
     @beartype
@@ -451,10 +452,11 @@ elif deviceType == DeviceType.ch9329:
             self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
         ):
             self.port = port
-            initargs = dict(screen_width=screen_width, screen_height=screen_height)
+            initargs = dict(screen_width=screen_width,
+                            screen_height=screen_height)
             super().__init__(**initargs)
             self.super_instance = ch9329Comm.mouse.DataComm(**initargs)
-        
+
         # TODO: scroll support
 
         def assert_inbound(self, x: non_neg_int, y: non_neg_int):
@@ -467,14 +469,16 @@ elif deviceType == DeviceType.ch9329:
             ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
             return ctrl
 
-        def call_super_method(self, funcName: str, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True, use_super_instance:bool=False):
+        def call_super_method(self, funcName: str, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True, use_super_instance: bool = False):
             ctrl = self.get_ctrl(x, y, button_codes, inbound=inbound)
-            ret = (self.super_instance if use_super_instance else getattr(super(), funcName))(x, y, ctrl=ctrl, port=self.port)
+            ret = (self.super_instance if use_super_instance else getattr(
+                super(), funcName))(x, y, ctrl=ctrl, port=self.port)
             if ret == False:
-                raise Exception("Error calling super method: {}".format(funcName))
+                raise Exception(
+                    "Error calling super method: {}".format(funcName))
 
-        def send_data_absolute(self, x: non_neg_int, y: non_neg_int,scroll:movement, button_codes: List[MouseButton] = []):
-            ctrl = self.get_ctrl(x,y,button_codes=button_codes, inbound=True)
+        def send_data_absolute(self, x: non_neg_int, y: non_neg_int, scroll: movement, button_codes: List[MouseButton] = []):
+            ctrl = self.get_ctrl(x, y, button_codes=button_codes, inbound=True)
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y, button_codes)
 
@@ -499,7 +503,7 @@ elif deviceType == DeviceType.ch9329:
             DATA += X_Cur.to_bytes(2, byteorder='little')
             DATA += Y_Cur.to_bytes(2, byteorder='little')
 
-            DATA+=get_scroll_code(scroll)
+            DATA += get_scroll_code(scroll)
 
             if len(DATA) < 7:
                 DATA += b'\x00' * (7 - len(DATA))
@@ -516,17 +520,18 @@ elif deviceType == DeviceType.ch9329:
 
             try:
                 SUM = sum([HEAD_add_hex_list, int.from_bytes(ADDR, byteorder='big'),
-                        int.from_bytes(CMD, byteorder='big'), int.from_bytes(LEN, byteorder='big'),
-                        DATA_add_hex_list]) % 256  # 校验和
+                           int.from_bytes(CMD, byteorder='big'), int.from_bytes(
+                               LEN, byteorder='big'),
+                           DATA_add_hex_list]) % 256  # 校验和
             except OverflowError:
                 raise Exception("int too big to convert")
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
             self.port.write(packet)  # 将命令代码写入串口
             # return True  # 如果成功，则返回True，否则引发异常
 
-
-        def send_data_relatively(self,  x: int, y: int, scroll:movement, button_codes: List[MouseButton] = []):
-            ctrl = self.get_ctrl(x,y,button_codes=button_codes, inbound=False)
+        def send_data_relatively(self,  x: int, y: int, scroll: movement, button_codes: List[MouseButton] = []):
+            ctrl = self.get_ctrl(
+                x, y, button_codes=button_codes, inbound=False)
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y,
             #                        button_codes, inbound=False)
@@ -564,8 +569,8 @@ elif deviceType == DeviceType.ch9329:
                 DATA += (0 - abs(y)).to_bytes(1, byteorder='big', signed=True)
             else:
                 DATA += y.to_bytes(1, byteorder='big', signed=True)
-            
-            DATA+= get_scroll_code(scroll)
+
+            DATA += get_scroll_code(scroll)
 
             DATA += b'\x00' * (5 - len(DATA)) if len(DATA) < 5 else DATA[:5]
 
@@ -579,18 +584,19 @@ elif deviceType == DeviceType.ch9329:
 
             try:
                 SUM = sum([HEAD_add_hex_list, int.from_bytes(ADDR, byteorder='big'),
-                        int.from_bytes(CMD, byteorder='big'), int.from_bytes(LEN, byteorder='big'),
-                        DATA_add_hex_list]) % 256  # 校验和
+                           int.from_bytes(CMD, byteorder='big'), int.from_bytes(
+                               LEN, byteorder='big'),
+                           DATA_add_hex_list]) % 256  # 校验和
             except OverflowError:
                 raise Exception("int too big to convert")
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
             self.port.write(packet)  # 将命令代码写入串口
             # return True  # 如果成功，则返回True，否则引发异常
-        
 
         def move_to_basic(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
-            self.call_super_method(currentFuncName, x, y, button_codes, use_super_instance=True)
+            self.call_super_method(currentFuncName, x, y,
+                                   button_codes, use_super_instance=True)
 
         def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
