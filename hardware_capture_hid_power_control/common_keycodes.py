@@ -8,6 +8,7 @@ sys.path.append("../")
 from conscious_struct import HIDActionTypes
 import json
 
+# import json5
 with open("keys.json", "r") as f:
     content = f.read()
     kcom_keycodes = json.loads(content)
@@ -78,19 +79,24 @@ if __name__ == "__main__":
     ]
     translation_table_cleaned = {}
     import rich
+
     for key_literal in HIDActionTypes.keys.__args__:
         if key_literal not in kcom_translation_table:
             if key_literal not in missing_key_literals:
                 error_msg.append(f"{key_literal} not covered by translation table.")
         else:
             keycode = kcom_translation_table[key_literal]
-            translation_table_cleaned.update({key_literal:keycode})
+            translation_table_cleaned.update({key_literal: keycode})
     if error_msg:
         raise Exception("\n" + "\n".join(error_msg))
     print("cleaned translation table:")
     rich.print(translation_table_cleaned)
-    output_data = {"translation_table": translation_table_cleaned, "missing":missing_key_literals}
-    with open(out:="translation_keys.json", 'w+') as f:
+    # use bytes.fromhex() to deserialize.
+    output_data = {
+        "translation_table": {k: v.hex() for k, v in translation_table_cleaned.items()},
+        "missing": missing_key_literals,
+    }
+    with open(out := "translation_keys.json", "w+") as f:
         content = json.dumps(output_data)
         f.write(content)
     print("write to:", out)
