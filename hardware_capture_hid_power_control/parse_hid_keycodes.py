@@ -41,7 +41,14 @@ print(df)
 df.to_csv(outpath := "keys.csv")
 print("write to: " + outpath)
 
-for index, row in df.iterrows():
+from beartype.door import is_bearable
+from typing import Annotated
+string2 = Annotated[str, lambda s: len(s) == 2]
+
+# Key Name
+# HID Usage ID
+
+for index, row in df[df['HID Usage ID'].where(lambda e: is_bearable(e, string2))].iterrows():
     print("_______________________________________________________________")
     print("index?", index,sep="\n")
     print()
