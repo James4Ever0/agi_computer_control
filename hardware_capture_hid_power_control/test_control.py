@@ -16,6 +16,7 @@ from typing import Union, List, Literal, Tuple
 from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
 import inspect
 
+
 def length_limit(l): return Is[lambda b: len(b) == l]
 def byte_with_length_limit(l): return Annotated[bytes, length_limit(l)]
 
@@ -446,7 +447,6 @@ elif deviceType == DeviceType.ch9329:
             self.port = port
             super().__init__(screen_width=screen_width, screen_height=screen_height)
 
-        
         def assert_inbound(self, x: non_neg_int, y: non_neg_int):
             assert x <= self.X_MAX, f"exceeding x limit ({self.X_MAX}): {x}"
             assert y <= self.Y_MAX, f"exceeding y limit ({self.Y_MAX}): {y}"
@@ -456,9 +456,8 @@ elif deviceType == DeviceType.ch9329:
                 self.assert_inbound(x, y)
             ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
             return ctrl
-        
 
-        def call_super_method(self, funcName:str, x:int, y:int, button_codes:List[MouseButton],inbound:bool=True):
+        def call_super_method(self, funcName: str, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True):
             ctrl = self.get_ctrl(x, y, button_codes, inbound=inbound)
             getattr(super(), funcName)(x, y, ctrl=ctrl, port=self.port)
 
@@ -466,19 +465,19 @@ elif deviceType == DeviceType.ch9329:
             currentFuncName = inspect.currentframe().f_code.co_name
             self.call_super_method(currentFuncName, x, y, button_codes)
 
-
         def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
-            self.call_super_method(currentFuncName, x, y, button_codes, inbound=False)
-
+            self.call_super_method(currentFuncName, x, y,
+                                   button_codes, inbound=False)
 
         def move_to_basic(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
             self.call_super_method(currentFuncName, x, y, button_codes)
 
         def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes: List[MouseButton] = []):
-            ctrl = self.get_ctrl(dest_x, dest_y, button_codes)
-            super().move_to(dest_x, dest_y, ctrl=ctrl, port=self.port)
+            currentFuncName = inspect.currentframe().f_code.co_name
+            self.call_super_method(
+                currentFuncName, dest_x, dest_y, button_codes)
 
         # this is right click. we need to override this.
         def click(self, button: MouseButton):
