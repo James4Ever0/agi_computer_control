@@ -164,6 +164,7 @@ elif deviceType == DeviceType.hid:
     # class KeyboardKey(Enum):
     #     ...
 
+    # it is not releasing!
     @beartype
     def keyboard(
         control_codes: List[ControlCode],
