@@ -510,13 +510,15 @@ elif deviceType == DeviceType.ch9329:
             # y坐标，这里为了符合坐标系直觉，将<0改为向下，>0改为向上
             # y = - y
             # change your ass.
-            # after doing this, we shall perform unittests, to ensure it
+            # after doing this, we shall perform unittests, to ensure its integrity.
             if y == 0:
                 DATA.append(0)
             elif y < 0:
                 DATA += (0 - abs(y)).to_bytes(1, byteorder='big', signed=True)
             else:
                 DATA += y.to_bytes(1, byteorder='big', signed=True)
+            
+            DATA.append()
 
             DATA += b'\x00' * (5 - len(DATA)) if len(DATA) < 5 else DATA[:5]
 
