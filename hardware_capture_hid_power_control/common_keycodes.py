@@ -22,4 +22,3 @@ for record in kcom_keycodes:
 
 def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
     ...
-    
