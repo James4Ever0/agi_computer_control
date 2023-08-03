@@ -453,7 +453,7 @@ elif deviceType == DeviceType.ch9329:
             self.port = port
             initargs = dict(screen_width=screen_width, screen_height=screen_height)
             super().__init__(**initargs)
-            self.super_class = ch9329Comm.mouse.DataComm(**initargs)
+            self.super_instance = ch9329Comm.mouse.DataComm(**initargs)
         
         # TODO: scroll support
 
@@ -469,7 +469,7 @@ elif deviceType == DeviceType.ch9329:
 
         def call_super_method(self, funcName: str, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True, use_super_instance:bool=False):
             ctrl = self.get_ctrl(x, y, button_codes, inbound=inbound)
-            ret = (self.super_instance if use_super_instance else getattr(super(), funcName)(x, y, ctrl=ctrl, port=self.port)
+            ret = (self.super_instance if use_super_instance else getattr(super(), funcName))(x, y, ctrl=ctrl, port=self.port)
             if ret == False:
                 raise Exception("Error calling super method: {}".format(funcName))
 
@@ -486,12 +486,12 @@ elif deviceType == DeviceType.ch9329:
 
         def move_to_basic(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
-            self.call_super_method(currentFuncName, x, y, button_codes)
+            self.call_super_method(currentFuncName, x, y, button_codes, use_super_instance=True)
 
         def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
             self.call_super_method(
-                currentFuncName, dest_x, dest_y, button_codes)
+                currentFuncName, dest_x, dest_y, button_codes, use_super_instance=True)
 
         # this is right click. we need to override this.
         def click(self, button: MouseButton):
