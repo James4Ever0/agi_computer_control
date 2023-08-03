@@ -207,16 +207,16 @@ elif deviceType == DeviceType.hid:
 
     @beartype
     def mouse_common(
-        button_codes: List[MouseButton],
         x_code: Union[two_bytes, one_byte],
         y_code: Union[two_bytes, one_byte],
         scroll: movement,
         kcom_flag: Literal[
             KCOMHeader.mouseRelativeHeader, KCOMHeader.mouseAbsoluteHeader
         ],
+        button_codes: List[MouseButton] = [],
     ):
         scroll_code = get_rel_code(scroll)
-        button_code = reduce_flags_to_bytes(button_codes)
+        button_code = reduce_flags_to_bytes(button_codes, byte_length=1)
         # button_opcode = reduce_opcodes(button_codes)
         # button_code = button_opcode.to_bytes()
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
@@ -228,25 +228,25 @@ elif deviceType == DeviceType.hid:
 
     @beartype
     def mouse_relative(
-        button_codes: List[MouseButton], x: movement, y: movement, scroll: movement
+         x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = []
     ):
         x_code = get_rel_code(x)
         y_code = get_rel_code(y)
 
         mouse_common(
-            button_codes,
             x_code,
             y_code,
             scroll,
             kcom_flag=KCOMHeader.mouseRelativeHeader,
+            button_codes = button_codes,
         )
 
     @beartype
     def mouse_absolute(
-        button_codes: List[MouseButton],
         coordinate: Tuple[non_neg_int, non_neg_int],
         resolution: Tuple[pos_int, pos_int],
         scroll: movement,
+        button_codes: List[MouseButton] = []
     ):
         """
         coordinate: (x_abs, y_abs)
@@ -269,11 +269,11 @@ elif deviceType == DeviceType.hid:
         # scroll_code = get_rel_code(scroll)
 
         mouse_common(
-            button_codes,
             x_code,
             y_code,
             scroll,
             kcom_flag=KCOMHeader.mouseAbsoluteHeader,
+            button_codes = button_codes
         )
 
     class MultimediaKey(Flag):
@@ -323,9 +323,9 @@ elif deviceType == DeviceType.hid:
     # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
 
     @beartype
-    def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]]):
+    def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]] = []):
         isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
-        key_code = reduce_flags_to_bytes(keys)
+        key_code = reduce_flags_to_bytes(keys, byte_length = 3 if isMultimediaKeys else 1)
         data_code = (b"\x02" if isMultimediaKeys else b"\x01") + key_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
