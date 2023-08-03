@@ -476,7 +476,7 @@ elif deviceType == DeviceType.ch9329:
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y, button_codes)
 
-        def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
+        def send_data_relatively(self,  x: int, y: int, scroll:movement, button_codes: List[MouseButton] = []):
             ctrl = self.get_ctrl(x,y,button_codes=button_codes, inbound=False)
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y,
