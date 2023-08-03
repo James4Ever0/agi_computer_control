@@ -182,13 +182,18 @@ elif deviceType == "hid":
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
         kcom_write_and_read(kcom_flag, data_code, 4 if is_bearable(kcom_flag, KCOMHeader.mouseRelativeHeader else 6)
 
+    @beartype
     def get_rel_code(c_rel :movement):
         if c_rel <0:
-            movement = -c_rel + 0x80
+            c_rel = -c_rel + 0x80
         return c_rel.to_bytes()
 
     @beartype
-    def mouse_absolute(button_codes: List[MouseButton], coordinate:Tuple[non_neg_int, non_neg_int], resolution:Tuple[pos_int, pos_int]):
+    def mouse_relative(button_codes: List[MouseButton], ):
+        
+
+    @beartype
+    def mouse_absolute(button_codes: List[MouseButton], coordinate:Tuple[non_neg_int, non_neg_int], resolution:Tuple[pos_int, pos_int], scroll:movement):
         """
         coordinate: (x_abs, y_abs)
         resolution: (width, height)
@@ -197,11 +202,18 @@ elif deviceType == "hid":
         (x_abs, y_abs) = coordinate
         (width, height) = resolution
 
+        assert x_abs <= width, f"Invalid x: {x_abs}\nWidth: {width}"
+        assert y_abs <= height, f"Invalid y: {y_abs}\nHeight: {height}"
 
-        get_c_code = lambda c_abs, res: int((4096*c_abs)/res)).to_bytes(2, byteorder='little')
+        get_abs_code = lambda c_abs, res: int((4096*c_abs)/res)).to_bytes(2, byteorder='little')
 
-        x_code = get_c_code(x_abs)
-        y_code = get_c_code(y_abs)
+        x_code = get_abs_code(x_abs)
+        y_code = get_abs_code(y_abs)
+
+        scroll_code = get_rel_code(scroll)
+
+        mouse_common(button_codes, x_code, y_code, scroll_code, kcom_flag=KCOMHeader.mouseAbsoluteHeader)
+
 
     class MultimediaKey(Flag):
     # class MultimediaKey(Enum):
