@@ -14,7 +14,7 @@ import random
 from functools import reduce
 from typing import Union, List, Literal, Tuple
 from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
-
+import inspect
 
 def length_limit(l): return Is[lambda b: len(b) == l]
 def byte_with_length_limit(l): return Annotated[bytes, length_limit(l)]
@@ -457,9 +457,12 @@ elif deviceType == DeviceType.ch9329:
                 self.assert_inbound(x, y)
             ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
             return ctrl
+        
+        def call_super_method(self, funcName:str, x:int, y:int, button_codes:List[MouseButton])
 
         @beartype
         def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
+            currentFuncName = inspect.currentframe().f_code.co_name
             ctrl = self.get_ctrl(x, y, button_codes)
             super().send_data_absolute(x, y, ctrl=ctrl, port=self.port)
 
