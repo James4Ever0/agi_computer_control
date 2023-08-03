@@ -94,6 +94,9 @@ if __name__ == "__main__":
         "Key.media_previous",
         "Key.media_next",
     ]
+
+    def check_is_common_keyname(keyname:str):
+        if keyname.startswith("Key"):
     translation_table_cleaned = {}
     import rich
 
