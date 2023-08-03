@@ -34,7 +34,7 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # confusing!
 @beartype
-def get_scroll_code(c_scroll: movement) ->bytes:
+def get_scroll_code(c_scroll: movement) ->one_byte:
     if c_scroll < 0:
         c_scroll = -c_scroll + 0x80
     return c_scroll.to_bytes()
