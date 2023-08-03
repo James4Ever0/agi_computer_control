@@ -112,10 +112,10 @@ elif deviceType == "hid":
 
     # use int.to_bytes afterwards.
     # use enum.Flag to replace enum.Enum in this situation.
-    class ControlCode(Enum):
-        @staticmethod
-        def _generate_next_value_(name, start, count, last_values):
-            return 2 ** (count)
+    class ControlCode(Flag):
+        # @staticmethod
+        # def _generate_next_value_(name, start, count, last_values):
+        #     return 2 ** (count)
 
         LEFT_CONTROL = auto()
         LEFT_SHIFT = auto()
@@ -145,10 +145,11 @@ elif deviceType == "hid":
         )
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
 
-    class MouseButton(Enum):
-        @staticmethod
-        def _generate_next_value_(name, start, count, last_values):
-            return 2 ** (count)
+    class MouseButton(Flag):
+    # class MouseButton(Enum):
+        # @staticmethod
+        # def _generate_next_value_(name, start, count, last_values):
+        #     return 2 ** (count)
 
         LEFT = auto()
         RIGHT = auto()
@@ -168,10 +169,11 @@ elif deviceType == "hid":
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
         kcom_write_and_read(KCOMHeader.mouseRelativeHeader, data_code, length)
 
-    class MultimediaKey(Enum):
-        @staticmethod
-        def _generate_next_value_(name, start, count, last_values):
-            return 2 ** (count)
+    class MultimediaKey(Flag):
+    # class MultimediaKey(Enum):
+        # @staticmethod
+        # def _generate_next_value_(name, start, count, last_values):
+        #     return 2 ** (count)
 
         # row 1
         VolumeUp = auto()
