@@ -34,10 +34,13 @@ def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
     )
     if keyLiteral in translation_table.keys():
         return translation_table[keyLiteral]
-    elif keyLiteral not in missing:
+
+    elif keyLiteral in missing:
+        raise Exception("Calling missing keyLiteral:", keyLiteral)
+    else:
         raise Exception("Unknown keyLiteral: " + keyLiteral)
 
-
+from beartype.door import is_bearable
 if __name__ == "__main__":
     # import json5
     with open("keys.json", "r") as f:
@@ -91,8 +94,9 @@ if __name__ == "__main__":
                 possible_translations.append(t)
                 possible_translations.append(_k)
             else:
-                if isinstance(_k,HIDActionTypes.keys):
-                    missing_key_literals.append(_k)
+                for k in [t, _k]:
+                    if is_bearable(k, HIDActionTypes.keys):
+                        missing_key_literals.append(k)
 
         do_append(base_trans)
         for direction in ["right_", "left_"]:
@@ -117,11 +121,15 @@ if __name__ == "__main__":
 
     translation_table_cleaned = {}
     import rich
+    extra_missing_key_literals = []
 
     for key_literal in HIDActionTypes.keys.__args__:
         if key_literal not in kcom_translation_table:
             if key_literal not in missing_key_literals:
-                error_msg.append(f"{key_literal} not covered by translation table.")
+                if check_is_common_keyname(key_literal):
+                    error_msg.append(f"{key_literal} not covered by translation table.")
+                else:
+                    extra_missing_key_literals.append(key_literal)
         else:
             keycode = kcom_translation_table[key_literal]
             translation_table_cleaned.update({key_literal: keycode})
@@ -132,7 +140,7 @@ if __name__ == "__main__":
     # use bytes.fromhex() to deserialize.
     output_data = {
         "translation_table": {k: v.hex() for k, v in translation_table_cleaned.items()},
-        "missing": missing_key_literals,
+        "missing": missing_key_literals + extra_missing_key_literals,
     }
     with open(trans_outpath, "w+") as f:
         content = json.dumps(output_data, indent=4)

@@ -47,14 +47,8 @@
         "'x'": "1b",
         "'y'": "1c",
         "'z'": "1d",
-        "Key.alt": "e2",
-        "Key.alt_r": "e6",
         "Key.backspace": "2a",
         "Key.caps_lock": "39",
-        "Key.cmd": "e3",
-        "Key.cmd_r": "e7",
-        "Key.ctrl": "e0",
-        "Key.ctrl_r": "e4",
         "Key.delete": "4c",
         "Key.down": "51",
         "Key.end": "4d",
@@ -85,18 +79,24 @@
         "Key.page_down": "4e",
         "Key.page_up": "4b",
         "Key.right": "4f",
-        "Key.shift": "e1",
-        "Key.shift_r": "e5",
         "Key.space": "2c",
         "Key.tab": "2b",
-        "Key.up": "52",
-        "Key.media_volume_mute": "7f",
-        "Key.media_volume_down": "81",
-        "Key.media_volume_up": "80"
+        "Key.up": "52"
     },
     "missing": [
         "Key.media_play_pause",
         "Key.media_previous",
-        "Key.media_next"
+        "Key.media_next",
+        "Key.cmd_r",
+        "Key.alt",
+        "Key.alt_r",
+        "Key.cmd",
+        "Key.ctrl",
+        "Key.ctrl_r",
+        "Key.shift",
+        "Key.shift_r",
+        "Key.media_volume_mute",
+        "Key.media_volume_down",
+        "Key.media_volume_up"
     ]
 }
