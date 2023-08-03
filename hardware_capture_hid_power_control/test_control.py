@@ -28,6 +28,7 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # confusing!
 
+
 class DeviceType(StrEnum):
     power = auto()
     hid = auto()
@@ -69,6 +70,7 @@ def write_and_read(_bytes: bytes):
     print(f"w> {repr(_bytes)}")
     res = ser.readall()
     print(f"r> {repr(res)}")
+
 
 # cannot use match here? python 3.10+ required
 
@@ -122,6 +124,7 @@ elif deviceType == DeviceType.hid:
     ):
         # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
         if flags == []:
+            assert is_bearable(int, byte_length), f"invalid byte_length: {byte_length}"
             return b"\x00" * byte_length
         flag = reduce(lambda a, b: a | b, flags)
         opcode = flag.value
@@ -172,10 +175,10 @@ elif deviceType == DeviceType.hid:
         control_codes: List[ControlCode] = [],
         key_literals: Annotated[
             List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
-        ]= [],
+        ] = [],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
-        control_code = reduce_flags_to_bytes(control_codes,byte_length=1)
+        control_code = reduce_flags_to_bytes(control_codes, byte_length=1)
         keycodes = [
             KeyLiteralToKCOMKeycode(key_literal)
             for key_literal in key_literals
@@ -228,7 +231,7 @@ elif deviceType == DeviceType.hid:
 
     @beartype
     def mouse_relative(
-         x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = []
+        x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = []
     ):
         x_code = get_rel_code(x)
         y_code = get_rel_code(y)
@@ -238,7 +241,7 @@ elif deviceType == DeviceType.hid:
             y_code,
             scroll,
             kcom_flag=KCOMHeader.mouseRelativeHeader,
-            button_codes = button_codes,
+            button_codes=button_codes,
         )
 
     @beartype
@@ -246,7 +249,7 @@ elif deviceType == DeviceType.hid:
         coordinate: Tuple[non_neg_int, non_neg_int],
         resolution: Tuple[pos_int, pos_int],
         scroll: movement,
-        button_codes: List[MouseButton] = []
+        button_codes: List[MouseButton] = [],
     ):
         """
         coordinate: (x_abs, y_abs)
@@ -273,7 +276,7 @@ elif deviceType == DeviceType.hid:
             y_code,
             scroll,
             kcom_flag=KCOMHeader.mouseAbsoluteHeader,
-            button_codes = button_codes
+            button_codes=button_codes,
         )
 
     class MultimediaKey(Flag):
@@ -325,13 +328,14 @@ elif deviceType == DeviceType.hid:
     @beartype
     def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]] = []):
         isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
-        key_code = reduce_flags_to_bytes(keys, byte_length = 3 if isMultimediaKeys else 1)
+        byte_length = 3 if isMultimediaKeys else 1
+        key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
         data_code = (b"\x02" if isMultimediaKeys else b"\x01") + key_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
         kcom_write_and_read(
-            KCOMHeader.multimediaHeader, data_code, 6 + (2 if isMultimediaKeys else 0)
+            KCOMHeader.multimediaHeader, data_code, 4 + (1 + byte_length)
         )
 
 elif deviceType == DeviceType.ch9329:
