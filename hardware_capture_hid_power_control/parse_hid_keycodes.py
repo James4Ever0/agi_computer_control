@@ -43,16 +43,18 @@ print("write to: " + outpath)
 
 from beartype.door import is_bearable
 from typing import Annotated
-string2 = Annotated[str, lambda s: len(s) == 2]
+from beartype.vale import Is
+string2 = Annotated[str, Is[lambda s: len(s) == 2]]
 
 # Key Name
 # HID Usage ID
 
 from functools import partial
 
-new_loc = df['HID Usage ID'].where(lambda e: e.apply(partial(is_bearable, hint= string2)))
-print(new_loc)
-new_df = df[new_loc]
+new_usage_id = df['HID Usage ID'].apply(partial(is_bearable, hint= string2))
+print("new usage id?")
+print(new_usage_id)
+new_df = df[new_usage_id]
 for index, row in new_df.iterrows():
     print("_______________________________________________________________")
     print("index?", index,sep="\n")
