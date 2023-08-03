@@ -33,6 +33,11 @@ pos_int: TypeAlias = Annotated[int, Is[lambda i: i > 0]]
 movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # confusing!
+@beartype
+def get_scroll_code(c_scroll: movement):
+    if c_scroll < 0:
+        c_scroll = -c_scroll + 0x80
+    return c_scroll.to_bytes()
 
 
 class DeviceType(StrEnum):
@@ -212,12 +217,8 @@ elif deviceType == DeviceType.hid:
         )
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
 
-    @beartype
-    def get_scroll_code(c_scroll: movement):
-        if c_scroll < 0:
-            c_scroll = -c_scroll + 0x80
-        return c_scroll.to_bytes()
 
+    @beartype
     def get_rel_code_kcom(c_rel: movement):
         if c_rel < 0:
             c_rel = 0xFF + c_rel
@@ -471,13 +472,14 @@ elif deviceType == DeviceType.ch9329:
                 raise Exception("Error calling super method: {}".format(funcName))
 
         def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
-            currentFuncName = inspect.currentframe().f_code.co_name
-            self.call_super_method(currentFuncName, x, y, button_codes)
+            ctrl = 
+            # currentFuncName = inspect.currentframe().f_code.co_name
+            # self.call_super_method(currentFuncName, x, y, button_codes)
 
         def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
-            currentFuncName = inspect.currentframe().f_code.co_name
-            self.call_super_method(currentFuncName, x, y,
-                                   button_codes, inbound=False)
+            # currentFuncName = inspect.currentframe().f_code.co_name
+            # self.call_super_method(currentFuncName, x, y,
+            #                        button_codes, inbound=False)
 
         def move_to_basic(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
