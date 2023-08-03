@@ -1,6 +1,8 @@
 import sys
-
 sys.path.append("../")
+
+# TODO: add feedback to unsupported keys.
+# for now, just ignore these. don't do anything.
 
 from conscious_struct import HIDActionTypes
 import json
@@ -29,7 +31,7 @@ for record in kcom_keycodes:
     keyname = keyname.replace("Arrow", "").strip()
 
     base_trans0 = keyname.replace(" ", "_").lower()
-    base_trans = base_trans0.replace("gui", "cmd").replace("control", 'ctrl').replace("escape", 'esc').replace("keyboard", "media").replace("mute", "volume_mute").replace("volume_dn", "volume_down")
+    base_trans = base_trans0.replace("gui", "cmd").replace("control", 'ctrl').replace("escape", 'esc').replace("keyboard", "media").replace("mute", "volume_mute").replace("volume_dn", "volume_down").replace('return', 'enter')
     def do_append(t):
         possible_translations.append(t)
         possible_translations.append(f"Key.{t}")
@@ -63,8 +65,10 @@ def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
 if __name__ == "__main__":
     # coverage test.
     error_msg = []
+    missing_key_literals = []
     for key_literal in HIDActionTypes.keys.__args__:
         if key_literal not in kcom_translation_table:
-            error_msg.append(f"{key_literal} not covered by translation table.")
+            if key_literal not in missing_key_literals:
+                error_msg.append(f"{key_literal} not covered by translation table.")
     if error_msg:
-        raise Exception("\n".join(error_msg))
+        raise Exception("\n"+"\n".join(error_msg))
