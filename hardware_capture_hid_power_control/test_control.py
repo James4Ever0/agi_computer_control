@@ -225,13 +225,13 @@ elif deviceType == "hid":
 
     @beartype
     def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]]):
-        isMultimediaKeys = 
+        isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
         key_code = reduce_flags_to_bytes(multimedia_keys)
-        data_code = (b"\x02" if is_bearable(keys, List[MultimediaKey]) else b"\x01") + key_code
+        data_code = (b"\x02" if isMultimediaKeys else b"\x01") + key_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
-        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code, 6+ (0 if is_bearable() else)
+        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code, 6+ (2 if isMultimediaKeys else 0))
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
