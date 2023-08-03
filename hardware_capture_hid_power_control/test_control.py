@@ -9,6 +9,7 @@ from beartype.door import is_bearable
 from enum import Enum, auto, Flag
 from functools import reduce
 from typing import Union, List, Literal, Tuple
+from common_keycodes import load_translation_table
 
 length_limit = lambda l: Is[lambda b: len(b) == l]
 byte_with_length_limit = lambda l: Annotated[bytes, length_limit(l)]
@@ -141,6 +142,7 @@ elif deviceType == "hid":
 
     class KeyboardKey(Enum):
         ...
+
 
     @beartype
     def keyboard(

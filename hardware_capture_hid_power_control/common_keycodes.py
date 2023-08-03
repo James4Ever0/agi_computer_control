@@ -7,69 +7,66 @@ sys.path.append("../")
 
 from conscious_struct import HIDActionTypes
 import json
-
-# import json5
-with open("keys.json", "r") as f:
-    content = f.read()
-    kcom_keycodes = json.loads(content)
-
-kcom_translation_table = {}
-
-import re
-
-
-def subs_brackets(e):
-    s, _ = re.subn(r"\(.*\)", "", e)
-    s = s.strip()
-    return s
-
-
-for record in kcom_keycodes:
-    keyname = subs_brackets(record["Key Name"])
-    keycode = bytes.fromhex(record["HID Usage ID"])
-
-    possible_translations = []
-
-    keyname = keyname.replace("Arrow", "").strip()
-
-    base_trans0 = keyname.replace(" ", "_").lower()
-    base_trans = (
-        base_trans0.replace("gui", "cmd")
-        .replace("control", "ctrl")
-        .replace("escape", "esc")
-        .replace("keyboard", "media")
-        .replace("mute", "volume_mute")
-        .replace("volume_dn", "volume_down")
-        .replace("return", "enter")
-    )
-
-    def do_append(t):
-        possible_translations.append(t)
-        possible_translations.append(f"Key.{t}")
-
-    do_append(base_trans)
-    for direction in ["right_", "left_"]:
-        if base_trans.startswith(direction):
-            base_trans = base_trans.replace(direction, "") + f"_{direction[0]}"
-            if direction == "left_":
-                basekey = base_trans.split("_")[0]
-                do_append(basekey)
-            do_append(base_trans)
-    if not base_trans0.startswith("F"):
-        if len(keyname) == 3 and keyname[1] == " ":
-            val = keyname[0]
-            trans = f"""'{val}'""" if val != "'" else f'''"{val}"'''
-            possible_translations.append(trans)
-
-    for translation in possible_translations:
-        kcom_translation_table[translation] = keycode
-
-
-def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
-    return kcom_translation_table(keyLiteral)
-
+out = "translation_keys.json"
 
 if __name__ == "__main__":
+    # import json5
+    with open("keys.json", "r") as f:
+        content = f.read()
+        kcom_keycodes = json.loads(content)
+
+    kcom_translation_table = {}
+
+    import re
+
+    def subs_brackets(e):
+        s, _ = re.subn(r"\(.*\)", "", e)
+        s = s.strip()
+        return s
+
+    for record in kcom_keycodes:
+        keyname = subs_brackets(record["Key Name"])
+        keycode = bytes.fromhex(record["HID Usage ID"])
+
+        possible_translations = []
+
+        keyname = keyname.replace("Arrow", "").strip()
+
+        base_trans0 = keyname.replace(" ", "_").lower()
+        base_trans = (
+            base_trans0.replace("gui", "cmd")
+            .replace("control", "ctrl")
+            .replace("escape", "esc")
+            .replace("keyboard", "media")
+            .replace("mute", "volume_mute")
+            .replace("volume_dn", "volume_down")
+            .replace("return", "enter")
+        )
+
+        def do_append(t):
+            possible_translations.append(t)
+            possible_translations.append(f"Key.{t}")
+
+        do_append(base_trans)
+        for direction in ["right_", "left_"]:
+            if base_trans.startswith(direction):
+                base_trans = base_trans.replace(direction, "") + f"_{direction[0]}"
+                if direction == "left_":
+                    basekey = base_trans.split("_")[0]
+                    do_append(basekey)
+                do_append(base_trans)
+        if not base_trans0.startswith("F"):
+            if len(keyname) == 3 and keyname[1] == " ":
+                val = keyname[0]
+                trans = f"""'{val}'""" if val != "'" else f'''"{val}"'''
+                possible_translations.append(trans)
+
+        for translation in possible_translations:
+            kcom_translation_table[translation] = keycode
+
+    def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
+        return kcom_translation_table(keyLiteral)
+
     # coverage test.
     error_msg = []
     missing_key_literals = [
@@ -96,7 +93,7 @@ if __name__ == "__main__":
         "translation_table": {k: v.hex() for k, v in translation_table_cleaned.items()},
         "missing": missing_key_literals,
     }
-    with open(out := "translation_keys.json", "w+") as f:
-        content = json.dumps(output_data)
+    with open(outpath, "w+") as f:
+        content = json.dumps(output_data, indent=4)
         f.write(content)
-    print("write to:", out)
+    print("write to:", outpath)
