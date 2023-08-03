@@ -121,6 +121,8 @@ elif deviceType == DeviceType.hid:
         byte_length: Union[int, Ellipsis] = ...,
     ):
         # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
+        if flags == []:
+            return b"\x00" * byte_length
         flag = reduce(lambda a, b: a | b, flags)
         opcode = flag.value
 
@@ -164,16 +166,16 @@ elif deviceType == DeviceType.hid:
     # class KeyboardKey(Enum):
     #     ...
 
-    # it is not releasing!
+    # leave it empty to release all keys.
     @beartype
     def keyboard(
-        control_codes: List[ControlCode],
+        control_codes: List[ControlCode] = [],
         key_literals: Annotated[
             List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
-        ],
+        ]= [],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
-        control_code = reduce_flags_to_bytes(control_codes)
+        control_code = reduce_flags_to_bytes(control_codes,byte_length=1)
         keycodes = [
             KeyLiteralToKCOMKeycode(key_literal)
             for key_literal in key_literals
