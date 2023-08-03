@@ -8,7 +8,7 @@ from typing_extensions import TypeAlias
 from beartype.door import is_bearable
 from enum import Enum, auto, Flag
 from functools import reduce
-from typing import Union, List, Literal
+from typing import Union, List, Literal, Tuple
 
 length_limit = lambda l: Is[lambda b: len(b) == l]
 byte_with_length_limit = lambda l: Annotated[bytes, length_limit(l)]
@@ -18,6 +18,9 @@ two_bytes: TypeAlias = 2
 four_bytes: TypeAlias = 4
 six_bytes: TypeAlias = 6
 eight_bytes: TypeAlias = 8
+
+non_neg_int : TypeAlias = Annotated[int, Is[lambda i: i>=0]]
+pos_int : TypeAlias = Annotated[int, Is[lambda i: i>0]]
 
 # confusing!
 serialDevices = {
@@ -178,7 +181,19 @@ elif deviceType == "hid":
         kcom_write_and_read(kcom_flag, data_code, 4 if is_bearable(kcom_flag, KCOMHeader.mouseRelativeHeader else 6)
 
     @beartype
-    def mouse_absolute(
+    def mouse_absolute(button_codes: List[MouseButton], coordinate:Tuple[non_neg_int, non_neg_int], resolution:Tuple[pos_int, pos_int]):
+        """
+        coordinate: (x_abs, y_abs)
+        resolution: (width, height)
+        """
+        
+        (x_abs, y_abs) = coordinate
+        (width, height) = resolution
+
+
+        lambda : int((4096*c_abs)/res)
+
+        x_code = ().to_bytes(
 
     class MultimediaKey(Flag):
     # class MultimediaKey(Enum):
