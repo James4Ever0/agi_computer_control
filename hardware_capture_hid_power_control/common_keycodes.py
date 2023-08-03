@@ -7,7 +7,30 @@ sys.path.append("../")
 
 from conscious_struct import HIDActionTypes
 import json
-out = "translation_keys.json"
+
+trans_outpath = "translation_keys.json"
+from functools import lru_cache
+
+
+@lru_cache(maxsize=1)
+def load_translation_table():
+    with open(trans_outpath, "r") as f:
+        content = f.read()
+        data = json.loads(content)
+        tk = "translation_table"
+        data[tk] = {k: bytes.fromhex(v) for k, v in data[tk].items()}
+        return data
+
+
+def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
+    translation_data = load_translation_table()
+    translation_table, missing = translation_data['translation_table'], translation_data['missing']
+    if keyLiteral in translation_table.keys():
+        return translation_table[keyLiteral]
+    elif 
+    else:
+        raise Exception("Unknown keyLiteral: " + keyLiteral)
+
 
 if __name__ == "__main__":
     # import json5
@@ -64,9 +87,6 @@ if __name__ == "__main__":
         for translation in possible_translations:
             kcom_translation_table[translation] = keycode
 
-    def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
-        return kcom_translation_table(keyLiteral)
-
     # coverage test.
     error_msg = []
     missing_key_literals = [
@@ -93,7 +113,7 @@ if __name__ == "__main__":
         "translation_table": {k: v.hex() for k, v in translation_table_cleaned.items()},
         "missing": missing_key_literals,
     }
-    with open(outpath, "w+") as f:
+    with open(trans_outpath, "w+") as f:
         content = json.dumps(output_data, indent=4)
         f.write(content)
-    print("write to:", outpath)
+    print("write to:", trans_outpath)
