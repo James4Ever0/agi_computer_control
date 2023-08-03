@@ -1,0 +1,638 @@
+[
+    {
+        "Key Name":"System Power",
+        "HID Usage ID":"81"
+    },
+    {
+        "Key Name":"System Sleep",
+        "HID Usage ID":"82"
+    },
+    {
+        "Key Name":"System Wake",
+        "HID Usage ID":"83"
+    },
+    {
+        "Key Name":"No Event",
+        "HID Usage ID":"00"
+    },
+    {
+        "Key Name":"Overrun Error",
+        "HID Usage ID":"01"
+    },
+    {
+        "Key Name":"POST Fail",
+        "HID Usage ID":"02"
+    },
+    {
+        "Key Name":"ErrorUndefined",
+        "HID Usage ID":"03"
+    },
+    {
+        "Key Name":"a A",
+        "HID Usage ID":"04"
+    },
+    {
+        "Key Name":"b B",
+        "HID Usage ID":"05"
+    },
+    {
+        "Key Name":"c C",
+        "HID Usage ID":"06"
+    },
+    {
+        "Key Name":"d D",
+        "HID Usage ID":"07"
+    },
+    {
+        "Key Name":"e E",
+        "HID Usage ID":"08"
+    },
+    {
+        "Key Name":"f F",
+        "HID Usage ID":"09"
+    },
+    {
+        "Key Name":"g G",
+        "HID Usage ID":"0A"
+    },
+    {
+        "Key Name":"h H",
+        "HID Usage ID":"0B"
+    },
+    {
+        "Key Name":"i I",
+        "HID Usage ID":"0C"
+    },
+    {
+        "Key Name":"j J",
+        "HID Usage ID":"0D"
+    },
+    {
+        "Key Name":"k K",
+        "HID Usage ID":"0E"
+    },
+    {
+        "Key Name":"l L",
+        "HID Usage ID":"0F"
+    },
+    {
+        "Key Name":"m M",
+        "HID Usage ID":"10"
+    },
+    {
+        "Key Name":"n N",
+        "HID Usage ID":"11"
+    },
+    {
+        "Key Name":"o O",
+        "HID Usage ID":"12"
+    },
+    {
+        "Key Name":"p P",
+        "HID Usage ID":"13"
+    },
+    {
+        "Key Name":"q Q",
+        "HID Usage ID":"14"
+    },
+    {
+        "Key Name":"r R",
+        "HID Usage ID":"15"
+    },
+    {
+        "Key Name":"s S",
+        "HID Usage ID":"16"
+    },
+    {
+        "Key Name":"t T",
+        "HID Usage ID":"17"
+    },
+    {
+        "Key Name":"u U",
+        "HID Usage ID":"18"
+    },
+    {
+        "Key Name":"v V",
+        "HID Usage ID":"19"
+    },
+    {
+        "Key Name":"w W",
+        "HID Usage ID":"1A"
+    },
+    {
+        "Key Name":"x X",
+        "HID Usage ID":"1B"
+    },
+    {
+        "Key Name":"y Y",
+        "HID Usage ID":"1C"
+    },
+    {
+        "Key Name":"z Z",
+        "HID Usage ID":"1D"
+    },
+    {
+        "Key Name":"1 !",
+        "HID Usage ID":"1E"
+    },
+    {
+        "Key Name":"2 @",
+        "HID Usage ID":"1F"
+    },
+    {
+        "Key Name":"3 #",
+        "HID Usage ID":"20"
+    },
+    {
+        "Key Name":"4 $",
+        "HID Usage ID":"21"
+    },
+    {
+        "Key Name":"5 %",
+        "HID Usage ID":"22"
+    },
+    {
+        "Key Name":"6 ^",
+        "HID Usage ID":"23"
+    },
+    {
+        "Key Name":"7 &",
+        "HID Usage ID":"24"
+    },
+    {
+        "Key Name":"8 *",
+        "HID Usage ID":"25"
+    },
+    {
+        "Key Name":"9 (",
+        "HID Usage ID":"26"
+    },
+    {
+        "Key Name":"0 )",
+        "HID Usage ID":"27"
+    },
+    {
+        "Key Name":"Return",
+        "HID Usage ID":"28"
+    },
+    {
+        "Key Name":"Escape",
+        "HID Usage ID":"29"
+    },
+    {
+        "Key Name":"Backspace",
+        "HID Usage ID":"2A"
+    },
+    {
+        "Key Name":"Tab",
+        "HID Usage ID":"2B"
+    },
+    {
+        "Key Name":"Space",
+        "HID Usage ID":"2C"
+    },
+    {
+        "Key Name":"- _",
+        "HID Usage ID":"2D"
+    },
+    {
+        "Key Name":"= +",
+        "HID Usage ID":"2E"
+    },
+    {
+        "Key Name":"[ {",
+        "HID Usage ID":"2F"
+    },
+    {
+        "Key Name":"] }",
+        "HID Usage ID":"30"
+    },
+    {
+        "Key Name":"\\ |",
+        "HID Usage ID":"31"
+    },
+    {
+        "Key Name":"Europe 1 (Note 2)",
+        "HID Usage ID":"32"
+    },
+    {
+        "Key Name":"; :",
+        "HID Usage ID":"33"
+    },
+    {
+        "Key Name":"' \"",
+        "HID Usage ID":"34"
+    },
+    {
+        "Key Name":"` ~",
+        "HID Usage ID":"35"
+    },
+    {
+        "Key Name":", <",
+        "HID Usage ID":"36"
+    },
+    {
+        "Key Name":". >",
+        "HID Usage ID":"37"
+    },
+    {
+        "Key Name":"\/ ?",
+        "HID Usage ID":"38"
+    },
+    {
+        "Key Name":"Caps Lock",
+        "HID Usage ID":"39"
+    },
+    {
+        "Key Name":"F1",
+        "HID Usage ID":"3A"
+    },
+    {
+        "Key Name":"F2",
+        "HID Usage ID":"3B"
+    },
+    {
+        "Key Name":"F3",
+        "HID Usage ID":"3C"
+    },
+    {
+        "Key Name":"F4",
+        "HID Usage ID":"3D"
+    },
+    {
+        "Key Name":"F5",
+        "HID Usage ID":"3E"
+    },
+    {
+        "Key Name":"F6",
+        "HID Usage ID":"3F"
+    },
+    {
+        "Key Name":"F7",
+        "HID Usage ID":"40"
+    },
+    {
+        "Key Name":"F8",
+        "HID Usage ID":"41"
+    },
+    {
+        "Key Name":"F9",
+        "HID Usage ID":"42"
+    },
+    {
+        "Key Name":"F10",
+        "HID Usage ID":"43"
+    },
+    {
+        "Key Name":"F11",
+        "HID Usage ID":"44"
+    },
+    {
+        "Key Name":"F12",
+        "HID Usage ID":"45"
+    },
+    {
+        "Key Name":"Print Screen (Note 1)",
+        "HID Usage ID":"46"
+    },
+    {
+        "Key Name":"Scroll Lock",
+        "HID Usage ID":"47"
+    },
+    {
+        "Key Name":"Insert (Note 1)",
+        "HID Usage ID":"49"
+    },
+    {
+        "Key Name":"Home (Note 1)",
+        "HID Usage ID":"4A"
+    },
+    {
+        "Key Name":"Page Up (Note 1)",
+        "HID Usage ID":"4B"
+    },
+    {
+        "Key Name":"Delete (Note 1)",
+        "HID Usage ID":"4C"
+    },
+    {
+        "Key Name":"End (Note 1)",
+        "HID Usage ID":"4D"
+    },
+    {
+        "Key Name":"Page Down (Note 1)",
+        "HID Usage ID":"4E"
+    },
+    {
+        "Key Name":"Right Arrow (Note 1)",
+        "HID Usage ID":"4F"
+    },
+    {
+        "Key Name":"Left Arrow (Note 1)",
+        "HID Usage ID":"50"
+    },
+    {
+        "Key Name":"Down Arrow (Note 1)",
+        "HID Usage ID":"51"
+    },
+    {
+        "Key Name":"Up Arrow (Note 1)",
+        "HID Usage ID":"52"
+    },
+    {
+        "Key Name":"Num Lock",
+        "HID Usage ID":"53"
+    },
+    {
+        "Key Name":"Keypad \/ (Note 1)",
+        "HID Usage ID":"54"
+    },
+    {
+        "Key Name":"Keypad *",
+        "HID Usage ID":"55"
+    },
+    {
+        "Key Name":"Keypad -",
+        "HID Usage ID":"56"
+    },
+    {
+        "Key Name":"Keypad +",
+        "HID Usage ID":"57"
+    },
+    {
+        "Key Name":"Keypad Enter",
+        "HID Usage ID":"58"
+    },
+    {
+        "Key Name":"Keypad 1 End",
+        "HID Usage ID":"59"
+    },
+    {
+        "Key Name":"Keypad 2 Down",
+        "HID Usage ID":"5A"
+    },
+    {
+        "Key Name":"Keypad 3 PageDn",
+        "HID Usage ID":"5B"
+    },
+    {
+        "Key Name":"Keypad 4 Left",
+        "HID Usage ID":"5C"
+    },
+    {
+        "Key Name":"Keypad 5",
+        "HID Usage ID":"5D"
+    },
+    {
+        "Key Name":"Keypad 6 Right",
+        "HID Usage ID":"5E"
+    },
+    {
+        "Key Name":"Keypad 7 Home",
+        "HID Usage ID":"5F"
+    },
+    {
+        "Key Name":"Keypad 8 Up",
+        "HID Usage ID":"60"
+    },
+    {
+        "Key Name":"Keypad 9 PageUp",
+        "HID Usage ID":"61"
+    },
+    {
+        "Key Name":"Keypad 0 Insert",
+        "HID Usage ID":"62"
+    },
+    {
+        "Key Name":"Keypad . Delete",
+        "HID Usage ID":"63"
+    },
+    {
+        "Key Name":"Europe 2 (Note 2)",
+        "HID Usage ID":"64"
+    },
+    {
+        "Key Name":"App",
+        "HID Usage ID":"65"
+    },
+    {
+        "Key Name":"Keyboard Power",
+        "HID Usage ID":"66"
+    },
+    {
+        "Key Name":"Keypad =",
+        "HID Usage ID":"67"
+    },
+    {
+        "Key Name":"F13",
+        "HID Usage ID":"68"
+    },
+    {
+        "Key Name":"F14",
+        "HID Usage ID":"69"
+    },
+    {
+        "Key Name":"F15",
+        "HID Usage ID":"6A"
+    },
+    {
+        "Key Name":"F16",
+        "HID Usage ID":"6B"
+    },
+    {
+        "Key Name":"F17",
+        "HID Usage ID":"6C"
+    },
+    {
+        "Key Name":"F18",
+        "HID Usage ID":"6D"
+    },
+    {
+        "Key Name":"F19",
+        "HID Usage ID":"6E"
+    },
+    {
+        "Key Name":"F20",
+        "HID Usage ID":"6F"
+    },
+    {
+        "Key Name":"F21",
+        "HID Usage ID":"70"
+    },
+    {
+        "Key Name":"F22",
+        "HID Usage ID":"71"
+    },
+    {
+        "Key Name":"F23",
+        "HID Usage ID":"72"
+    },
+    {
+        "Key Name":"F24",
+        "HID Usage ID":"73"
+    },
+    {
+        "Key Name":"Keyboard Execute",
+        "HID Usage ID":"74"
+    },
+    {
+        "Key Name":"Keyboard Help",
+        "HID Usage ID":"75"
+    },
+    {
+        "Key Name":"Keyboard Menu",
+        "HID Usage ID":"76"
+    },
+    {
+        "Key Name":"Keyboard Select",
+        "HID Usage ID":"77"
+    },
+    {
+        "Key Name":"Keyboard Stop",
+        "HID Usage ID":"78"
+    },
+    {
+        "Key Name":"Keyboard Again",
+        "HID Usage ID":"79"
+    },
+    {
+        "Key Name":"Keyboard Undo",
+        "HID Usage ID":"7A"
+    },
+    {
+        "Key Name":"Keyboard Cut",
+        "HID Usage ID":"7B"
+    },
+    {
+        "Key Name":"Keyboard Copy",
+        "HID Usage ID":"7C"
+    },
+    {
+        "Key Name":"Keyboard Paste",
+        "HID Usage ID":"7D"
+    },
+    {
+        "Key Name":"Keyboard Find",
+        "HID Usage ID":"7E"
+    },
+    {
+        "Key Name":"Keyboard Mute",
+        "HID Usage ID":"7F"
+    },
+    {
+        "Key Name":"Keyboard Volume Up",
+        "HID Usage ID":"80"
+    },
+    {
+        "Key Name":"Keyboard Volume Dn",
+        "HID Usage ID":"81"
+    },
+    {
+        "Key Name":"Keyboard Equal Sign",
+        "HID Usage ID":"86"
+    },
+    {
+        "Key Name":"Keyboard Int'l 7",
+        "HID Usage ID":"8D"
+    },
+    {
+        "Key Name":"Keyboard Int'l 8",
+        "HID Usage ID":"8E"
+    },
+    {
+        "Key Name":"Keyboard Int'l 9",
+        "HID Usage ID":"8F"
+    },
+    {
+        "Key Name":"(Zenkaku\/Hankaku)",
+        "HID Usage ID":"94"
+    },
+    {
+        "Key Name":"Keyboard Lang 6",
+        "HID Usage ID":"95"
+    },
+    {
+        "Key Name":"Keyboard Lang 7",
+        "HID Usage ID":"96"
+    },
+    {
+        "Key Name":"Keyboard Lang 8",
+        "HID Usage ID":"97"
+    },
+    {
+        "Key Name":"Keyboard Lang 9",
+        "HID Usage ID":"98"
+    },
+    {
+        "Key Name":"Keyboard Cancel",
+        "HID Usage ID":"9B"
+    },
+    {
+        "Key Name":"Keyboard Clear",
+        "HID Usage ID":"9C"
+    },
+    {
+        "Key Name":"Keyboard Prior",
+        "HID Usage ID":"9D"
+    },
+    {
+        "Key Name":"Keyboard Return",
+        "HID Usage ID":"9E"
+    },
+    {
+        "Key Name":"Keyboard Separator",
+        "HID Usage ID":"9F"
+    },
+    {
+        "Key Name":"Keyboard Out",
+        "HID Usage ID":"A0"
+    },
+    {
+        "Key Name":"Keyboard Oper",
+        "HID Usage ID":"A1"
+    },
+    {
+        "Key Name":"Keyboard Clear\/Again",
+        "HID Usage ID":"A2"
+    },
+    {
+        "Key Name":"Keyboard CrSel\/Props",
+        "HID Usage ID":"A3"
+    },
+    {
+        "Key Name":"Keyboard ExSel",
+        "HID Usage ID":"A4"
+    },
+    {
+        "Key Name":"Left Control",
+        "HID Usage ID":"E0"
+    },
+    {
+        "Key Name":"Left Shift",
+        "HID Usage ID":"E1"
+    },
+    {
+        "Key Name":"Left Alt",
+        "HID Usage ID":"E2"
+    },
+    {
+        "Key Name":"Left GUI",
+        "HID Usage ID":"E3"
+    },
+    {
+        "Key Name":"Right Control",
+        "HID Usage ID":"E4"
+    },
+    {
+        "Key Name":"Right Shift",
+        "HID Usage ID":"E5"
+    },
+    {
+        "Key Name":"Right Alt",
+        "HID Usage ID":"E6"
+    },
+    {
+        "Key Name":"Right GUI",
+        "HID Usage ID":"E7"
+    }
+]

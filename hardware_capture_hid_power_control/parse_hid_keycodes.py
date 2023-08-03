@@ -68,5 +68,6 @@ print(select_new_df)
 #     print()
 #     breakpoint()
 
-_json = select_new_df.to_json()
-print(_json)
+select_new_df.to_json(json_outpath:='keys.json', orient='records', indent=4)
+print('write json to: '+ json_outpath)
+# print(_json)
