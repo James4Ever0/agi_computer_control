@@ -70,6 +70,55 @@ def write_and_read(_bytes: bytes):
     print(f"w> {repr(_bytes)}")
     res = ser.readall()
     print(f"r> {repr(res)}")
+    # use int.to_bytes afterwards.
+    # use enum.Flag to replace enum.Enum in this situation.
+
+
+class ControlCode(Flag):
+    # @staticmethod
+    # def _generate_next_value_(name, start, count, last_values):
+    #     return 2 ** (count)
+
+    LEFT_CONTROL = auto()
+    LEFT_SHIFT = auto()
+    LEFT_ALT = auto()
+    LEFT_GUI = auto()
+    RIGHT_CONTROL = auto()
+    RIGHT_SHIFT = auto()
+    RIGHT_ALT = auto()
+    RIGHT_GUI = auto()
+
+
+import math
+
+
+@beartype
+def reduce_flags_to_bytes(
+    flags: List[Flag],
+    byteorder: Literal["little", "big"] = "little",
+    byte_length: Union[int, Ellipsis] = ...,
+):
+    # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
+    if flags == []:
+        assert is_bearable(int, byte_length), f"invalid byte_length: {byte_length}"
+        return b"\x00" * byte_length
+    flag = reduce(lambda a, b: a | b, flags)
+    opcode = flag.value
+
+    # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
+    if byte_length is ...:
+        byte_length = (
+            get_byte_length := lambda _bytes: math.ceil(
+                len(hex(_bytes).strip("0x")) / 2
+            )
+        )(opcode)
+        for member in type(flags[0]).__members__.values():
+            if (member_byte_length := get_byte_length(member.value)) > byte_length:
+                byte_length = member_byte_length
+
+    byte_code = opcode.to_bytes(byte_length, byteorder=byteorder)
+
+    return byte_code
 
 
 # cannot use match here? python 3.10+ required
@@ -114,57 +163,11 @@ elif deviceType == DeviceType.hid:
             ) == length, f"Assumed data lengths: {length}\nActual length: {data_length}"
         write_and_read(header + data_code)
 
-    import math
-
-    @beartype
-    def reduce_flags_to_bytes(
-        flags: List[Flag],
-        byteorder: Literal["little", "big"] = "little",
-        byte_length: Union[int, Ellipsis] = ...,
-    ):
-        # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
-        if flags == []:
-            assert is_bearable(int, byte_length), f"invalid byte_length: {byte_length}"
-            return b"\x00" * byte_length
-        flag = reduce(lambda a, b: a | b, flags)
-        opcode = flag.value
-
-        # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
-        if byte_length is ...:
-            byte_length = (
-                get_byte_length := lambda _bytes: math.ceil(
-                    len(hex(_bytes).strip("0x")) / 2
-                )
-            )(opcode)
-            for member in type(flags[0]).__members__.values():
-                if (member_byte_length := get_byte_length(member.value)) > byte_length:
-                    byte_length = member_byte_length
-
-        byte_code = opcode.to_bytes(byte_length, byteorder=byteorder)
-
-        return byte_code
-
     @beartype
     def changeID(vid: two_bytes, pid: two_bytes):
         print("change VID=%s, PID=%s" % (vid, pid))
         data_code = vid + pid
         kcom_write_and_read(KCOMHeader.modifyIDHeader, data_code, 4)
-
-    # use int.to_bytes afterwards.
-    # use enum.Flag to replace enum.Enum in this situation.
-    class ControlCode(Flag):
-        # @staticmethod
-        # def _generate_next_value_(name, start, count, last_values):
-        #     return 2 ** (count)
-
-        LEFT_CONTROL = auto()
-        LEFT_SHIFT = auto()
-        LEFT_ALT = auto()
-        LEFT_GUI = auto()
-        RIGHT_CONTROL = auto()
-        RIGHT_SHIFT = auto()
-        RIGHT_ALT = auto()
-        RIGHT_GUI = auto()
 
     # class KeyboardKey(Enum):
     #     ...
@@ -340,42 +343,50 @@ elif deviceType == DeviceType.hid:
 
 elif deviceType == DeviceType.ch9329:
     import ch9329Comm
+
     # ref: https://github.com/beijixiaohu/CH9329_COMM
-    
+
     keyboard = ch9329Comm.keyboard.DataComm()
     mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
 
     # monkey patch some method.
-    
+
     @beartype
-    def send_data(self, 
+    def send_data(
+        self,
+        port:serial.Serial
         control_codes: List[ControlCode] = [],
         key_literals: Annotated[
-            List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
-        ] = [], port=serial):
+            List[HIDActionTypes.keys], Is[lambda l: len(l) <= 8 and len(l) >= 0]
+        ] = [],
+    ):
         # 将字符转写为数据包
-        HEAD = b'\x57\xAB'  # 帧头
-        ADDR = b'\x00'  # 地址
-        CMD = b'\x02'  # 命令
-        LEN = b'\x08'  # 数据长度
-        DATA = b''  # 数据
+        HEAD = b"\x57\xAB"  # 帧头
+        ADDR = b"\x00"  # 地址
+        CMD = b"\x02"  # 命令
+        LEN = b"\x08"  # 数据长度
+        DATA = b""  # 数据
 
         # 控制键
-        if ctrl == '':
-            DATA += b'\x00'
-        elif isinstance(ctrl, int):
-            DATA += bytes([ctrl])
-        else:
-            DATA += self.control_button_hex_dict[ctrl]
+        control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
+        DATA += control_byte
+        # if ctrl == '':
+        #     DATA += b'\x00'
+        # elif isinstance(ctrl, int):
+        #     DATA += bytes([ctrl])
+        # else:
+        #     DATA += self.control_button_hex_dict[ctrl]
 
         # DATA固定码
-        DATA += b'\x00'
+        DATA += b"\x00"
 
         # 读入data
-        for i in range(0, len(data), 2):
-            DATA += self.normal_button_hex_dict[data[i:i + 2]]
+        # for i in range(0, len(data), 2):
+        #     DATA += self.normal_button_hex_dict[data[i:i + 2]]
+        for key_literal in key_literals:
+            DATA += KeyLiteralToKCOMKeycode(key_literal)
         if len(DATA) < 8:
-            DATA += b'\x00' * (8 - len(DATA))
+            DATA += b"\x00" * (8 - len(DATA))
         else:
             DATA = DATA[:8]
 
@@ -393,9 +404,18 @@ elif deviceType == DeviceType.ch9329:
 
         #
         try:
-            SUM = sum([HEAD_add_hex_list, int.from_bytes(ADDR, byteorder='big'),
-                       int.from_bytes(CMD, byteorder='big'), int.from_bytes(LEN, byteorder='big'),
-                       DATA_add_hex_list]) % 256  # 校验和
+            SUM = (
+                sum(
+                    [
+                        HEAD_add_hex_list,
+                        int.from_bytes(ADDR, byteorder="big"),
+                        int.from_bytes(CMD, byteorder="big"),
+                        int.from_bytes(LEN, byteorder="big"),
+                        DATA_add_hex_list,
+                    ]
+                )
+                % 256
+            )  # 校验和
         except OverflowError:
             print("int too big to convert")
             return False
@@ -403,7 +423,6 @@ elif deviceType == DeviceType.ch9329:
         port.ser.write(packet)  # 将命令代码写入串口
         return True  # 如果成功，则返回True，否则引发异常
 
-    
     from types import MethodType
 
     # to override instance methods.
