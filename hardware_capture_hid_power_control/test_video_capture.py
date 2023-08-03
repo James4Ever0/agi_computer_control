@@ -12,7 +12,7 @@
 import cv2
 
 # can't you reset?
-camera_id = 2 # use the smallest camera id of particular device (the only working one)
+camera_id = 2  # use the smallest camera id of particular device (the only working one)
 # without setting!
 # CV_CAP_PROP_FRAME_WIDTH: '640.0'
 # CV_CAP_PROP_FRAME_HEIGHT : '480.0'
@@ -50,8 +50,9 @@ print("CV_CAP_PROP_FRAME_FORMAT : '{}'".format(cap.get(cv2.CAP_PROP_FORMAT)))
 ret, frame = cap.read()
 
 # Display the resulting frame
-cv2.imwrite(output_path:="output.png",frame) # from "no_signal" to something!
+cv2.imwrite(output_path := "output.png", frame)  # from "no_signal" to something!
 import os
+
 os.system(f"ffplay {output_path}")
 # cv2.imshow('frame', frame)
 # cv2.waitKey(0)

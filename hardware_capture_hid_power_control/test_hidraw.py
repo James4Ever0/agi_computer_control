@@ -17,8 +17,14 @@ for d in hid.enumerate():
     print()
 
 devices = {
-    0: {"vendor_id": 8352, "product_id": 16941, },  # 0, could be mouse.
-    1: {"vendor_id": 8352, "product_id": 16941, },  # 1
+    0: {
+        "vendor_id": 8352,
+        "product_id": 16941,
+    },  # 0, could be mouse.
+    1: {
+        "vendor_id": 8352,
+        "product_id": 16941,
+    },  # 1
 }
 
 # the same!

@@ -44,6 +44,7 @@ print("write to: " + outpath)
 from beartype.door import is_bearable
 from typing import Annotated
 from beartype.vale import Is
+
 string2 = Annotated[str, Is[lambda s: len(s) == 2]]
 
 # Key Name
@@ -51,12 +52,12 @@ string2 = Annotated[str, Is[lambda s: len(s) == 2]]
 
 from functools import partial
 
-new_usage_id = df['HID Usage ID'].apply(partial(is_bearable, hint= string2))
+new_usage_id = df["HID Usage ID"].apply(partial(is_bearable, hint=string2))
 print("new usage id?")
 print(new_usage_id)
 new_df = df[new_usage_id]
 
-select_new_df = new_df[['Key Name', 'HID Usage ID']]
+select_new_df = new_df[["Key Name", "HID Usage ID"]]
 print("____")
 print(select_new_df)
 # print(select_new_df.head())
@@ -68,6 +69,6 @@ print(select_new_df)
 #     print()
 #     breakpoint()
 
-select_new_df.to_json(json_outpath:='keys.json', orient='records', indent=4)
-print('write json to: '+ json_outpath)
+select_new_df.to_json(json_outpath := "keys.json", orient="records", indent=4)
+print("write json to: " + json_outpath)
 # print(_json)
