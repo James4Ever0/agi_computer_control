@@ -21,6 +21,9 @@ def load_translation_table():
         data[tk] = {k: bytes.fromhex(v) for k, v in data[tk].items()}
         return data
 
+from beartype import beartype
+
+@beartype
 def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
     translation_data = load_translation_table()
     translation_table, missing = translation_data['translation_table'], translation_data['missing']
