@@ -20,10 +20,10 @@ four_bytes: TypeAlias = 4
 six_bytes: TypeAlias = 6
 eight_bytes: TypeAlias = 8
 
-non_neg_int : TypeAlias = Annotated[int, Is[lambda i: i>=0]]
-pos_int : TypeAlias = Annotated[int, Is[lambda i: i>0]]
+non_neg_int: TypeAlias = Annotated[int, Is[lambda i: i >= 0]]
+pos_int: TypeAlias = Annotated[int, Is[lambda i: i > 0]]
 
-movement: TypeAlias = Annotated[int, Is[lambda i: i>= -126 and i<=126]]
+movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # confusing!
 serialDevices = {
@@ -102,17 +102,26 @@ elif deviceType == "hid":
         write_and_read(header + data_code)
 
     import math
+
     @beartype
-    def reduce_flags_to_bytes(flags: List[Flag], byteorder:Literal['little','big'] = 'little', byte_length: Union[int, Ellipsis] = ...):
-    # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
-        flag = reduce(lambda a,b: a|b, flags)
+    def reduce_flags_to_bytes(
+        flags: List[Flag],
+        byteorder: Literal["little", "big"] = "little",
+        byte_length: Union[int, Ellipsis] = ...,
+    ):
+        # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
+        flag = reduce(lambda a, b: a | b, flags)
         opcode = flag.value
 
         # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
         if byte_length is ...:
-            byte_length = (get_byte_length := lambda _bytes: math.ceil(len(hex(_bytes).strip("0x")) / 2))(opcode)
+            byte_length = (
+                get_byte_length := lambda _bytes: math.ceil(
+                    len(hex(_bytes).strip("0x")) / 2
+                )
+            )(opcode)
             for member in type(flags[0]).__members__.values():
-                if (member_byte_length:=get_byte_length(member.value))>byte_length:
+                if (member_byte_length := get_byte_length(member.value)) > byte_length:
                     byte_length = member_byte_length
 
         byte_code = opcode.to_bytes(byte_length, byteorder=byteorder)
@@ -144,7 +153,6 @@ elif deviceType == "hid":
     # class KeyboardKey(Enum):
     #     ...
 
-
     @beartype
     def keyboard(
         control_codes: List[ControlCode],
@@ -154,7 +162,12 @@ elif deviceType == "hid":
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
         control_code = reduce_flags_to_bytes(control_codes)
-        keycodes = [v:=KeyLiteralToKCOMKeycode(key_literal) for key_literal in key_literals if v]
+        keycodes = [
+            KeyLiteralToKCOMKeycode(key_literal)
+            for key_literal in key_literals
+            if KeyLiteralToKCOMKeycode(key_literal)
+        ]  # could reduce size with walrus operator with higher python version.
+        # keycodes = [v:=KeyLiteralToKCOMKeycode(key_literal) for key_literal in key_literals if v]
         data_code = (
             control_code
             + reserved_byte
@@ -163,7 +176,7 @@ elif deviceType == "hid":
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
 
     class MouseButton(Flag):
-    # class MouseButton(Enum):
+        # class MouseButton(Enum):
         # @staticmethod
         # def _generate_next_value_(name, start, count, last_values):
         #     return 2 ** (count)
@@ -173,8 +186,8 @@ elif deviceType == "hid":
         MIDDLE = auto()
 
     @beartype
-    def get_rel_code(c_rel:movement):
-        if c_rel <0:
+    def get_rel_code(c_rel: movement):
+        if c_rel < 0:
             c_rel = -c_rel + 0x80
         return c_rel.to_bytes()
 
@@ -184,48 +197,73 @@ elif deviceType == "hid":
         x_code: Union[two_bytes, one_byte],
         y_code: Union[two_bytes, one_byte],
         scroll: movement,
-        kcom_flag: Literal[KCOMHeader.mouseRelativeHeader, KCOMHeader.mouseAbsoluteHeader]
+        kcom_flag: Literal[
+            KCOMHeader.mouseRelativeHeader, KCOMHeader.mouseAbsoluteHeader
+        ],
     ):
         scroll_code = get_rel_code(scroll)
         button_code = reduce_flags_to_bytes(button_codes)
         # button_opcode = reduce_opcodes(button_codes)
         # button_code = button_opcode.to_bytes()
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
-        kcom_write_and_read(kcom_flag, data_code, 4 if is_bearable(kcom_flag, KCOMHeader.mouseRelativeHeader else 6)
+        kcom_write_and_read(
+            kcom_flag,
+            data_code,
+            4 if is_bearable(kcom_flag, KCOMHeader.mouseRelativeHeader) else 6,
+        )
 
     @beartype
-    def mouse_relative(button_codes: List[MouseButton], x:movement, y:movement, scroll: movement):
+    def mouse_relative(
+        button_codes: List[MouseButton], x: movement, y: movement, scroll: movement
+    ):
         x_code = get_rel_code(x)
         y_code = get_rel_code(y)
 
-        mouse_common(button_codes, x_code, y_code, scroll, kcom_flag=KCOMHeader.mouseRelativeHeader)
-
+        mouse_common(
+            button_codes,
+            x_code,
+            y_code,
+            scroll,
+            kcom_flag=KCOMHeader.mouseRelativeHeader,
+        )
 
     @beartype
-    def mouse_absolute(button_codes: List[MouseButton], coordinate:Tuple[non_neg_int, non_neg_int], resolution:Tuple[pos_int, pos_int], scroll:movement):
+    def mouse_absolute(
+        button_codes: List[MouseButton],
+        coordinate: Tuple[non_neg_int, non_neg_int],
+        resolution: Tuple[pos_int, pos_int],
+        scroll: movement,
+    ):
         """
         coordinate: (x_abs, y_abs)
         resolution: (width, height)
         """
-        
+
         (x_abs, y_abs) = coordinate
         (width, height) = resolution
 
         assert x_abs <= width, f"Invalid x: {x_abs}\nWidth: {width}"
         assert y_abs <= height, f"Invalid y: {y_abs}\nHeight: {height}"
 
-        get_abs_code = lambda c_abs, res: int((4096*c_abs)/res)).to_bytes(2, byteorder='little')
+        get_abs_code = lambda c_abs, res: int((4096 * c_abs) / res).to_bytes(
+            2, byteorder="little"
+        )
 
         x_code = get_abs_code(x_abs)
         y_code = get_abs_code(y_abs)
 
         # scroll_code = get_rel_code(scroll)
 
-        mouse_common(button_codes, x_code, y_code, scroll, kcom_flag=KCOMHeader.mouseAbsoluteHeader)
-
+        mouse_common(
+            button_codes,
+            x_code,
+            y_code,
+            scroll,
+            kcom_flag=KCOMHeader.mouseAbsoluteHeader,
+        )
 
     class MultimediaKey(Flag):
-    # class MultimediaKey(Enum):
+        # class MultimediaKey(Enum):
         # @staticmethod
         # def _generate_next_value_(name, start, count, last_values):
         #     return 2 ** (count)
@@ -273,12 +311,14 @@ elif deviceType == "hid":
     @beartype
     def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]]):
         isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
-        key_code = reduce_flags_to_bytes(multimedia_keys)
+        key_code = reduce_flags_to_bytes(keys)
         data_code = (b"\x02" if isMultimediaKeys else b"\x01") + key_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
-        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code, 6+ (2 if isMultimediaKeys else 0))
+        kcom_write_and_read(
+            KCOMHeader.multimediaHeader, data_code, 6 + (2 if isMultimediaKeys else 0)
+        )
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
