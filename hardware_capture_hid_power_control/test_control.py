@@ -105,8 +105,8 @@ elif deviceType == "hid":
         if byte_length is ...:
             byte_length = (get_byte_length := lambda _bytes: math.ceil(len(hex(_bytes).strip("0x")) / 2))(opcode)
             for member in type(flags[0]).__members__.values():
-                if (val:=member.value)>byte_length:
-                    byte_length = val
+                if (member_byte_length:=get_byte_length(member.value))>byte_length:
+                    byte_length = member_byte_length
 
         byte_code = opcode.to_bytes(byte_length, byteorder=byteorder)
 
@@ -215,19 +215,23 @@ elif deviceType == "hid":
 
     assert len(MultimediaKey.__members__) == 3 * 8
 
-    class ACPIKey(
+    class ACPIKey(Flag):
+        Power=auto()
+        Sleep=auto()
+        Wakeup=auto()
 
     # @beartype
     # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
 
     @beartype
-    def multimedia(multimedia_keys: Union[List[ACPIKey], List[MultimediaKey]]):
-        multimedia_code = reduce_flags_to_bytes(multimedia_keys)
-        data_code = b"\x02" + "".join([b"\x00"]*(len(multimedi_code) - 3)) + multimedia_code
+    def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]]):
+        isMultimediaKeys = 
+        key_code = reduce_flags_to_bytes(multimedia_keys)
+        data_code = (b"\x02" if is_bearable(keys, List[MultimediaKey]) else b"\x01") + key_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
-        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code, [6,8])
+        kcom_write_and_read(KCOMHeader.multimediaHeader, data_code, 6+ (0 if is_bearable() else)
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
