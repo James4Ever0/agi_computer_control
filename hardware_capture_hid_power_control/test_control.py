@@ -93,10 +93,15 @@ elif deviceType == "hid":
             ) == length, f"Assumed data length: {data_length}\nActual length: {length}"
         write_and_read(header + data_code)
 
+    import math
     @beartype
     def reduce_opcodes_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
         opcode = reduce(lambda x, y: x | y, opcodes)
-        bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
+
+        # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
+        byte_length = math.ceil(len(hex(opcode).strip("0x")) / 2)
+        byte_code = opcode.to_bytes(byte_length)
+        
         return bytecode
 
     @beartype
