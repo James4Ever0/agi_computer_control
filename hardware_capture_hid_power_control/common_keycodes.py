@@ -21,16 +21,22 @@ def load_translation_table():
         data[tk] = {k: bytes.fromhex(v) for k, v in data[tk].items()}
         return data
 
+
 from beartype import beartype
+
 
 @beartype
 def KeyLiteralToKCOMKeycode(keyLiteral: HIDActionTypes.keys):
     translation_data = load_translation_table()
-    translation_table, missing = translation_data['translation_table'], translation_data['missing']
+    translation_table, missing = (
+        translation_data["translation_table"],
+        translation_data["missing"],
+    )
     if keyLiteral in translation_table.keys():
         return translation_table[keyLiteral]
     elif keyLiteral not in missing:
         raise Exception("Unknown keyLiteral: " + keyLiteral)
+
 
 if __name__ == "__main__":
     # import json5
@@ -65,10 +71,28 @@ if __name__ == "__main__":
             .replace("volume_dn", "volume_down")
             .replace("return", "enter")
         )
+        missing_key_literals = [
+        "Key.media_play_pause",
+        "Key.media_previous",
+        "Key.media_next",
+        ]
+
+        def check_is_common_keyname(keyname: str):
+            if keyname.startswith("Key"):
+                keyname = keyname.strip("Key.")
+                for forbidden_prefix in ["ctrl", "cmd", "shift", "alt", "media"]:
+                    if keyname.startswith(forbidden_prefix):
+                        return False
+            return True
 
         def do_append(t):
-            possible_translations.append(t)
-            possible_translations.append(f"Key.{t}")
+            _k = f"Key.{t}"
+            if check_is_common_keyname(_k):
+                possible_translations.append(t)
+                possible_translations.append(_k)
+            else:
+                if isinstance(_k,HIDActionTypes.keys):
+                    missing_key_literals.append(_k)
 
         do_append(base_trans)
         for direction in ["right_", "left_"]:
@@ -89,14 +113,8 @@ if __name__ == "__main__":
 
     # coverage test.
     error_msg = []
-    missing_key_literals = [
-        "Key.media_play_pause",
-        "Key.media_previous",
-        "Key.media_next",
-    ]
 
-    def check_is_common_keyname(keyname:str):
-        if keyname.startswith("Key"):
+
     translation_table_cleaned = {}
     import rich
 
