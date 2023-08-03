@@ -9,11 +9,14 @@ from enum import Enum, auto
 from functools import reduce
 from typing import Union, List, Literal
 
-one_byte: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 1]]
-two_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 2]]
-four_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 4]]
-six_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 6]]
-eight_bytes: TypeAlias = Annotated[bytes, Is[lambda b: len(b) == 8]]
+length_limit = lambda l: Is[lambda b: len(b) == l]
+byte_with_length_limit = lambda l: Annotated[bytes, length_limit(l)]
+
+one_byte: TypeAlias = 1
+two_bytes: TypeAlias = 2
+four_bytes: TypeAlias = 4
+six_bytes: TypeAlias = 6
+eight_bytes: TypeAlias = 8
 
 # confusing!
 serialDevices = {

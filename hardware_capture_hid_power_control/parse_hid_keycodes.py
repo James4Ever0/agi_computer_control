@@ -55,10 +55,13 @@ new_usage_id = df['HID Usage ID'].apply(partial(is_bearable, hint= string2))
 print("new usage id?")
 print(new_usage_id)
 new_df = df[new_usage_id]
-for index, row in new_df.iterrows():
-    print("_______________________________________________________________")
-    print("index?", index,sep="\n")
-    print()
-    print("row?", row,sep="\n")
-    print()
-    breakpoint()
+
+select_new_df = new_df.iloc['Key Name', 'HID Usage ID']
+select_new_df.head()
+# for index, row in new_df.iterrows():
+#     print("_______________________________________________________________")
+#     print("index?", index,sep="\n")
+#     print()
+#     print("row?", row,sep="\n")
+#     print()
+#     breakpoint()
