@@ -25,7 +25,15 @@ for record in kcom_keycodes:
 
     possible_translations = []
 
-    possible_translations.append(keyname.replace(" ",lower())
+    possible_translations.append(keyname.replace(" ", "_").lower())
+    if (
+        not possible_translations.startswith("F")
+        and len(keyname) == 3
+        and keyname[1] == " "
+    ):
+        val = keyname[0]
+        trans = f"""'{val}'""" if val != "'" else f'''"{val}"'''
+        possible_translations.append(trans)
 
     for translation in possible_translations:
         kcom_translation_table[translation] = keycode
