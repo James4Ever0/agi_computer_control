@@ -8,6 +8,8 @@ from enum import StrEnum
 # for branching; ref: https://beartype.readthedocs.io/en/latest/api_door/
 from beartype.door import is_bearable
 from enum import Enum, auto, Flag
+import time
+import random
 from functools import reduce
 from typing import Union, List, Literal, Tuple
 from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
@@ -33,6 +35,7 @@ class DeviceType(StrEnum):
     power = auto()
     hid = auto()
     ch9329 = auto()
+
 
 
 serialDevices = {
@@ -88,6 +91,15 @@ class ControlCode(Flag):
     RIGHT_ALT = auto()
     RIGHT_GUI = auto()
 
+class MouseButton(Flag):
+    # class MouseButton(Enum):
+    # @staticmethod
+    # def _generate_next_value_(name, start, count, last_values):
+    #     return 2 ** (count)
+
+    LEFT = auto()
+    RIGHT = auto()
+    MIDDLE = auto()
 
 import math
 
@@ -195,15 +207,6 @@ elif deviceType == DeviceType.hid:
         )
         kcom_write_and_read(KCOMHeader.keyboardHeader, data_code, 8)
 
-    class MouseButton(Flag):
-        # class MouseButton(Enum):
-        # @staticmethod
-        # def _generate_next_value_(name, start, count, last_values):
-        #     return 2 ** (count)
-
-        LEFT = auto()
-        RIGHT = auto()
-        MIDDLE = auto()
 
     @beartype
     def get_rel_code(c_rel: movement):
@@ -429,6 +432,8 @@ elif deviceType == DeviceType.ch9329:
     # keyboard = ch9329Comm.keyboard.DataComm()
     keyboard = Keyboard(port=ser)
 
+    # pass int to override.
+
     class Mouse(ch9329Comm.mouse.DataComm):
         @beartype
         def __init__(
@@ -438,21 +443,21 @@ elif deviceType == DeviceType.ch9329:
             super().__init__(screen_width=screen_width, screen_height=screen_height)
         
         @beartype
-        def send_data_absolute(self,  x: int, y: int, ctrl: str = '',):
+        def send_data_absolute(self,  x: int, y: int, button_codes:List[],):
         @beartype
-        def send_data_relatively(self,  x: int, y: int, ctrl: str = '',):
+        def send_data_relatively(self,  x: int, y: int, button_codes:List[],):
         
         @beartype
-        def move_to_basic(self,  x: int, y: int, ctrl: str = '',):
+        def move_to_basic(self,  x: int, y: int, button_codes:List[],):
         
         @beartype
-        def move_to(self, dest_x: int, dest_y: int, ctrl: str = ''):
+        def move_to(self, dest_x: int, dest_y: int, button_codes:List[]):
         
         @beartype
-        def click(self) -> Never: # this is right click. we need to override this.
-            self.send_data_relatively(0, 0, 'LE', port)
+        def click(self, button): # this is right click. we need to override this.
+            self.send_data_relatively(0, 0, button)
             time.sleep(random.uniform(0.1, 0.45))  # 100到450毫秒延迟
-            self.send_data_relatively(0, 0, 'NU', port)
+            self.send_data_relatively(0, 0, 'NU')
 
 
     # mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
