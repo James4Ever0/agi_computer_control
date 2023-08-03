@@ -449,7 +449,7 @@ elif deviceType == DeviceType.ch9329:
         
         @beartype
         def send_data_absolute(self,  x: non_neg_int, y: non_neg_int, button_codes:List[MouseButton]=[]):
-            
+            self.assert_inbound(x,y)
         @beartype
         def send_data_relatively(self,  x: int, y: int, button_codes:List[MouseButton]=[]):
             
