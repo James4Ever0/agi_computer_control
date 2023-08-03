@@ -22,6 +22,8 @@ eight_bytes: TypeAlias = 8
 non_neg_int : TypeAlias = Annotated[int, Is[lambda i: i>=0]]
 pos_int : TypeAlias = Annotated[int, Is[lambda i: i>0]]
 
+movement: TypeAlias = Annotated[int, Is[lambda i: i>= -126 and i<=126]]
+
 # confusing!
 serialDevices = {
     "power": "/dev/serial/by-id/usb-1a86_5523-if00-port0",
@@ -180,6 +182,11 @@ elif deviceType == "hid":
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
         kcom_write_and_read(kcom_flag, data_code, 4 if is_bearable(kcom_flag, KCOMHeader.mouseRelativeHeader else 6)
 
+    def get_rel_code(c_rel :movement):
+        if c_rel <0:
+            movement = -c_rel + 0x80
+        return c_rel.to_bytes()
+
     @beartype
     def mouse_absolute(button_codes: List[MouseButton], coordinate:Tuple[non_neg_int, non_neg_int], resolution:Tuple[pos_int, pos_int]):
         """
@@ -191,9 +198,10 @@ elif deviceType == "hid":
         (width, height) = resolution
 
 
-        lambda : int((4096*c_abs)/res)
+        get_c_code = lambda c_abs, res: int((4096*c_abs)/res)).to_bytes(2, byteorder='little')
 
-        x_code = ().to_bytes(
+        x_code = get_c_code(x_abs)
+        y_code = get_c_code(y_abs)
 
     class MultimediaKey(Flag):
     # class MultimediaKey(Enum):
