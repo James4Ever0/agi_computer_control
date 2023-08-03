@@ -258,9 +258,11 @@ elif deviceType == DeviceType.hid:
             kcom_flag=KCOMHeader.mouseRelativeHeader,
             button_codes=button_codes,
         )
+
     def get_abs_code(c_abs, res): return int((4096 * c_abs) / res).to_bytes(
         2, byteorder="little"
     )
+
     @beartype
     def mouse_absolute(
         coordinate: Tuple[non_neg_int, non_neg_int],
@@ -278,8 +280,6 @@ elif deviceType == DeviceType.hid:
 
         assert x_abs <= width, f"Invalid x: {x_abs}\nWidth: {width}"
         assert y_abs <= height, f"Invalid y: {y_abs}\nHeight: {height}"
-
-
 
         x_code = get_abs_code(x_abs)
         y_code = get_abs_code(y_abs)
