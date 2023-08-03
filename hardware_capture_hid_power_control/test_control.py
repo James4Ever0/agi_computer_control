@@ -358,6 +358,8 @@ elif deviceType == DeviceType.hid:
 elif deviceType == DeviceType.ch9329:
     import ch9329Comm
 
+    class CH
+
     # ref: https://github.com/beijixiaohu/CH9329_COMM
     class Keyboard:
         def __init__(
