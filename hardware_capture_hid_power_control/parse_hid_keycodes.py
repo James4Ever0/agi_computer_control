@@ -47,3 +47,4 @@ for index, row in df.iterrows():
     print()
     print("row?", row,sep="\n")
     print()
+    breakpoint()
