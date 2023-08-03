@@ -481,8 +481,8 @@ elif deviceType == DeviceType.ch9329:
 
         @beartype
         # this is right click. we need to override this.
-        def click(self, button):
-            self.send_data_relatively(0, 0, button)
+        def click(self, button: MouseButton):
+            self.send_data_relatively(0, 0, [button])
             time.sleep(random.uniform(0.1, 0.45))  # 100到450毫秒延迟
             self.send_data_relatively(0, 0)
 
