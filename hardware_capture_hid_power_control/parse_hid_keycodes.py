@@ -56,8 +56,10 @@ print("new usage id?")
 print(new_usage_id)
 new_df = df[new_usage_id]
 
-select_new_df = new_df.iloc['Key Name', 'HID Usage ID']
-select_new_df.head()
+select_new_df = new_df[['Key Name', 'HID Usage ID']]
+print("____")
+print(select_new_df)
+# print(select_new_df.head())
 # for index, row in new_df.iterrows():
 #     print("_______________________________________________________________")
 #     print("index?", index,sep="\n")
@@ -65,3 +67,6 @@ select_new_df.head()
 #     print("row?", row,sep="\n")
 #     print()
 #     breakpoint()
+
+_json = select_new_df.to_json()
+print(_json)
