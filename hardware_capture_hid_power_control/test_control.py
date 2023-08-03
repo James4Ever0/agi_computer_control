@@ -354,7 +354,7 @@ elif deviceType == DeviceType.ch9329:
     @beartype
     def send_data(
         self,
-        port:serial.Serial
+        port:serial.Serial,
         control_codes: List[ControlCode] = [],
         key_literals: Annotated[
             List[HIDActionTypes.keys], Is[lambda l: len(l) <= 8 and len(l) >= 0]
@@ -417,16 +417,20 @@ elif deviceType == DeviceType.ch9329:
                 % 256
             )  # 校验和
         except OverflowError:
-            print("int too big to convert")
-            return False
+            raise Exception("int too big to convert")
+            # return False
         packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
-        port.ser.write(packet)  # 将命令代码写入串口
-        return True  # 如果成功，则返回True，否则引发异常
+        port.write(packet)  # 将命令代码写入串口
+        # return True  # 如果成功，则返回True，否则引发异常
+    
+    def release(self, port):
+        self.send_data(port=port)
 
     from types import MethodType
 
     # to override instance methods.
     keyboard.send_data = MethodType(send_data, keyboard)
+    keyboard.release = MethodType(release, keyboard)
 
 else:
     raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
