@@ -48,7 +48,12 @@ string2 = Annotated[str, lambda s: len(s) == 2]
 # Key Name
 # HID Usage ID
 
-for index, row in df[df['HID Usage ID'].where(lambda e: is_bearable(e, string2))].iterrows():
+from functools import partial
+
+new_loc = df['HID Usage ID'].where(lambda e: e.apply(partial(is_bearable, hint= string2)))
+print(new_loc)
+new_df = df[new_loc]
+for index, row in new_df.iterrows():
     print("_______________________________________________________________")
     print("index?", index,sep="\n")
     print()
