@@ -26,14 +26,21 @@ for record in kcom_keycodes:
 
     possible_translations = []
 
+    keyname = keyname.replace("Arrow", "").strip()
+
     base_trans0 = keyname.replace(" ", "_").lower()
-    base_trans = base_trans0.replace("gui", "cmd")
-    possible_translations.append(base_trans)
-    possible_translations.append(f"Key.{base_trans}")
+    base_trans = base_trans0.replace("gui", "cmd").replace("control", 'ctrl').replace("escape", 'esc').replace("keyboard", "media")
+    def do_append(t):
+        possible_translations.append(t)
+        possible_translations.append(f"Key.{t}")
+    do_append(base_trans)
     for direction in ["right_", "left_"]:
         if base_trans.startswith(direction):
             base_trans = base_trans.replace(direction,"") + f"_{direction[0]}"
-            possible_translations.append(base_trans)
+            if direction =="left_":
+                basekey = base_trans.split("_")[0]
+                do_append(basekey)
+            do_append(base_trans)
     if (
         not base_trans0.startswith("F")
     ):
