@@ -75,9 +75,6 @@ if __name__ == "__main__":
             .replace("return", "enter")
         )
         missing_key_literals = [
-        "Key.media_play_pause",
-        "Key.media_previous",
-        "Key.media_next",
         ]
 
         def check_is_common_keyname(keyname: str):
@@ -121,15 +118,15 @@ if __name__ == "__main__":
 
     translation_table_cleaned = {}
     import rich
-    extra_missing_key_literals = []
+    # extra_missing_key_literals = []
 
     for key_literal in HIDActionTypes.keys.__args__:
         if key_literal not in kcom_translation_table:
-            if key_literal not in missing_key_literals:
-                if check_is_common_keyname(key_literal):
-                    error_msg.append(f"{key_literal} not covered by translation table.")
-                else:
-                    extra_missing_key_literals.append(key_literal)
+            # if key_literal not in missing_key_literals:
+            if check_is_common_keyname(key_literal):
+                error_msg.append(f"{key_literal} not covered by translation table.")
+            else:
+                missing_key_literals.append(key_literal)
         else:
             keycode = kcom_translation_table[key_literal]
             translation_table_cleaned.update({key_literal: keycode})
@@ -140,7 +137,8 @@ if __name__ == "__main__":
     # use bytes.fromhex() to deserialize.
     output_data = {
         "translation_table": {k: v.hex() for k, v in translation_table_cleaned.items()},
-        "missing": missing_key_literals + extra_missing_key_literals,
+        "missing": missing_key_literals
+        # "missing": missing_key_literals + extra_missing_key_literals,
     }
     with open(trans_outpath, "w+") as f:
         content = json.dumps(output_data, indent=4)

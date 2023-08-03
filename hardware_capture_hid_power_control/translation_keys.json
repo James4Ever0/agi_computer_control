@@ -84,19 +84,20 @@
         "Key.up": "52"
     },
     "missing": [
-        "Key.media_play_pause",
-        "Key.media_previous",
-        "Key.media_next",
         "Key.cmd_r",
         "Key.alt",
         "Key.alt_r",
         "Key.cmd",
+        "Key.cmd_r",
         "Key.ctrl",
         "Key.ctrl_r",
         "Key.shift",
         "Key.shift_r",
+        "Key.media_play_pause",
         "Key.media_volume_mute",
         "Key.media_volume_down",
-        "Key.media_volume_up"
+        "Key.media_volume_up",
+        "Key.media_previous",
+        "Key.media_next"
     ]
 }
