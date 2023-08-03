@@ -442,22 +442,25 @@ elif deviceType == DeviceType.ch9329:
             self.port = port
             super().__init__(screen_width=screen_width, screen_height=screen_height)
         
-        @beartype
-        def send_data_absolute(self,  x: int, y: int, button_codes:List[],):
-        @beartype
-        def send_data_relatively(self,  x: int, y: int, button_codes:List[],):
+        def assert_inbound(self, x:non_neg_int, y:non_neg_int):
+            
         
         @beartype
-        def move_to_basic(self,  x: int, y: int, button_codes:List[],):
+        def send_data_absolute(self,  x: non_neg_int, y: non_neg_int, button_codes:List[MouseButton]=[]):
+        @beartype
+        def send_data_relatively(self,  x: int, y: int, button_codes:List[MouseButton]=[]):
         
         @beartype
-        def move_to(self, dest_x: int, dest_y: int, button_codes:List[]):
+        def move_to_basic(self,  x: non_neg_int, y: non_neg_int, button_codes:List[MouseButton]=[]):
+        
+        @beartype
+        def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes:List[MouseButton]=[]):
         
         @beartype
         def click(self, button): # this is right click. we need to override this.
             self.send_data_relatively(0, 0, button)
             time.sleep(random.uniform(0.1, 0.45))  # 100到450毫秒延迟
-            self.send_data_relatively(0, 0, 'NU')
+            self.send_data_relatively(0, 0)
 
 
     # mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
