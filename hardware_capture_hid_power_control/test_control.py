@@ -6,7 +6,7 @@ from typing_extensions import TypeAlias
 
 # for branching; ref: https://beartype.readthedocs.io/en/latest/api_door/
 from beartype.door import is_bearable
-from enum import Enum, auto
+from enum import Enum, auto, Flag
 from functools import reduce
 from typing import Union, List, Literal
 
@@ -101,7 +101,7 @@ elif deviceType == "hid":
         # bytecode = opcode.to_bytes(1 if opcode <= 0xFF else 2)
         byte_length = math.ceil(len(hex(opcode).strip("0x")) / 2)
         byte_code = opcode.to_bytes(byte_length)
-        
+
         return bytecode
 
     @beartype
@@ -111,6 +111,7 @@ elif deviceType == "hid":
         kcom_write_and_read(KCOMHeader.modifyIDHeader, data_code, 4)
 
     # use int.to_bytes afterwards.
+    # use enum.Flag to replace enum.Enum in this situation.
     class ControlCode(Enum):
         @staticmethod
         def _generate_next_value_(name, start, count, last_values):
