@@ -440,7 +440,7 @@ elif deviceType == DeviceType.ch9329:
             self.send_data()
 
     # keyboard = ch9329Comm.keyboard.DataComm()
-    keyboard = Keyboard(port=ser)
+    keyboard = Keyboard(port=ser) # TODO: multimedia key support
 
     # pass int to override.
     @beartype
@@ -452,7 +452,7 @@ elif deviceType == DeviceType.ch9329:
             self.port = port
             super().__init__(screen_width=screen_width, screen_height=screen_height)
         
-        # TODO: scroll
+        # TODO: scroll support
 
         def assert_inbound(self, x: non_neg_int, y: non_neg_int):
             assert x <= self.X_MAX, f"exceeding x limit ({self.X_MAX}): {x}"
