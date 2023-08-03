@@ -436,6 +436,24 @@ elif deviceType == DeviceType.ch9329:
         ):
             self.port = port
             super().__init__(screen_width=screen_width, screen_height=screen_height)
+        
+        @beartype
+        def send_data_absolute(self,  x: int, y: int, ctrl: str = '',):
+        @beartype
+        def send_data_relatively(self,  x: int, y: int, ctrl: str = '',):
+        
+        @beartype
+        def move_to_basic(self,  x: int, y: int, ctrl: str = '',):
+        
+        @beartype
+        def move_to(self, dest_x: int, dest_y: int, ctrl: str = ''):
+        
+        @beartype
+        def click(self) -> Never: # this is right click. we need to override this.
+            self.send_data_relatively(0, 0, 'LE', port)
+            time.sleep(random.uniform(0.1, 0.45))  # 100到450毫秒延迟
+            self.send_data_relatively(0, 0, 'NU', port)
+
 
     # mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
 
