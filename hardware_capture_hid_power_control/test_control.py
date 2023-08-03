@@ -70,6 +70,7 @@ def write_and_read(_bytes: bytes):
     res = ser.readall()
     print(f"r> {repr(res)}")
 
+# cannot use match here? python 3.10+ required
 
 if deviceType == DeviceType.power:
     # will reset on reboot
