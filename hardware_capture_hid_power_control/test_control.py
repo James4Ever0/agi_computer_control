@@ -519,11 +519,10 @@ elif deviceType == DeviceType.ch9329:
                         int.from_bytes(CMD, byteorder='big'), int.from_bytes(LEN, byteorder='big'),
                         DATA_add_hex_list]) % 256  # 校验和
             except OverflowError:
-                print("int too big to convert")
-                return False
+                raise Exception("int too big to convert")
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
-            port.ser.write(packet)  # 将命令代码写入串口
-            return True  # 如果成功，则返回True，否则引发异常
+            self.port.write(packet)  # 将命令代码写入串口
+            # return True  # 如果成功，则返回True，否则引发异常
 
 
         def send_data_relatively(self,  x: int, y: int, scroll:movement, button_codes: List[MouseButton] = []):
