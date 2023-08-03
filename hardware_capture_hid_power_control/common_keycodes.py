@@ -29,7 +29,7 @@ for record in kcom_keycodes:
     keyname = keyname.replace("Arrow", "").strip()
 
     base_trans0 = keyname.replace(" ", "_").lower()
-    base_trans = base_trans0.replace("gui", "cmd").replace("control", 'ctrl').replace("escape", 'esc').replace("keyboard", "media")
+    base_trans = base_trans0.replace("gui", "cmd").replace("control", 'ctrl').replace("escape", 'esc').replace("keyboard", "media").replace("mute", "volume_mute").replace("volume_dn", "volume_down")
     def do_append(t):
         possible_translations.append(t)
         possible_translations.append(f"Key.{t}")
