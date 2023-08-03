@@ -450,12 +450,17 @@ elif deviceType == DeviceType.ch9329:
         def assert_inbound(self, x: non_neg_int, y: non_neg_int):
             assert x <= self.X_MAX, f"exceeding x limit ({self.X_MAX}): {x}"
             assert y <= self.Y_MAX, f"exceeding y limit ({self.Y_MAX}): {y}"
+        @beartype
+        def get_ctrl(self, x:int, y:int, button_codes:List[MouseButton], inbound:bool=True) -> int:
+            if inbound:
+                self.assert_inbound(x, y)
+            ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
+            
+            return ctrl
 
         @beartype
         def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
-            self.assert_inbound(x, y)
-            ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
-            super().send_data_absolute(x, y
+            super().send_data_absolute(x, y,ctrl=ctrl, port=self.port)
 
         @beartype
         def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
