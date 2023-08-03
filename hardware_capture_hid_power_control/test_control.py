@@ -85,12 +85,14 @@ elif deviceType == "hid":
 
     @beartype
     def kcom_write_and_read(
-        header: KCOMHeader, data_code: bytes, length: Union[int, None]
+        header: KCOMHeader, data_code: bytes, length: Union[int, List[int], None]
     ):
+        if isbearable(length, int):
+            length = [length]
         if length:
             assert (
                 data_length := len(data_code)
-            ) == length, f"Assumed data length: {data_length}\nActual length: {length}"
+            ) == length, f"Assumed data lengths: {length}\nActual length: {data_length}"
         write_and_read(header + data_code)
 
     import math
@@ -214,7 +216,8 @@ elif deviceType == "hid":
 
     @beartype
     def multimedia(multimedia_keys: List[MultimediaKey]):
-        data_code = reduce_flags_to_bytes(multimedia_keys)
+        multimedia_code = reduce_flags_to_bytes(multimedia_keys)
+        data_code = b"\x02" + "".join([b"\x00"]*(len(multimedi_code) - 3)) + multimedia_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
         # multimedia_raw(data_code)
