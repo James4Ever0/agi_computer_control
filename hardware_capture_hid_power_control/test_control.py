@@ -455,23 +455,32 @@ elif deviceType == DeviceType.ch9329:
             if inbound:
                 self.assert_inbound(x, y)
             ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
-            
             return ctrl
 
         @beartype
         def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
+            ctrl = self.get_ctrl(x,y,button_codes)
             super().send_data_absolute(x, y,ctrl=ctrl, port=self.port)
 
         @beartype
         def send_data_relatively(self,  x: int, y: int, button_codes: List[MouseButton] = []):
+            ctrl = self.get_ctrl(x,y,button_codes,inbound=False)
+            super().send_data_relatively(x, y,ctrl=ctrl, port=self.port)
+
 
         @beartype
         def move_to_basic(self,  x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
-            self.assert_inbound(x, y)
+
+            ctrl = self.get_ctrl(x,y,button_codes)
+            super().move_to_basic(x, y,ctrl=ctrl, port=self.port)
+
 
         @beartype
         def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes: List[MouseButton] = []):
-            self.assert_inbound(x, y)
+
+            ctrl = self.get_ctrl(dest_x,dest_y,button_codes)
+            super().move_to(dest_x, dest_y,ctrl=ctrl, port=self.port)
+
 
         @beartype
         # this is right click. we need to override this.
