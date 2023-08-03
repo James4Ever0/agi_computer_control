@@ -451,6 +451,8 @@ elif deviceType == DeviceType.ch9329:
         ):
             self.port = port
             super().__init__(screen_width=screen_width, screen_height=screen_height)
+        
+        # TODO: scroll
 
         def assert_inbound(self, x: non_neg_int, y: non_neg_int):
             assert x <= self.X_MAX, f"exceeding x limit ({self.X_MAX}): {x}"
@@ -464,7 +466,9 @@ elif deviceType == DeviceType.ch9329:
 
         def call_super_method(self, funcName: str, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True):
             ctrl = self.get_ctrl(x, y, button_codes, inbound=inbound)
-            getattr(super(), funcName)(x, y, ctrl=ctrl, port=self.port)
+            ret = getattr(super(), funcName)(x, y, ctrl=ctrl, port=self.port)
+            if ret == False:
+                raise Exception("Error calling super method: {}".format(funcName))
 
         def send_data_absolute(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
