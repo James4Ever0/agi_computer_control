@@ -5,6 +5,12 @@ class A:
             print("a.b method")
             self.a()
             super().b()
+            print("a.super()", super())
+            print("super.b", super().b)
+            my_b = super().b
+            breakpoint()
+            print("init?", init:=getattr(super(), '__init__', None))
+            print(dir(init))
 
 class C:
     def b(self):
@@ -12,7 +18,8 @@ class C:
         # super().b() 
         print("c.super()", super())
         print(getattr(super(), 'b', None))
-        print("init?", getattr(super(), '__init__', None))
+        print("init?", init:=getattr(super(), '__init__', None))
+        print(dir(init))
     def c(self):
         print('c')
 
