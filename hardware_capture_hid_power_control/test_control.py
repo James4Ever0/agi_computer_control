@@ -436,6 +436,9 @@ elif deviceType == DeviceType.ch9329:
                 # return False
             return SUM
 
+    @class Multimedia(CH9329Util):
+        def __init__
+
     # ref: https://github.com/beijixiaohu/CH9329_COMM
     @beartype
     class Keyboard(CH9329Util):
