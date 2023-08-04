@@ -1,6 +1,6 @@
 it is more of a computer-ai interface, just like the computer-brain interface.
 
-之际接口
+智机接口 (intelligence-computer interface)
 
 ----
 
