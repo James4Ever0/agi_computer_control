@@ -17,6 +17,7 @@ class B(A,C):
     def b(self):
             print('b.b method')
             super().b()
+        #     super().b()
             self.c()
     def a(self):
             print('override')
