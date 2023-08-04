@@ -363,7 +363,10 @@ elif deviceType == DeviceType.ch9329:
     class CH9329Util:
         def __init__(self, port: serial.Serial, **kwargs):
             self.port=port
-            getattr(super(), '__init__', None)
+            super_class = getattr(super(), '__init__', None)
+            if super_class:
+                self.super_class = super_class(**kwargs)
+                super().__init__(**kwargs)
             
         def communicate(self, DATA: bytes,CMD:one_byte,  LEN: one_byte):
             # 将字符转写为数据包
