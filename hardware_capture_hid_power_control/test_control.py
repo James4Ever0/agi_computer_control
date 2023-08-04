@@ -450,18 +450,18 @@ elif deviceType == DeviceType.ch9329:
                 raise e
                 # return False
             return SUM
-
-    @class Multimedia(CH9329Util):
-        def __init__
+    @beartype
+    class Multimedia(CH9329Util):
+        ...
 
     # ref: https://github.com/beijixiaohu/CH9329_COMM
     @beartype
     class Keyboard(CH9329Util):
-        def __init__(
-            self,
-            port: serial.Serial,
-        ):
-            self.port = port
+        # def __init__(
+        #     self,
+        #     port: serial.Serial,
+        # ):
+        #     self.port = port
 
         def send_data(
             self,
