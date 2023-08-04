@@ -8,6 +8,7 @@ class A:
             print("a.super()", super())
             print("super.b", super().b)
             my_b = super().b
+            a_sup = super()
             breakpoint()
             print("init?", init:=getattr(super(), '__init__', None))
             print(dir(init))
@@ -18,6 +19,8 @@ class C:
         # super().b() 
         print("c.super()", super())
         print(getattr(super(), 'b', None))
+        c_sup = super()
+        breakpoint()
         print("init?", init:=getattr(super(), '__init__', None))
         print(dir(init))
     def c(self):

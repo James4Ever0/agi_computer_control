@@ -358,14 +358,17 @@ elif deviceType == DeviceType.hid:
 
 elif deviceType == DeviceType.ch9329:
     import ch9329Comm
+    import parse
 
     @beartype
     class CH9329Util:
         def __init__(self, port: serial.Serial, **kwargs):
             self.port=port
-            super_class = getattr(super(), '__init__', None)
-            if super_class:
-                self.super_class = super_class(**kwargs)
+            super_class_init = getattr(super(), '__init__', None)
+            if super_class_init:
+                sclass_init_str = str(super_class_init)
+                sclass_str = str(super())
+                self.super_class = super_class_init(**kwargs)
                 super().__init__(**kwargs)
             
         def communicate(self, DATA: bytes,CMD:one_byte,  LEN: one_byte):
