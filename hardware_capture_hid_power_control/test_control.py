@@ -17,8 +17,12 @@ from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
 import inspect
 
 
-def length_limit(l): return Is[lambda b: len(b) == l]
-def byte_with_length_limit(l): return Annotated[bytes, length_limit(l)]
+def length_limit(l):
+    return Is[lambda b: len(b) == l]
+
+
+def byte_with_length_limit(l):
+    return Annotated[bytes, length_limit(l)]
 
 
 one_byte: TypeAlias = byte_with_length_limit(1)
@@ -121,8 +125,7 @@ def reduce_flags_to_bytes(
 ):
     # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
     if flags == []:
-        assert is_bearable(
-            int, byte_length), f"invalid byte_length: {byte_length}"
+        assert is_bearable(int, byte_length), f"invalid byte_length: {byte_length}"
         return b"\x00" * byte_length
     flag = reduce(lambda a, b: a | b, flags)
     opcode = flag.value
@@ -200,8 +203,7 @@ elif deviceType == DeviceType.hid:
     def keyboard(
         control_codes: List[ControlCode] = [],
         key_literals: Annotated[
-            List[HIDActionTypes.keys], Is[lambda l: len(
-                l) <= 6 and len(l) >= 0]
+            List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
         ] = [],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
@@ -261,9 +263,8 @@ elif deviceType == DeviceType.hid:
             button_codes=button_codes,
         )
 
-    def get_abs_code(c_abs, res): return int((4096 * c_abs) / res).to_bytes(
-        2, byteorder="little"
-    )
+    def get_abs_code(c_abs, res):
+        return int((4096 * c_abs) / res).to_bytes(2, byteorder="little")
 
     @beartype
     def mouse_absolute(
@@ -360,13 +361,11 @@ elif deviceType == DeviceType.ch9329:
 
     @beartype
     class CH9329Util:
-        def communicate(self, 
-                        DATA:bytes, data_length):
-            
+        def communicate(self, DATA: bytes,CMD:one_byte,  LEN: one_byte):
             # 将字符转写为数据包
             HEAD = b"\x57\xAB"  # 帧头
             ADDR = b"\x00"  # 地址
-            CMD = b"\x02"  # 命令
+            # CMD = b"\x02"  # 命令
             # LEN = b"\x08"  # 数据长度
             data_length = ord(LEN)
 
@@ -405,13 +404,19 @@ elif deviceType == DeviceType.ch9329:
                 DATA_hex_list.append(byte)
             DATA_add_hex_list = sum(DATA_hex_list)
 
-            #
-            SUM = self.checksum()
+            SUM = self.checksum(HEAD_add_hex_list, ADDR, CMD, LEN, DATA_add_hex_list)
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
             self.port.write(packet)  # 将命令代码写入串口
             # return True  # 如果成功，则返回True，否则引发异常
 
-        def checksum(self, HEAD_add_hex_list, ADDR, CMD, LEN, DATA_add_hex_list):
+        def checksum(
+            self,
+            HEAD_add_hex_list: int,
+            ADDR: bytes,
+            CMD: bytes,
+            LEN: bytes,
+            DATA_add_hex_list: int,
+        ):
             try:
                 SUM = (
                     sum(
@@ -430,8 +435,6 @@ elif deviceType == DeviceType.ch9329:
                 raise e
                 # return False
             return SUM
-            
-
 
     # ref: https://github.com/beijixiaohu/CH9329_COMM
     @beartype
@@ -442,18 +445,16 @@ elif deviceType == DeviceType.ch9329:
         ):
             self.port = port
 
-
         def send_data(
             self,
             control_codes: List[ControlCode] = [],
             key_literals: Annotated[
-                List[HIDActionTypes.keys], Is[lambda l: len(
-                    l) <= 8 and len(l) >= 0]
+                List[HIDActionTypes.keys], Is[lambda l: len(l) <= 8 and len(l) >= 0]
             ] = [],
         ):
             # 将字符转写为数据包
-            HEAD = b"\x57\xAB"  # 帧头
-            ADDR = b"\x00"  # 地址
+            # HEAD = b"\x57\xAB"  # 帧头
+            # ADDR = b"\x00"  # 地址
             CMD = b"\x02"  # 命令
             LEN = b"\x08"  # 数据长度
             DATA = b""  # 数据
@@ -476,24 +477,215 @@ elif deviceType == DeviceType.ch9329:
             #     DATA += self.normal_button_hex_dict[data[i:i + 2]]
             for key_literal in key_literals:
                 DATA += KeyLiteralToKCOMKeycode(key_literal)
-            if len(DATA) < 8:
-                DATA += b"\x00" * (8 - len(DATA))
+            self.communicate(DATA, CMD, LEN)
+            # if len(DATA) < 8:
+            #     DATA += b"\x00" * (8 - len(DATA))
+            # else:
+            #     DATA = DATA[:8]
+
+            # # 分离HEAD中的值，并计算和
+            # HEAD_hex_list = []
+            # for byte in HEAD:
+            #     HEAD_hex_list.append(byte)
+            # HEAD_add_hex_list = sum(HEAD_hex_list)
+
+            # # 分离DATA中的值，并计算和
+            # DATA_hex_list = []
+            # for byte in DATA:
+            #     DATA_hex_list.append(byte)
+            # DATA_add_hex_list = sum(DATA_hex_list)
+
+            # #
+            # try:
+            #     SUM = (
+            #         sum(
+            #             [
+            #                 HEAD_add_hex_list,
+            #                 int.from_bytes(ADDR, byteorder="big"),
+            #                 int.from_bytes(CMD, byteorder="big"),
+            #                 int.from_bytes(LEN, byteorder="big"),
+            #                 DATA_add_hex_list,
+            #             ]
+            #         )
+            #         % 256
+            #     )  # 校验和
+            # except OverflowError:
+            #     raise Exception("int too big to convert")
+            #     # return False
+            # packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
+            # self.port.write(packet)  # 将命令代码写入串口
+            # # return True  # 如果成功，则返回True，否则引发异常
+
+        def release(self):
+            self.send_data()
+
+    # keyboard = ch9329Comm.keyboard.DataComm()
+    keyboard = Keyboard(port=ser)  # TODO: multimedia key support
+
+    # pass int to override.
+    @beartype
+    class Mouse(ch9329Comm.mouse.DataComm, CH9329Util):
+        def __init__(
+            self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
+        ):
+            self.port = port
+            initargs = dict(screen_width=screen_width, screen_height=screen_height)
+            super().__init__(**initargs)
+            self.super_instance = ch9329Comm.mouse.DataComm(**initargs)
+
+        # TODO: scroll support
+
+        def assert_inbound(self, x: non_neg_int, y: non_neg_int):
+            assert x <= self.X_MAX, f"exceeding x limit ({self.X_MAX}): {x}"
+            assert y <= self.Y_MAX, f"exceeding y limit ({self.Y_MAX}): {y}"
+
+        def get_ctrl(
+            self, x: int, y: int, button_codes: List[MouseButton], inbound: bool
+        ) -> int:
+            if inbound:
+                self.assert_inbound(x, y)
+            ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
+            return ctrl
+
+        def call_super_method(
+            self,
+            funcName: str,
+            x: int,
+            y: int,
+            button_codes: List[MouseButton],
+            inbound: bool = True,
+            use_super_instance: bool = False,
+        ):
+            ctrl = self.get_ctrl(x, y, button_codes, inbound=inbound)
+            ret = (
+                self.super_instance
+                if use_super_instance
+                else getattr(super(), funcName)
+            )(x, y, ctrl=ctrl, port=self.port)
+            if ret == False:
+                raise Exception("Error calling super method: {}".format(funcName))
+
+        def send_data_absolute(
+            self,
+            x: non_neg_int,
+            y: non_neg_int,
+            scroll: movement,
+            button_codes: List[MouseButton] = [],
+        ):
+            ctrl = self.get_ctrl(x, y, button_codes=button_codes, inbound=True)
+            # currentFuncName = inspect.currentframe().f_code.co_name
+            # self.call_super_method(currentFuncName, x, y, button_codes)
+
+            # 将字符转写为数据包
+            # HEAD = b"\x57\xAB"  # 帧头
+            # ADDR = b"\x00"  # 地址
+            CMD = b"\x04"  # 命令
+            LEN = b"\x07"  # 数据长度
+            DATA = bytearray(b"\x02")  # 数据
+
+            # 鼠标按键
+            if ctrl == "":
+                DATA.append(0)
+            elif isinstance(ctrl, int):
+                DATA.append(ctrl)
             else:
-                DATA = DATA[:8]
+                DATA += self.hex_dict[ctrl]
+
+            # 坐标
+            X_Cur = (4096 * x) // self.X_MAX
+            Y_Cur = (4096 * y) // self.Y_MAX
+            DATA += X_Cur.to_bytes(2, byteorder="little")
+            DATA += Y_Cur.to_bytes(2, byteorder="little")
+
+            DATA += get_scroll_code(scroll)
+            self.communicate(DATA, CMD, LEN)
+
+            # if len(DATA) < 7:
+            #     DATA += b"\x00" * (7 - len(DATA))
+            # else:
+            #     DATA = DATA[:7]
+
+            # # 分离HEAD中的值，并计算和
+            # HEAD_hex_list = list(HEAD)
+            # HEAD_add_hex_list = sum(HEAD_hex_list)
+
+            # # 分离DATA中的值，并计算和
+            # DATA_hex_list = list(DATA)
+            # DATA_add_hex_list = sum(DATA_hex_list)
+
+            # try:
+            #     SUM = (
+            #         sum(
+            #             [
+            #                 HEAD_add_hex_list,
+            #                 int.from_bytes(ADDR, byteorder="big"),
+            #                 int.from_bytes(CMD, byteorder="big"),
+            #                 int.from_bytes(LEN, byteorder="big"),
+            #                 DATA_add_hex_list,
+            #             ]
+            #         )
+            #         % 256
+            #     )  # 校验和
+            # except OverflowError:
+            #     raise Exception("int too big to convert")
+            # packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
+            # self.port.write(packet)  # 将命令代码写入串口
+            # # return True  # 如果成功，则返回True，否则引发异常
+
+        def send_data_relatively(
+            self, x: int, y: int, scroll: movement, button_codes: List[MouseButton] = []
+        ):
+            ctrl = self.get_ctrl(x, y, button_codes=button_codes, inbound=False)
+            # currentFuncName = inspect.currentframe().f_code.co_name
+            # self.call_super_method(currentFuncName, x, y,
+            #                        button_codes, inbound=False)
+
+            # 将字符转写为数据包
+            HEAD = b"\x57\xAB"  # 帧头
+            ADDR = b"\x00"  # 地址
+            CMD = b"\x05"  # 命令
+            LEN = b"\x05"  # 数据长度
+            DATA = bytearray(b"\x01")  # 数据
+
+            # 鼠标按键
+            if ctrl == "":
+                DATA.append(0)
+            elif isinstance(ctrl, int):
+                DATA.append(ctrl)
+            else:
+                DATA += self.hex_dict[ctrl]
+
+            # x坐标
+            if x == 0:
+                DATA.append(0)
+            elif x < 0:
+                DATA += (0 - abs(x)).to_bytes(1, byteorder="big", signed=True)
+            else:
+                DATA += x.to_bytes(1, byteorder="big", signed=True)
+
+            # y坐标，这里为了符合坐标系直觉，将<0改为向下，>0改为向上
+            # y = - y
+            # change your ass.
+            # after doing this, we shall perform unittests, to ensure its integrity.
+            if y == 0:
+                DATA.append(0)
+            elif y < 0:
+                DATA += (0 - abs(y)).to_bytes(1, byteorder="big", signed=True)
+            else:
+                DATA += y.to_bytes(1, byteorder="big", signed=True)
+
+            DATA += get_scroll_code(scroll)
+
+            DATA += b"\x00" * (5 - len(DATA)) if len(DATA) < 5 else DATA[:5]
 
             # 分离HEAD中的值，并计算和
-            HEAD_hex_list = []
-            for byte in HEAD:
-                HEAD_hex_list.append(byte)
+            HEAD_hex_list = list(HEAD)
             HEAD_add_hex_list = sum(HEAD_hex_list)
 
             # 分离DATA中的值，并计算和
-            DATA_hex_list = []
-            for byte in DATA:
-                DATA_hex_list.append(byte)
+            DATA_hex_list = list(DATA)
             DATA_add_hex_list = sum(DATA_hex_list)
 
-            #
             try:
                 SUM = (
                     sum(
@@ -509,175 +701,28 @@ elif deviceType == DeviceType.ch9329:
                 )  # 校验和
             except OverflowError:
                 raise Exception("int too big to convert")
-                # return False
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
             self.port.write(packet)  # 将命令代码写入串口
             # return True  # 如果成功，则返回True，否则引发异常
 
-        def release(self):
-            self.send_data()
-
-    # keyboard = ch9329Comm.keyboard.DataComm()
-    keyboard = Keyboard(port=ser)  # TODO: multimedia key support
-
-    # pass int to override.
-    @beartype
-    class Mouse(ch9329Comm.mouse.DataComm, CH9329Util):
-
-        def __init__(
-            self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
+        def move_to_basic(
+            self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []
         ):
-            self.port = port
-            initargs = dict(screen_width=screen_width,
-                            screen_height=screen_height)
-            super().__init__(**initargs)
-            self.super_instance = ch9329Comm.mouse.DataComm(**initargs)
-
-        # TODO: scroll support
-
-        def assert_inbound(self, x: non_neg_int, y: non_neg_int):
-            assert x <= self.X_MAX, f"exceeding x limit ({self.X_MAX}): {x}"
-            assert y <= self.Y_MAX, f"exceeding y limit ({self.Y_MAX}): {y}"
-
-        def get_ctrl(self, x: int, y: int, button_codes: List[MouseButton], inbound: bool) -> int:
-            if inbound:
-                self.assert_inbound(x, y)
-            ctrl: int = reduce_flags_to_bytes(button_codes, byte_length=1)
-            return ctrl
-
-        def call_super_method(self, funcName: str, x: int, y: int, button_codes: List[MouseButton], inbound: bool = True, use_super_instance: bool = False):
-            ctrl = self.get_ctrl(x, y, button_codes, inbound=inbound)
-            ret = (self.super_instance if use_super_instance else getattr(
-                super(), funcName))(x, y, ctrl=ctrl, port=self.port)
-            if ret == False:
-                raise Exception(
-                    "Error calling super method: {}".format(funcName))
-
-        def send_data_absolute(self, x: non_neg_int, y: non_neg_int, scroll: movement, button_codes: List[MouseButton] = []):
-            ctrl = self.get_ctrl(x, y, button_codes=button_codes, inbound=True)
-            # currentFuncName = inspect.currentframe().f_code.co_name
-            # self.call_super_method(currentFuncName, x, y, button_codes)
-
-            # 将字符转写为数据包
-            HEAD = b'\x57\xAB'  # 帧头
-            ADDR = b'\x00'  # 地址
-            CMD = b'\x04'  # 命令
-            LEN = b'\x07'  # 数据长度
-            DATA = bytearray(b'\x02')  # 数据
-
-            # 鼠标按键
-            if ctrl == '':
-                DATA.append(0)
-            elif isinstance(ctrl, int):
-                DATA.append(ctrl)
-            else:
-                DATA += self.hex_dict[ctrl]
-
-            # 坐标
-            X_Cur = (4096 * x) // self.X_MAX
-            Y_Cur = (4096 * y) // self.Y_MAX
-            DATA += X_Cur.to_bytes(2, byteorder='little')
-            DATA += Y_Cur.to_bytes(2, byteorder='little')
-
-            DATA += get_scroll_code(scroll)
-
-            if len(DATA) < 7:
-                DATA += b'\x00' * (7 - len(DATA))
-            else:
-                DATA = DATA[:7]
-
-            # 分离HEAD中的值，并计算和
-            HEAD_hex_list = list(HEAD)
-            HEAD_add_hex_list = sum(HEAD_hex_list)
-
-            # 分离DATA中的值，并计算和
-            DATA_hex_list = list(DATA)
-            DATA_add_hex_list = sum(DATA_hex_list)
-
-            try:
-                SUM = sum([HEAD_add_hex_list, int.from_bytes(ADDR, byteorder='big'),
-                           int.from_bytes(CMD, byteorder='big'), int.from_bytes(
-                               LEN, byteorder='big'),
-                           DATA_add_hex_list]) % 256  # 校验和
-            except OverflowError:
-                raise Exception("int too big to convert")
-            packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
-            self.port.write(packet)  # 将命令代码写入串口
-            # return True  # 如果成功，则返回True，否则引发异常
-
-        def send_data_relatively(self,  x: int, y: int, scroll: movement, button_codes: List[MouseButton] = []):
-            ctrl = self.get_ctrl(
-                x, y, button_codes=button_codes, inbound=False)
-            # currentFuncName = inspect.currentframe().f_code.co_name
-            # self.call_super_method(currentFuncName, x, y,
-            #                        button_codes, inbound=False)
-
-            # 将字符转写为数据包
-            HEAD = b'\x57\xAB'  # 帧头
-            ADDR = b'\x00'  # 地址
-            CMD = b'\x05'  # 命令
-            LEN = b'\x05'  # 数据长度
-            DATA = bytearray(b'\x01')  # 数据
-
-            # 鼠标按键
-            if ctrl == '':
-                DATA.append(0)
-            elif isinstance(ctrl, int):
-                DATA.append(ctrl)
-            else:
-                DATA += self.hex_dict[ctrl]
-
-            # x坐标
-            if x == 0:
-                DATA.append(0)
-            elif x < 0:
-                DATA += (0 - abs(x)).to_bytes(1, byteorder='big', signed=True)
-            else:
-                DATA += x.to_bytes(1, byteorder='big', signed=True)
-
-            # y坐标，这里为了符合坐标系直觉，将<0改为向下，>0改为向上
-            # y = - y
-            # change your ass.
-            # after doing this, we shall perform unittests, to ensure its integrity.
-            if y == 0:
-                DATA.append(0)
-            elif y < 0:
-                DATA += (0 - abs(y)).to_bytes(1, byteorder='big', signed=True)
-            else:
-                DATA += y.to_bytes(1, byteorder='big', signed=True)
-
-            DATA += get_scroll_code(scroll)
-
-            DATA += b'\x00' * (5 - len(DATA)) if len(DATA) < 5 else DATA[:5]
-
-            # 分离HEAD中的值，并计算和
-            HEAD_hex_list = list(HEAD)
-            HEAD_add_hex_list = sum(HEAD_hex_list)
-
-            # 分离DATA中的值，并计算和
-            DATA_hex_list = list(DATA)
-            DATA_add_hex_list = sum(DATA_hex_list)
-
-            try:
-                SUM = sum([HEAD_add_hex_list, int.from_bytes(ADDR, byteorder='big'),
-                           int.from_bytes(CMD, byteorder='big'), int.from_bytes(
-                               LEN, byteorder='big'),
-                           DATA_add_hex_list]) % 256  # 校验和
-            except OverflowError:
-                raise Exception("int too big to convert")
-            packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
-            self.port.write(packet)  # 将命令代码写入串口
-            # return True  # 如果成功，则返回True，否则引发异常
-
-        def move_to_basic(self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []):
-            currentFuncName = inspect.currentframe().f_code.co_name
-            self.call_super_method(currentFuncName, x, y,
-                                   button_codes, use_super_instance=True)
-
-        def move_to(self, dest_x: non_neg_int, dest_y: non_neg_int, button_codes: List[MouseButton] = []):
             currentFuncName = inspect.currentframe().f_code.co_name
             self.call_super_method(
-                currentFuncName, dest_x, dest_y, button_codes, use_super_instance=True)
+                currentFuncName, x, y, button_codes, use_super_instance=True
+            )
+
+        def move_to(
+            self,
+            dest_x: non_neg_int,
+            dest_y: non_neg_int,
+            button_codes: List[MouseButton] = [],
+        ):
+            currentFuncName = inspect.currentframe().f_code.co_name
+            self.call_super_method(
+                currentFuncName, dest_x, dest_y, button_codes, use_super_instance=True
+            )
 
         # this is right click. we need to override this.
         def click(self, button: MouseButton):
@@ -696,7 +741,6 @@ elif deviceType == DeviceType.ch9329:
     # keyboard.release = MethodType(release, keyboard)
 
 else:
-    raise Exception("Unknown device type: {deviceType}".format(
-        deviceType=deviceType))
+    raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
 
 ser.close()
