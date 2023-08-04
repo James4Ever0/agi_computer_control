@@ -453,7 +453,9 @@ elif deviceType == DeviceType.ch9329:
     @beartype
     class Multimedia(CH9329Util):
         def send_data(self, keys:List[...] = []):
-            ...
+            CMD = b"\x03"  # 命令
+            LEN = b"\x02"  # 数据长度
+            DATA = b""  # 数据
         def release(self):
             self.send_data()
 
