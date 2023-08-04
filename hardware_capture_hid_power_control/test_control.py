@@ -358,9 +358,10 @@ elif deviceType == DeviceType.hid:
 elif deviceType == DeviceType.ch9329:
     import ch9329Comm
 
+    @beartype
     class CH9329Util:
         def communicate(self, 
-                        DATA:bytes, LEN:one_byte):
+                        DATA:bytes, data_length):
             
             # 将字符转写为数据包
             HEAD = b"\x57\xAB"  # 帧头
@@ -370,27 +371,27 @@ elif deviceType == DeviceType.ch9329:
             data_length = ord(LEN)
 
             # 控制键
-            control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
-            DATA += control_byte
-            # if ctrl == '':
-            #     DATA += b'\x00'
-            # elif isinstance(ctrl, int):
-            #     DATA += bytes([ctrl])
-            # else:
-            #     DATA += self.control_button_hex_dict[ctrl]
+            # control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
+            # DATA += control_byte
+            # # if ctrl == '':
+            # #     DATA += b'\x00'
+            # # elif isinstance(ctrl, int):
+            # #     DATA += bytes([ctrl])
+            # # else:
+            # #     DATA += self.control_button_hex_dict[ctrl]
 
-            # DATA固定码
-            DATA += b"\x00"
+            # # DATA固定码
+            # DATA += b"\x00"
 
             # 读入data
             # for i in range(0, len(data), 2):
             #     DATA += self.normal_button_hex_dict[data[i:i + 2]]
-            for key_literal in key_literals:
-                DATA += KeyLiteralToKCOMKeycode(key_literal)
-            if len(DATA) < 8:
-                DATA += b"\x00" * (8 - len(DATA))
+            # for key_literal in key_literals:
+            #     DATA += KeyLiteralToKCOMKeycode(key_literal)
+            if len(DATA) < data_length:
+                DATA += b"\x00" * (data_length - len(DATA))
             else:
-                DATA = DATA[:8]
+                DATA = DATA[:data_length]
 
             # 分离HEAD中的值，并计算和
             HEAD_hex_list = []
@@ -405,6 +406,12 @@ elif deviceType == DeviceType.ch9329:
             DATA_add_hex_list = sum(DATA_hex_list)
 
             #
+            SUM = self.checksum()
+            packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
+            self.port.write(packet)  # 将命令代码写入串口
+            # return True  # 如果成功，则返回True，否则引发异常
+
+        def checksum(self, HEAD_add_hex_list, ADDR, CMD, LEN, DATA_add_hex_list):
             try:
                 SUM = (
                     sum(
@@ -418,14 +425,11 @@ elif deviceType == DeviceType.ch9329:
                     )
                     % 256
                 )  # 校验和
-            except OverflowError:
-                raise Exception("int too big to convert")
+            except Exception as e:
+                print("int too big to convert")
+                raise e
                 # return False
-            packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
-            self.port.write(packet)  # 将命令代码写入串口
-            # return True  # 如果成功，则返回True，否则引发异常
-
-        def checksum(self, ):
+            return SUM
             
 
 
