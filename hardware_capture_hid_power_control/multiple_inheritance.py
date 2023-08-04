@@ -11,11 +11,17 @@ class A:
             a_sup = super()
         #     breakpoint()
             print("a.super init?", init:=getattr(super(), '__init__', None))
-            print(dir(init), type(init))
+            print(dir(init), type(init),dir(type(init)))
+            print("CALLING A.SUPER.INIT")
+            super().__init__()
 
+
+from types import MethodType, MethodWrapperType
 class C:
     def __init__(self):
-        ...
+          print("C.INIT")
+          super().__init__(a=1)
+          print(type(super().__init__))
     def b(self):
         print("c.b method")
         # super().b() 
@@ -24,12 +30,13 @@ class C:
         c_sup = super()
         # breakpoint()
         print("c.super init?", init:=getattr(super(), '__init__', None))
-        print(dir(init), type(init))
+        print(dir(init), type(init), dir(type(init)))
     def c(self):
         print('c')
 
 class B(A,C):
     def __init__(self):
+            print("CALLING B.INIT")
             self.A = super().__init__()
     def b(self):
             print('b.b method')
