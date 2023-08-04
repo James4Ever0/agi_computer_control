@@ -64,7 +64,8 @@ serialDevices = {
 
 deviceType = DeviceType.power
 # deviceType = DeviceType.ch9329
-# deviceType = DeviceType.hid  # 为了保证数据能正常传输，两条数据发送间隔最低要有5ms 的延时；意思就是你发送一个数据后延时5ms 再发下一条数据。
+# deviceType = DeviceType.kcom3
+# deviceType = DeviceType.kcom2  # 为了保证数据能正常传输，两条数据发送间隔最低要有5ms 的延时；意思就是你发送一个数据后延时5ms 再发下一条数据。
 
 ser = serial.Serial(
     serialDevices[deviceType],
@@ -168,7 +169,7 @@ if deviceType == DeviceType.power:
     write_and_read(f"CH{channel}=OFF".encode())
     write_and_read(f"CH{channel}=ON".encode())
 
-elif deviceType == DeviceType.hid:
+elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
     commonHeader = b"\x57\xab"
 
     class KCOMHeader(Enum):
