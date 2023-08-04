@@ -54,7 +54,7 @@ class DeviceType(StrEnum):
 
 serialDevices = {
     DeviceType.power: "/dev/serial/by-id/usb-1a86_5523-if00-port0",
-    DeviceType.hid: "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0",
+    DeviceType.hid: "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0", # kcom2/kcom3 not distinguishable by id
     # another hid device will be: ch9329
     DeviceType.ch9329: ...,
 }
