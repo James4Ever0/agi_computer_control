@@ -359,7 +359,11 @@ elif deviceType == DeviceType.ch9329:
     import ch9329Comm
 
     class CH9329Util:
-        ...
+        def communicate(self, ):
+
+        def checksum(self, ):
+            
+
 
     # ref: https://github.com/beijixiaohu/CH9329_COMM
     @beartype
