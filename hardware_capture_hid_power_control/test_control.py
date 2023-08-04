@@ -367,7 +367,7 @@ elif deviceType == DeviceType.ch9329:
             ADDR = b"\x00"  # 地址
             CMD = b"\x02"  # 命令
             # LEN = b"\x08"  # 数据长度
-            data_length = ord(LE)
+            data_length = ord(LEN)
 
             # 控制键
             control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
