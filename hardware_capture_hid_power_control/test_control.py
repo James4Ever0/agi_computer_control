@@ -358,7 +358,9 @@ elif deviceType == DeviceType.hid:
 
 elif deviceType == DeviceType.ch9329:
     import ch9329Comm
-    import parse
+    # import parse
+    from types import MethodType
+    # from types import MethodWrapperType
 
     @beartype
     class CH9329Util:
@@ -366,12 +368,13 @@ elif deviceType == DeviceType.ch9329:
             self.port=port
             super_class_init = getattr(super(), '__init__', None)
             if super_class_init:
-                sclass_init_str = str(super_class_init)
-                sclass_str = str(super())
-                sclass_parsed = parse.parse("<super: <class '{self}'>, <{base} object>>", sclass_str)
-                base_init_str = 
-                self.super_class = super_class_init(**kwargs)
-                super().__init__(**kwargs)
+                if isinstance(super_class_init, MethodType): # not method-wrapper.
+                # sclass_init_str = str(super_class_init)
+                # sclass_str = str(super())
+                # sclass_parsed = parse.parse("<super: <class '{self}'>, <{base} object>>", sclass_str)
+                # base_init_str = 
+                # self.super_class = super_class_init(**kwargs)
+                    super().__init__(**kwargs)
             
         def communicate(self, DATA: bytes,CMD:one_byte,  LEN: one_byte):
             # 将字符转写为数据包

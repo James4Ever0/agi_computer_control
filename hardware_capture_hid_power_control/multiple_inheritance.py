@@ -1,3 +1,5 @@
+from types import MethodType, MethodWrapperType
+
 class A:
     def a(self):
             print("a")
@@ -14,14 +16,14 @@ class A:
             print(dir(init), type(init),dir(type(init)))
             print("CALLING A.SUPER.INIT")
             super().__init__()
+            print(type(super().__init__), isinstance(super().__init__, MethodType), isinstance(super().__init__, MethodWrapperType))
 
 
-from types import MethodType, MethodWrapperType
 class C:
     def __init__(self):
           print("C.INIT")
-          super().__init__(a=1)
-          print(type(super().__init__))
+        #   super().__init__(a=1)
+          print(type(super().__init__), isinstance(super().__init__, MethodWrapperType), isinstance(super().__init__, MethodType))
     def b(self):
         print("c.b method")
         # super().b() 
