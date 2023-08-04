@@ -452,7 +452,7 @@ elif deviceType == DeviceType.ch9329:
             return SUM
     @beartype
     class Multimedia(CH9329Util):
-        def send_data(self, ):
+        def send_data(self, keys:List[...] = []):
             ...
         def release(self):
             self.send_data()
