@@ -9,20 +9,22 @@ class A:
             print("super.b", super().b)
             my_b = super().b
             a_sup = super()
-            breakpoint()
-            print("init?", init:=getattr(super(), '__init__', None))
-            print(dir(init))
+        #     breakpoint()
+            print("a.super init?", init:=getattr(super(), '__init__', None))
+            print(dir(init), type(init))
 
 class C:
+    def __init__(self):
+        ...
     def b(self):
         print("c.b method")
         # super().b() 
         print("c.super()", super())
         print(getattr(super(), 'b', None))
         c_sup = super()
-        breakpoint()
-        print("init?", init:=getattr(super(), '__init__', None))
-        print(dir(init))
+        # breakpoint()
+        print("c.super init?", init:=getattr(super(), '__init__', None))
+        print(dir(init), type(init))
     def c(self):
         print('c')
 
