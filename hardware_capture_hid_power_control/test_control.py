@@ -48,15 +48,18 @@ def get_scroll_code(c_scroll: movement) -> one_byte:
 
 class DeviceType(StrEnum):
     power = auto()
-    hid = auto()
+    kcom2 = auto()
+    kcom3 = auto()
     ch9329 = auto()
 
 
 serialDevices = {
     DeviceType.power: "/dev/serial/by-id/usb-1a86_5523-if00-port0",
-    DeviceType.hid: "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0", # kcom2/kcom3 & ch9329 not distinguishable by id (all ch340).
+    # kcom2/kcom3 & ch9329 not distinguishable by id (all ch340).
+    DeviceType.kcom2: (ch340 := "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"),
     # another hid device will be: ch9329
-    DeviceType.ch9329: ...,
+    DeviceType.kcom3: ch340,
+    DeviceType.ch9329: ch340,
 }
 
 deviceType = DeviceType.power
@@ -125,7 +128,8 @@ def reduce_flags_to_bytes(
 ):
     # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
     if flags == []:
-        assert is_bearable(int, byte_length), f"invalid byte_length: {byte_length}"
+        assert is_bearable(
+            int, byte_length), f"invalid byte_length: {byte_length}"
         return b"\x00" * byte_length
     flag = reduce(lambda a, b: a | b, flags)
     opcode = flag.value
@@ -203,7 +207,8 @@ elif deviceType == DeviceType.hid:
     def keyboard(
         control_codes: List[ControlCode] = [],
         key_literals: Annotated[
-            List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
+            List[HIDActionTypes.keys], Is[lambda l: len(
+                l) <= 6 and len(l) >= 0]
         ] = [],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
@@ -365,18 +370,19 @@ elif deviceType == DeviceType.ch9329:
     @beartype
     class CH9329Util:
         def __init__(self, port: serial.Serial, **kwargs):
-            self.port=port
+            self.port = port
             super_class_init = getattr(super(), '__init__', None)
             if super_class_init:
-                if isinstance(super_class_init, MethodType): # not method-wrapper.
-                # sclass_init_str = str(super_class_init)
-                # sclass_str = str(super())
-                # sclass_parsed = parse.parse("<super: <class '{self}'>, <{base} object>>", sclass_str)
-                # base_init_str = 
-                # self.super_class = super_class_init(**kwargs)
+                # not method-wrapper.
+                if isinstance(super_class_init, MethodType):
+                    # sclass_init_str = str(super_class_init)
+                    # sclass_str = str(super())
+                    # sclass_parsed = parse.parse("<super: <class '{self}'>, <{base} object>>", sclass_str)
+                    # base_init_str =
+                    # self.super_class = super_class_init(**kwargs)
                     super().__init__(**kwargs)
-            
-        def communicate(self, DATA: bytes,CMD:one_byte,  LEN: one_byte):
+
+        def communicate(self, DATA: bytes, CMD: one_byte,  LEN: one_byte):
             # 将字符转写为数据包
             HEAD = b"\x57\xAB"  # 帧头
             ADDR = b"\x00"  # 地址
@@ -419,7 +425,8 @@ elif deviceType == DeviceType.ch9329:
                 DATA_hex_list.append(byte)
             DATA_add_hex_list = sum(DATA_hex_list)
 
-            SUM = self.checksum(HEAD_add_hex_list, ADDR, CMD, LEN, DATA_add_hex_list)
+            SUM = self.checksum(HEAD_add_hex_list, ADDR,
+                                CMD, LEN, DATA_add_hex_list)
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
             self.port.write(packet)  # 将命令代码写入串口
             # return True  # 如果成功，则返回True，否则引发异常
@@ -450,12 +457,14 @@ elif deviceType == DeviceType.ch9329:
                 raise e
                 # return False
             return SUM
+
     @beartype
     class Multimedia(CH9329Util):
-        def send_data(self, keys:List[...] = []):
+        def send_data(self, keys: List[...] = []):
             CMD = b"\x03"  # 命令
             LEN = b"\x02"  # 数据长度
             DATA = b""  # 数据
+
         def release(self):
             self.send_data()
 
@@ -472,7 +481,8 @@ elif deviceType == DeviceType.ch9329:
             self,
             control_codes: List[ControlCode] = [],
             key_literals: Annotated[
-                List[HIDActionTypes.keys], Is[lambda l: len(l) <= 8 and len(l) >= 0]
+                List[HIDActionTypes.keys], Is[lambda l: len(
+                    l) <= 8 and len(l) >= 0]
             ] = [],
         ):
             # 将字符转写为数据包
@@ -552,7 +562,8 @@ elif deviceType == DeviceType.ch9329:
             self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
         ):
             # self.port = port
-            initargs = dict(screen_width=screen_width, screen_height=screen_height)
+            initargs = dict(screen_width=screen_width,
+                            screen_height=screen_height)
             super().__init__(port=port, **initargs)
             self.super_instance = ch9329Comm.mouse.DataComm(**initargs)
 
@@ -586,7 +597,8 @@ elif deviceType == DeviceType.ch9329:
                 else getattr(super(), funcName)
             )(x, y, ctrl=ctrl, port=self.port)
             if ret == False:
-                raise Exception("Error calling super method: {}".format(funcName))
+                raise Exception(
+                    "Error calling super method: {}".format(funcName))
 
         def send_data_absolute(
             self,
@@ -658,7 +670,8 @@ elif deviceType == DeviceType.ch9329:
         def send_data_relatively(
             self, x: int, y: int, scroll: movement, button_codes: List[MouseButton] = []
         ):
-            ctrl = self.get_ctrl(x, y, button_codes=button_codes, inbound=False)
+            ctrl = self.get_ctrl(
+                x, y, button_codes=button_codes, inbound=False)
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y,
             #                        button_codes, inbound=False)
@@ -765,6 +778,7 @@ elif deviceType == DeviceType.ch9329:
     # keyboard.release = MethodType(release, keyboard)
 
 else:
-    raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
+    raise Exception("Unknown device type: {deviceType}".format(
+        deviceType=deviceType))
 
 ser.close()
