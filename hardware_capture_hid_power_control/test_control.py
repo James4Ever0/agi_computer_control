@@ -361,6 +361,10 @@ elif deviceType == DeviceType.ch9329:
 
     @beartype
     class CH9329Util:
+        def __init__(self, port: serial.Serial, **kwargs):
+            self.port=port
+            getattr(super(), '__init__', None)
+            
         def communicate(self, DATA: bytes,CMD:one_byte,  LEN: one_byte):
             # 将字符转写为数据包
             HEAD = b"\x57\xAB"  # 帧头
@@ -527,13 +531,13 @@ elif deviceType == DeviceType.ch9329:
 
     # pass int to override.
     @beartype
-    class Mouse(ch9329Comm.mouse.DataComm, CH9329Util):
+    class Mouse(CH9329Util, ch9329Comm.mouse.DataComm):
         def __init__(
             self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
         ):
-            self.port = port
+            # self.port = port
             initargs = dict(screen_width=screen_width, screen_height=screen_height)
-            super().__init__(**initargs)
+            super().__init__(port=port, **initargs)
             self.super_instance = ch9329Comm.mouse.DataComm(**initargs)
 
         # TODO: scroll support
