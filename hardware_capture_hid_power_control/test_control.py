@@ -505,7 +505,7 @@ elif deviceType == DeviceType.ch9329:
 
         def send_data(
             self,
-            control_codes: List[ControlCode] = [],
+            control_codes: List[ControlCode] = [ControlCode.NULL],
             key_literals: Annotated[
                 List[HIDActionTypes.keys], Is[lambda l: len(
                     l) <= 8 and len(l) >= 0]
@@ -519,7 +519,8 @@ elif deviceType == DeviceType.ch9329:
             DATA = b""  # 数据
 
             # 控制键
-            control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
+            control_byte = reduce_flags_to_bytes(control_codes)
+            # control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
             DATA += control_byte
             # if ctrl == '':
             #     DATA += b'\x00'
