@@ -44,7 +44,7 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 # ssh (terminal interface)
 # spice (remmina, remote-viewer (RHEL))
 # xvfb (with pyautogui?) (what alternatives to xvfb are for macOS and Windows?)
-# -----------[can use remote control methods as self control methods]-----------
+# -----------[use remote control methods as self control methods]-----------
 # self control (pyautogui, pynput, (win)tty, tmux, subprocess, ttyd with electron/xvfb based browser client)
 
 # rdpy3: https://github.com/massimiliano-dalcero/rdpy
