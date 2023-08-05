@@ -27,5 +27,7 @@ controlMethod =ControlMethod.xvfb
 
 if controlMethod == ControlMethod.xvfb:
     import pyautogui
-    import pyvirtualdisplay
-    virtual_display = ":3"
+    from pyvirtualdisplay import Display
+    # virtual_display = ":3"
+    with Display(backend='xvfb') as disp:
+        ...
