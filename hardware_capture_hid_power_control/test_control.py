@@ -155,6 +155,53 @@ def reduce_flags_to_bytes(  # force this to be non-empty!
     return byte_code
 
 
+class MultimediaKey(Flag):
+    # class MultimediaKey(Enum):
+    # @staticmethod
+    # def _generate_next_value_(name, start, count, last_values):
+    #     return 2 ** (count)
+    Null = 0
+
+    # row 1
+    VolumeUp = auto()
+    VolumeDown = auto()
+    Mute = auto()
+    PlayPause = auto()
+    NextTrack = auto()
+    PreviousTrack = auto()
+    CDStop = auto()
+    Eject = auto()
+
+    # row 2
+    EMail = auto()
+    WWWSearch = auto()
+    WWWFavourites = auto()
+    WWWHome = auto()
+    WWWBack = auto()
+    WWWForward = auto()
+    WWWStop = auto()
+    Refresh = auto()
+
+    # row 3
+    Media = auto()
+    Explorer = auto()
+    Calculator = auto()
+    ScreenSave = auto()
+    MyComputer = auto()
+    Minimize = auto()
+    Record = auto()
+    Rewind = auto()
+
+assert len(MultimediaKey.__members__) == 3 * 8 + 1 # include "Null"
+
+class ACPIKey(Flag):
+    Null = 0  # for clearing all "ACPI" keys.
+
+    Power = auto()
+    Sleep = auto()
+    Wakeup = auto()
+
+
 # cannot use match here? python 3.10+ required
 
 if deviceType == DeviceType.power:
@@ -308,52 +355,6 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
             kcom_flag=KCOMHeader.mouseAbsoluteHeader,
             button_codes=button_codes,
         )
-
-    class MultimediaKey(Flag):
-        # class MultimediaKey(Enum):
-        # @staticmethod
-        # def _generate_next_value_(name, start, count, last_values):
-        #     return 2 ** (count)
-        Null = 0
-
-        # row 1
-        VolumeUp = auto()
-        VolumeDown = auto()
-        Mute = auto()
-        PlayPause = auto()
-        NextTrack = auto()
-        PreviousTrack = auto()
-        CDStop = auto()
-        Eject = auto()
-
-        # row 2
-        EMail = auto()
-        WWWSearch = auto()
-        WWWFavourites = auto()
-        WWWHome = auto()
-        WWWBack = auto()
-        WWWForward = auto()
-        WWWStop = auto()
-        Refresh = auto()
-
-        # row 3
-        Media = auto()
-        Explorer = auto()
-        Calculator = auto()
-        ScreenSave = auto()
-        MyComputer = auto()
-        Minimize = auto()
-        Record = auto()
-        Rewind = auto()
-
-    assert len(MultimediaKey.__members__) == 3 * 8
-
-    class ACPIKey(Flag):
-        Null = 0  # for clearing all "ACPI" keys.
-
-        Power = auto()
-        Sleep = auto()
-        Wakeup = auto()
 
     # @beartype
     # def multimedia_raw(data_code: Union[two_bytes, four_bytes]):
