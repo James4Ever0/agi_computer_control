@@ -475,9 +475,18 @@ elif deviceType == DeviceType.ch9329:
 
     @beartype
     class Multimedia(CH9329Util):
-        def send_data(self, keys: List[...] = []):
+        def send_data(self, keys: Union[List[ACPIKey], List[MultimediaKey]] = []):
+            if len(keys) == 0:  # clear all multimedia keys.
+                Multimedia.send_data(keys=[ACPIKey.Null])
+                Multimedia.send_data(keys=[MultimediaKey.Null])
+                return
+            isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
+
             CMD = b"\x03"  # 命令
-            LEN = b"\x02"  # 数据长度
+            LEN = b"\x04" if isMultimediaKeys else b"\x02" # 数据长度
+
+        key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
+        data_code = (b"\x02" if isMultimediaKeys else b"\x01") + key_code
             DATA = b""  # 数据
 
         def release(self):
