@@ -43,9 +43,11 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 # vnc/rdp (rdpy (py2), python3-aardwolf, rdesktop (rdp))
 # ssh (terminal interface)
 # spice (remmina, remote-viewer (RHEL))
-# xvfb (with pyautogui?) (what alternatives to xvfb are for macOS and Windows?)
+# xvfb (with pyautogui?) (use vglrun (GPU)) (what alternatives to xvfb are for macOS and Windows?)
 # -----------[use remote control methods as self control methods]-----------
 # self control (pyautogui, pynput, (win)tty, tmux, subprocess, ttyd with electron/xvfb based browser client)
+
+# MineRL GPU rendering: https://minerl.readthedocs.io/en/latest/notes/performance-tips.html
 
 # rdpy3: https://github.com/massimiliano-dalcero/rdpy
 # ref: https://github.com/citronneur/rdpy/issues/91
