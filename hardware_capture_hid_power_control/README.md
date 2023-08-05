@@ -1,6 +1,6 @@
 it is more of a computer-ai interface, just like the computer-brain interface.
 
-智机接口 (intelligence-computer interface)
+智机接口 ICI (intelligence computer interface)
 
 ----
 
