@@ -99,11 +99,13 @@ class ControlCode(Flag):
     # @staticmethod
     # def _generate_next_value_(name, start, count, last_values):
     #     return 2 ** (count)
+    NULL = 0
 
     LEFT_CONTROL = auto()
     LEFT_SHIFT = auto()
     LEFT_ALT = auto()
     LEFT_GUI = auto()
+    
     RIGHT_CONTROL = auto()
     RIGHT_SHIFT = auto()
     RIGHT_ALT = auto()
@@ -115,6 +117,8 @@ class MouseButton(Flag):
     # @staticmethod
     # def _generate_next_value_(name, start, count, last_values):
     #     return 2 ** (count)
+
+    NULL = 0
 
     LEFT = auto()
     RIGHT = auto()
