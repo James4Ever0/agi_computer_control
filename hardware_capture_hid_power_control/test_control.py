@@ -40,7 +40,7 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # TODO: unit test underway
 # TODO: more control methods (non-hardware) under way
-# vnc/rdp (rdpy (py2), python3-aardwolf, rdesktop (rdp)) (docker-vnc image: gcanal/vcn)
+# vnc/rdp (rdpy (py2), python3-aardwolf, rdesktop (rdp)) (docker-vnc image: gcanal/vcn; docker rdp image: scottyhardy/docker-remote-desktop)
 # ssh (terminal interface)
 # spice (remmina, remote-viewer (RHEL))
 # xvfb (with pyautogui?) (use vglrun (GPU)) (what alternatives to xvfb are for macOS and Windows?)
