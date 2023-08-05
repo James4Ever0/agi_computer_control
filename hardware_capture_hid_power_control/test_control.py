@@ -25,7 +25,6 @@ def length_limit(l):
 def byte_with_length_limit(l):
     return Annotated[bytes, length_limit(l)]
 
-
 one_byte: TypeAlias = byte_with_length_limit(1)
 two_bytes: TypeAlias = byte_with_length_limit(2)
 four_bytes: TypeAlias = byte_with_length_limit(4)
