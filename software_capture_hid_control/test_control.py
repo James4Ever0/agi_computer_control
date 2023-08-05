@@ -18,7 +18,7 @@
 
 # shall you look over our previous project lazero/metalazero
 
-import enum
+from enum import StrEnum
 
 class ControlMethod(enum.StrEnum):
     xvfb: enum.auto()
@@ -31,4 +31,4 @@ if controlMethod == ControlMethod.xvfb:
     import easyprocess
     # virtual_display = ":3"
     with Display(backend='xvfb') as disp:
-        disp.display
+        print("NEW DISPLAY AT", disp.display)
