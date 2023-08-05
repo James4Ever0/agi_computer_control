@@ -310,7 +310,7 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
 
     @beartype
     def mouse_relative(
-        x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = []
+        x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = [MouseButton.NULL]
     ):
         x_code = get_rel_code_kcom(x)
         y_code = get_rel_code_kcom(y)
@@ -331,7 +331,7 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
         coordinate: Tuple[non_neg_int, non_neg_int],
         resolution: Tuple[pos_int, pos_int],
         scroll: movement,
-        button_codes: List[MouseButton] = [],
+        button_codes: List[MouseButton] = [MouseButton.NULL],
     ):
         """
         coordinate: (x_abs, y_abs)
@@ -635,7 +635,7 @@ elif deviceType == DeviceType.ch9329:
             x: non_neg_int,
             y: non_neg_int,
             scroll: movement,
-            button_codes: List[MouseButton] = [],
+            button_codes: List[MouseButton] = [MouseButton.NULL],
         ):
             ctrl = self.get_ctrl(x, y, button_codes=button_codes, inbound=True)
             # currentFuncName = inspect.currentframe().f_code.co_name
@@ -698,7 +698,7 @@ elif deviceType == DeviceType.ch9329:
             # # return True  # 如果成功，则返回True，否则引发异常
 
         def send_data_relatively(
-            self, x: int, y: int, scroll: movement, button_codes: List[MouseButton] = []
+            self, x: int, y: int, scroll: movement, button_codes: List[MouseButton] = [MouseButton.NULL]
         ):
             ctrl = self.get_ctrl(
                 x, y, button_codes=button_codes, inbound=False)
@@ -773,7 +773,7 @@ elif deviceType == DeviceType.ch9329:
             # # return True  # 如果成功，则返回True，否则引发异常
 
         def move_to_basic(
-            self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = []
+            self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = [MouseButton.NULL]
         ):
             currentFuncName = inspect.currentframe().f_code.co_name
             self.call_super_method(
@@ -792,7 +792,7 @@ elif deviceType == DeviceType.ch9329:
             )
 
         # this is right click. we need to override this.
-        def click(self, button: MouseButton):
+        def click(self, button: MouseButton, get_dela):
             self.send_data_relatively(0, 0, [button])
             time.sleep(random.uniform(0.1, 0.45))  # 100到450毫秒延迟
             self.send_data_relatively(0, 0)
