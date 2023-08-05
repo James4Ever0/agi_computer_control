@@ -16,4 +16,14 @@
 # rdpy3: https://github.com/massimiliano-dalcero/rdpy
 # ref: https://github.com/citronneur/rdpy/issues/91
 
-# shall you look over our previous project 
+# shall you look over our previous project lazero/metalazero
+
+import enum
+
+class ControlMethod(enum.StrEnum):
+    xvfb: enum.auto()
+
+controlMethod =ControlMethod.xvfb
+
+if 
+import pyautogui
