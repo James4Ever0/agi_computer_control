@@ -43,7 +43,7 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 # vnc
 # vrdp
 # ssh (terminal interface)
-# spice (virt-viewer/virt-manager)
+# spice (virt-viewer)
 # xvfb (with pyautogui?)
 
 @beartype
