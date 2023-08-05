@@ -25,5 +25,7 @@ class ControlMethod(enum.StrEnum):
 
 controlMethod =ControlMethod.xvfb
 
-if 
-import pyautogui
+if controlMethod == ControlMethod.xvfb:
+    import pyautogui
+    import pyvirtualdisplay
+    virtual_display = ":3"
