@@ -41,7 +41,8 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 # TODO: unittest underway
 # TODO: more control methods (non-hardware) under way
 # vnc
-# ssh
+# vrdp
+# ssh (terminal interface)
 # spice
 # xvfb (with pyautogui?)
 
