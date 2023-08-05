@@ -398,7 +398,7 @@ elif deviceType == DeviceType.ch9329:
                     # self.super_class = super_class_init(**kwargs)
                     super().__init__(**kwargs)
 
-        def communicate(self, DATA: bytes, CMD: one_byte,  LEN: one_byte):
+        def communicate(self, DATA: Annotated[bytes, Is[lambda b: len(b)>0]], CMD: one_byte,  LEN: one_byte):
             # 将字符转写为数据包
             HEAD = b"\x57\xAB"  # 帧头
             ADDR = b"\x00"  # 地址
