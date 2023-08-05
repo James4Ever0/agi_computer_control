@@ -358,6 +358,10 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
 
     @beartype
     def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]] = []):
+        if len(keys) == 0: # clear all multimedia keys.
+            multimedia(keys= [ACPIKey.Null])
+            multimedia(keys= [Multimedia.Null])
+            return
         isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
         byte_length = 3 if isMultimediaKeys else 1
         key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
