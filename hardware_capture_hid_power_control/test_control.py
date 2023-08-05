@@ -367,7 +367,8 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
             return
         isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
         byte_length = 3 if isMultimediaKeys else 1
-        key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
+        key_code = reduce_flags_to_bytes(keys)
+        # key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
         data_code = (b"\x02" if isMultimediaKeys else b"\x01") + key_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
@@ -485,9 +486,8 @@ elif deviceType == DeviceType.ch9329:
             CMD = b"\x03"  # 命令
             LEN = b"\x04" if isMultimediaKeys else b"\x02" # 数据长度
 
-        key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
-        data_code = (b"\x02" if isMultimediaKeys else b"\x01") + key_code
-            DATA = b""  # 数据
+            key_code = reduce_flags_to_bytes(keys)
+            DATA = (b"\x02" if isMultimediaKeys else b"\x01") + key_code # 数据
 
         def release(self):
             self.send_data()
