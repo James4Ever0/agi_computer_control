@@ -265,8 +265,8 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
         ] = [],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
-        control_code = reduce_flags_to_bytes(control_codes)
-        # control_code = reduce_flags_to_bytes(control_codes, byte_length=1)
+        # control_code = reduce_flags_to_bytes(control_codes)
+        control_code = reduce_flags_to_bytes(control_codes, byte_length=1)
         keycodes = [
             KeyLiteralToKCOMKeycode(key_literal)
             for key_literal in key_literals
@@ -297,8 +297,8 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
         button_codes: List[MouseButton] = [MouseButton.NULL],
     ):
         scroll_code = get_scroll_code(scroll)
-        button_code = reduce_flags_to_bytes(button_codes)
-        # button_code = reduce_flags_to_bytes(button_codes, byte_length=1)
+        # button_code = reduce_flags_to_bytes(button_codes)
+        button_code = reduce_flags_to_bytes(button_codes, byte_length=1)
         # button_opcode = reduce_opcodes(button_codes)
         # button_code = button_opcode.to_bytes()
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
@@ -368,8 +368,8 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
             return
         isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
         byte_length = 3 if isMultimediaKeys else 1
-        key_code = reduce_flags_to_bytes(keys)
-        # key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
+        # key_code = reduce_flags_to_bytes(keys)
+        key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
         data_code = (b"\x02" if isMultimediaKeys else b"\x01") + key_code
         # multimedia_opcode = reduce_opcodes(multimedia_keys)
         # data_code = multimedia_opcode.to_bytes(1 if multimedia_opcode <= 0xff else 2)
@@ -486,8 +486,10 @@ elif deviceType == DeviceType.ch9329:
 
             CMD = b"\x03"  # 命令
             LEN = b"\x04" if isMultimediaKeys else b"\x02" # 数据长度
+            byte_length = 3 if isMultimediaKeys else 1
 
-            key_code = reduce_flags_to_bytes(keys)
+
+            key_code = reduce_flags_to_bytes(keys, byte_length = byte_length)
             DATA = (b"\x02" if isMultimediaKeys else b"\x01") + key_code # 数据 
 
             self.communicate(DATA, CMD, LEN)
@@ -506,7 +508,7 @@ elif deviceType == DeviceType.ch9329:
 
         def send_data(
             self,
-            control_codes: List[ControlCode] = [ControlCode.NULL],
+            control_codes: List[ControlCode] = [ControlCode.NULL], # [ControlCode.NULL] or [], both works
             key_literals: Annotated[
                 List[HIDActionTypes.keys], Is[lambda l: len(
                     l) <= 8 and len(l) >= 0]
