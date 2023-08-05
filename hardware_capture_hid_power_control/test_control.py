@@ -127,14 +127,15 @@ class MouseButton(Flag):
 
 @beartype
 def reduce_flags_to_bytes(  # force this to be non-empty!
-    flags: Annotated[List[Flag], Is[lambda l: len(l) > 0]],
+    flags: List[Flag],
+    # flags: Annotated[List[Flag], Is[lambda l: len(l) > 0]],
     byteorder: Literal["little", "big"] = "little",
     byte_length: Union[int, Ellipsis] = ...,
 ):
     # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
     if flags == []:
         assert is_bearable(
-            int, byte_length), f"invalid byte_length: {byte_length}"
+            pos_int, byte_length), f"invalid byte_length (positive integer): {byte_length}"
         return b"\x00" * byte_length
     flag = reduce(lambda a, b: a | b, flags)
     opcode = flag.value
@@ -519,8 +520,8 @@ elif deviceType == DeviceType.ch9329:
             DATA = b""  # 数据
 
             # 控制键
-            control_byte = reduce_flags_to_bytes(control_codes)
-            # control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
+            # control_byte = reduce_flags_to_bytes(control_codes)
+            control_byte = reduce_flags_to_bytes(control_codes, byte_length=1)
             DATA += control_byte
             # if ctrl == '':
             #     DATA += b'\x00'
