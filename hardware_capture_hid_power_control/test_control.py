@@ -487,7 +487,9 @@ elif deviceType == DeviceType.ch9329:
             LEN = b"\x04" if isMultimediaKeys else b"\x02" # 数据长度
 
             key_code = reduce_flags_to_bytes(keys)
-            DATA = (b"\x02" if isMultimediaKeys else b"\x01") + key_code # 数据
+            DATA = (b"\x02" if isMultimediaKeys else b"\x01") + key_code # 数据 
+
+            self.communicate(DATA, CMD, LEN)
 
         def release(self):
             self.send_data()
