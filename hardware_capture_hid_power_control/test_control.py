@@ -45,6 +45,8 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 # spice (remmina, remote-viewer (RHEL))
 # xvfb (with pyautogui?)
 
+# rdpy3: https://github.com/massimiliano-dalcero/rdpy
+
 @beartype
 def get_scroll_code(c_scroll: movement) -> one_byte:
     if c_scroll < 0:
