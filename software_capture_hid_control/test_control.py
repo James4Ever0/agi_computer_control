@@ -28,6 +28,7 @@ controlMethod =ControlMethod.xvfb
 if controlMethod == ControlMethod.xvfb:
     import pyautogui
     from pyvirtualdisplay import Display
+    import easyprocess
     # virtual_display = ":3"
     with Display(backend='xvfb') as disp:
         ...
