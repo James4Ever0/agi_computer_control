@@ -40,12 +40,14 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # TODO: unit test underway
 # TODO: more control methods (non-hardware) under way
-# vnc/rdp (rdpy (py2), python3-aardwolf, rdesktop (rdp)) (docker-vnc image: gcanal/vcn; docker rdp image: scottyhardy/docker-remote-desktop)
+# vnc/rdp (rdpy (py2), python3-aardwolf, rdesktop (rdp)) (docker-vnc image: gcanal/vnc; docker rdp image: scottyhardy/docker-remote-desktop)
 # ssh (terminal interface)
 # spice (remmina, remote-viewer (RHEL))
 # xvfb (with pyautogui?) (use vglrun (GPU)) (what alternatives to xvfb are for macOS and Windows?)
 # -----------[use remote control methods as self control methods]-----------
 # self control (pyautogui, pynput, (win)tty, tmux, subprocess, ttyd with electron/xvfb based browser client)
+
+# docker-wine image (in case running windows app on linux): scottyhardy/docker-wine
 
 # MineRL GPU rendering: https://minerl.readthedocs.io/en/latest/notes/performance-tips.html
 
