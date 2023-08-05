@@ -18,7 +18,12 @@
 
 # shall you look over our previous project lazero/metalazero
 
-from enum import StrEnum
+import sys
+
+if sys.version >= (3, 11):
+    from enum import StrEnum
+else:
+    from strenum import StrEnum
 
 class ControlMethod(enum.StrEnum):
     xvfb: enum.auto()

@@ -5,7 +5,12 @@ from beartype import beartype
 from beartype.vale import Is
 from typing import Annotated
 from typing_extensions import TypeAlias
-from enum import StrEnum
+import sys
+
+if sys.version >= (3, 11):
+    from enum import StrEnum
+else:
+    from strenum import StrEnum
 
 # for branching; ref: https://beartype.readthedocs.io/en/latest/api_door/
 from beartype.door import is_bearable
