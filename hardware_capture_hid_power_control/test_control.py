@@ -616,7 +616,7 @@ elif deviceType == DeviceType.ch9329:
             funcName: str,
             x: int,
             y: int,
-            button_codes: List[MouseButton],
+            button_codes: List[MouseButton] = [MouseButton.NULL],
             inbound: bool = True,
             use_super_instance: bool = False,
         ):
@@ -784,7 +784,7 @@ elif deviceType == DeviceType.ch9329:
             self,
             dest_x: non_neg_int,
             dest_y: non_neg_int,
-            button_codes: List[MouseButton] = [],
+            button_codes: List[MouseButton] = [MouseButton.NULL],
         ):
             currentFuncName = inspect.currentframe().f_code.co_name
             self.call_super_method(
