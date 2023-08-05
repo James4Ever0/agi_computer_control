@@ -42,7 +42,7 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 # TODO: more control methods (non-hardware) under way
 # vnc/rdp (rdpy (py2), python3-aardwolf, rdesktop (rdp))
 # ssh (terminal interface)
-# spice (virt-viewer)
+# spice (remmina, remote-viewer (RHEL))
 # xvfb (with pyautogui?)
 
 @beartype
