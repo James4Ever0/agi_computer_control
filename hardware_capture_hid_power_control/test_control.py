@@ -360,7 +360,7 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
     def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]] = []):
         if len(keys) == 0: # clear all multimedia keys.
             multimedia(keys= [ACPIKey.Null])
-            multimedia(keys= [Multimedia.Null])
+            multimedia(keys= [MultimediaKey.Null])
             return
         isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
         byte_length = 3 if isMultimediaKeys else 1
