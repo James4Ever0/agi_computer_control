@@ -46,7 +46,6 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 # spice
 # xvfb (with pyautogui?)
 
-
 @beartype
 def get_scroll_code(c_scroll: movement) -> one_byte:
     if c_scroll < 0:
