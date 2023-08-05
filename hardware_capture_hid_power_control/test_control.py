@@ -105,7 +105,7 @@ class ControlCode(Flag):
     LEFT_SHIFT = auto()
     LEFT_ALT = auto()
     LEFT_GUI = auto()
-    
+
     RIGHT_CONTROL = auto()
     RIGHT_SHIFT = auto()
     RIGHT_ALT = auto()
@@ -126,8 +126,8 @@ class MouseButton(Flag):
 
 
 @beartype
-def reduce_flags_to_bytes(
-    flags: List[Flag],
+def reduce_flags_to_bytes(  # force this to be non-empty!
+    flags: Annotated[List[Flag], Is[lambda l: len(l) > 0]],
     byteorder: Literal["little", "big"] = "little",
     byte_length: Union[int, Ellipsis] = ...,
 ):
@@ -347,7 +347,7 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
     assert len(MultimediaKey.__members__) == 3 * 8
 
     class ACPIKey(Flag):
-        Null = 0 # for clearing all "ACPI" keys.
+        Null = 0  # for clearing all "ACPI" keys.
 
         Power = auto()
         Sleep = auto()
