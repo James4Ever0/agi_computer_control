@@ -308,6 +308,7 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
         # @staticmethod
         # def _generate_next_value_(name, start, count, last_values):
         #     return 2 ** (count)
+        Null = 0
 
         # row 1
         VolumeUp = auto()
@@ -342,6 +343,8 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
     assert len(MultimediaKey.__members__) == 3 * 8
 
     class ACPIKey(Flag):
+        Null = 0 # for clearing all "ACPI" keys.
+
         Power = auto()
         Sleep = auto()
         Wakeup = auto()
