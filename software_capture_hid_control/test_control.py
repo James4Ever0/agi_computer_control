@@ -31,4 +31,4 @@ if controlMethod == ControlMethod.xvfb:
     import easyprocess
     # virtual_display = ":3"
     with Display(backend='xvfb') as disp:
-        ...
+        disp.display
