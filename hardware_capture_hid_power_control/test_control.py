@@ -210,7 +210,7 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
     # leave it empty to release all keys.
     @beartype
     def keyboard(
-        control_codes: List[ControlCode] = [],
+        control_codes: List[ControlCode] = [ControlCode.NULL],
         key_literals: Annotated[
             List[HIDActionTypes.keys], Is[lambda l: len(
                 l) <= 6 and len(l) >= 0]
@@ -245,7 +245,7 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
         kcom_flag: Literal[
             KCOMHeader.mouseRelativeHeader, KCOMHeader.mouseAbsoluteHeader
         ],
-        button_codes: List[MouseButton] = [],
+        button_codes: List[MouseButton] = [MouseButton.NULL],
     ):
         scroll_code = get_scroll_code(scroll)
         button_code = reduce_flags_to_bytes(button_codes, byte_length=1)
