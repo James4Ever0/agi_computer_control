@@ -217,7 +217,8 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
         ] = [],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
-        control_code = reduce_flags_to_bytes(control_codes, byte_length=1)
+        control_code = reduce_flags_to_bytes(control_codes)
+        # control_code = reduce_flags_to_bytes(control_codes, byte_length=1)
         keycodes = [
             KeyLiteralToKCOMKeycode(key_literal)
             for key_literal in key_literals
@@ -248,7 +249,8 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
         button_codes: List[MouseButton] = [MouseButton.NULL],
     ):
         scroll_code = get_scroll_code(scroll)
-        button_code = reduce_flags_to_bytes(button_codes, byte_length=1)
+        button_code = reduce_flags_to_bytes(button_codes)
+        # button_code = reduce_flags_to_bytes(button_codes, byte_length=1)
         # button_opcode = reduce_opcodes(button_codes)
         # button_code = button_opcode.to_bytes()
         data_code = button_code + x_code + y_code + scroll_code  # all 1byte
@@ -358,9 +360,9 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
 
     @beartype
     def multimedia(keys: Union[List[ACPIKey], List[MultimediaKey]] = []):
-        if len(keys) == 0: # clear all multimedia keys.
-            multimedia(keys= [ACPIKey.Null])
-            multimedia(keys= [MultimediaKey.Null])
+        if len(keys) == 0:  # clear all multimedia keys.
+            multimedia(keys=[ACPIKey.Null])
+            multimedia(keys=[MultimediaKey.Null])
             return
         isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
         byte_length = 3 if isMultimediaKeys else 1
