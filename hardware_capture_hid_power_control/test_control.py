@@ -1,3 +1,4 @@
+from typing import Callable
 import math
 import serial
 from beartype import beartype
@@ -193,7 +194,9 @@ class MultimediaKey(Flag):
     Record = auto()
     Rewind = auto()
 
-assert len(MultimediaKey.__members__) == 3 * 8 + 1 # include "Null"
+
+assert len(MultimediaKey.__members__) == 3 * 8 + 1  # include "Null"
+
 
 class ACPIKey(Flag):
     Null = 0  # for clearing all "ACPI" keys.
@@ -399,7 +402,7 @@ elif deviceType == DeviceType.ch9329:
                     # self.super_class = super_class_init(**kwargs)
                     super().__init__(**kwargs)
 
-        def communicate(self, DATA: Annotated[bytes, Is[lambda b: len(b)>0]], CMD: one_byte,  LEN: one_byte):
+        def communicate(self, DATA: Annotated[bytes, Is[lambda b: len(b) > 0]], CMD: one_byte,  LEN: one_byte):
             # 将字符转写为数据包
             HEAD = b"\x57\xAB"  # 帧头
             ADDR = b"\x00"  # 地址
@@ -485,12 +488,11 @@ elif deviceType == DeviceType.ch9329:
             isMultimediaKeys = is_bearable(keys, List[MultimediaKey])
 
             CMD = b"\x03"  # 命令
-            LEN = b"\x04" if isMultimediaKeys else b"\x02" # 数据长度
+            LEN = b"\x04" if isMultimediaKeys else b"\x02"  # 数据长度
             byte_length = 3 if isMultimediaKeys else 1
 
-
-            key_code = reduce_flags_to_bytes(keys, byte_length = byte_length)
-            DATA = (b"\x02" if isMultimediaKeys else b"\x01") + key_code # 数据 
+            key_code = reduce_flags_to_bytes(keys, byte_length=byte_length)
+            DATA = (b"\x02" if isMultimediaKeys else b"\x01") + key_code  # 数据
 
             self.communicate(DATA, CMD, LEN)
 
@@ -508,7 +510,8 @@ elif deviceType == DeviceType.ch9329:
 
         def send_data(
             self,
-            control_codes: List[ControlCode] = [ControlCode.NULL], # [ControlCode.NULL] or [], both works
+            # [ControlCode.NULL] or [], both works
+            control_codes: List[ControlCode] = [ControlCode.NULL],
             key_literals: Annotated[
                 List[HIDActionTypes.keys], Is[lambda l: len(
                     l) <= 8 and len(l) >= 0]
@@ -792,9 +795,9 @@ elif deviceType == DeviceType.ch9329:
             )
 
         # this is right click. we need to override this.
-        def click(self, button: MouseButton, get_dela):
+        def click(self, button: MouseButton, get_delay: Callable[[], float] = lambda: random.uniform(0.1, 0.45)):
             self.send_data_relatively(0, 0, [button])
-            time.sleep(random.uniform(0.1, 0.45))  # 100到450毫秒延迟
+            time.sleep(get_delay())  # 100到450毫秒延迟
             self.send_data_relatively(0, 0)
 
     # mouse = ch9329Comm.mouse.DataComm(screen_width=1920, screen_height=1080)
