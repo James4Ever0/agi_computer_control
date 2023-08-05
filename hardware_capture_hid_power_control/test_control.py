@@ -39,7 +39,8 @@ movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]]
 
 # confusing!
 
-# more control (non-hardware) under way:
+# TODO: unittest underway
+# TODO: more control methods (non-hardware) under way
 # vnc
 # ssh
 # spice
