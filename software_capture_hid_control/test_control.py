@@ -37,7 +37,7 @@ class ControlMethod(StrEnum):
 controlMethod = ControlMethod.xvfb
 
 if controlMethod == ControlMethod.xvfb:
-    # import pyautogui
+    import pyautogui
     # do not use pyautogui.
 
     # instead use:
@@ -85,7 +85,7 @@ if controlMethod == ControlMethod.xvfb:
         stdout_data = p.communicate(input=b'echo hello world\n')[0]
         # p.wait()
         # keyboard.type("echo hello world\n")
-        # pyautogui.screenshot("terminal.png")
+        pyautogui.screenshot("terminal2.png")
         img = disp.grab()  # shit! not working.
         if img:
             img.save("terminal.png")
