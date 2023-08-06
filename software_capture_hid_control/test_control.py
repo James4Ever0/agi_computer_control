@@ -55,8 +55,9 @@ if controlMethod == ControlMethod.xvfb:
     import time
     import os
     os.system("rm *.png")
-    import pynput
-    keyboard = pynput.keyboard.
+    # nah, not working.
+    # from pynput.keyboard import Controller
+    # keyboard = Controller()
     # virtual_display = ":3"
     with SmartDisplay(backend='xvfb') as disp:
     # with Display(backend='xvfb') as disp:
@@ -75,6 +76,7 @@ if controlMethod == ControlMethod.xvfb:
         # not working.
         # pyautogui.write("echo hello world\n")
         # os.system("xdotool type abc") # works.
+        # keyboard.type("echo hello world\n")
         # pyautogui.screenshot("terminal.png")
         img = disp.grab() # shit! not working.
         if img:
