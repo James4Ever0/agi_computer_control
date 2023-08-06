@@ -80,7 +80,7 @@ if controlMethod == ControlMethod.xvfb:
         # with Display(backend='xvfb') as disp:
         # with Display(visible=False) as disp:
 
-        # works, but remember to import/reload this module when in virtual display context.
+        # not working in fullscreen mode!
         import pyautogui
         print("NEW DISPLAY AT", disp.display)  # 0, INT
         print("ENV DISPLAY?", os.environ["DISPLAY"])  # :0
@@ -100,20 +100,23 @@ if controlMethod == ControlMethod.xvfb:
         # no need for starting/stopping
         import mss
         with easyprocess.EasyProcess(proc_cmd) as proc:
+            # need this to "wake" the terminal when fullscreen.
+            os.system("xdotool mousemove 0 0")
+            os.system("xdotool click 1")
+
             # proc.start()
             # proc.start().sleep(3)
             # proc.sleep(5)
+
             proc.sleep(3)
+
             # time.sleep(3)
             # from Xlib.display import Display
             # Display(os.environ['DISPLAY']).get_input_focus()
             # not working.
-            pyautogui.write("echo hello world pyautogui\n")
+            # pyautogui.write("echo hello world pyautogui\n")
             # works.
 
-            # need this to "awake" the terminal when fullscreen.
-            os.system("xdotool mousemove 0 0")
-            os.system("xdotool click 1")
 
             type_string('echo hello world\n')
             # p.wait()
