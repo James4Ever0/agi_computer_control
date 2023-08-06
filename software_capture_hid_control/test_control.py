@@ -53,7 +53,7 @@ if controlMethod == ControlMethod.xvfb:
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
-    import easyprocess # no support for stdin!
+    import easyprocess  # no support for stdin!
     # import time
     import os
     import subprocess
@@ -106,7 +106,10 @@ if controlMethod == ControlMethod.xvfb:
             else:
                 print("no image yet.")
             type_string("just some words.")
-            mss.mss().save(output="terminal4.png")
+            # mss.mss().save(output="terminal4.png")
+            mon_shot = mss.mss().save(output="terminal4.png")
+            # mon_shot = mss.mss().shot(output="terminal4.png")
+            # print(mon_shot)
             # nope. no attention/diff mechanism.
             disp.grab().save("terminal3.png")
             # proc.stop()
