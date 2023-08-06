@@ -29,7 +29,7 @@ from enum import auto
 # TODO: test this under py3.9/3.10
 
 class ControlMethod(StrEnum):
-    xvfb: auto()
+    xvfb = auto()
 # breakpoint()
 
 controlMethod = ControlMethod.xvfb
@@ -40,4 +40,7 @@ if controlMethod == ControlMethod.xvfb:
     import easyprocess
     # virtual_display = ":3"
     with Display(backend='xvfb') as disp:
-        print("NEW DISPLAY AT", disp.display)
+        # print("NEW DISPLAY AT", disp.display) # 0, INT
+        # with Display(backend='xvfb') as disp2:
+        #     print("NEW DISPLAY AT", disp2.display) # 2
+            
