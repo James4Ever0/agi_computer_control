@@ -81,10 +81,11 @@ if controlMethod == ControlMethod.xvfb:
         # pyautogui.write("echo hello world\n")
         # works.
         def type_string(string:str):
-            input_bytes = string.enconde()
+            input_bytes = string.encode()
             p = subprocess.Popen(
                 "xdotool type --file -".split(), stdin=subprocess.PIPE)
             stdout_data = p.communicate(input=input_bytes)[0]
+            return stdout_data
         type_string('echo hello world\n')
         # p.wait()
         # keyboard.type("echo hello world\n")
@@ -97,5 +98,5 @@ if controlMethod == ControlMethod.xvfb:
         else:
             print("no image yet.")
         type_string("just some words.")
-        disp.grab().save("terminal3.png")
+        disp.grab().save("terminal3.png") # nope. no attention mechanism.
         proc.stop()
