@@ -54,8 +54,9 @@ if controlMethod == ControlMethod.xvfb:
     import easyprocess
     import time
     import os
+    import subprocess
     os.system("rm *.png")
-    # nah, not working.
+    # nah, not working...
     # from pynput.keyboard import Controller
     # keyboard = Controller()
     # virtual_display = ":3"
@@ -75,7 +76,7 @@ if controlMethod == ControlMethod.xvfb:
         # Display(os.environ['DISPLAY']).get_input_focus()
         # not working.
         # pyautogui.write("echo hello world\n")
-        # os.system("xdotool type abc") # works.
+        p = subprocess.Popen("xdotool type --file -") # works.
         # keyboard.type("echo hello world\n")
         # pyautogui.screenshot("terminal.png")
         img = disp.grab() # shit! not working.
