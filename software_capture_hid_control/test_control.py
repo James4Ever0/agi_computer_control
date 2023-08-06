@@ -54,7 +54,7 @@ if controlMethod == ControlMethod.xvfb:
         proc.start()
         time.sleep(3)
         pyautogui.write("echo hello world\n")
-        # pyautogui.screenshot("terminal.png")
-        img = disp.waitgrab()
-        img.save("terminal.png")
+        pyautogui.screenshot("terminal.png")
+        # img = disp.waitgrab() # shit! not working.
+        # img.save("terminal.png")
         proc.stop()
