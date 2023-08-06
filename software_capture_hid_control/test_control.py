@@ -53,7 +53,7 @@ if controlMethod == ControlMethod.xvfb:
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
-    import easyprocess
+    import easyprocess # no support for stdin!
     # import time
     import os
     import subprocess
@@ -82,9 +82,11 @@ if controlMethod == ControlMethod.xvfb:
         # proc = easyprocess.EasyProcess(["alacritty"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
-        # no need for stopping.
+        # no need for starting/stopping
         with easyprocess.EasyProcess(["alacritty"]) as proc:
-            proc.start().sleep(3)
+            # proc.start()
+            # proc.start().sleep(3)
+            proc.sleep(3)
             # time.sleep(3)
             # from Xlib.display import Display
             # Display(os.environ['DISPLAY']).get_input_focus()
