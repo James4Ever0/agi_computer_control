@@ -83,6 +83,7 @@ if controlMethod == ControlMethod.xvfb:
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # no need for starting/stopping
+        import mss
         with easyprocess.EasyProcess(["alacritty"]) as proc:
             # proc.start()
             # proc.start().sleep(3)
@@ -105,6 +106,7 @@ if controlMethod == ControlMethod.xvfb:
             else:
                 print("no image yet.")
             type_string("just some words.")
+            mss.mss().save(output="terminal4.png")
             # nope. no attention/diff mechanism.
             disp.grab().save("terminal3.png")
             # proc.stop()
