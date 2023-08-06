@@ -20,7 +20,7 @@
 
 import sys
 
-if sys.version >= (3, 11):
+if sys.version_info >= (3, 11):
     from enum import StrEnum
 else:
     from strenum import StrEnum
@@ -41,5 +41,4 @@ if controlMethod == ControlMethod.xvfb:
     import easyprocess
     # virtual_display = ":3"
     with Display(backend='xvfb') as disp:
-        print("NEW DISPLAY AT", disp.display) 
-        print("")
+        print("NEW DISPLAY AT", disp.display)
