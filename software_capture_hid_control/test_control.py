@@ -40,7 +40,6 @@ if controlMethod == ControlMethod.xvfb:
     import easyprocess
     # virtual_display = ":3"
     with Display(backend='xvfb') as disp:
-        # print("NEW DISPLAY AT", disp.display) # 0, INT
+        print("NEW DISPLAY AT", disp.display) # 0, INT
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
-            
