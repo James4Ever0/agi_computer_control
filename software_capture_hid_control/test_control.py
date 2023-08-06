@@ -31,7 +31,7 @@ from enum import auto
 
 class ControlMethod(StrEnum):
     xvfb: auto()
-
+breakpoint()
 
 controlMethod = ControlMethod.xvfb
 
