@@ -36,22 +36,25 @@ controlMethod = ControlMethod.xvfb
 
 if controlMethod == ControlMethod.xvfb:
     import pyautogui
-    from pyvirtualdisplay import Display
+    # from pyvirtualdisplay import Display
+    from pyvirtualdisplay.smartdisplay import SmartDisplay
     import easyprocess
     import time
     import os
     # virtual_display = ":3"
-    with Display(backend='xvfb') as disp:
+    with SmartDisplay(backend='xvfb') as disp:
+    # with Display(backend='xvfb') as disp:
     # with Display(visible=False) as disp:
         print("NEW DISPLAY AT", disp.display) # 0, INT
         print("ENV DISPLAY?", os.environ["DISPLAY"]) # :0
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
-        # proc = easyprocess.EasyProcess(['gnome-terminal']) # not this!
         proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         proc.start()
         time.sleep(3)
         pyautogui.write("echo hello world\n")
-        pyautogui.screenshot("terminal.png")
+        # pyautogui.screenshot("terminal.png")
+        img = disp.waitgrab()
+        img.save("terminal.png")
         proc.stop()
