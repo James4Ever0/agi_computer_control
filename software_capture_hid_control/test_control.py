@@ -56,7 +56,8 @@ if controlMethod == ControlMethod.xvfb:
         from Xlib.display import Display
         # Display(os.environ['DISPLAY']).get_input_focus()
         # not working.
-        pyautogui.write("echo hello world\n")
+        # pyautogui.write("echo hello world\n")
+        os.system("xdotool type abc")
         pyautogui.screenshot("terminal.png")
         # img = disp.waitgrab() # shit! not working.
         # img.save("terminal.png")
