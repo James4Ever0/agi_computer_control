@@ -70,7 +70,8 @@ if controlMethod == ControlMethod.xvfb:
     # from pynput.keyboard import Controller
     # keyboard = Controller()
     # virtual_display = ":3"
-    backend = 'xephyr' # like a visible xvfb, useful for live streaming...
+    backend = 'xvnc'
+    # backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
     with SmartDisplay(backend=backend) as disp:
     # with SmartDisplay(backend='xvfb') as disp:
         # with Display(backend='xvfb') as disp:
