@@ -7,6 +7,8 @@ from typing import Annotated
 from typing_extensions import TypeAlias
 import sys
 
+# use xephyr for testing.
+
 if sys.version_info >= (3, 11):
     from enum import StrEnum
 else:
