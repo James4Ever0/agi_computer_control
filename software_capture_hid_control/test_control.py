@@ -109,6 +109,7 @@ if controlMethod == ControlMethod.xvfb:
             # not working.
             # pyautogui.write("echo hello world pyautogui\n")
             # works.
+            os.system("xdotool mousemove 0 0")
             type_string('echo hello world\n')
             # p.wait()
             # keyboard.type("echo hello world\n")
