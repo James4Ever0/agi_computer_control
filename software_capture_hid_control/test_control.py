@@ -35,7 +35,8 @@ class ControlMethod(StrEnum):
 controlMethod = ControlMethod.xvfb
 
 if controlMethod == ControlMethod.xvfb:
-    import pyautogui
+    # import pyautogui
+    # do not use pyautogui.
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
     import easyprocess
@@ -50,15 +51,16 @@ if controlMethod == ControlMethod.xvfb:
         print("ENV DISPLAY?", os.environ["DISPLAY"]) # :0
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
-        proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
+        proc = easyprocess.EasyProcess(["alacritty"]) # working! do not use gnome-terminal.
+        # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         proc.start()
         time.sleep(3)
-        from Xlib.display import Display
+        # from Xlib.display import Display
         # Display(os.environ['DISPLAY']).get_input_focus()
         # not working.
         # pyautogui.write("echo hello world\n")
-        os.system("xdotool type abc") # works.
+        # os.system("xdotool type abc") # works.
         # pyautogui.screenshot("terminal.png")
         img = disp.grab() # shit! not working.
         if img:
