@@ -43,3 +43,4 @@ if controlMethod == ControlMethod.xvfb:
         print("NEW DISPLAY AT", disp.display) # 0, INT
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
+        easyprocess.EasyProcess('gnome-terminal')
