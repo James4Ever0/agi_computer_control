@@ -80,7 +80,8 @@ if controlMethod == ControlMethod.xvfb:
         # not working.
         # pyautogui.write("echo hello world\n")
         # works.
-        def type_string(string:str):
+
+        def type_string(string: str):
             input_bytes = string.encode()
             p = subprocess.Popen(
                 "xdotool type --file -".split(), stdin=subprocess.PIPE)
@@ -89,14 +90,14 @@ if controlMethod == ControlMethod.xvfb:
         type_string('echo hello world\n')
         # p.wait()
         # keyboard.type("echo hello world\n")
-        pyautogui.screenshot("terminal2.png") # full shot
+        pyautogui.screenshot("terminal2.png")  # full shot
         # img = disp.grab()  # # partial shot, only on changes
         # maybe we can use this as some sort of "attention" mechanism?
-        img = disp.grab(autocrop=False) # full shot again.
+        img = disp.grab(autocrop=False)  # full shot again.
         if img:
             img.save("terminal.png")
         else:
             print("no image yet.")
         type_string("just some words.")
-        disp.grab().save("terminal3.png") # nope. no attention mechanism.
+        disp.grab().save("terminal3.png")  # nope. no attention/diff mechanism.
         proc.stop()
