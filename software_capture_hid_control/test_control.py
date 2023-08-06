@@ -72,10 +72,10 @@ if controlMethod == ControlMethod.xvfb:
     # with Display(backend=backend) as disp:
     # proc_cmd = ["xterm"]
     proc_cmd = ["alacritty"]
-    # with SmartDisplay(backend=backend, size=(1920,1080), extra_args=['-fullscreen',  '-softCursor']) as disp: 
+    with SmartDisplay(backend=backend, size=(1920,1080), extra_args=['-fullscreen',  '-softCursor']) as disp: 
     # with SmartDisplay(backend=backend, size=(1920, 1080)) as disp: 
     # with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
-    with SmartDisplay(backend=backend, extra_args=['-title', 'xephyr_test']) as disp: # get window location by title first, then limit all events to that window.
+    # with SmartDisplay(backend=backend, extra_args=['-title', 'xephyr_test']) as disp: # get window location by title first, then limit all events to that window.
     # with SmartDisplay(backend='xvfb') as disp:
         # with Display(backend='xvfb') as disp:
         # with Display(visible=False) as disp:
@@ -85,11 +85,11 @@ if controlMethod == ControlMethod.xvfb:
         print("NEW DISPLAY AT", disp.display)  # 0, INT
         print("ENV DISPLAY?", os.environ["DISPLAY"])  # :0
 
-
-        from pynput.keyboard import Controller
+        # pynput controller not working.
+        # from pynput.keyboard import Controller
         # from pynput.keyboard import Listener
         # keyboardListener = Listener()
-        keyboardController = Controller()
+        # keyboardController = Controller()
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
         # working! do not use gnome-terminal.
@@ -117,7 +117,7 @@ if controlMethod == ControlMethod.xvfb:
 
             type_string('echo hello world\n')
             # p.wait()
-            keyboardController.type("echo hello world pynput\n")
+            # keyboardController.type("echo hello world pynput\n")
             pyautogui.screenshot("terminal2.png")  # full shot
             # img = disp.grab()  # # partial shot, only on changes
             # maybe we can use this as some sort of "attention" mechanism?
