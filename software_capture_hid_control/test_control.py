@@ -71,10 +71,11 @@ if controlMethod == ControlMethod.xvfb:
     # keyboard = Controller()
     # virtual_display = ":3"
     # backend = 'xvnc'
-    # backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
-    backend = 'xvfb'
+    backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
+    # backend = 'xvfb'
     # with Display(backend=backend) as disp:
-    with SmartDisplay(backend=backend) as disp:
+    with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for testing purpose.
+    # with SmartDisplay(backend=backend) as disp:
     # with SmartDisplay(backend='xvfb') as disp:
         # with Display(backend='xvfb') as disp:
         # with Display(visible=False) as disp:
