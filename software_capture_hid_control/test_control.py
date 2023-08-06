@@ -76,7 +76,9 @@ if controlMethod == ControlMethod.xvfb:
         # Display(os.environ['DISPLAY']).get_input_focus()
         # not working.
         # pyautogui.write("echo hello world\n")
-        p = subprocess.Popen("xdotool type --file -") # works.
+        p = subprocess.Popen("xdotool type --file -".split(" "), stdin=subprocess.PIPE) # works.
+        p.stdin.write(b"hello world\n")
+        p.wait()
         # keyboard.type("echo hello world\n")
         # pyautogui.screenshot("terminal.png")
         img = disp.grab() # shit! not working.
