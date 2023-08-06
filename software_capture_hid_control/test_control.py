@@ -19,7 +19,8 @@
 # shall you look over our previous project lazero/metalazero
 
 # unittest for xrdp:
-# run docker in fullscreen mode, run background keylogger first, then accept inputs through rdp
+# 1. run docker in fullscreen mode, run background keylogger first, then accept inputs through rdp.
+# 2. run some full screen app on windows (virtualbox), along with keylogger.
 
 import sys
 
