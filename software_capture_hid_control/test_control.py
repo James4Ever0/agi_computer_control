@@ -43,6 +43,9 @@ if controlMethod == ControlMethod.xvfb:
     # [python-libxdo](https://pypi.org/project/python-libxdo/)
     # [xdotool python wrapper]()
     # [python-xdoctl](https://pypi.org/project/python-xdoctl/)
+    # [pyxdotool](https://github.com/cphyc/pyxdotool)
+    # -------------[AND NOW FOR SOMETHING COMPLETELY DIFFERENT]---------------
+    # [bezmouse](https://github.com/vincentbavitz/bezmouse)
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
