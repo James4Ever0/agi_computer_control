@@ -47,9 +47,11 @@ if controlMethod == ControlMethod.xvfb:
         print("ENV DISPLAY?", os.environ["DISPLAY"]) # :0
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
-        proc = easyprocess.EasyProcess(['xvfb-run','gnome-terminal'])
-        # proc.start()
-        # time.sleep(3)
-        # pyautogui.write("echo hello world\n")
-        # pyautogui.screenshot("terminal.png")
-        # proc.stop()
+        # proc = easyprocess.EasyProcess(['gnome-terminal']) # not this!
+        proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
+        # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
+        proc.start()
+        time.sleep(3)
+        pyautogui.write("echo hello world\n")
+        pyautogui.screenshot("terminal.png")
+        proc.stop()
