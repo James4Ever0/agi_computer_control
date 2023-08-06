@@ -38,7 +38,7 @@ controlMethod = ControlMethod.xvfb
 
 if controlMethod == ControlMethod.xvfb:
     import pyautogui
-    # do not use pyautogui.
+    # do not use pyautogui for hid input.
 
     # instead use:
     # [xdotool](https://github.com/jordansissel/xdotool)
@@ -85,8 +85,10 @@ if controlMethod == ControlMethod.xvfb:
         stdout_data = p.communicate(input=b'echo hello world\n')[0]
         # p.wait()
         # keyboard.type("echo hello world\n")
-        pyautogui.screenshot("terminal2.png")
-        img = disp.grab()  # shit! not working.
+        pyautogui.screenshot("terminal2.png") # full shot
+        # img = disp.grab()  # # partial shot, only on changes
+        # maybe we can use this as 
+        img = disp.grab(autocrop=False) # full shot again.
         if img:
             img.save("terminal.png")
         else:
