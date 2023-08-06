@@ -54,9 +54,16 @@ if controlMethod == ControlMethod.xvfb:
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
     import easyprocess
-    import time
+    # import time
     import os
     import subprocess
+    def type_string(string: str):
+        input_bytes = string.encode()
+        p = subprocess.Popen(
+            "xdotool type --file -".split(), stdin=subprocess.PIPE)
+        stdout_data = p.communicate(input=input_bytes)[0]
+        return stdout_data
+    
     os.system("rm *.png")
     # nah, not working...
     # from pynput.keyboard import Controller
@@ -70,34 +77,29 @@ if controlMethod == ControlMethod.xvfb:
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
         # working! do not use gnome-terminal.
-        proc = easyprocess.EasyProcess(["alacritty"])
-        # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
-        # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
-        proc.start()
-        time.sleep(3)
-        # from Xlib.display import Display
-        # Display(os.environ['DISPLAY']).get_input_focus()
-        # not working.
-        # pyautogui.write("echo hello world\n")
-        # works.
 
-        def type_string(string: str):
-            input_bytes = string.encode()
-            p = subprocess.Popen(
-                "xdotool type --file -".split(), stdin=subprocess.PIPE)
-            stdout_data = p.communicate(input=input_bytes)[0]
-            return stdout_data
-        type_string('echo hello world\n')
-        # p.wait()
-        # keyboard.type("echo hello world\n")
-        pyautogui.screenshot("terminal2.png")  # full shot
-        # img = disp.grab()  # # partial shot, only on changes
-        # maybe we can use this as some sort of "attention" mechanism?
-        img = disp.grab(autocrop=False)  # full shot again.
-        if img:
-            img.save("terminal.png")
-        else:
-            print("no image yet.")
-        type_string("just some words.")
-        disp.grab().save("terminal3.png")  # nope. no attention/diff mechanism.
-        proc.stop()
+        # proc = easyprocess.EasyProcess(["alacritty"])
+        # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
+        # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
+        with easyprocess.EasyProcess(["alacritty"]) as proc: # no need for stopping.
+            proc.start().sleep(3)
+            # time.sleep(3)
+            # from Xlib.display import Display
+            # Display(os.environ['DISPLAY']).get_input_focus()
+            # not working.
+            # pyautogui.write("echo hello world\n")
+            # works.
+            type_string('echo hello world\n')
+            # p.wait()
+            # keyboard.type("echo hello world\n")
+            pyautogui.screenshot("terminal2.png")  # full shot
+            # img = disp.grab()  # # partial shot, only on changes
+            # maybe we can use this as some sort of "attention" mechanism?
+            img = disp.grab(autocrop=False)  # full shot again.
+            if img:
+                img.save("terminal.png")
+            else:
+                print("no image yet.")
+            type_string("just some words.")
+            disp.grab().save("terminal3.png")  # nope. no attention/diff mechanism.
+            # proc.stop()
