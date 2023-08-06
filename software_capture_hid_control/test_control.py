@@ -70,13 +70,13 @@ if controlMethod == ControlMethod.xvfb:
     backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
     # backend = 'xvfb'
     # with Display(backend=backend) as disp:
-    # with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
+    with SmartDisplay(backend=backend,extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
     # with SmartDisplay(backend=backend) as disp:
     # with SmartDisplay(backend='xvfb') as disp:
         # with Display(backend='xvfb') as disp:
         # with Display(visible=False) as disp:
 
-        # import pyautogui
+        import pyautogui
         # do not use pyautogui for hid input.
         print("NEW DISPLAY AT", disp.display)  # 0, INT
         print("ENV DISPLAY?", os.environ["DISPLAY"])  # :0
@@ -102,7 +102,7 @@ if controlMethod == ControlMethod.xvfb:
             # from Xlib.display import Display
             # Display(os.environ['DISPLAY']).get_input_focus()
             # not working.
-            # pyautogui.write("echo hello world pyautogui\n")
+            pyautogui.write("echo hello world pyautogui\n")
             # works.
             type_string('echo hello world\n')
             # p.wait()
