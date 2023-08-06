@@ -71,7 +71,8 @@ if controlMethod == ControlMethod.xvfb:
     # backend = 'xvfb'
     # with Display(backend=backend) as disp:
     # proc_cmd = ["xterm"]
-    proc_cmd = ["alacritty"]
+    proc_cmd = ["leafpad"]
+    # proc_cmd = ["alacritty"]
     with SmartDisplay(backend=backend, size=(1920,1080), extra_args=['-fullscreen',  '-softCursor']) as disp: 
     # with SmartDisplay(backend=backend, size=(1920, 1080)) as disp: 
     # with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
@@ -101,6 +102,7 @@ if controlMethod == ControlMethod.xvfb:
         import mss
         with easyprocess.EasyProcess(proc_cmd) as proc:
             # need this to "wake" the terminal when fullscreen.
+            # you click 
             os.system("xdotool mousemove 0 0")
             os.system("xdotool click 1")
 
