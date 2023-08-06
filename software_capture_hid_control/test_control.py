@@ -80,15 +80,16 @@ if controlMethod == ControlMethod.xvfb:
         # with Display(backend='xvfb') as disp:
         # with Display(visible=False) as disp:
 
+        # works, but remember to import/reload this module when in virtual display context.
         import pyautogui
-        # works, but remember to import this 
         print("NEW DISPLAY AT", disp.display)  # 0, INT
         print("ENV DISPLAY?", os.environ["DISPLAY"])  # :0
 
 
-        # from pynput.keyboard import Controller
+        from pynput.keyboard import Controller
         # from pynput.keyboard import Listener
-        # keyboard = Listener()
+        # keyboardListener = Listener()
+        keyboardController = Controller()
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
         # working! do not use gnome-terminal.
@@ -116,7 +117,7 @@ if controlMethod == ControlMethod.xvfb:
 
             type_string('echo hello world\n')
             # p.wait()
-            # keyboard.type("echo hello world\n")
+            keyboardController.type("echo hello world pynput\n")
             pyautogui.screenshot("terminal2.png")  # full shot
             # img = disp.grab()  # # partial shot, only on changes
             # maybe we can use this as some sort of "attention" mechanism?
