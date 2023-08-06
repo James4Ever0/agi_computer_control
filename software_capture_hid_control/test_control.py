@@ -72,7 +72,8 @@ if controlMethod == ControlMethod.xvfb:
     # virtual_display = ":3"
     backend = 'xvnc'
     # backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
-    with SmartDisplay(backend=backend) as disp:
+    with Display(backend=backend) as disp:
+    # with SmartDisplay(backend=backend) as disp:
     # with SmartDisplay(backend='xvfb') as disp:
         # with Display(backend='xvfb') as disp:
         # with Display(visible=False) as disp:
