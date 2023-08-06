@@ -66,21 +66,24 @@ if controlMethod == ControlMethod.xvfb:
         return stdout_data
 
     os.system("rm *.png")
-    # nah, not working...
-    # from pynput.keyboard import Controller
     # keyboard = Controller()
     # virtual_display = ":3"
     # backend = 'xvnc'
     backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
     # backend = 'xvfb'
     # with Display(backend=backend) as disp:
-    with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for testing purpose.
+    with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
     # with SmartDisplay(backend=backend) as disp:
     # with SmartDisplay(backend='xvfb') as disp:
         # with Display(backend='xvfb') as disp:
         # with Display(visible=False) as disp:
         print("NEW DISPLAY AT", disp.display)  # 0, INT
         print("ENV DISPLAY?", os.environ["DISPLAY"])  # :0
+
+
+    # from pynput.keyboard import Controller
+    from pynput.keyboard import Listener
+    keyboard = Listener()
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
         # working! do not use gnome-terminal.
