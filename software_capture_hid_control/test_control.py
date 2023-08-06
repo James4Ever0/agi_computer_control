@@ -99,7 +99,7 @@ if controlMethod == ControlMethod.xvfb:
         with easyprocess.EasyProcess(["alacritty"]) as proc:
             # proc.start()
             # proc.start().sleep(3)
-            proc.sleep(3)
+            # proc.sleep(5)
             # time.sleep(3)
             # from Xlib.display import Display
             # Display(os.environ['DISPLAY']).get_input_focus()
