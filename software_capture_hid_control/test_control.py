@@ -28,10 +28,9 @@ from enum import auto
 
 # TODO: test this under py3.9/3.10
 
-
 class ControlMethod(StrEnum):
     xvfb: auto()
-breakpoint()
+# breakpoint()
 
 controlMethod = ControlMethod.xvfb
 
