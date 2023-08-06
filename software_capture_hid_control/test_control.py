@@ -41,6 +41,7 @@ if controlMethod == ControlMethod.xvfb:
     import easyprocess
     import time
     import os
+    os.system("rm *.png")
     # virtual_display = ":3"
     with SmartDisplay(backend='xvfb') as disp:
     # with Display(backend='xvfb') as disp:
@@ -57,8 +58,11 @@ if controlMethod == ControlMethod.xvfb:
         # Display(os.environ['DISPLAY']).get_input_focus()
         # not working.
         # pyautogui.write("echo hello world\n")
-        os.system("xdotool type abc")
-        pyautogui.screenshot("terminal.png")
-        # img = disp.waitgrab() # shit! not working.
-        # img.save("terminal.png")
+        os.system("xdotool type abc") # works.
+        # pyautogui.screenshot("terminal.png")
+        img = disp.grab() # shit! not working.
+        if img:
+            img.save("terminal.png")
+        else:
+            print("no image yet.")
         proc.stop()
