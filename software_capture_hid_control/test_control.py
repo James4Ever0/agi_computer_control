@@ -70,7 +70,7 @@ if controlMethod == ControlMethod.xvfb:
     backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
     # backend = 'xvfb'
     # with Display(backend=backend) as disp:
-    with SmartDisplay(backend=backend, extra_args=['-fullscreen', '-no-host-grab' '-sw-cursor']) as disp: 
+    with SmartDisplay(backend=backend, extra_args=['-fullscreen', '-no-host-grab', '-softCursor']) as disp: 
     # with SmartDisplay(backend=backend, size=(1920, 1080)) as disp: 
     # with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
     # with SmartDisplay(backend=backend) as disp:
@@ -100,7 +100,7 @@ if controlMethod == ControlMethod.xvfb:
             # proc.start()
             # proc.start().sleep(3)
             # proc.sleep(5)
-            proc.sleep(3)
+            proc.sleep(5)
             # time.sleep(3)
             # from Xlib.display import Display
             # Display(os.environ['DISPLAY']).get_input_focus()
