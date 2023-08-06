@@ -51,7 +51,7 @@ if controlMethod == ControlMethod.xvfb:
     # also compress key events?
     # another story please...
 
-    from pyvirtualdisplay import Display
+    # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
     import easyprocess  # no support for stdin!
     # import time
@@ -70,8 +70,9 @@ if controlMethod == ControlMethod.xvfb:
     # from pynput.keyboard import Controller
     # keyboard = Controller()
     # virtual_display = ":3"
-    backend = 'xvnc'
+    # backend = 'xvnc'
     # backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
+    backend = 'xvfb'
     # with Display(backend=backend) as disp:
     with SmartDisplay(backend=backend) as disp:
     # with SmartDisplay(backend='xvfb') as disp:
