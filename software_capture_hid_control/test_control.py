@@ -41,11 +41,13 @@ if controlMethod == ControlMethod.xvfb:
     # instead use:
     # [xdotool](https://github.com/jordansissel/xdotool)
     # [python-libxdo](https://pypi.org/project/python-libxdo/)
-    # [xdotool python wrapper]()
+    # [xdotool python wrapper](https://github.com/Tlaloc-Es/xdotool)
     # [python-xdoctl](https://pypi.org/project/python-xdoctl/)
     # [pyxdotool](https://github.com/cphyc/pyxdotool)
     # -------------[AND NOW FOR SOMETHING COMPLETELY DIFFERENT]---------------
     # [bezmouse](https://github.com/vincentbavitz/bezmouse) might help you evade bot checks, but it is up to you to **compress** user mouse coordinates. maybe just average out tracks per action frame? you name it.
+    # also compress key events?
+    # another story please...
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
