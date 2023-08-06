@@ -55,6 +55,8 @@ if controlMethod == ControlMethod.xvfb:
     import time
     import os
     os.system("rm *.png")
+    import pynput
+    keyboard = pynput.keyboard.
     # virtual_display = ":3"
     with SmartDisplay(backend='xvfb') as disp:
     # with Display(backend='xvfb') as disp:
