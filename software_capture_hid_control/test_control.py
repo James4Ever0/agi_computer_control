@@ -27,10 +27,13 @@ else:
 from enum import auto
 
 # TODO: test this under py3.9/3.10
+
+
 class ControlMethod(StrEnum):
     xvfb: auto()
 
-controlMethod =ControlMethod.xvfb
+
+controlMethod = ControlMethod.xvfb
 
 if controlMethod == ControlMethod.xvfb:
     import pyautogui
@@ -38,4 +41,5 @@ if controlMethod == ControlMethod.xvfb:
     import easyprocess
     # virtual_display = ":3"
     with Display(backend='xvfb') as disp:
-        print("NEW DISPLAY AT", disp.display)
+        print("NEW DISPLAY AT", disp.display) 
+        print("")
