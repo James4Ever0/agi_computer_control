@@ -7,7 +7,7 @@ from typing import Annotated
 from typing_extensions import TypeAlias
 import sys
 
-# use xephyr for testing.
+# use xephyr (leafpad, fullscreen) for unit test.
 
 if sys.version_info >= (3, 11):
     from enum import StrEnum
