@@ -70,7 +70,7 @@ if controlMethod == ControlMethod.xvfb:
     # from pynput.keyboard import Controller
     # keyboard = Controller()
     # virtual_display = ":3"
-    backend = 'xephyr'
+    backend = 'xephyr' # like a visible xvfb, useful for live streaming...
     with SmartDisplay(backend=backend) as disp:
     # with SmartDisplay(backend='xvfb') as disp:
         # with Display(backend='xvfb') as disp:
@@ -111,8 +111,8 @@ if controlMethod == ControlMethod.xvfb:
             # .save not working
             # mss.mss().save(output="terminal4.png")
             # mon_shot = mss.mss().save(mon=1, output="terminal4.png")
-            if backend == "x"
-            mon_shot = mss.mss().shot(output="terminal4.png")
+            if backend == "xvfb":
+                mon_shot = mss.mss().shot(output="terminal4.png")
             # print(mon_shot)
             # nope. no attention/diff mechanism.
             disp.grab().save("terminal3.png")
