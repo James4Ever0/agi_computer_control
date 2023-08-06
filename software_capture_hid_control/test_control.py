@@ -106,9 +106,10 @@ if controlMethod == ControlMethod.xvfb:
             else:
                 print("no image yet.")
             type_string("just some words.")
+            # .save not working
             # mss.mss().save(output="terminal4.png")
-            mon_shot = mss.mss().save(output="terminal4.png")
-            # mon_shot = mss.mss().shot(output="terminal4.png")
+            # mon_shot = mss.mss().save(mon=1, output="terminal4.png")
+            mon_shot = mss.mss().shot(output="terminal4.png")
             # print(mon_shot)
             # nope. no attention/diff mechanism.
             disp.grab().save("terminal3.png")
