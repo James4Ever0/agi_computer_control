@@ -18,6 +18,9 @@
 
 # shall you look over our previous project lazero/metalazero
 
+# unittest for xrdp:
+# run docker in fullscreen mode, run background keylogger first, then accept inputs through rdp
+
 import sys
 
 if sys.version_info >= (3, 11):
