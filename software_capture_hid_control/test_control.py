@@ -28,9 +28,11 @@ from enum import auto
 
 # TODO: test this under py3.9/3.10
 
+
 class ControlMethod(StrEnum):
     xvfb = auto()
 # breakpoint()
+
 
 controlMethod = ControlMethod.xvfb
 
@@ -61,13 +63,14 @@ if controlMethod == ControlMethod.xvfb:
     # keyboard = Controller()
     # virtual_display = ":3"
     with SmartDisplay(backend='xvfb') as disp:
-    # with Display(backend='xvfb') as disp:
-    # with Display(visible=False) as disp:
-        print("NEW DISPLAY AT", disp.display) # 0, INT
-        print("ENV DISPLAY?", os.environ["DISPLAY"]) # :0
+        # with Display(backend='xvfb') as disp:
+        # with Display(visible=False) as disp:
+        print("NEW DISPLAY AT", disp.display)  # 0, INT
+        print("ENV DISPLAY?", os.environ["DISPLAY"])  # :0
         # with Display(backend='xvfb') as disp2:
         #     print("NEW DISPLAY AT", disp2.display) # 2
-        proc = easyprocess.EasyProcess(["alacritty"]) # working! do not use gnome-terminal.
+        # working! do not use gnome-terminal.
+        proc = easyprocess.EasyProcess(["alacritty"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         proc.start()
@@ -76,12 +79,14 @@ if controlMethod == ControlMethod.xvfb:
         # Display(os.environ['DISPLAY']).get_input_focus()
         # not working.
         # pyautogui.write("echo hello world\n")
-        p = subprocess.Popen("xdotool type --file -".split(), stdin=subprocess.PIPE) # works.
+        # works.
+        p = subprocess.Popen(
+            "xdotool type --file -".split(), stdin=subprocess.PIPE)
         stdout_data = p.communicate(input=b'echo hello world\n')[0]
         # p.wait()
         # keyboard.type("echo hello world\n")
         # pyautogui.screenshot("terminal.png")
-        img = disp.grab() # shit! not working.
+        img = disp.grab()  # shit! not working.
         if img:
             img.save("terminal.png")
         else:
