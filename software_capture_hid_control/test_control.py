@@ -53,6 +53,9 @@ if controlMethod == ControlMethod.xvfb:
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         proc.start()
         time.sleep(3)
+        from Xlib.display import Display
+        # Display(os.environ['DISPLAY']).get_input_focus()
+        # not working.
         pyautogui.write("echo hello world\n")
         pyautogui.screenshot("terminal.png")
         # img = disp.waitgrab() # shit! not working.
