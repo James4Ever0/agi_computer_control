@@ -102,7 +102,7 @@ if controlMethod == ControlMethod.xvfb:
         import mss
         with easyprocess.EasyProcess(proc_cmd) as proc:
             # need this to "wake" the terminal when fullscreen.
-            # you click 
+            # you click before starting the program, so the program will not be affected by the activation.
             os.system("xdotool mousemove 0 0")
             os.system("xdotool click 1")
 
@@ -120,7 +120,8 @@ if controlMethod == ControlMethod.xvfb:
             # works.
 
 
-            type_string('echo hello world\n')
+            type_string('echo hello world\r') # return works in leafpad, but "\n" does not.
+            # type_string('echo hello world\n')
             # p.wait()
             # keyboardController.type("echo hello world pynput\n")
             pyautogui.screenshot("terminal2.png")  # full shot
