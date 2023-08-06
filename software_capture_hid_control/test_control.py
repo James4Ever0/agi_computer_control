@@ -37,6 +37,11 @@ controlMethod = ControlMethod.xvfb
 if controlMethod == ControlMethod.xvfb:
     # import pyautogui
     # do not use pyautogui.
+
+    # instead use:
+    # [xdotool]()
+    # [python-libxdo](https://pypi.org/project/python-libxdo/)
+
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
     import easyprocess
