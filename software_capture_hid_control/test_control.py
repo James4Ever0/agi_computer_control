@@ -70,7 +70,9 @@ if controlMethod == ControlMethod.xvfb:
     backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
     # backend = 'xvfb'
     # with Display(backend=backend) as disp:
-    # with SmartDisplay(backend=backend, extra_args=['-fullscreen',  '-softCursor']) as disp: 
+    proc_cmd = ["xterm"]
+    # proc_cmd = ["alacritty"]
+    with SmartDisplay(backend=backend, size=(1920,1080), extra_args=['-fullscreen',  '-softCursor']) as disp: 
     # with SmartDisplay(backend=backend, size=(1920, 1080)) as disp: 
     # with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
     # with SmartDisplay(backend=backend, extra_args=['-title', 'xephyr_test']) as disp: # get window location by title first, then limit all events to that window.
@@ -96,7 +98,7 @@ if controlMethod == ControlMethod.xvfb:
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # no need for starting/stopping
         import mss
-        with easyprocess.EasyProcess(["alacritty"]) as proc:
+        with easyprocess.EasyProcess(proc_cmd) as proc:
             # proc.start()
             # proc.start().sleep(3)
             # proc.sleep(5)
