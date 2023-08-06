@@ -57,13 +57,14 @@ if controlMethod == ControlMethod.xvfb:
     # import time
     import os
     import subprocess
+
     def type_string(string: str):
         input_bytes = string.encode()
         p = subprocess.Popen(
             "xdotool type --file -".split(), stdin=subprocess.PIPE)
         stdout_data = p.communicate(input=input_bytes)[0]
         return stdout_data
-    
+
     os.system("rm *.png")
     # nah, not working...
     # from pynput.keyboard import Controller
@@ -81,7 +82,8 @@ if controlMethod == ControlMethod.xvfb:
         # proc = easyprocess.EasyProcess(["alacritty"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
-        with easyprocess.EasyProcess(["alacritty"]) as proc: # no need for stopping.
+        # no need for stopping.
+        with easyprocess.EasyProcess(["alacritty"]) as proc:
             proc.start().sleep(3)
             # time.sleep(3)
             # from Xlib.display import Display
@@ -101,5 +103,6 @@ if controlMethod == ControlMethod.xvfb:
             else:
                 print("no image yet.")
             type_string("just some words.")
-            disp.grab().save("terminal3.png")  # nope. no attention/diff mechanism.
+            # nope. no attention/diff mechanism.
+            disp.grab().save("terminal3.png")
             # proc.stop()
