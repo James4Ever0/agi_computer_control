@@ -35,16 +35,24 @@ from enum import auto
 
 class ControlMethod(StrEnum):
     xvfb = auto()
+
+
 # breakpoint()
+
 
 class Xdotool(StrEnum):
     libxdo = auto()
+    xdoctl = auto()
+    pyxdotool = auto()
+    xdotool_jordan = auto()
+    xdotool_tlaloc = auto()
+    xdotool_cli = auto() # no external library, work by hand.
 
 
 controlMethod = ControlMethod.xvfb
+xdt = Xdotool.libxdo
 
 if controlMethod == ControlMethod.xvfb:
-
     # instead use:
     # [xdotool](https://github.com/jordansissel/xdotool)
     # [python-libxdo](https://pypi.org/project/python-libxdo/)
@@ -56,17 +64,20 @@ if controlMethod == ControlMethod.xvfb:
     # also compress key events?
     # another story please...
 
+    if xdt == Xdotool.libxdo:
+        ...
+
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
     import easyprocess  # no support for stdin!
+
     # import time
     import os
     import subprocess
 
     def type_string(string: str):
         input_bytes = string.encode()
-        p = subprocess.Popen(
-            "xdotool type --file -".split(), stdin=subprocess.PIPE)
+        p = subprocess.Popen("xdotool type --file -".split(), stdin=subprocess.PIPE)
         stdout_data = p.communicate(input=input_bytes)[0]
         return stdout_data
 
@@ -74,22 +85,25 @@ if controlMethod == ControlMethod.xvfb:
     # keyboard = Controller()
     # virtual_display = ":3"
     # backend = 'xvnc'
-    backend = 'xephyr' # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
+    backend = "xephyr"  # like visible xvfb, useful for live streaming (no need for ffmpeg hacks with xvfb)
     # backend = 'xvfb'
     # with Display(backend=backend) as disp:
     # proc_cmd = ["xterm"]
     proc_cmd = ["leafpad"]
     # proc_cmd = ["alacritty"]
-    with SmartDisplay(backend=backend, size=(1920,1080), extra_args=['-fullscreen',  '-softCursor']) as disp: 
-    # with SmartDisplay(backend=backend, size=(1920, 1080)) as disp: 
-    # with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
-    # with SmartDisplay(backend=backend, extra_args=['-title', 'xephyr_test']) as disp: # get window location by title first, then limit all events to that window.
-    # with SmartDisplay(backend='xvfb') as disp:
+    with SmartDisplay(
+        backend=backend, size=(1920, 1080), extra_args=["-fullscreen", "-softCursor"]
+    ) as disp:
+        # with SmartDisplay(backend=backend, size=(1920, 1080)) as disp:
+        # with SmartDisplay(backend=backend, size=(1920, 1080), extra_args=['-fullscreen']) as disp: # for unit testing purpose. maybe we should log events on that display.
+        # with SmartDisplay(backend=backend, extra_args=['-title', 'xephyr_test']) as disp: # get window location by title first, then limit all events to that window.
+        # with SmartDisplay(backend='xvfb') as disp:
         # with Display(backend='xvfb') as disp:
         # with Display(visible=False) as disp:
 
         # not working in fullscreen mode!
         import pyautogui
+
         print("NEW DISPLAY AT", disp.display)  # 0, INT
         print("ENV DISPLAY?", os.environ["DISPLAY"])  # :0
 
@@ -107,6 +121,7 @@ if controlMethod == ControlMethod.xvfb:
         # proc = easyprocess.EasyProcess(['gnome-terminal', f"--display={disp.display}"])
         # no need for starting/stopping
         import mss
+
         with easyprocess.EasyProcess(proc_cmd) as proc:
             # need this to "wake" the terminal when fullscreen.
             # you click before starting the program, so the program will not be affected by the activation.
@@ -126,8 +141,9 @@ if controlMethod == ControlMethod.xvfb:
             # pyautogui.write("echo hello world pyautogui\n")
             # works.
 
-
-            type_string('echo hello world\r') # return works in leafpad, but "\n" does not.
+            type_string(
+                "echo hello world\r"
+            )  # return works in leafpad, but "\n" does not.
             # type_string('echo hello world\n')
             # p.wait()
             # keyboardController.type("echo hello world pynput\n")
