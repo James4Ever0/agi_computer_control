@@ -37,6 +37,9 @@ class ControlMethod(StrEnum):
     xvfb = auto()
 # breakpoint()
 
+class Xdotool(StrEnum):
+    libxdo = auto()
+
 
 controlMethod = ControlMethod.xvfb
 
