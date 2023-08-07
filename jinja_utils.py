@@ -14,7 +14,8 @@ import re
 
 import humps # default to snake case!
 
-
+def camelize_with_space(string):
+    return humps.camelize(string.replace(" ","-"))
 # ref: https://www.geeksforgeeks.org/python-program-to-convert-camel-case-string-to-snake-case/
 def c2s(_str):
     """
@@ -210,6 +211,7 @@ def load_template(template_path, extra_func_dict={}):
         s2cl=s2cl,
         s2cu=s2cu,
         zip=zip,
+        cws=camelize_with_space,
         # enumerate=enumerate,
         # eval=eval,
         #  join=myJoin

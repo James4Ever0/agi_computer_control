@@ -2,6 +2,9 @@
 To use 'managed' loggers, you must import 'logger' from this file and pass it to other code.
 """
 
+# TODO: configure file handlers for celery logging
+# TODO: find a tool or make some script to take input from stdin and log & filter output
+
 # python version check
 from typing import Union
 
@@ -51,6 +54,7 @@ def messageLengthAndFrequencyFilter(record: logging.LogRecord):
     # args = record.args # tuple. let's reset it.
     # breakpoint()
     msg = record.msg = record.msg % record.args
+    setattr(record, "short_msg", msg)
     args = record.args = ()
 
     if len(msg) < HUGE_MSG_THRESHOLD:
@@ -59,7 +63,7 @@ def messageLengthAndFrequencyFilter(record: logging.LogRecord):
             allow_logging = False
     else:
         if allow_huge_logging:
-            record.msg = " ".join([msg[:HUGE_MSG_THRESHOLD], "..."])
+            record.short_msg = " ".join([msg[:HUGE_MSG_THRESHOLD], "..."]) # do not put stdout in front of file handler!
             accepted = True
             allow_huge_logging = False
     return accepted
@@ -80,39 +84,79 @@ else:
     os.mkdir(log_dir)
 
 log_filename = os.path.join(log_dir, "debug.log")
+celery_log_filename = os.path.join(log_dir, "celery.log")
+fastapi_log_filename = os.path.join(log_dir, "fastapi.log")
 
 from logging.handlers import RotatingFileHandler
 
-myHandler = RotatingFileHandler(
-    log_filename, maxBytes=1024 * 1024 * 15, backupCount=3, encoding="utf-8"
-)
-myHandler.setLevel(logging.DEBUG)
-# myHandler.setLevel(logging.INFO) # will it log less things? yes.
+
+
+
+import pytz
+timezone = pytz.timezone(timezone_str:='Asia/Shanghai')
+# import logging
+import datetime
+
 FORMAT = (  # add timestamp.
     "%(asctime)s <%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s()]\n%(message)s"  # miliseconds already included!
     # "%(asctime)s.%(msecs)03d <%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s()]\n%(message)s"
     # "<%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s()]\n%(message)s"
 )
+
+SHORT_FORMAT =  "%(asctime)s <%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s()]\n%(short_msg)s"
+class Formatter(logging.Formatter):
+    """override logging.Formatter to use an aware datetime object"""
+
+    def converter(self, timestamp):
+        # Create datetime in UTC
+        dt = datetime.datetime.fromtimestamp(timestamp, tz=pytz.UTC)
+        # Change datetime's timezone
+        return dt.astimezone(timezone)
+
+    def formatTime(self, record, datefmt=None):
+        dt = self.converter(record.created)
+        if datefmt:
+            s = dt.strftime(datefmt)
+        else:
+            try:
+                s = dt.isoformat(timespec='milliseconds')
+            except TypeError:
+                s = dt.isoformat()
+        return s
+myFormatter = Formatter(fmt=FORMAT)
+myShortFormatter = Formatter(fmt=SHORT_FORMAT)
+
+def makeRotatingFileHandler(log_filename: str, level=logging.DEBUG):
+    myHandler = RotatingFileHandler(
+        log_filename, maxBytes=1024 * 1024 * 15, backupCount=3, encoding="utf-8"
+    )
+    myHandler.setLevel(level)
+    myHandler.setFormatter(myFormatter)
+    return myHandler
+
+myHandler = makeRotatingFileHandler(log_filename)
+# myHandler.setLevel(logging.INFO) # will it log less things? yes.
+
 # FORMAT = "<%(name)s:%(levelname)s> [%(filename)s:%(lineno)s - %(funcName)s() ] %(message)s"
-myFormatter = logging.Formatter(fmt=FORMAT)
-myHandler.setFormatter(myFormatter)
+# myFormatter = logging.Formatter(fmt=FORMAT)
+# myHandler.setFormatter(myFormatter)
 
 stdout_handler = StreamHandler(sys.stdout)  # test with this!
 stdout_handler.setLevel(logging.DEBUG)
 # stdout_handler.addFilter(MessageLengthAndFrequencyFilter)
 stdout_handler.addFilter(messageLengthAndFrequencyFilter)  # method also works!
-stdout_handler.setFormatter(myFormatter)
+stdout_handler.setFormatter(myShortFormatter)
 # do not use default logger!
 # logger = logging.getLogger(__name__)
 logger = logging.getLogger("agi_computer_control")
 logger.setLevel("DEBUG")
+logger.addHandler(myHandler) # BUG: make sure long logs are unaffected in file.
 logger.addHandler(stdout_handler)
-logger.addHandler(myHandler)
 
 from rich.pretty import pretty_repr
 
 
-def logger_print(*args):
+def logger_print(*args, logger = logger):
     if len(args) != 0:
         format_string = "\n\n".join(["%s"] * len(args))
         # python 3.8+ required!
@@ -135,9 +179,13 @@ def logger_print(*args):
 
 import datetime
 
+try:
+    terminal_column_size  = os.get_terminal_size().columns
+except:
+    terminal_column_size = 30
 logger_print(
     f"[START LOGGING AT: {datetime.datetime.now().isoformat()}]".center(
-        os.get_terminal_size().columns, "+"
+        terminal_column_size, "+"
     )
     # f"[START LOGGING AT: {datetime.datetime.now().isoformat()}]".center(70 - 2, "+")
 )
