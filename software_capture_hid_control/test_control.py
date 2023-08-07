@@ -65,6 +65,8 @@ if controlMethod == ControlMethod.xvfb:
     # [bezmouse](https://github.com/vincentbavitz/bezmouse) might help you evade bot checks, but it is up to you to **compress** user mouse coordinates. maybe just average out tracks per action frame? you name it.
     # also compress key events?
     # another story please...
+
+    # think of some abstract class, which all implementations follow.
     class HIDInterface(ABC):
         @abstractmethod
         def keyboard(self):
@@ -80,6 +82,10 @@ if controlMethod == ControlMethod.xvfb:
             ...
 
     if xdt == Xdotool.libxdo:
+        class LibxdoHID(HIDInterface):
+            def __init__(self, ):
+                self.display = os.environ['DISPLAY']
+            
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
