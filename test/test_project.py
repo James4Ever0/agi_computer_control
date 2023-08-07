@@ -6,6 +6,11 @@
 # shall you use pydantic v1 (>=1.10) or be incompatible with hypothesis.
 # ref: https://github.com/explosion/spaCy/issues/12659
 # lower the version of typing_extensions
+
+import sys
+import numpy as np
+
+sys.path.append("../")
 from log_utils import logger_print
 import torch
 from conscious_struct import (
@@ -30,10 +35,7 @@ from hypothesis import given, settings
 from hypothesis.strategies import integers
 import stopit
 import einops
-import sys
-import numpy as np
 
-sys.path.append("../")
 
 
 # import logging
