@@ -52,6 +52,8 @@ class Xdotool(StrEnum):
 controlMethod = ControlMethod.xvfb
 xdt = Xdotool.libxdo
 
+from abc import ABC, abstractmethod
+
 if controlMethod == ControlMethod.xvfb:
     # instead use:
     # [xdotool](https://github.com/jordansissel/xdotool)
@@ -63,7 +65,19 @@ if controlMethod == ControlMethod.xvfb:
     # [bezmouse](https://github.com/vincentbavitz/bezmouse) might help you evade bot checks, but it is up to you to **compress** user mouse coordinates. maybe just average out tracks per action frame? you name it.
     # also compress key events?
     # another story please...
-    class 
+    class HIDInterface(ABC):
+        @abstractmethod
+        def keyboard(self):
+            ...
+        @abstractmethod
+        def mouse_relative(self):
+            ...
+        @abstractmethod
+        def multimedia(self):
+            ...
+        @abstractmethod
+        def mouse_absolute(self):
+            ...
 
     if xdt == Xdotool.libxdo:
 
