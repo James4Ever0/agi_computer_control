@@ -72,6 +72,7 @@ if controlMethod == ControlMethod.xvfb:
     # another story please...
 
     # think of some abstract class, which all implementations follow.
+    # think of "HIDBase" instead of your imagination. just follow existing guidelines.
     class HIDInterface(ABC):
         @abstractmethod
         def keyboard(
@@ -88,8 +89,8 @@ if controlMethod == ControlMethod.xvfb:
             self,
             x: movement,
             y: movement,
-            scroll: movement,
-            button_codes: List[MouseButton] = [MouseButton.NULL],
+            # scroll: movement,
+            # button_codes: List[MouseButton] = [MouseButton.NULL],
         ):
             ...
 
@@ -101,13 +102,14 @@ if controlMethod == ControlMethod.xvfb:
         def mouse_absolute(
             self,
             coordinate: Tuple[non_neg_int, non_neg_int],
-            resolution: Tuple[pos_int, pos_int],
-            scroll: movement,
-            button_codes: List[MouseButton] = [MouseButton.NULL],
+            # resolution: Tuple[pos_int, pos_int],
+            # scroll: movement,
+            # button_codes: List[MouseButton] = [MouseButton.NULL],
         ):
             ...
 
     if xdt == Xdotool.libxdo:
+        import xdo
 
         @beartype
         class LibxdoHID(HIDInterface):
@@ -115,15 +117,30 @@ if controlMethod == ControlMethod.xvfb:
                 self,
             ):
                 self.display = os.environ["DISPLAY"]
+                self.xdo = xdo.Xdo(display=self.display)
+                self.resolution = ...
 
             def mouse_relative(
                 self,
                 x: movement,
                 y: movement,
-                scroll: movement,
-                button_codes: List[MouseButton] = [MouseButton.NULL],
+                # scroll: movement,
+                # button_codes: List[MouseButton] = [MouseButton.NULL],
             ):
-                
+                self.xdo.move_mouse_relative(x,y)
+            
+            def mouse_absolute(self, ):
+                ...
+            
+            def scroll(self, scroll:movement):
+                ...
+            
+            def mouse_down(self, button_code: MouseButton):
+                ...
+            
+            def mouse_up(self, button_code: MouseButton):
+                ...
+            
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
