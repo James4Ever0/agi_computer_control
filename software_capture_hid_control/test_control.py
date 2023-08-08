@@ -85,8 +85,7 @@ if controlMethod == ControlMethod.xvfb:
         class LibxdoHID(HIDInterface):
             def __init__(self, ):
                 self.display = os.environ['DISPLAY']
-            def keyboard(self, ):
-                ...
+            def mouse_relative():
 
 
     # from pyvirtualdisplay import Display
