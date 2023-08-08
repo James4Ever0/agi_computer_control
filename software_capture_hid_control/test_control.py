@@ -23,8 +23,11 @@
 # 2. run some full screen app on windows (virtualbox), along with keylogger.
 
 import sys
+
 sys.path.append("../")
+from beartype import beartype
 from hid_utils import *
+from typing import List, Tuple, Union
 
 if sys.version_info >= (3, 11):
     from enum import StrEnum
@@ -48,7 +51,7 @@ class Xdotool(StrEnum):
     pyxdotool = auto()
     xdotool_jordan = auto()
     xdotool_tlaloc = auto()
-    xdotool_cli = auto() # no external library, work by hand.
+    xdotool_cli = auto()  # no external library, work by hand.
 
 
 controlMethod = ControlMethod.xvfb
@@ -71,24 +74,56 @@ if controlMethod == ControlMethod.xvfb:
     # think of some abstract class, which all implementations follow.
     class HIDInterface(ABC):
         @abstractmethod
-        def keyboard(self):
+        def keyboard(
+            self,
+            control_codes: List[ControlCode] = [ControlCode.NULL],
+            key_literals: Annotated[
+                List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
+            ] = [],
+        ):
             ...
+
         @abstractmethod
-        def mouse_relative(self, x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = [MouseButton.NULL]):
+        def mouse_relative(
+            self,
+            x: movement,
+            y: movement,
+            scroll: movement,
+            button_codes: List[MouseButton] = [MouseButton.NULL],
+        ):
             ...
+
         @abstractmethod
-        def multimedia(self):
+        def multimedia(self, keys: Union[List[ACPIKey], List[MultimediaKey]] = []):
             ...
+
         @abstractmethod
-        def mouse_absolute(self):
+        def mouse_absolute(
+            self,
+            coordinate: Tuple[non_neg_int, non_neg_int],
+            resolution: Tuple[pos_int, pos_int],
+            scroll: movement,
+            button_codes: List[MouseButton] = [MouseButton.NULL],
+        ):
             ...
 
     if xdt == Xdotool.libxdo:
-        class LibxdoHID(HIDInterface):
-            def __init__(self, ):
-                self.display = os.environ['DISPLAY']
-            def mouse_relative():
 
+        @beartype
+        class LibxdoHID(HIDInterface):
+            def __init__(
+                self,
+            ):
+                self.display = os.environ["DISPLAY"]
+
+            def mouse_relative(
+                self,
+                x: movement,
+                y: movement,
+                scroll: movement,
+                button_codes: List[MouseButton] = [MouseButton.NULL],
+            ):
+                ...
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
