@@ -108,8 +108,8 @@ if controlMethod == ControlMethod.xvfb:
                 self.xdo = xdo.Xdo(display=self.display)
                 self.resolution = ...
 
-            def mouse_relative():
-                ...
+            def key_press(self, key_literal:HIDActionTypes.keys):
+                self.xdo.
             
 
     # from pyvirtualdisplay import Display
