@@ -123,7 +123,7 @@ if controlMethod == ControlMethod.xvfb:
                 scroll: movement,
                 button_codes: List[MouseButton] = [MouseButton.NULL],
             ):
-                ...
+                
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
