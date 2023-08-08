@@ -76,24 +76,29 @@ if controlMethod == ControlMethod.xvfb:
     # think of "HIDBase" instead of your imagination. just follow existing guidelines.
     class HIDInterface(ABC):
         @abstractmethod
-        def key_press(self, key_literal:HIDActionTypes.keys):
-            ...
-        @abstractmethod
-        def key_release(self, key_literal:HIDActionTypes.keys):
+        def key_press(self, key_literal: HIDActionTypes.keys):
             ...
 
         @abstractmethod
-        def mouse_move(
-            self, x:float, y:float
+        def key_release(self, key_literal: HIDActionTypes.keys):
+            ...
+
+        @abstractmethod
+        def mouse_move(self, x: float, y: float):
+            ...
+
+        @abstractmethod
+        def mouse_click(
+            self,
+            x: float,
+            y: float,
+            button_literal: HIDActionTypes.mouse_buttons,
+            pressed: bool,
         ):
             ...
-        
+
         @abstractmethod
-        def mouse_click(self, x:float, y:float, button_literal:HIDActionTypes.mouse_buttons, pressed:bool):
-            ...
-        
-        @abstractmethod
-        def mouse_scroll(self, x:float, y:float,dx:float, dy:float):
+        def mouse_scroll(self, x: float, y: float, dx: float, dy: float):
             ...
 
     if xdt == Xdotool.libxdo:
@@ -108,9 +113,13 @@ if controlMethod == ControlMethod.xvfb:
                 self.xdo = xdo.Xdo(display=self.display)
                 self.resolution = ...
 
-            def key_press(self, key_literal:HIDActionTypes.keys):
-                self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, )
-            
+            def getKeySequenceFromKeyLiteral(
+                self, key_literal: HIDActionTypes.keys
+            ) -> str:
+                return keysequence
+
+            def key_press(self, key_literal: HIDActionTypes.keys):
+                self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, keysequence)
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
