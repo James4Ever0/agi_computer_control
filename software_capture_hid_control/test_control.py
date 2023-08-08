@@ -109,7 +109,7 @@ if controlMethod == ControlMethod.xvfb:
                 self.resolution = ...
 
             def key_press(self, key_literal:HIDActionTypes.keys):
-                self.xdo.send_keysequence_window_up()
+                self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, )
             
 
     # from pyvirtualdisplay import Display
