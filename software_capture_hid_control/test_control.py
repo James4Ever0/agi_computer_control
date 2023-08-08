@@ -27,6 +27,7 @@ import sys
 sys.path.append("../")
 from beartype import beartype
 from hid_utils import *
+from conscious_struct import HIDActionTypes
 from typing import List, Tuple, Union
 
 if sys.version_info >= (3, 11):
