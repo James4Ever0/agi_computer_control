@@ -23,6 +23,8 @@
 # 2. run some full screen app on windows (virtualbox), along with keylogger.
 
 import sys
+sys.path.append("../")
+from hid_utils import *
 
 if sys.version_info >= (3, 11):
     from enum import StrEnum
@@ -72,7 +74,7 @@ if controlMethod == ControlMethod.xvfb:
         def keyboard(self):
             ...
         @abstractmethod
-        def mouse_relative(self):
+        def mouse_relative(self, x: float, y: float, scroll: float, button_codes: List[MouseButton] = [MouseButton.NULL]):
             ...
         @abstractmethod
         def multimedia(self):
