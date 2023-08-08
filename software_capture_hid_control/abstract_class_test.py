@@ -9,6 +9,5 @@ class Example(ABC):
     @abstractmethod
     def b(self):
         print('a')
-        
-        
+
 e = Example()
