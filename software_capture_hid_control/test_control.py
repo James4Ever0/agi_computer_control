@@ -76,10 +76,10 @@ if controlMethod == ControlMethod.xvfb:
     # think of "HIDBase" instead of your imagination. just follow existing guidelines.
     class HIDInterface(ABC):
         @abstractmethod
-        def key_press(self, key_literal:):
+        def key_press(self, key_literal:HIDActionTypes.keys):
             ...
         @abstractmethod
-        def key_release(self, key_literal:):
+        def key_release(self, key_literal:HIDActionTypes.keys):
             ...
 
         @abstractmethod
@@ -89,7 +89,7 @@ if controlMethod == ControlMethod.xvfb:
             ...
         
         @abstractmethod
-        def mouse_click(self, x:float, y:float, button_literal:, pressed:):
+        def mouse_click(self, x:float, y:float, button_literal:HIDActionTypes.mouse_buttons, pressed:bool):
             ...
         
         @abstractmethod
@@ -108,25 +108,7 @@ if controlMethod == ControlMethod.xvfb:
                 self.xdo = xdo.Xdo(display=self.display)
                 self.resolution = ...
 
-            def mouse_relative(
-                self,
-                x: movement,
-                y: movement,
-                # scroll: movement,
-                # button_codes: List[MouseButton] = [MouseButton.NULL],
-            ):
-                self.xdo.move_mouse_relative(x,y)
-            
-            def mouse_absolute(self, ):
-                ...
-            
-            def scroll(self, scroll:movement):
-                ...
-            
-            def mouse_down(self, button_code: MouseButton):
-                ...
-            
-            def mouse_up(self, button_code: MouseButton):
+            def mouse_relative():
                 ...
             
 
