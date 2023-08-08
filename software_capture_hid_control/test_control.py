@@ -74,7 +74,7 @@ if controlMethod == ControlMethod.xvfb:
         def keyboard(self):
             ...
         @abstractmethod
-        def mouse_relative(self, x: float, y: float, scroll: float, button_codes: List[MouseButton] = [MouseButton.NULL]):
+        def mouse_relative(self, x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = [MouseButton.NULL]):
             ...
         @abstractmethod
         def multimedia(self):

@@ -27,23 +27,6 @@ from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
 import inspect
 
 
-def length_limit(l):
-    return Is[lambda b: len(b) == l]
-
-
-def byte_with_length_limit(l):
-    return Annotated[bytes, length_limit(l)]
-
-one_byte: TypeAlias = byte_with_length_limit(1)
-two_bytes: TypeAlias = byte_with_length_limit(2)
-four_bytes: TypeAlias = byte_with_length_limit(4)
-six_bytes: TypeAlias = byte_with_length_limit(6)
-eight_bytes: TypeAlias = byte_with_length_limit(8)
-
-non_neg_int: TypeAlias = Annotated[int, Is[lambda i: i >= 0]]
-pos_int: TypeAlias = Annotated[int, Is[lambda i: i > 0]]
-
-movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]] # this is hardware limit. software might not be limited. (shall we adapt to software limit instead of hardware)
 
 # confusing!
 
