@@ -1,5 +1,8 @@
 import jinja_utils as ju
 import sys
+# get current working direcory.
+# import os
+# curdir = os.curdir
 
 target = sys.argv[-1]
 print("target output:", target)
