@@ -224,7 +224,7 @@ if __name__ == "__main__":
             )
             keysym = xk_keysyms.pop(0)
         KL2XKS.update(val:={key_literal:xk_keysyms_lut[keysym]})
-        print(val)
+        print(val,key_literal,stripped_key_literal )
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
     logger_print("write to:", key_literal_to_xk_keysym_translation_table_path)
