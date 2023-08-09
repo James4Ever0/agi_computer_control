@@ -179,7 +179,7 @@ if __name__ == "__main__":
                 pass
         xk_keysym_lower = xk_keysym.lower()
         xk_keysyms_lut[xk_keysym_lower] = xk_keysym
-        
+
         if not as_unicode_char:
             xk_keysyms.append(xk_keysym_lower)
 
@@ -214,15 +214,15 @@ if __name__ == "__main__":
             # import humps
             stripped_key_literal = translate(
                 stripped_key_literal.lower(), keywords_translation_table
-            )
+            ).translate({k: k + "_l" for k in ["alt", "control", "super", "shift"]})
             # if "return" in stripped_key_literal:
             #     breakpoint()
             xk_keysyms.sort(
                 key=lambda keysym: L.distance(keysym.lower(), stripped_key_literal)
             )
             keysym = xk_keysyms.pop(0)
-        KL2XKS.update(val:={key_literal:xk_keysyms_lut[keysym]})
-        print(val,key_literal,stripped_key_literal )
+        KL2XKS.update(val := {key_literal: xk_keysyms_lut[keysym]})
+        print(val, key_literal, stripped_key_literal)
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
     logger_print("write to:", key_literal_to_xk_keysym_translation_table_path)
