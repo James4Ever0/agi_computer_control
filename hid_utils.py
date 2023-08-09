@@ -182,11 +182,19 @@ if __name__ == "__main__":
         if not as_unicode_char:
             xk_keysym_lower = xk_keysym.lower()
             xk_keysyms.append(xk_keysym_lower)
-            xk_keysyms_lut.update({xk_keysym_lower:xk_keysyms})
 
     KL2XKS = {}
+    import rich
+
+    rich.print(xk_keysyms_lut)
+    breakpoint()
     keywords_translation_table = dict(
-        cmd="super", ctrl="control", _left="_l", _right="_r", esc='escape', enter='return'
+        cmd="super",
+        ctrl="control",
+        _left="_l",
+        _right="_r",
+        esc="escape",
+        enter="return",
     )
     from typing import Dict
 
