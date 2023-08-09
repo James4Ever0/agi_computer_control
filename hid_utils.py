@@ -186,6 +186,10 @@ if __name__ == "__main__":
     keywords_translation_table = dict(
         cmd="super", ctrl="control", _left="_l", _right="_r"
     )
+    from typing import Dict
+    def translate(string:str, translation_table:Dict[str, str]):
+        
+        string = 
     for key_literal in HIDActionBase.keys:
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
         # media prefix is removed.
