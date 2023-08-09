@@ -2,24 +2,31 @@ from enum import Enum, auto, Flag
 from beartype.vale import Is
 from typing_extensions import Annotated, TypeAlias
 from conscious_struct import HIDActionTypes
+
+
 def length_limit(l):
     return Is[lambda b: len(b) == l]
 
+
 from beartype import beartype
+
+
 @beartype
-def strip_key_literal(key_literal:HIDActionTypes.keys):
-    if key_literal.startswith(prefix:="Key."):
+def strip_key_literal(key_literal: HIDActionTypes.keys):
+    if key_literal.startswith(prefix := "Key."):
         return key_literal.lstrip(prefix)
     if len(key_literal) == 3:
-        if key_literal[0] == key_literal[2] != (keychar:=key_literal[1]):
+        if key_literal[0] == key_literal[2] != (keychar := key_literal[1]):
             return keychar
         else:
             raise Exception(f"Abnormal enclosed keychar: {repr(key_literal)}")
     else:
         raise Exception(f"Unable to strip key literal: {repr(key_literal)}")
 
+
 def byte_with_length_limit(l):
     return Annotated[bytes, length_limit(l)]
+
 
 one_byte: TypeAlias = byte_with_length_limit(1)
 two_bytes: TypeAlias = byte_with_length_limit(2)
@@ -30,7 +37,10 @@ eight_bytes: TypeAlias = byte_with_length_limit(8)
 non_neg_int: TypeAlias = Annotated[int, Is[lambda i: i >= 0]]
 pos_int: TypeAlias = Annotated[int, Is[lambda i: i > 0]]
 
-movement: TypeAlias = Annotated[int, Is[lambda i: i >= -126 and i <= 126]] # this is hardware limit. software might not be limited. (shall we adapt to software limit instead of hardware)
+movement: TypeAlias = Annotated[
+    int, Is[lambda i: i >= -126 and i <= 126]
+]  # this is hardware limit. software might not be limited. (shall we adapt to software limit instead of hardware)
+
 
 class ControlCode(Flag):
     # @staticmethod
