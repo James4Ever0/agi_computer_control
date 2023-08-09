@@ -154,3 +154,5 @@ class ACPIKey(Flag):
 if __name__ == "__main__":
     # generate that table.
     import levenshtein
+    with open
+        f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
