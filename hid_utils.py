@@ -188,6 +188,8 @@ if __name__ == "__main__":
         if stripped_key_literal in unicode_str_to_xk_keysym.keys():
             keysym = unicode_str_to_xk_keysym[stripped_key_literal]
         else:
+            import humps
+            stripped_key_literal = humps.
             xk_keysyms.sort(key=lambda keysym: L.distance(keysym, key_literal))
             keysym = xk_keysyms.pop(0)
         KL2XKS[key_literal] = keysym
