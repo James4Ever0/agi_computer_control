@@ -1,5 +1,8 @@
 # import pynput
 # no such dependency when training.
+
+# TODO: split observation space and action space.
+
 import einops
 import os
 import numpy as np
