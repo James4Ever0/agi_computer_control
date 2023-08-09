@@ -1,7 +1,7 @@
 from enum import Enum, auto, Flag
 from beartype.vale import Is
 from typing_extensions import Annotated, TypeAlias
-from conscious_struct import HIDActionTypes
+from conscious_struct import HIDActionTypes, HIDActionBase
 
 
 def length_limit(l):
@@ -162,8 +162,11 @@ class ACPIKey(Flag):
 if __name__ == "__main__":
     # generate that table.
     import Levenshtein as L
+    import keysymdef
 
     KL2XKS = {}
     L.distance()
+    for key_literal in HIDActionBase.keys:
+        ...
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
