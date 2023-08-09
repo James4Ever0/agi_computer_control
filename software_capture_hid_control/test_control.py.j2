@@ -64,11 +64,11 @@ from abc import ABC, abstractmethod
 {% macro impl_abstract(funcName)%}_{{paramDefToClassMethodParams(funcName, abstractParamsLUT[funcName])}}{%endmacro%}
 
 {% macro def_abstract_impl(funcName, paramDef, level)%}
-    {% do abstractParamsLUT[funcName] = paramDef%}
+    {% do abstractParamsLUT.update(dict(funcName = paramDef)) %}
     {% set content%}
 def {{paramDefToClassMethodParams(funcName, paramDef)}}
     """
-    {{caller() |lstrip| indent(True, 4)}}
+    {{caller()| |indent(True, 4)}}
     """
 
 @abstractmethod
