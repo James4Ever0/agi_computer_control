@@ -138,6 +138,7 @@ Scroll mouse (dx, dy) at absolute position (x, y).
                 self.xdo.send_keysequence_window_down(xdo.CURRENTWINDOW, keysequence)
             
             def {{impl_abstract("mouse_move")}}
+                self.xdo.mouse_move(x,y)
             def {{impl_abstract("mouse_click")}}
             def {{impl_abstract("mouse_scroll")}}
 
