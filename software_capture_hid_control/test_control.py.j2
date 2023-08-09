@@ -68,7 +68,7 @@ from abc import ABC, abstractmethod
     {% set content%}
 def {{paramDefToClassMethodParams(funcName, paramDef)}}
     """
-    {{caller() | lstrip | indent(True, 4)}}
+    {{lstrip(caller()) | indent(True, 4)}}
     """
 
 @abstractmethod
