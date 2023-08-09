@@ -63,7 +63,7 @@ from abc import ABC, abstractmethod
 {% macro paramDefToClassMethodParams(funcName, paramDef)%}{{funcName}}(self, {{paramDef}}):{%endmacro%}
 {% macro impl_abstract(funcName)%}_{{paramDefToClassMethodParams(funcName, abstractParamsLUT[funcName])}}{%endmacro%}
 
-{% macro abstract_impl(funcName, paramDef, level)%}
+{% macro def_abstract_impl(funcName, paramDef, level)%}
     {% do abstractParamsLUT[funcName] = paramDef%}
     {% set content%}
 def {{paramDefToClassMethodParams(funcName, paramDef)}}
@@ -96,19 +96,19 @@ if controlMethod == ControlMethod.xvfb:
     class HIDInterface(ABC):
 {% set key_literal = "key_literal: HIDActionTypes.keys"%}
 {% set coordinate = "x: float, y: float" %}
-{%call abstract_impl("key_press", key_literal, 2)%}
+{%call def_abstract_impl("key_press", key_literal, 2)%}
 Press one of key literals.
 {% endcall%}
-{%call abstract_impl("key_release", key_literal, 2) %}
+{%call def_abstract_impl("key_release", key_literal, 2) %}
 Release one of key literals.
 {% endcall %}
-{%call abstract_impl("mouse_move", coordinate, 2) %}
+{%call def_abstract_impl("mouse_move", coordinate, 2) %}
 Move mouse to absolute position (x, y).
 {% endcall %}
-{%call abstract_impl("mouse_click", ",".join([coordinate,"button_literal: HIDActionTypes.mouse_buttons, pressed: bool"]), 2) %}
+{%call def_abstract_impl("mouse_click", ",".join([coordinate,"button_literal: HIDActionTypes.mouse_buttons, pressed: bool"]), 2) %}
 Press or release one of mouse button literals at absolute position (x, y).
 {% endcall %}
-{%call abstract_impl("mouse_scroll", ",".join([coordinate, "dx: float, dy: float"]), 2) %}
+{%call def_abstract_impl("mouse_scroll", ",".join([coordinate, "dx: float, dy: float"]), 2) %}
 Scroll mouse (dx, dy) at absolute position (x, y).
 {% endcall %}
 
