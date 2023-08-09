@@ -122,7 +122,7 @@ Scroll mouse (dx, dy) at absolute position (x, y).
             ):
                 self.display = os.environ["DISPLAY"]
                 self.xdo = xdo.Xdo(display=self.display)
-                self.resolution = ... # get from display specs.
+                self.resolution = (self.xdo.window_size.height, self.xdo.window_size.width) # get from display specs.
 
             def getKeySequenceFromKeyLiteral(
                 self, key_literal: HIDActionTypes.keys
@@ -151,6 +151,10 @@ Scroll mouse (dx, dy) at absolute position (x, y).
             def {{impl_abstract("mouse_scroll")}}
                 self.mouse_move(x,y)
                 # send up/down/left/right keys instead.
+                if dx<0:
+                    self.xdo.send_keysequence_window(xdo.CURRENTWINDOW,"Left")
+                else:
+                    self.xdo.send_keysequence_window(xdo.CURRENTWINDOW,"Right")
                 if dy<0:
                     {# self.xdo.click_window(xdo.CURRENTWINDOW,4) #}
                     self.xdo.send_keysequence_window(xdo.CURRENTWINDOW,"Up")
