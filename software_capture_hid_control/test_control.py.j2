@@ -95,15 +95,19 @@ if controlMethod == ControlMethod.xvfb:
     # TODO: use abstract implementation pattern (template)
     class HIDInterface(ABC):
 {%call abstract_impl("key_press", "key_literal: HIDActionTypes.keys", 2)%}
-press key with literal
+press one of key literals
 {% endcall%}
 {%call abstract_impl("key_release", "key_literal: HIDActionTypes.keys", 2) %}
+release one of key literals
 {% endcall %}
 {%call abstract_impl("mouse_move", "x: float, y: float", 2) %}
+move mouse to absolute position (x, y)
 {% endcall %}
 {%call abstract_impl("mouse_click", "x: float, y: float, button_literal: HIDActionTypes.mouse_buttons, pressed: bool", 2) %}
+press or release one of mouse button literals at absolute position (x, y)
 {% endcall %}
 {%call abstract_impl("mouse_scroll", "x: float, y: float, dx: float, dy: float", 2) %}
+scroll mouse (dx, dy) at absolute position (x, y)
 {% endcall %}
 
     if xdt == Xdotool.libxdo:
