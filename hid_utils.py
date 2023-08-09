@@ -164,13 +164,14 @@ if __name__ == "__main__":
     import Levenshtein as L
     import keysymdef
     
-    
+    unicode_str_to_xk_keysym= {}
 
     for xk_keysym, _, unicode_int in keysymdef.keysymdef:
         unicode_str = None
         if unicode_int:
             try:
                 unicode_str = chr(unicode_int)
+                unicode_str_to_xk_keysym[unicode_str] = xk_keysym
             except:
                 pass
 
