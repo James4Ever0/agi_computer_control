@@ -7,8 +7,8 @@ from conscious_struct import HIDActionTypes
 def length_limit(l):
     return Is[lambda b: len(b) == l]
 
-import Xlib
-
+# import Xlib
+import keysymdef
 from beartype import beartype
 
 
