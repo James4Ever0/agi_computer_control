@@ -94,17 +94,10 @@ if controlMethod == ControlMethod.xvfb:
     # think of "HIDBase" instead of your imagination. just follow existing guidelines.
     # TODO: use abstract implementation pattern (template)
     class HIDInterface(ABC):
-    abstract_impl
-        def key_press(self, key_literal: HIDActionTypes.keys):
-            ...
+{{abstract_impl("key_press", "key_literal: HIDActionTypes.keys", 2)}}
+{{abstract_impl("key_release", "key_literal: HIDActionTypes.keys", 2)}}
+{{abstract_impl("mouse_move", "x: float, y: float", 2)}}
 
-        @abstractmethod
-        def key_release(self, key_literal: HIDActionTypes.keys):
-            ...
-
-        @abstractmethod
-        def mouse_move(self, x: float, y: float):
-            ...
 
         @abstractmethod
         def mouse_click(
