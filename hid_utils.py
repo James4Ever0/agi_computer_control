@@ -3,6 +3,7 @@ from beartype.vale import Is
 from typing_extensions import Annotated, TypeAlias
 from conscious_struct import HIDActionTypes, HIDActionBase
 from log_utils import logger_print
+from typing import Dict, Tuple
 
 
 def length_limit(l):
@@ -33,7 +34,7 @@ from beartype import beartype
 
 
 @beartype
-def strip_key_literal(key_literal: HIDActionTypes.keys):
+def strip_key_literal(key_literal: HIDActionTypes.keys) -> Tuple[bool, bool, str]:
     # defer strip/lstrip.
     # it is not a bug. do not report.
     is_special, is_media = False, False
@@ -52,7 +53,10 @@ def strip_key_literal(key_literal: HIDActionTypes.keys):
     else:
         return is_special, is_media, keychar
 
+
 from typing import Union
+
+
 @beartype
 def key_literal_to_xk_keysym(key_literal: HIDActionTypes.keys) -> Union[None, str]:
     # is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
@@ -185,7 +189,7 @@ if __name__ == "__main__":
         xk_keysyms_lut[xk_keysym_lower] = xk_keysym
 
         # if not as_unicode_char:
-        xk_keysyms.append(xk_keysym_lower) # for space.
+        xk_keysyms.append(xk_keysym_lower)  # for space.
 
     KL2XKS = {}
     # import rich
@@ -201,7 +205,6 @@ if __name__ == "__main__":
         enter="return",
         # we do not use xf86 (multimedia) keys. or shall we? how to handle the play/pause button then?
     )
-    from typing import Dict
 
     def translate(string: str, translation_table: Dict[str, str]):
         for k, v in translation_table.items():
@@ -209,7 +212,8 @@ if __name__ == "__main__":
         return string
 
     import re
-    for key_literal in HIDActionBase.keys: # nearly instant. no need for progressbar.
+
+    for key_literal in HIDActionBase.keys:  # nearly instant. no need for progressbar.
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
         if is_media:
             continue
@@ -225,7 +229,7 @@ if __name__ == "__main__":
                     r"^(alt|control|cmd|shift)$", r"\1_l", stripped_key_literal.lower()
                 ),
                 keywords_translation_table,
-            ).translate({k: k + "_l" for k in ["alt", "control", "super", "shift"]})
+            )
             # if "return" in stripped_key_literal:
             #     breakpoint()
             xk_keysyms.sort(
