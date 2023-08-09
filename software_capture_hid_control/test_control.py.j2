@@ -95,20 +95,20 @@ if controlMethod == ControlMethod.xvfb:
     # TODO: use abstract implementation pattern (template)
     class HIDInterface(ABC):
 {% set key_literal = "key_literal: HIDActionTypes.keys"%}
-{% set coordinate = "" %}
+{% set coordinate = "x: float, y: float" %}
 {%call abstract_impl("key_press", key_literal, 2)%}
 Press one of key literals.
 {% endcall%}
 {%call abstract_impl("key_release", key_literal, 2) %}
 Release one of key literals.
 {% endcall %}
-{%call abstract_impl("mouse_move", "x: float, y: float", 2) %}
+{%call abstract_impl("mouse_move", coordinate, 2) %}
 Move mouse to absolute position (x, y).
 {% endcall %}
-{%call abstract_impl("mouse_click", "x: float, y: float, button_literal: HIDActionTypes.mouse_buttons, pressed: bool", 2) %}
+{%call abstract_impl("mouse_click", ",".join([coordinate,"button_literal: HIDActionTypes.mouse_buttons, pressed: bool"]), 2) %}
 Press or release one of mouse button literals at absolute position (x, y).
 {% endcall %}
-{%call abstract_impl("mouse_scroll", "x: float, y: float, dx: float, dy: float", 2) %}
+{%call abstract_impl("mouse_scroll", ",".join([coordinate, "dx: float, dy: float"]), 2) %}
 Scroll mouse (dx, dy) at absolute position (x, y).
 {% endcall %}
 
