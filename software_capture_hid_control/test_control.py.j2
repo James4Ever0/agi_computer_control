@@ -94,25 +94,17 @@ if controlMethod == ControlMethod.xvfb:
     # think of "HIDBase" instead of your imagination. just follow existing guidelines.
     # TODO: use abstract implementation pattern (template)
     class HIDInterface(ABC):
-{{abstract_impl("key_press", "key_literal: HIDActionTypes.keys", 2)}}
-{{abstract_impl("key_release", "key_literal: HIDActionTypes.keys", 2)}}
-{{abstract_impl("mouse_move", "x: float, y: float", 2)}}
-{{abstract_impl("mouse_click", "x: float, y: float", 2)}}
-
-
-        @abstractmethod
-        def mouse_click(
-            self,
-            x: float,
-            y: float,
-            button_literal: HIDActionTypes.mouse_buttons,
-            pressed: bool,
-        ):
-            ...
-
-        @abstractmethod
-        def mouse_scroll(self, x: float, y: float, dx: float, dy: float):
-            ...
+{%call abstract_impl("key_press", "key_literal: HIDActionTypes.keys", 2)%}
+press key
+{% endcall%}
+{%call abstract_impl("key_release", "key_literal: HIDActionTypes.keys", 2) %}
+{% endcall %}
+{%call abstract_impl("mouse_move", "x: float, y: float", 2) %}
+{% endcall %}
+{%call abstract_impl("mouse_click", "x: float, y: float, button_literal: HIDActionTypes.mouse_buttons, pressed: bool", 2) %}
+{% endcall %}
+{%call abstract_impl("mouse_scroll", "x: float, y: float, dx: float, dy: float", 2) %}
+{% endcall %}
 
     if xdt == Xdotool.libxdo:
         import xdo
