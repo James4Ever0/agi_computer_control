@@ -151,7 +151,9 @@ Scroll mouse (dx, dy) at absolute position (x, y).
             def {{impl_abstract("mouse_scroll")}}
                 self.mouse_move(x,y)
                 if dy<0:
-                    self.xdo.
+                    self.xdo.click_window(xdo.CURRENTWINDOW,4)
+                else:
+                    self.xdo.click_window(xdo.CURRENTWINDOW,5)
 
 
     # from pyvirtualdisplay import Display
