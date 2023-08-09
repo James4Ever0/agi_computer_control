@@ -95,7 +95,7 @@ if controlMethod == ControlMethod.xvfb:
     # TODO: use abstract implementation pattern (template)
     class HIDInterface(ABC):
 {%call abstract_impl("key_press", "key_literal: HIDActionTypes.keys", 2)%}
-press key
+press key with literal
 {% endcall%}
 {%call abstract_impl("key_release", "key_literal: HIDActionTypes.keys", 2) %}
 {% endcall %}
