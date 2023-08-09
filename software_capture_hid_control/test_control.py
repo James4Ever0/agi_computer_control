@@ -74,6 +74,7 @@ if controlMethod == ControlMethod.xvfb:
 
     # think of some abstract class, which all implementations follow.
     # think of "HIDBase" instead of your imagination. just follow existing guidelines.
+    # TODO: use abstract implementation pattern (template)
     class HIDInterface(ABC):
         @abstractmethod
         def key_press(self, key_literal: HIDActionTypes.keys):
