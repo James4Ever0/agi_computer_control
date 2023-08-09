@@ -161,8 +161,9 @@ class ACPIKey(Flag):
 
 if __name__ == "__main__":
     # generate that table.
-    import Levenshtein
+    import Levenshtein as L
 
     KL2XKS = {}
+    L.distance()
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
