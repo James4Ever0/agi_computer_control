@@ -197,6 +197,13 @@ if __name__ == "__main__":
         _right="_r",
         esc="escape",
         enter="return",
+         ='AudioLowerVolume'.lower(),
+ ='AudioMute'.lower(),
+ ='AudioRaiseVolume'.lower(),
+ ='AudioPlay'.lower(),
+ ='AudioStop'.lower(),
+ ='AudioPrev'.lower(),
+ ='AudioNext'.lower(),
     )
     from typing import Dict
 
