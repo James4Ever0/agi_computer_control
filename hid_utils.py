@@ -8,6 +8,7 @@ def length_limit(l):
     return Is[lambda b: len(b) == l]
 
 # import Xlib
+# python-xlib
 import keysymdef
 
 from beartype import beartype
@@ -134,3 +135,7 @@ class ACPIKey(Flag):
     Power = auto()
     Sleep = auto()
     Wakeup = auto()
+
+if __name__ == "__main__":
+    # generate that table.
+    import levenshtein
