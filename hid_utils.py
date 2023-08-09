@@ -197,7 +197,7 @@ if __name__ == "__main__":
         _right="_r",
         esc="escape",
         enter="return",
-        # we do not use xf86 keys.
+        # we do not use xf86 (multimedia) keys. or shall we? how to handle the play/pause button then?
     )
     from typing import Dict
 
@@ -207,8 +207,7 @@ if __name__ == "__main__":
         return string
 
     import re
-
-    for key_literal in HIDActionBase.keys:
+    for key_literal in HIDActionBase.keys: # nearly instant. no need for progressbar.
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
         if is_media:
             continue

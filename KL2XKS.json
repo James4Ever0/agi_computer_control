@@ -86,7 +86,7 @@
     "Key.right": "Right",
     "Key.shift": "Shift_L",
     "Key.shift_r": "Shift_R",
-    "Key.space": "Pause",
+    "Key.space": "space",
     "Key.tab": "Tab",
     "Key.up": "Up"
 }
