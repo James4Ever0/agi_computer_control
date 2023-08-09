@@ -94,13 +94,12 @@ if controlMethod == ControlMethod.xvfb:
     # think of "HIDBase" instead of your imagination. just follow existing guidelines.
     # TODO: use abstract implementation pattern (template)
     class HIDInterface(ABC):
-{% set key_literal = ""%}
-{% set coordinate = ""%}
-{% set %}
-{%call abstract_impl("key_press", "key_literal: HIDActionTypes.keys", 2)%}
+{% set key_literal = "key_literal: HIDActionTypes.keys"%}
+{% set coordinate = "" %}
+{%call abstract_impl("key_press", key_literal, 2)%}
 Press one of key literals.
 {% endcall%}
-{%call abstract_impl("key_release", "key_literal: HIDActionTypes.keys", 2) %}
+{%call abstract_impl("key_release", key_literal, 2) %}
 Release one of key literals.
 {% endcall %}
 {%call abstract_impl("mouse_move", "x: float, y: float", 2) %}
