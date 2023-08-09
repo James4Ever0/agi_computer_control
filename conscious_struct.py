@@ -140,12 +140,6 @@ class HIDActionTypes:
         "Key.space",
         "Key.tab",
         "Key.up",
-        "Key.media_play_pause",
-        "Key.media_volume_mute",
-        "Key.media_volume_down",
-        "Key.media_volume_up",
-        "Key.media_previous",
-        "Key.media_next",
     ]
 
 

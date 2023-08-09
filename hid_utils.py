@@ -57,7 +57,7 @@ def strip_key_literal(key_literal: HIDActionTypes.keys):
 def key_literal_to_xk_keysym(key_literal: HIDActionTypes.keys):
     # is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
     KL2XKS = getKL2XKS()
-    xk_keysym = KL2XKS.get(key_literal)
+    xk_keysym = KL2XKS.get(key_literal, None)
     return xk_keysym
     # Xlib.XK.string_to_keysym(stripped_key_literal)
     # generate this translation table statically, then we will review.
