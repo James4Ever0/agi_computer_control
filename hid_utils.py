@@ -166,7 +166,8 @@ if __name__ == "__main__":
 
     KL2XKS = {}
     for key_literal in HIDActionBase.keys:
-        # is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
+        is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
+        # media prefix is removed.
         dis = L.distance(key_literal)
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
