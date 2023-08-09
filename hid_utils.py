@@ -165,6 +165,7 @@ if __name__ == "__main__":
     import keysymdef
     
     unicode_str_to_xk_keysym= {}
+    xk_keysyms = []
 
     for xk_keysym, _, unicode_int in keysymdef.keysymdef:
         unicode_str = None
@@ -174,6 +175,9 @@ if __name__ == "__main__":
                 unicode_str_to_xk_keysym[unicode_str] = xk_keysym
             except:
                 pass
+        if xk_keysym in unicode_str_to_xk_keysym.keys():
+            xk_keysym = xk_keysym.lower()
+            xk_keysyms.append(xk_keysym)
 
     KL2XKS = {}
     for key_literal in HIDActionBase.keys:
