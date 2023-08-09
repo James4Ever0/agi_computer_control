@@ -14,4 +14,4 @@ class impl_class2(abs_class):
     def non_relevant(self):
         ...
 print(impl_class().method())
-# print(impl_class2())
+# print(impl_class2()) # error
