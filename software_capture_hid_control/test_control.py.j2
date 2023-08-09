@@ -60,6 +60,14 @@ xdt = Xdotool.libxdo
 
 from abc import ABC, abstractmethod
 
+{% macro abstract_impl()%}
+def {{}}:
+    {{comment}}
+
+@abstractmethod
+def _{{}}:
+{% endmacro %}
+
 if controlMethod == ControlMethod.xvfb:
     # instead use:
     # [xdotool](https://github.com/jordansissel/xdotool)
