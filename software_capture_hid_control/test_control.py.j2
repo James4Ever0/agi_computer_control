@@ -128,7 +128,7 @@ Scroll mouse (dx, dy) at absolute position (x, y).
             def getKeySequenceFromKeyLiteral(
                 self, key_literal: HIDActionTypes.keys
             ) -> str:
-                stripped_key_literal = strip_key_literal(key_literal)
+                is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
                 keysequence = ...
                 return keysequence # not joined by "+"
 
