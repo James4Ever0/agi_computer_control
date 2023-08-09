@@ -94,21 +94,21 @@ if controlMethod == ControlMethod.xvfb:
     # think of "HIDBase" instead of your imagination. just follow existing guidelines.
     # TODO: use abstract implementation pattern (template)
     class HIDInterface(ABC):
-{% set key_literal = "key_literal: HIDActionTypes.keys"%}
+{% set key_literal = "key_literal: HIDActionTypes.keys" %}
 {% set coordinate = "x: float, y: float" %}
-{%call def_abstract_impl("key_press", key_literal, 2)%}
+{% call def_abstract_impl("key_press", key_literal, 2) %}
 Press one of key literals.
 {% endcall%}
-{%call def_abstract_impl("key_release", key_literal, 2) %}
+{% call def_abstract_impl("key_release", key_literal, 2) %}
 Release one of key literals.
 {% endcall %}
-{%call def_abstract_impl("mouse_move", coordinate, 2) %}
+{% call def_abstract_impl("mouse_move", coordinate, 2) %}
 Move mouse to absolute position (x, y).
 {% endcall %}
-{%call def_abstract_impl("mouse_click", ",".join([coordinate,"button_literal: HIDActionTypes.mouse_buttons, pressed: bool"]), 2) %}
+{% call def_abstract_impl("mouse_click", ",".join([coordinate,"button_literal: HIDActionTypes.mouse_buttons, pressed: bool"]), 2) %}
 Press or release one of mouse button literals at absolute position (x, y).
 {% endcall %}
-{%call def_abstract_impl("mouse_scroll", ",".join([coordinate, "dx: float, dy: float"]), 2) %}
+{% call def_abstract_impl("mouse_scroll", ",".join([coordinate, "dx: float, dy: float"]), 2) %}
 Scroll mouse (dx, dy) at absolute position (x, y).
 {% endcall %}
 
@@ -127,9 +127,9 @@ Scroll mouse (dx, dy) at absolute position (x, y).
 
             def getKeySequenceFromKeyLiteral(
                 self, key_literal: HIDActionTypes.keys
-            ) -> str:
-                is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
-                keysequence = ...
+            ) -> Union[None, str]:
+                {# is_special, is_media, stripped_key_literal = strip_key_literal(key_literal) #}
+                keysequence = key_literal_to_xk_keysym(key_literal)
                 return keysequence # not joined by "+"
 
             def {{impl_abstract("key_release")}}
@@ -141,7 +141,7 @@ Scroll mouse (dx, dy) at absolute position (x, y).
                 self.xdo.send_keysequence_window_down(xdo.CURRENTWINDOW, keysequence)
             
             def {{impl_abstract("mouse_move")}}
-                self.xdo.mouse_move(x,y, screen=0)
+                self.xdo.mouse_move(x, y, screen=0)
 
             def {{impl_abstract("mouse_click")}}
                 self.mouse_move(x,y)
