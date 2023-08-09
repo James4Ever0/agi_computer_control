@@ -214,7 +214,7 @@ if __name__ == "__main__":
         else:
             # import humps
             stripped_key_literal = translate(
-                re.sub(r"^(alt|control|cmd)$", "\1",stripped_key_literal.lower()), keywords_translation_table
+                re.sub(r"^(alt|control|cmd|shift)$", r"\1_l",stripped_key_literal.lower()), keywords_translation_table
             ).translate({k: k + "_l" for k in ["alt", "control", "super", "shift"]})
             # if "return" in stripped_key_literal:
             #     breakpoint()
