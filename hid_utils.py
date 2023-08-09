@@ -34,14 +34,16 @@ from beartype import beartype
 
 @beartype
 def strip_key_literal(key_literal: HIDActionTypes.keys):
+    # defer strip/lstrip.
+    # it is not a bug. do not report.
     is_special, is_media = False, False
     keychar = ...
     if key_literal.startswith(prefix := "Key."):
         is_special = True
-        keychar = key_literal.lstrip(prefix)
+        keychar = key_literal.replace(prefix, "")
         if keychar.startswith(prefix := "media_"):
             is_media = True
-            keychar = keychar.lstrip(prefix)
+            keychar = keychar.replace(prefix, "")
     if len(key_literal) == 3:
         if not (key_literal[0] == key_literal[2] != (keychar := key_literal[1])):
             raise Exception(f"Abnormal enclosed keychar: {repr(key_literal)}")
