@@ -47,7 +47,7 @@ def strip_key_literal(key_literal: HIDActionTypes.keys):
             keychar = keychar
         else:
             raise Exception(f"Abnormal enclosed keychar: {repr(key_literal)}")
-    if keychar is Ellipsis:
+    if keychar == Ellipsis:
         raise Exception(f"Unable to strip key literal: {repr(key_literal)}")
     else:
         return is_special, is_media, keychar
