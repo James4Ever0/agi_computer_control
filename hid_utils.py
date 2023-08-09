@@ -13,15 +13,23 @@ from beartype import beartype
 
 @beartype
 def strip_key_literal(key_literal: HIDActionTypes.keys):
+    is_special, is_media = False, False
+    keychar = ...
     if key_literal.startswith(prefix := "Key."):
-        return key_literal.lstrip(prefix)
+        is_special = True
+        keychar =  key_literal.lstrip(prefix)
+    elif key_literal.startswith(prefix:='Media.'):
+        is_media = True
+        keychar =  key_literal.lstrip(prefix)
     if len(key_literal) == 3:
         if key_literal[0] == key_literal[2] != (keychar := key_literal[1]):
-            return keychar
+            keychar =  keychar
         else:
             raise Exception(f"Abnormal enclosed keychar: {repr(key_literal)}")
-    else:
+    if keychar is Ellipsis:
         raise Exception(f"Unable to strip key literal: {repr(key_literal)}")
+    else:
+        return is_special, is_media, keychar
 
 
 def byte_with_length_limit(l):
