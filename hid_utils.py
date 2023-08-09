@@ -9,7 +9,9 @@ def length_limit(l):
 
 # import Xlib
 # python-xlib
-import keysymdef
+import os
+
+sourcefile_dirname = os.path.dirname(os.path.abspath(__file__))
 
 from beartype import beartype
 
