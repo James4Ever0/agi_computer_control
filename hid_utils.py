@@ -39,13 +39,11 @@ def strip_key_literal(key_literal: HIDActionTypes.keys):
     if key_literal.startswith(prefix := "Key."):
         is_special = True
         keychar = key_literal.lstrip(prefix)
-        if key_literal.startswith(prefix := "media_"):
+        if keychar.startswith(prefix := "media_"):
             is_media = True
             keychar = keychar.lstrip(prefix)
     if len(key_literal) == 3:
-        if key_literal[0] == key_literal[2] != (keychar := key_literal[1]):
-            keychar = keychar
-        else:
+        if not (key_literal[0] == key_literal[2] != (keychar := key_literal[1])):
             raise Exception(f"Abnormal enclosed keychar: {repr(key_literal)}")
     if keychar == Ellipsis:
         raise Exception(f"Unable to strip key literal: {repr(key_literal)}")

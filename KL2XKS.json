@@ -89,10 +89,10 @@
     "Key.space": "Pause",
     "Key.tab": "Tab",
     "Key.up": "Up",
-    "Key.media_play_pause": "Meta_L",
-    "Key.media_volume_mute": "dead_doubleacute",
-    "Key.media_volume_down": "KP_Page_Down",
-    "Key.media_volume_up": "KP_Page_Up",
-    "Key.media_previous": "Meta_R",
-    "Key.media_next": "KP_Next"
+    "Key.media_play_pause": "dead_acute",
+    "Key.media_volume_mute": "Execute",
+    "Key.media_volume_down": "Pointer_Down",
+    "Key.media_volume_up": "Pointer_Up",
+    "Key.media_previous": "Prior",
+    "Key.media_next": "Next"
 }
