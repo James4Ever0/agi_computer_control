@@ -169,6 +169,13 @@ def load_render_and_format(
     logger_print("=" * 40)
 
 
+def lstrip(string:str):
+    lines = string.split("\n")
+    result_lines = []
+    for line in lines:
+        result_lines.append(line.lstrip())
+    result = "\n".join(result_lines)
+
 def code_and_template_path(base_name):
     code_path = f"{base_name}.py"
     template_path = f"{code_path}.j2"
@@ -212,6 +219,7 @@ def load_template(template_path, extra_func_dict={}):
         s2cu=s2cu,
         zip=zip,
         cws=camelize_with_space,
+        lstrip = lstrip,
         # enumerate=enumerate,
         # eval=eval,
         #  join=myJoin

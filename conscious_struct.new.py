@@ -5,10 +5,9 @@ import einops
 import os
 import numpy as np
 import cv2
-import ast
+import ast 
 from pydantic import BaseModel, validator
 from typing import Union, Mapping, List
-
 # import logging
 from log_utils import logger
 from pydantic_numpy import NDArray
@@ -28,7 +27,6 @@ except:
 ##############
 #  HID BASE  #
 ##############
-
 
 class HIDActionTypes:
     keyboard_action_types: TypeAlias = Literal[
@@ -97,7 +95,7 @@ class HIDActionTypes:
         """'x'""",
         """'y'""",
         """'z'""",
-        "Key.alt",  # check pynput.keyboard.Key
+        "Key.alt", # check pynput.keyboard.Key
         "Key.alt_r",
         "Key.backspace",
         "Key.caps_lock",
@@ -262,7 +260,6 @@ class HIDActionBase:
         else:
             return keycode
 
-
 class HIDAction(BaseModel, HIDActionBase):
     # static method: from_action
     # static method: from_ndarray
@@ -270,7 +267,7 @@ class HIDAction(BaseModel, HIDActionBase):
     # instance method: to_action
     max_x: int
     max_y: int
-    action_type: Literal[
+    action_type:Literal[
         "key_press",  # ["key_press", "'w'"]
         "key_release",  # ["key_release", "'r'"]
         "mouse_move",  # ["mouse_move", [176.7734375, 580.40625]], "timeStamp": 1680247557.125498}
@@ -278,11 +275,12 @@ class HIDAction(BaseModel, HIDActionBase):
         "mouse_scroll",  # ["mouse_scroll", [938.76171875, 318.75, 0, 0]]
         #         None,  # end_of_action
     ]  # you need to specify this.
-    key: Union[
-        HIDActionTypes.keys,
+    key: Union[HIDActionTypes.keys,
         None,
     ] = None
-    mouse_button: Union[HIDActionTypes.mouse_buttons, None] = None
+    mouse_button: Union[
+        HIDActionTypes.mouse_buttons, None
+    ] = None
     mouse_pressed: Union[bool, None] = None
     x: Union[float, None] = None
     y: Union[float, None] = None
@@ -585,7 +583,6 @@ class HIDAction(BaseModel, HIDActionBase):
             action_json = None
         return action_json
 
-
 #########################
 #  HID DATA VALIDATION  #
 #########################
@@ -593,16 +590,19 @@ class HIDAction(BaseModel, HIDActionBase):
 from pydantic import confloat
 
 
+
 class KeyPress(BaseModel):
-    _action_type = "key_press"
+    _action_type = 'key_press'
 
     key: HIDActionTypes.keys
 
     def to_list(self) -> List:
-        return [self._action_type, self.key]
+        return [self._action_type,
+         self.key
+        ]
 
     @classmethod
-    def from_list(cls, lst: List):
+    def from_list(cls, lst:List):
         action_type = lst[0]
         action_args = [lst[1]]
         assert len(action_args) == 1
@@ -610,19 +610,20 @@ class KeyPress(BaseModel):
 
         assert isinstance(action_args[0], HIDActionTypes.keys)
 
-        return cls(key=action_args[0])
-
+        return cls(key = action_args[0])
 
 class KeyRelease(BaseModel):
-    _action_type = "key_release"
+    _action_type = 'key_release'
 
     key: HIDActionTypes.keys
 
     def to_list(self) -> List:
-        return [self._action_type, self.key]
+        return [self._action_type,
+         self.key
+        ]
 
     @classmethod
-    def from_list(cls, lst: List):
+    def from_list(cls, lst:List):
         action_type = lst[0]
         action_args = [lst[1]]
         assert len(action_args) == 1
@@ -630,11 +631,10 @@ class KeyRelease(BaseModel):
 
         assert isinstance(action_args[0], HIDActionTypes.keys)
 
-        return cls(key=action_args[0])
-
+        return cls(key = action_args[0])
 
 class MouseClick(BaseModel):
-    _action_type = "mouse_click"
+    _action_type = 'mouse_click'
 
     x: confloat(ge=0)
     y: confloat(ge=0)
@@ -642,10 +642,12 @@ class MouseClick(BaseModel):
     pressed: bool
 
     def to_list(self) -> List:
-        return [self._action_type, [self.x, self.y, self.button, self.pressed]]
+        return [self._action_type,
+         [self.x, self.y, self.button, self.pressed]
+        ]
 
     @classmethod
-    def from_list(cls, lst: List):
+    def from_list(cls, lst:List):
         action_type = lst[0]
         action_args = lst[1]
         assert len(action_args) == 4
@@ -656,25 +658,21 @@ class MouseClick(BaseModel):
         assert isinstance(action_args[2], HIDActionTypes.mouse_buttons)
         assert isinstance(action_args[3], bool)
 
-        return cls(
-            x=action_args[0],
-            y=action_args[1],
-            button=action_args[2],
-            pressed=action_args[3],
-        )
-
+        return cls(x = action_args[0], y = action_args[1], button = action_args[2], pressed = action_args[3])
 
 class MouseMove(BaseModel):
-    _action_type = "mouse_move"
+    _action_type = 'mouse_move'
 
     x: confloat(ge=0)
     y: confloat(ge=0)
 
     def to_list(self) -> List:
-        return [self._action_type, [self.x, self.y]]
+        return [self._action_type,
+         [self.x, self.y]
+        ]
 
     @classmethod
-    def from_list(cls, lst: List):
+    def from_list(cls, lst:List):
         action_type = lst[0]
         action_args = lst[1]
         assert len(action_args) == 2
@@ -683,11 +681,10 @@ class MouseMove(BaseModel):
         assert isinstance(action_args[0], confloat(ge=0))
         assert isinstance(action_args[1], confloat(ge=0))
 
-        return cls(x=action_args[0], y=action_args[1])
-
+        return cls(x = action_args[0], y = action_args[1])
 
 class MouseScroll(BaseModel):
-    _action_type = "mouse_scroll"
+    _action_type = 'mouse_scroll'
 
     x: confloat(ge=0)
     y: confloat(ge=0)
@@ -695,10 +692,12 @@ class MouseScroll(BaseModel):
     dy: float
 
     def to_list(self) -> List:
-        return [self._action_type, [self.x, self.y, self.dx, self.dy]]
+        return [self._action_type,
+         [self.x, self.y, self.dx, self.dy]
+        ]
 
     @classmethod
-    def from_list(cls, lst: List):
+    def from_list(cls, lst:List):
         action_type = lst[0]
         action_args = lst[1]
         assert len(action_args) == 4
@@ -709,9 +708,9 @@ class MouseScroll(BaseModel):
         assert isinstance(action_args[2], float)
         assert isinstance(action_args[3], float)
 
-        return cls(
-            x=action_args[0], y=action_args[1], dx=action_args[2], dy=action_args[3]
-        )
+        return cls(x = action_args[0], y = action_args[1], dx = action_args[2], dy = action_args[3])
+
+
 
 
 #################
@@ -755,7 +754,7 @@ class ConsciousBase:
 
     data_type_length = len(data_types)
     special_token_length = len(special_tokens)
-    image_length = image_dim * image_dim * image_channels  # obviously flattened.
+    image_length = image_dim * image_dim * image_channels # obviously flattened.
 
     # FIX 1: plus to colon.
     split_sizes = [
@@ -774,12 +773,12 @@ class ConsciousBase:
 
 
 class ConsciousBlock(BaseModel, ConsciousBase):
-    data_type: Literal["image", "HIDAction"]  # 2 bits, required
+    data_type: Literal["image", "HIDAction"] # 2 bits, required
     special_token: Union[
         Literal[
-            "image_newline",
-            "image_end",
-            "action_end",  # change some of these bits into -torch.inf, so you won't have paradox like results.
+        "image_newline",
+        "image_end",
+        "action_end",  # change some of these bits into -torch.inf, so you won't have paradox like results.
         ],
         None,
     ] = None  # 4 bits
@@ -863,15 +862,14 @@ class ConsciousBlock(BaseModel, ConsciousBase):
 
         elif self.data_type == "HIDAction":
             assert self.action_data is not None
-            if len(self.action_data.shape) > 1:
+            if len(self.action_data.shape)>1:
                 self.action_data = self.action_data.reshape((-1,))
             logger.debug("Action data shape: %s", self.action_data.shape)
             # BUG: actual: (4110, 1)
             # shall we reshape this.
             logger.debug(
-                "Expected data shape: %s",
-                expected_data_shape := (HIDActionBase.length,),
-            )  # TODO: expected shape is (4110, )? how to make this typed?
+                "Expected data shape: %s", expected_data_shape := (HIDActionBase.length,)
+            ) # TODO: expected shape is (4110, )? how to make this typed?
             assert self.action_data.shape == expected_data_shape
             assert self.special_token not in ["image_newline", "image_end"]
 
@@ -888,9 +886,8 @@ class ConsciousBlock(BaseModel, ConsciousBase):
         del mTensorBase
         return mTensor
 
-
 class ConsciousFlow(BaseModel, ConsciousBase):
-    consciousBlocks: List[ConsciousBlock]
+    consciousBlocks : List[ConsciousBlock]
 
     @staticmethod
     def from_json(data: List[Mapping]):
@@ -904,23 +901,22 @@ class ConsciousFlow(BaseModel, ConsciousBase):
 
     @staticmethod
     def from_tensor(tensor: torch.Tensor):
-        consciousBlockCount, vector_length = tensor.shape
+        consciousBlockCount,  vector_length = tensor.shape
         assert vector_length == ConsciousBase.length
         mConsciousBlocks = []
         for i in range(consciousBlockCount):
-            arr = tensor[i, :]  # dimension reduction.
+            arr = tensor[i, :] # dimension reduction.
             mConsciousBlock = ConsciousBlock.from_tensor(arr)
             mConsciousBlocks.append(mConsciousBlock)
         mConsciousFlow = ConsciousFlow(consciousBlocks=mConsciousBlocks)
         return mConsciousFlow
 
     def to_tensor(self) -> torch.Tensor:
-        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousBlocks], "* d")
+        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousBlocks], '* d')
         return mTensor
 
-
 class ConsciousStream(BaseModel, ConsciousBase):
-    consciousFlows: List[ConsciousFlow]
+    consciousFlows : List[ConsciousFlow]
 
     @staticmethod
     def from_json(data: List[Mapping]):
@@ -938,14 +934,14 @@ class ConsciousStream(BaseModel, ConsciousBase):
         assert vector_length == ConsciousBase.length
         mConsciousFlows = []
         for i in range(consciousFlowCount):
-            arr = tensor[i, :, :]  # dimension reduction.
+            arr = tensor[i,:, :] # dimension reduction.
             mConsciousFlow = ConsciousFlow.from_tensor(arr)
             mConsciousFlows.append(mConsciousFlow)
         mConsciousStream = ConsciousStream(consciousFlows=mConsciousFlows)
         return mConsciousStream
 
     def to_tensor(self) -> torch.Tensor:
-        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousFlows], "* s d")
+        mTensor, _ = einops.pack([c.to_tensor() for c in self.consciousFlows], '* s d')
         return mTensor
 
 
@@ -980,7 +976,6 @@ from typing import Protocol
 class Enqueue(Protocol):
     def enqueue(self, data, /):
         ...
-
     def clear(self):
         ...
 
@@ -1001,6 +996,7 @@ class TestEnqueue(Enqueue):
 
     def clear(self):
         ...
+        
 
 
 class SequentialTrainingQueue:
@@ -1024,9 +1020,7 @@ class SequentialTrainingQueue:
         #         print(type(consciousBlock))
         consciousVector = consciousBlock.to_tensor()
         logger.debug(
-            "CONSCIOUS VECTOR [TYPE: %s SHAPE: %s]",
-            type(consciousVector),
-            consciousVector.shape,
+            "CONSCIOUS VECTOR [TYPE: %s SHAPE: %s]", type(consciousVector), consciousVector.shape
         )
         self.consciousVectors.append(consciousVector)
 
@@ -1054,23 +1048,11 @@ class SequentialTrainingQueue:
 
             #             print(self.consciousVectors)
 
-            batched_input = ConsciousStream(
-                consciousFlows=[
-                    ConsciousFlow(
-                        consciousBlocks=self.consciousVectors[
-                            i : i + self.context_length
-                        ]
-                    )
-                    for i in range(batch_size)
-                ]
-            ).to_tensor()
+            batched_input = ConsciousStream(consciousFlows = [ConsciousFlow(consciousBlocks = self.consciousVectors[i : i + self.context_length]) for i in range(batch_size)]).to_tensor()
 
-            batched_output = ConsciousFlow(
-                consciousBlocks=[
-                    self.consciousVectors[self.context_length + i]
-                    for i in range(batch_size)
-                ]
-            )
+
+            batched_output = ConsciousFlow(consciousBlocks=[self.consciousVectors[self.context_length + i] for i in range(batch_size)])
+
 
             self.trainer.step(batched_input, batched_output)
 
@@ -1121,8 +1103,6 @@ class SequentialEvalQueue:
     # what about the machine trying to spit out some visual prediction?
     # we just shadow it. (do not act! just dream. compare to current visual ground truth and perform gradient descent. maybe you can use that as continuous training basis? or redesign the model so it can choose to skip (by retrievable positional encoding) some blocks of visual data and perform descent only on selected area?)
     ...
-
-
 ################
 # READING DATA #
 ################
@@ -1144,8 +1124,8 @@ import random
 def trainModelWithDataBasePath(
     basePath: str,
     sequentialTrainingQueue: Enqueue,
-    shuffle_for_test: bool = False,
-    random_seed: int = 43  # pass hypothesis param here!
+    shuffle_for_test:bool=False,
+    random_seed:int = 43 # pass hypothesis param here!
     # sequentialTrainingQueue: SequentialTrainingQueue
 ):
     if shuffle_for_test:
@@ -1167,17 +1147,16 @@ def trainModelWithDataBasePath(
         else:
             raise Exception(f"Cannot parse perspective size from file: {fpath}")
     trainingDataGenerator = getTrainingData(basePath)
-
+    
     if shuffle_for_test:
         myGenerator = list(trainingDataGenerator)
         random.shuffle(myGenerator)
-
+        
     for trainingDataFrame in trainingDataGenerator:
         if trainingDataFrame.datatype == "hid":
             encoded_actions = []
             actions = trainingDataFrame.data["HIDEvents"]
-            if shuffle_for_test:
-                random.shuffle(actions)
+            if shuffle_for_test: random.shuffle(actions)
             for action in actions:
                 action_type, action_args = action
                 if action_type in HIDActionBase.keyboard_action_types:
@@ -1237,7 +1216,7 @@ def trainModelWithDataBasePath(
                 if shuffle_for_test:
                     consciousBlocks.append(consciousBlock)
                 else:
-                    #                 print(consciousBlock)
+                #                 print(consciousBlock)
                     sequentialTrainingQueue.enqueue(consciousBlock)
             #             last_output = torch.zeros(1, output_size)
             if shuffle_for_test:
