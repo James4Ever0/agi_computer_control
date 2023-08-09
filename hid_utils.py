@@ -2,7 +2,7 @@ from enum import Enum, auto, Flag
 from beartype.vale import Is
 from typing_extensions import Annotated, TypeAlias
 from conscious_struct import HIDActionTypes, HIDActionBase
-
+from log_utils import logger_print
 
 def length_limit(l):
     return Is[lambda b: len(b) == l]
@@ -169,12 +169,12 @@ if __name__ == "__main__":
 
     for xk_keysym, _, unicode_int in keysymdef.keysymdef:
         unicode_str = None
-        as_unicode_char=False
+        as_unicode_char = False
         if unicode_int:
             try:
                 unicode_str = chr(unicode_int)
                 unicode_str_to_xk_keysym[unicode_str] = xk_keysym
-                as_unicode_char=True
+                as_unicode_char = True
             except:
                 pass
         if not as_unicode_char:
@@ -186,10 +186,11 @@ if __name__ == "__main__":
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
         # media prefix is removed.
         if stripped_key_literal in unicode_str_to_xk_keysym.keys():
-            ...
+            keysym = unicode_str_to_xk_keysym[stripped_key_literal]
         else:
-            xk_keysyms.sort(key=lambda keysym: L.distance(key_literal))
-            keysym = xk_keysyms[0]
-            xk_keysyms = xk_keysyms
+            xk_keysyms.sort(key=lambda keysym: L.distance(keysym, key_literal))
+            keysym = xk_keysyms.pop(0)
+        KL2XKS[key_literal] = keysym
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
+    logger_print("write to:", key_literal_to_xk_keysym_translation_table_path)
