@@ -88,11 +88,5 @@
     "Key.shift_r": "Shift_R",
     "Key.space": "Pause",
     "Key.tab": "Tab",
-    "Key.up": "Up",
-    "Key.media_play_pause": "dead_acute",
-    "Key.media_volume_mute": "Execute",
-    "Key.media_volume_down": "Pointer_Down",
-    "Key.media_volume_up": "Pointer_Up",
-    "Key.media_previous": "Prior",
-    "Key.media_next": "Next"
+    "Key.up": "Up"
 }

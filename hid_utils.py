@@ -182,8 +182,8 @@ if __name__ == "__main__":
         xk_keysym_lower = xk_keysym.lower()
         xk_keysyms_lut[xk_keysym_lower] = xk_keysym
 
-        if not as_unicode_char:
-            xk_keysyms.append(xk_keysym_lower)
+        # if not as_unicode_char:
+        xk_keysyms.append(xk_keysym_lower) # for space.
 
     KL2XKS = {}
     # import rich
@@ -197,13 +197,7 @@ if __name__ == "__main__":
         _right="_r",
         esc="escape",
         enter="return",
-         ='AudioLowerVolume'.lower(),
- ='AudioMute'.lower(),
- ='AudioRaiseVolume'.lower(),
- ='AudioPlay'.lower(),
- ='AudioStop'.lower(),
- ='AudioPrev'.lower(),
- ='AudioNext'.lower(),
+        # we do not use xf86 keys.
     )
     from typing import Dict
 
@@ -211,10 +205,13 @@ if __name__ == "__main__":
         for k, v in translation_table.items():
             string = string.replace(k, v)
         return string
+
     import re
 
     for key_literal in HIDActionBase.keys:
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
+        if is_media:
+            continue
         # media prefix is removed.
         # if "eth" in stripped_key_literal.lower():
         #     breakpoint()
@@ -223,7 +220,10 @@ if __name__ == "__main__":
         else:
             # import humps
             stripped_key_literal = translate(
-                re.sub(r"^(alt|control|cmd|shift)$", r"\1_l",stripped_key_literal.lower()), keywords_translation_table
+                re.sub(
+                    r"^(alt|control|cmd|shift)$", r"\1_l", stripped_key_literal.lower()
+                ),
+                keywords_translation_table,
             ).translate({k: k + "_l" for k in ["alt", "control", "super", "shift"]})
             # if "return" in stripped_key_literal:
             #     breakpoint()
