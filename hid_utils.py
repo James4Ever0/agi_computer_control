@@ -208,6 +208,8 @@ if __name__ == "__main__":
     for key_literal in HIDActionBase.keys:
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
         # media prefix is removed.
+        # if "eth" in stripped_key_literal.lower():
+        #     breakpoint()
         if stripped_key_literal in unicode_str_to_xk_keysym.keys():
             keysym = unicode_str_to_xk_keysym[stripped_key_literal]
         else:
@@ -221,7 +223,8 @@ if __name__ == "__main__":
                 key=lambda keysym: L.distance(keysym.lower(), stripped_key_literal)
             )
             keysym = xk_keysyms.pop(0)
-        KL2XKS[key_literal] = xk_keysyms_lut[keysym]
+        KL2XKS.update(val:={key_literal:xk_keysyms_lut[keysym]})
+        print(val)
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
     logger_print("write to:", key_literal_to_xk_keysym_translation_table_path)
