@@ -60,14 +60,15 @@ xdt = Xdotool.libxdo
 
 from abc import ABC, abstractmethod
 
-{% macro abstract_impl(funcName)%}
-def {{funcName}}:
+{% macro abstract_impl(funcName, paramDef)%}
+def {{funcName}}(self, {{paramDef}}):
     """
-    {{comment}}
+    {{caller()}}
     """
 
 @abstractmethod
-def _{{funcName}}:
+def _{{funcName}}(self, {{paramDef}}):
+    ...
 {% endmacro %}
 
 if controlMethod == ControlMethod.xvfb:
