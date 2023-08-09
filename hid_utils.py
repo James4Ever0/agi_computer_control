@@ -13,6 +13,14 @@ import os
 
 sourcefile_dirname = os.path.dirname(os.path.abspath(__file__))
 
+key_literal_to_xk_keysym_translation_table_path = os.path.join(sourcefile_dirname, "KL2XKS.json")
+from functools import lru_cache
+
+@lru_cache
+def getKL2XKS():
+    with open(key_literal_to_xk_keysym_translation_table_path, 'r)
+    return KL2XKS
+
 from beartype import beartype
 
 
