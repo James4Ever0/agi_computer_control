@@ -108,7 +108,7 @@ class HIDActionTypes:
         "Key.backspace",
         "Key.caps_lock",
         "Key.cmd",
-        "Key.cmd",
+        # "Key.cmd",
         "Key.cmd_r",
         "Key.ctrl",
         "Key.ctrl",
