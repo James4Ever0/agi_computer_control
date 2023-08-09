@@ -163,19 +163,21 @@ if __name__ == "__main__":
     # generate that table.
     import Levenshtein as L
     import keysymdef
-    
-    unicode_str_to_xk_keysym= {}
+
+    unicode_str_to_xk_keysym = {}
     xk_keysyms = []
 
     for xk_keysym, _, unicode_int in keysymdef.keysymdef:
         unicode_str = None
+        as_unicode_char=False
         if unicode_int:
             try:
                 unicode_str = chr(unicode_int)
                 unicode_str_to_xk_keysym[unicode_str] = xk_keysym
+                as_unicode_char=True
             except:
                 pass
-        if xk_keysym in unicode_str_to_xk_keysym.keys():
+        if not as_unicode_char:
             xk_keysym = xk_keysym.lower()
             xk_keysyms.append(xk_keysym)
 
@@ -183,6 +185,8 @@ if __name__ == "__main__":
     for key_literal in HIDActionBase.keys:
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
         # media prefix is removed.
+        if stripped_key_literal in unicode_str_to_xk_keysym.keys():
+            ...
         dis = L.distance(key_literal)
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
