@@ -9,6 +9,7 @@ def length_limit(l):
 
 # import Xlib
 import keysymdef
+
 from beartype import beartype
 
 
@@ -35,7 +36,8 @@ def strip_key_literal(key_literal: HIDActionTypes.keys):
 @beartype
 def key_literal_to_xk_keysym(key_literal: HIDActionTypes.keys):
     is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
-    Xlib.XK.string_to_keysym(stripped_key_literal)
+    # Xlib.XK.string_to_keysym(stripped_key_literal)
+    # generate this statically, then we will review.
 
 def byte_with_length_limit(l):
     return Annotated[bytes, length_limit(l)]
