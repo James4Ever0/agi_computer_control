@@ -61,7 +61,7 @@ xdt = Xdotool.libxdo
 from abc import ABC, abstractmethod
 {% set abstractParamsLUT = dict()%}
 {% macro paramDefToClassMethodParams(funcName, paramDef)%}{{funcName}}(self, {{paramDef}}):{%endmacro%}
-{% macro lookupAbstractParams(funcName)%}{{paramDefToClassMethodParams(funcName, abstractParamsLUT[funcName])}}{%endmacro%}
+{% macro impl_abstract(funcName)%}_{{paramDefToClassMethodParams(funcName, abstractParamsLUT[funcName])}}{%endmacro%}
 
 {% macro abstract_impl(funcName, paramDef, level)%}
     {% do abstractParamsLUT[funcName] = paramDef%}
@@ -129,7 +129,7 @@ Scroll mouse (dx, dy) at absolute position (x, y).
             ) -> str:
                 return keysequence
 
-            def key_press(self, key_literal: HIDActionTypes.keys):
+            def {{impl_abstract("key_release")}}
                 self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, keysequence)
 
     # from pyvirtualdisplay import Display
