@@ -138,7 +138,8 @@ Scroll mouse (dx, dy) at absolute position (x, y).
                 self.xdo.send_keysequence_window_down(xdo.CURRENTWINDOW, keysequence)
             
             def {{impl_abstract("mouse_move")}}
-                self.xdo.mouse_move(x,y)
+                self.xdo.mouse_move(x,y, screen=0)
+
             def {{impl_abstract("mouse_click")}}
                 self.mouse_move(x,y)
                 button_id = self.getButtonIdFromButtonLiteral(button_literal)
@@ -146,8 +147,10 @@ Scroll mouse (dx, dy) at absolute position (x, y).
                     self.mouse_down(xdo.CURRENTWINDOW,button_id)
                 else:
                     self.mouse_up(xdo.CURRENTWINDOW,button_id)
+
             def {{impl_abstract("mouse_scroll")}}
-                
+                self.mouse_move(x,y)
+
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
