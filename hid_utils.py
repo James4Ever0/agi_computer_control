@@ -4,13 +4,19 @@ from typing_extensions import Annotated, TypeAlias
 from conscious_struct import HIDActionTypes
 def length_limit(l):
     return Is[lambda b: len(b) == l]
+
 from beartype import beartype
 @beartype
 def strip_key_literal(key_literal:HIDActionTypes.keys):
     if key_literal.startswith(prefix:="Key."):
         return key_literal.lstrip(prefix)
     if len(key_literal) == 3:
-        if key_literal[0] == key_literal[2]
+        if key_literal[0] == key_literal[2] != (keychar:=key_literal[1]):
+            return keychar
+        else:
+            raise Exception(f"Abnormal enclosed keychar: {repr(key_literal)}")
+    else:
+        raise Exception(f"Unable to strip key literal: {repr(key_literal)}")
 
 def byte_with_length_limit(l):
     return Annotated[bytes, length_limit(l)]
