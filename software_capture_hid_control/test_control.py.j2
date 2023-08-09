@@ -130,15 +130,19 @@ Scroll mouse (dx, dy) at absolute position (x, y).
             ) -> Union[None, str]:
                 {# is_special, is_media, stripped_key_literal = strip_key_literal(key_literal) #}
                 keysequence = key_literal_to_xk_keysym(key_literal)
+                if keysequence is None:
+                    print("skipping executing key literal:", key_literal)
                 return keysequence # not joined by "+"
 
             def {{impl_abstract("key_release")}}
                 keysequence = self.getKeySequenceFromKeyLiteral(key_literal)
-                self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, keysequence)
+                if keysequence:
+                    self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, keysequence)
             
             def {{impl_abstract("key_press")}}
                 keysequence = self.getKeySequenceFromKeyLiteral(key_literal)
-                self.xdo.send_keysequence_window_down(xdo.CURRENTWINDOW, keysequence)
+                if keysequence:
+                    self.xdo.send_keysequence_window_down(xdo.CURRENTWINDOW, keysequence)
             
             def {{impl_abstract("mouse_move")}}
                 self.xdo.mouse_move(x, y, screen=0)
