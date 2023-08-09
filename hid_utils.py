@@ -167,6 +167,7 @@ if __name__ == "__main__":
 
     unicode_str_to_xk_keysym = {}
     xk_keysyms = []
+    xk_keysyms_lut = {}
 
     for xk_keysym, _, unicode_int in keysymdef.keysymdef:
         unicode_str = None
@@ -179,8 +180,9 @@ if __name__ == "__main__":
             except:
                 pass
         if not as_unicode_char:
-            xk_keysym = xk_keysym.lower()
-            xk_keysyms.append(xk_keysym)
+            xk_keysym_lower = xk_keysym.lower()
+            xk_keysyms.append(xk_keysym_lower)
+            xk_keysyms_lut.update({xk_keysym_lower:xk_keysyms})
 
     KL2XKS = {}
     keywords_translation_table = dict(
@@ -207,7 +209,7 @@ if __name__ == "__main__":
                 key=lambda keysym: L.distance(keysym.lower(), stripped_key_literal)
             )
             keysym = xk_keysyms.pop(0)
-        KL2XKS[key_literal] = keysym
+        KL2XKS[key_literal] = xk_keysyms_lut[keysym]
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
     logger_print("write to:", key_literal_to_xk_keysym_translation_table_path)
