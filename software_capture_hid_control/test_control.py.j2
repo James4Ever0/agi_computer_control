@@ -130,7 +130,16 @@ Scroll mouse (dx, dy) at absolute position (x, y).
                 return keysequence
 
             def {{impl_abstract("key_release")}}
+                keysequence = self.getKeySequenceFromKeyLiteral(key_literal)
                 self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, keysequence)
+            
+            def {{impl_abstract("key_press")}}
+                keysequence = self.getKeySequenceFromKeyLiteral(key_literal)
+                self.xdo.send_keysequence_window_down(xdo.CURRENTWINDOW, keysequence)
+            
+            def {{impl_abstract("mouse_move")}}
+            def {{impl_abstract("mouse_click")}}
+            def {{impl_abstract("mouse_scroll")}}
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
