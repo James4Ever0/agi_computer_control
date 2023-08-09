@@ -2,6 +2,7 @@
 # no such dependency when training.
 
 # TODO: split observation space and action space.
+# it is almost impossible to ensure consistency of representations between observation and actions. we'd better accept this.
 
 import einops
 import os
