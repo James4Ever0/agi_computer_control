@@ -1,10 +1,12 @@
 from enum import Enum, auto, Flag
 from beartype.vale import Is
-from typing import Annotated
-from typing_extensions import TypeAlias
-
+from typing_extensions import Annotated, TypeAlias
+from conscious_struct import HID
 def length_limit(l):
     return Is[lambda b: len(b) == l]
+
+def strip_key_literal(key_literal:):
+    
 
 
 def byte_with_length_limit(l):

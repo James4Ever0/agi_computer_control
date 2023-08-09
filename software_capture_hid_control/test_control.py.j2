@@ -120,8 +120,9 @@ Scroll mouse (dx, dy) at absolute position (x, y).
             def __init__(
                 self,
             ):
-                self.display = os.environ["DISPLAY"]
-                self.xdo = xdo.Xdo(display=self.display)
+                {# self.display = os.environ["DISPLAY"]
+                self.xdo = xdo.Xdo(display=self.display) # it will get this from env. #}
+                self.xdo = xdo.Xdo()
                 self.resolution = (self.xdo.window_size.height, self.xdo.window_size.width) # get from display specs.
 
             def getKeySequenceFromKeyLiteral(
