@@ -122,7 +122,7 @@ Scroll mouse (dx, dy) at absolute position (x, y).
             ):
                 self.display = os.environ["DISPLAY"]
                 self.xdo = xdo.Xdo(display=self.display)
-                self.resolution = ...
+                self.resolution = ... # get from display specs.
 
             def getKeySequenceFromKeyLiteral(
                 self, key_literal: HIDActionTypes.keys
