@@ -59,17 +59,19 @@ controlMethod = ControlMethod.xvfb
 xdt = Xdotool.libxdo
 
 from abc import ABC, abstractmethod
-{% macro paramDefToClassMethodParams(paramDef)%}(self, {{paramDef}}):{%endmacro%}
-{% macro lookupAbstractParams(funcName)%}{{funcName}}{{paramDefToClassMethodParams(paramDef)}}{%endmacro%}
+{% set abstractParamsLUT = dict()%}
+{% macro paramDefToClassMethodParams(funcName, paramDef)%}{{funcName}}(self, {{paramDef}}):{%endmacro%}
+{% macro lookupAbstractParams(funcName)%}{{paramDefToClassMethodParams(funcName, abstractParamsLUT[funcName])}}{%endmacro%}
 
 {% macro abstract_impl(funcName, paramDef)%}
-def {{funcName}}(self, {{paramDef}}):
+    {% do abstractParamsLUT[funcName] = paramDef%}
+def {{paramDefToClassMethodParams(funcName, paramDef)}}
     """
     {{caller() |lstrip| indent(True, 4)}}
     """
 
 @abstractmethod
-def _{{funcName}}(self, {{paramDef}}):
+def _{{paramDefToClassMethodParams(funcName, paramDef)}}
     ...
 {% endmacro %}
 
