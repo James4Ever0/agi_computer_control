@@ -150,10 +150,14 @@ Scroll mouse (dx, dy) at absolute position (x, y).
 
             def {{impl_abstract("mouse_scroll")}}
                 self.mouse_move(x,y)
+                # send up/down/left/right keys instead.
                 if dy<0:
-                    self.xdo.click_window(xdo.CURRENTWINDOW,4)
+                    {# self.xdo.click_window(xdo.CURRENTWINDOW,4) #}
+                    self.xdo.send_keysequence_window(xdo.CURRENTWINDOW,"Up")
                 else:
-                    self.xdo.click_window(xdo.CURRENTWINDOW,5)
+                    {# self.xdo.click_window(xdo.CURRENTWINDOW,5) #}
+                    self.xdo.send_keysequence_window(xdo.CURRENTWINDOW,"Down")
+
 
 
     # from pyvirtualdisplay import Display
