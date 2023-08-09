@@ -23,7 +23,7 @@ import json
 
 
 @lru_cache
-def getKL2XKS():
+def getKL2XKS() -> Dict[str, str]:
     with open(key_literal_to_xk_keysym_translation_table_path, "r") as f:
         KL2XKS = json.loads(f.read())
     return KL2XKS
@@ -52,12 +52,14 @@ def strip_key_literal(key_literal: HIDActionTypes.keys):
     else:
         return is_special, is_media, keychar
 
-
+from typing import Union
 @beartype
-def key_literal_to_xk_keysym(key_literal: HIDActionTypes.keys):
+def key_literal_to_xk_keysym(key_literal: HIDActionTypes.keys) -> Union[None, str]:
     # is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
     KL2XKS = getKL2XKS()
     xk_keysym = KL2XKS.get(key_literal, None)
+    if xk_keysym is None:
+        print(f"skipping translating key literal {repr(key_literal)} to xk_keysym.")
     return xk_keysym
     # Xlib.XK.string_to_keysym(stripped_key_literal)
     # generate this translation table statically, then we will review.
