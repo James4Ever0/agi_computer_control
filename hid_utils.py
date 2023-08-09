@@ -1,13 +1,16 @@
 from enum import Enum, auto, Flag
 from beartype.vale import Is
 from typing_extensions import Annotated, TypeAlias
-from conscious_struct import HID
+from conscious_struct import HIDActionTypes
 def length_limit(l):
     return Is[lambda b: len(b) == l]
-
-def strip_key_literal(key_literal:):
-    
-
+from beartype import beartype
+@beartype
+def strip_key_literal(key_literal:HIDActionTypes.keys):
+    if key_literal.startswith(prefix:="Key."):
+        return key_literal.lstrip(prefix)
+    if len(key_literal) == 3:
+        if key_literal[0] == key_literal[2]
 
 def byte_with_length_limit(l):
     return Annotated[bytes, length_limit(l)]
