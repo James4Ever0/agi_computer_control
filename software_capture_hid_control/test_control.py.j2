@@ -144,12 +144,14 @@ Scroll mouse (dx, dy) at absolute position (x, y).
                 self.mouse_move(x,y)
                 button_id = self.getButtonIdFromButtonLiteral(button_literal)
                 if pressed:
-                    self.mouse_down(xdo.CURRENTWINDOW,button_id)
+                    self.xdo.mouse_down(xdo.CURRENTWINDOW,button_id)
                 else:
-                    self.mouse_up(xdo.CURRENTWINDOW,button_id)
+                    self.xdo.mouse_up(xdo.CURRENTWINDOW,button_id)
 
             def {{impl_abstract("mouse_scroll")}}
                 self.mouse_move(x,y)
+                if dy<0:
+                    self.xdo.
 
 
     # from pyvirtualdisplay import Display
