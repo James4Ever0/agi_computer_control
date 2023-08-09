@@ -3,6 +3,7 @@
 
 # TODO: split observation space and action space.
 # it is almost impossible to ensure consistency of representations between observation and actions. we'd better accept this.
+# but does this necessarily void our attempt of offline learning? not so much. we just need to eliminate those inconsistencies.
 
 import einops
 import os
