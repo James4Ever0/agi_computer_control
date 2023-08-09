@@ -16,3 +16,4 @@ class impl_class2(abs_class):
         ...
 print(impl_class().method())
 # print(impl_class2()) # error
+print(abs)
