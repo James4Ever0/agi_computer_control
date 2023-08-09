@@ -4,6 +4,7 @@ from typing_extensions import Annotated, TypeAlias
 from conscious_struct import HIDActionTypes, HIDActionBase
 from log_utils import logger_print
 
+
 def length_limit(l):
     return Is[lambda b: len(b) == l]
 
@@ -182,8 +183,9 @@ if __name__ == "__main__":
             xk_keysyms.append(xk_keysym)
 
     KL2XKS = {}
-    def translate()
-    keywords_map = 
+    keywords_translation_table = dict(
+        cmd="super", ctrl="control", _left="_l", _right="_r"
+    )
     for key_literal in HIDActionBase.keys:
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
         # media prefix is removed.
@@ -191,8 +193,12 @@ if __name__ == "__main__":
             keysym = unicode_str_to_xk_keysym[stripped_key_literal]
         else:
             # import humps
-            stripped_key_literal = stripped_key_literal.lower()
-            xk_keysyms.sort(key=lambda keysym: L.distance(keysym.lower(), stripped_key_literal))
+            stripped_key_literal = stripped_key_literal.lower().translate(
+                keywords_translation_table
+            )
+            xk_keysyms.sort(
+                key=lambda keysym: L.distance(keysym.lower(), stripped_key_literal)
+            )
             keysym = xk_keysyms.pop(0)
         KL2XKS[key_literal] = keysym
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
