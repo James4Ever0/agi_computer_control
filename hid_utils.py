@@ -187,6 +187,9 @@ if __name__ == "__main__":
         # media prefix is removed.
         if stripped_key_literal in unicode_str_to_xk_keysym.keys():
             ...
-        dis = L.distance(key_literal)
+        else:
+            xk_keysyms.sort(key=lambda keysym: L.distance(key_literal))
+            keysym = xk_keysyms[0]
+            xk_keysyms = xk_keysyms
     with open(key_literal_to_xk_keysym_translation_table_path, "w+") as f:
         f.write(json.dumps(KL2XKS, ensure_ascii=False, indent=4))
