@@ -164,9 +164,15 @@ if __name__ == "__main__":
     import Levenshtein as L
     import keysymdef
     
-    for xk_keysym, _,unicode_int in keysymdef.keysymdef:
-        if unicode_int in keysymdef
-        unicode_str = chr(unicode_int)
+    
+
+    for xk_keysym, _, unicode_int in keysymdef.keysymdef:
+        unicode_str = None
+        if unicode_int:
+            try:
+                unicode_str = chr(unicode_int)
+            except:
+                pass
 
     KL2XKS = {}
     for key_literal in HIDActionBase.keys:
