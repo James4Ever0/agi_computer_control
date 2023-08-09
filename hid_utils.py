@@ -215,6 +215,8 @@ if __name__ == "__main__":
             stripped_key_literal = translate(
                 stripped_key_literal.lower(), keywords_translation_table
             )
+            # if "return" in stripped_key_literal:
+            #     breakpoint()
             xk_keysyms.sort(
                 key=lambda keysym: L.distance(keysym.lower(), stripped_key_literal)
             )
