@@ -60,10 +60,13 @@ xdt = Xdotool.libxdo
 
 from abc import ABC, abstractmethod
 
+{% macro lookupAbstractParams(funcname)%}
+{%endmacro%}
+
 {% macro abstract_impl(funcName, paramDef)%}
 def {{funcName}}(self, {{paramDef}}):
     """
-    {{caller()}}
+    {{caller() |lstrip| indent(True, 4)}}
     """
 
 @abstractmethod
