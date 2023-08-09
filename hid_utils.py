@@ -184,12 +184,15 @@ if __name__ == "__main__":
 
     KL2XKS = {}
     keywords_translation_table = dict(
-        cmd="super", ctrl="control", _left="_l", _right="_r"
+        cmd="super", ctrl="control", _left="_l", _right="_r", esc='escape', enter='return'
     )
     from typing import Dict
-    def translate(string:str, translation_table:Dict[str, str]):
-        
-        string = 
+
+    def translate(string: str, translation_table: Dict[str, str]):
+        for k, v in translation_table.items():
+            string = string.replace(k, v)
+        return string
+
     for key_literal in HIDActionBase.keys:
         is_special, is_media, stripped_key_literal = strip_key_literal(key_literal)
         # media prefix is removed.
@@ -197,8 +200,8 @@ if __name__ == "__main__":
             keysym = unicode_str_to_xk_keysym[stripped_key_literal]
         else:
             # import humps
-            stripped_key_literal = stripped_key_literal.lower().translate(
-                keywords_translation_table
+            stripped_key_literal = translate(
+                stripped_key_literal.lower(), keywords_translation_table
             )
             xk_keysyms.sort(
                 key=lambda keysym: L.distance(keysym.lower(), stripped_key_literal)
