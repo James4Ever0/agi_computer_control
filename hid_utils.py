@@ -7,6 +7,7 @@ from conscious_struct import HIDActionTypes
 def length_limit(l):
     return Is[lambda b: len(b) == l]
 
+import Xlib
 
 from beartype import beartype
 
@@ -31,6 +32,8 @@ def strip_key_literal(key_literal: HIDActionTypes.keys):
     else:
         return is_special, is_media, keychar
 
+@beartype
+def xk_keysym
 
 def byte_with_length_limit(l):
     return Annotated[bytes, length_limit(l)]
