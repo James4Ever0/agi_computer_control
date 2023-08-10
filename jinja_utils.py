@@ -13,6 +13,18 @@ import re
 # live share's triple quote issue isn't fixed.
 
 import humps  # default to snake case!
+import ast
+from typing import List
+
+
+def remove_typehint(paramDef: str) -> str:
+    tree_def = ast.parse("def func({}): ...".format(paramDef)).body[0]
+    args = []
+    for elem in ast.walk(tree_def):
+        if isinstance(elem, ast.arg):
+            argName = elem.arg  # str
+            args.append(argName)
+    return ",".join([f"{argName}={argName}" for argName in args])
 
 
 def camelize_with_space(string):
@@ -178,7 +190,7 @@ def lstrip(string: str):
     for line in lines:
         result_lines.append(line.lstrip())
         # if stripped_line := line.lstrip():
-            # result_lines.append(stripped_line)
+        # result_lines.append(stripped_line)
     result = "\n".join(result_lines).strip("\n")
     return result
 
@@ -227,6 +239,7 @@ def load_template(template_path, extra_func_dict={}):
         zip=zip,
         cws=camelize_with_space,
         lstrip=lstrip,
+        remove_typehint = remove_typehint,
         # enumerate=enumerate,
         # eval=eval,
         #  join=myJoin
