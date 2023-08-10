@@ -13,7 +13,6 @@ class HIDInterface(ABC):
     def key_press(self, key_literal: HIDActionTypes.keys):
         """
         Press one of key literals.
-
         """
 
     @abstractmethod
@@ -23,7 +22,6 @@ class HIDInterface(ABC):
     def key_release(self, key_literal: HIDActionTypes.keys):
         """
         Release one of key literals.
-
         """
 
     @abstractmethod
@@ -33,7 +31,6 @@ class HIDInterface(ABC):
     def mouse_move(self, x: float, y: float):
         """
         Move mouse to absolute position (x, y).
-
         """
 
     @abstractmethod
@@ -49,7 +46,6 @@ class HIDInterface(ABC):
     ):
         """
         Press or release one of mouse button literals at absolute position (x, y).
-
         """
 
     @abstractmethod
@@ -65,7 +61,6 @@ class HIDInterface(ABC):
     def mouse_scroll(self, x: float, y: float, dx: float, dy: float):
         """
         Scroll mouse (dx, dy) at absolute position (x, y).
-
         """
 
     @abstractmethod
