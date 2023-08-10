@@ -176,9 +176,10 @@ def lstrip(string: str):
     lines = string.split("\n")
     result_lines = []
     for line in lines:
-        if stripped_line := line.lstrip():
-            result_lines.append(stripped_line)
-    result = "\n".join(result_lines)
+        result_lines.append(line.lstrip())
+        # if stripped_line := line.lstrip():
+            # result_lines.append(stripped_line)
+    result = "\n".join(result_lines).strip("\n")
     return result
 
 
