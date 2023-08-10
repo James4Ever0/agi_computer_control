@@ -242,7 +242,7 @@ def load_template(template_path, extra_func_dict={}):
         remove_typehint = remove_typehint,
         # enumerate=enumerate,
         # eval=eval,
-        #  join=myJoin
+        # join=myJoin
         **extra_func_dict,
     )
     tpl.globals.update(func_dict)

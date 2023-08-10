@@ -14,7 +14,7 @@ class HIDInterface(ABC):
         """
             Press one of key literals.
         """
-        return self._<Macro 'paramDefToClassMethodParams'>(key_literal=key_literal)
+        return self._key_press(self, key_literal: HIDActionTypes.keys):(key_literal=key_literal)
 
     @abstractmethod
     def _key_press(self, key_literal: HIDActionTypes.keys):
@@ -24,7 +24,7 @@ class HIDInterface(ABC):
         """
             Release one of key literals.
         """
-        return self._<Macro 'paramDefToClassMethodParams'>(key_literal=key_literal)
+        return self._key_release(self, key_literal: HIDActionTypes.keys):(key_literal=key_literal)
 
     @abstractmethod
     def _key_release(self, key_literal: HIDActionTypes.keys):
@@ -34,7 +34,7 @@ class HIDInterface(ABC):
         """
             Move mouse to absolute position (x, y).
         """
-        return self._<Macro 'paramDefToClassMethodParams'>(x=x,y=y)
+        return self._mouse_move(self, x: float, y: float):(x=x,y=y)
 
     @abstractmethod
     def _mouse_move(self, x: float, y: float):
@@ -44,7 +44,7 @@ class HIDInterface(ABC):
         """
             Press or release one of mouse button literals at absolute position (x, y).
         """
-        return self._<Macro 'paramDefToClassMethodParams'>(x=x,y=y,button_literal=button_literal,pressed=pressed)
+        return self._mouse_click(self, x: float, y: float,button_literal: HIDActionTypes.mouse_buttons, pressed: bool):(x=x,y=y,button_literal=button_literal,pressed=pressed)
 
     @abstractmethod
     def _mouse_click(self, x: float, y: float,button_literal: HIDActionTypes.mouse_buttons, pressed: bool):
@@ -54,7 +54,7 @@ class HIDInterface(ABC):
         """
             Scroll mouse (dx, dy) at absolute position (x, y).
         """
-        return self._<Macro 'paramDefToClassMethodParams'>(x=x,y=y,dx=dx,dy=dy)
+        return self._mouse_scroll(self, x: float, y: float,dx: float, dy: float):(x=x,y=y,dx=dx,dy=dy)
 
     @abstractmethod
     def _mouse_scroll(self, x: float, y: float,dx: float, dy: float):

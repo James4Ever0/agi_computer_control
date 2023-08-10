@@ -17,7 +17,7 @@ def {{paramDefToClassMethodParams(funcName, paramDef)}}
     """
     {{lstrip(caller()) | indent(4,True)}}
     """
-    return self._{{paramDefToClassMethodParams}}({{remove_typehint(paramDef)}})
+    return self._{{paramDefToClassMethodParams(funcName, paramDef)}}({{remove_typehint(paramDef)}})
 
 @abstractmethod
 def _{{paramDefToClassMethodParams(funcName, paramDef)}}
