@@ -188,7 +188,7 @@ def load_template(template_path, extra_func_dict={}):
     except:
         Exception(f"jinja template path '{template_path}' is malformed.")
     env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader("./"),
+        loader=jinja2.FileSystemLoader(searchpath=["./","../"]),
         extensions=[
             "jinja2_error.ErrorExtension",
             "jinja2.ext.do",

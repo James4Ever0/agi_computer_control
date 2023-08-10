@@ -7,7 +7,7 @@ from typing import Annotated
 from typing_extensions import TypeAlias
 import sys
 sys.path.append("../")
-{% from "../hid_utils.py.j2" import impl_abstract %}
+{% from "hid_utils.py.j2" import impl_abstract %}
 
 from hid_utils import *
 
