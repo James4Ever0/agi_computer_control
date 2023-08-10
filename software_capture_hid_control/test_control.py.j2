@@ -21,7 +21,7 @@
 # unittest for xrdp:
 # 1. run docker in fullscreen mode, run background keylogger first, then accept inputs through rdp.
 # 2. run some full screen app on windows (virtualbox), along with keylogger.
-{% from "../hid_utils.py.j2" import impl_abstract %}
+{% from "hid_utils.py.j2" import impl_abstract %}
 import sys
 
 sys.path.append("../")
