@@ -31,7 +31,7 @@ class HIDInterface(ABC):
 {% set coordinate = "x: float, y: float" %}
 {% call def_abstract_impl("key_press", key_literal) %}
 Press one of key literals.
-{% endcall%}
+{% endcall %}
 {% call def_abstract_impl("key_release", key_literal) %}
 Release one of key literals.
 {% endcall %}
