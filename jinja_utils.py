@@ -12,10 +12,13 @@ import re
 
 # live share's triple quote issue isn't fixed.
 
-import humps # default to snake case!
+import humps  # default to snake case!
+
 
 def camelize_with_space(string):
-    return humps.camelize(string.replace(" ","-"))
+    return humps.camelize(string.replace(" ", "-"))
+
+
 # ref: https://www.geeksforgeeks.org/python-program-to-convert-camel-case-string-to-snake-case/
 def c2s(_str):
     """
@@ -169,12 +172,14 @@ def load_render_and_format(
     logger_print("=" * 40)
 
 
-def lstrip(string:str):
+def lstrip(string: str):
     lines = string.split("\n")
     result_lines = []
     for line in lines:
         result_lines.append(line.lstrip())
     result = "\n".join(result_lines)
+    return result
+
 
 def code_and_template_path(base_name):
     code_path = f"{base_name}.py"
@@ -188,7 +193,7 @@ def load_template(template_path, extra_func_dict={}):
     except:
         Exception(f"jinja template path '{template_path}' is malformed.")
     env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(searchpath=["./","../"]),
+        loader=jinja2.FileSystemLoader(searchpath=["./", "../"]),
         extensions=[
             "jinja2_error.ErrorExtension",
             "jinja2.ext.do",
@@ -219,7 +224,7 @@ def load_template(template_path, extra_func_dict={}):
         s2cu=s2cu,
         zip=zip,
         cws=camelize_with_space,
-        lstrip = lstrip,
+        lstrip=lstrip,
         # enumerate=enumerate,
         # eval=eval,
         #  join=myJoin

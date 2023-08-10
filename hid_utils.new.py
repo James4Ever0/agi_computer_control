@@ -5,6 +5,61 @@ from conscious_struct import HIDActionTypes, HIDActionBase
 from log_utils import logger_print
 from typing import Dict, Tuple
 
+from abc import ABC, abstractmethod
+
+
+# TODO: use abstract implementation pattern (template)
+class HIDInterface(ABC):
+def key_press(self, key_literal: HIDActionTypes.keys):
+    """
+        Press one of key literals.
+
+    """
+
+@abstractmethod
+def _key_press(self, key_literal: HIDActionTypes.keys):
+    ...
+
+def key_release(self, key_literal: HIDActionTypes.keys):
+    """
+        Release one of key literals.
+
+    """
+
+@abstractmethod
+def _key_release(self, key_literal: HIDActionTypes.keys):
+    ...
+
+def mouse_move(self, x: float, y: float):
+    """
+        Move mouse to absolute position (x, y).
+
+    """
+
+@abstractmethod
+def _mouse_move(self, x: float, y: float):
+    ...
+
+def mouse_click(self, x: float, y: float,button_literal: HIDActionTypes.mouse_buttons, pressed: bool):
+    """
+        Press or release one of mouse button literals at absolute position (x, y).
+
+    """
+
+@abstractmethod
+def _mouse_click(self, x: float, y: float,button_literal: HIDActionTypes.mouse_buttons, pressed: bool):
+    ...
+
+def mouse_scroll(self, x: float, y: float,dx: float, dy: float):
+    """
+        Scroll mouse (dx, dy) at absolute position (x, y).
+
+    """
+
+@abstractmethod
+def _mouse_scroll(self, x: float, y: float,dx: float, dy: float):
+    ...
+
 
 def length_limit(l):
     return Is[lambda b: len(b) == l]
