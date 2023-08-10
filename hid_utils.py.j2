@@ -10,19 +10,19 @@ from abc import ABC, abstractmethod
 {% macro paramDefToClassMethodParams(funcName, paramDef)%}{{funcName}}(self, {{paramDef}}):{%endmacro%}
 {% macro impl_abstract(funcName)%}_{{paramDefToClassMethodParams(funcName, abstractParamsLUT[funcName])}}{%endmacro%}
 
-{% macro def_abstract_impl(funcName, paramDef, level=1)%}
+{% macro def_abstract_impl(funcName, paramDef, level=0)%}
     {% do abstractParamsLUT.update(dict(funcName = paramDef)) %}
     {% set content %}
-def {{paramDefToClassMethodParams(funcName, paramDef)}}
-    """
-    {{lstrip(caller()) | indent(4,True)}}
-    """
-    return self._{{funcName}}({{remove_typehint(paramDef)}})
+    def {{paramDefToClassMethodParams(funcName, paramDef)}}
+        """
+        {{lstrip(caller()) | indent(4,True)}}
+        """
+        return self._{{funcName}}({{remove_typehint(paramDef)}})
 
-@abstractmethod
-def _{{paramDefToClassMethodParams(funcName, paramDef)}}
-    ...
-    {% endset %}
+    @abstractmethod
+    def _{{paramDefToClassMethodParams(funcName, paramDef)}}
+        ...
+        {% endset %}
 {{content | indent(4*level, True)}}
 {% endmacro %}
 
