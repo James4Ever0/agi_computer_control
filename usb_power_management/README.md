@@ -4,7 +4,7 @@ this directory focus on how to get our storage drives and usb devices alive.
 
 ----
 
-the primary cause of disk disconnection could be idle state. 
+the primary cause of disk disconnection could be idle state. check for removable drives and run file operations like `touch` and `rm` in short intervals on them.
 
 ----
 
