@@ -6,7 +6,7 @@
 # -----------[use remote control methods as self control methods]-----------
 # self control (pyautogui, pynput, (win)tty, tmux, subprocess, ttyd with electron/xvfb based browser client)
 
-# qtpy: pyqt4/5/6 abstraction layer
+# qtpy: PyQt5/5/6 abstraction layer
 # https://github.com/spyder-ide/qtpy
 
 # docker-wine image (in case running windows app on linux): scottyhardy/docker-wine
