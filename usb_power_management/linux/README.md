@@ -1,1 +1,1 @@
-do not use 'laptop-mode'
+do not use 'laptop-mode' or 'powernap'
