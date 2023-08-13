@@ -10,9 +10,10 @@ rclone serve webdav /root
 # add "-L" to follow symlinks
 ```
 
-client (only need to ):
+client (only need to start once when server is running):
 
 ```bash
+# need "davfs2" package
 mkdir /mnt/root_webdav
 echo -e "\n\n" | mount -t davfs http://127.0.0.1:8080/ /mnt/root_webdav/
 ```
