@@ -29,7 +29,8 @@ gsettings list-recursively org.gnome.desktop.media-handling
 disable gnome automount:
 
 ```bash
-
+gsettings set org.gnome.desktop.media-handling automount true
+gsettings set org.gnome.desktop.media-handling automount-open true
 ```
 
 write this to `/etc/fstab`:
