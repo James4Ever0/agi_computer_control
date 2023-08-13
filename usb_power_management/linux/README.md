@@ -44,3 +44,7 @@ run this command every minute with crontab:
 ```bash
 mount -a
 ```
+
+## reset usb
+
+echo 
