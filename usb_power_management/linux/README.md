@@ -40,6 +40,7 @@ lsmod | grep uas
 # !!!!!!!!!!!!!!!!!!!!!!!for both methods!!!!!!!!!!!!!!!!!!!!!!!
 # do not forget to run this command
 sudo update-initramfs -u
+# you may not install latest non-free firmware from "firmware-misc-nonfree" (apt) if this command emits any error
 ```
 
 ## hdparm
