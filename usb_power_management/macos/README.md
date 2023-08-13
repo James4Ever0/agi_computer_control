@@ -1,1 +1,1 @@
-disable ``
+disable `IOUSBAttachedSCSI.kext` kernel extension
