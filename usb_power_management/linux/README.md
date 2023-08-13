@@ -2,6 +2,8 @@ do not use 'laptop-mode' or 'powertop' or 'tlp'
 
 ## mountpoint
 
+call `rmdir <mountpoint>` for safer removal.
+
 if the program is still running and writing to mountpoint but disk is not available, then file will be created under that mountpoint, making it impossible to remount the disk to the same location (non-empty) unless remove that mountpoint by force.
 
 ## uas versus usb-storage
@@ -24,12 +26,13 @@ lsusb
 # write those device id to rule
 echo "options usb-storage quirks=7825:a2a4:u,174c:55aa:u,0dd8:ba00:u" > /etc/modprobe.d/blacklist-uas-on-quirks.conf
 
-# method 2: disable uas kernel module entirely
+# method 2: disable uas kernel module entirely (not working?)
 ###########################################################
 # check if uas is not builtin
 find /lib/modules/$(uname -r) | grep uas
 # not built-in, but dynamically loaded
 echo "blacklist uas" >> /etc/modprobe.d/blacklist.conf
+# after reboot, check if uas is
 ```
 
 ## hdparm
