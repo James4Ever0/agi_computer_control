@@ -18,4 +18,4 @@ mkdir /mnt/root_webdav
 echo -e "\n\n" | mount -t davfs http://127.0.0.1:8080/ /mnt/root_webdav/
 ```
 
-## auto mount external/removable drives
+## auto mount external/removable drives (to fixed path)
