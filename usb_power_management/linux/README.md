@@ -26,7 +26,7 @@ write this to `/etc/fstab`:
 UUID=XXXXXXXXXXXXXXX    /myhdd <fstype>  auto,nofail,noatime,rw,user    0   0
 ```
 
-run this command with crontab:
+run this command every minute with crontab:
 
 ```bash
 mount -a
