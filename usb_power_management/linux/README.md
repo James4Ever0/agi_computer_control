@@ -37,7 +37,9 @@ echo "blacklist uas" >> /etc/modprobe.d/blacklist.conf
 # after reboot, check if uas is disabled.
 lsmod | grep uas
 
-# 
+# !!!!!!!!!!!!!!!!!!!!!!!for both methods!!!!!!!!!!!!!!!!!!!!!!!
+# do not forget to run this command
+sudo update-initramfs -u
 ```
 
 ## hdparm
