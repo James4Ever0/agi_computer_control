@@ -20,7 +20,7 @@ echo $((48*1024*1024)) > /proc/sys/vm/dirty_background_bytes
 when trying to activate external disks in regular intervals, remember to sync changes to devices:
 
 ```bash
-touch <mountpoint>/
+touch <mountpoint>/.keepalive; sync; rm -f <mountpoint>/.keepalive; sync
 ```
 
 ## webdav
