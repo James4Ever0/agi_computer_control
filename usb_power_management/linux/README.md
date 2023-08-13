@@ -2,6 +2,10 @@ do not use 'laptop-mode' or 'powertop' or 'tlp'
 
 ## uas versus usb-storage
 
+note: doing this might not help much, since we have this kind of disk dropping issue even with usb-storage driver (might be insufficient power?)
+
+----
+
 although uas (usb attached scsi) is faster than usb-storage (usb bot (bulk-only transport)), it is not stable. a bad standard specification and massive derivatives from vendors result into compatibility problems with linux kernel.
 
 [issues on uas driver](https://forums.linuxmint.com/viewtopic.php?t=320801)
