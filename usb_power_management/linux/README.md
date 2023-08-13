@@ -2,6 +2,8 @@ do not use 'laptop-mode' or 'powertop' or 'tlp'
 
 ## hdparm
 
+disable power management
+
 ```bash
 hdparm -B 255 /dev/sd<n>
 ```
