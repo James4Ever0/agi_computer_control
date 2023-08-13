@@ -1,1 +1,1 @@
-disable `IOUSBAttachedSCSI.kext` kernel extension
+disable `IOUSBAttachedSCSI.kext` kernel extension when connected to suspicious external storage drives
