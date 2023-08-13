@@ -24,7 +24,7 @@ lsusb -t
 # get device id
 lsusb
 # write those device id to rule
-echo "options usb-storage quirks=152d:0578:u,174c:2364:u,152d:0583:u" > /etc/modprobe.d/blacklist-uas-on-quirks.conf
+echo "options usb-storage quirks=174c:1153:u,152d:0578:u,174c:2364:u,152d:0583:u" > /etc/modprobe.d/blacklist-uas-on-quirks.conf
 
 # method 2: disable uas kernel module entirely (not working?)
 ###########################################################
