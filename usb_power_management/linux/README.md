@@ -1,6 +1,8 @@
 do not use 'laptop-mode' or 'powertop' or 'tlp'
 
-## uas versus 
+## uas versus usb-storage
+
+[issues on uas driver](https://forums.linuxmint.com/viewtopic.php?t=320801)
 
 ## hdparm
 
