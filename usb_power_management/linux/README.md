@@ -2,7 +2,7 @@ do not use 'laptop-mode' or 'powertop' or 'tlp'
 
 ## webdav
 
-server (may explicitly restart on reconnection):
+server (may manually/explicitly restart on reconnection):
 
 ```bash
 # first mount the hard drive to some path.
