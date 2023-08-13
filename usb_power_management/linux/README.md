@@ -1,5 +1,7 @@
 do not use 'laptop-mode' or 'powertop' or 'tlp'
 
+## uas versus 
+
 ## hdparm
 
 disable power management
