@@ -1,5 +1,11 @@
 do not use 'laptop-mode' or 'powertop' or 'tlp'
 
+## hdparm
+
+```bash
+hdparm -B 255 /dev/sd<n>
+```
+
 ## webdav
 
 server (may manually/explicitly restart on reconnection):
