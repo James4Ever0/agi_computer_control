@@ -6,6 +6,10 @@ although uas (usb attached scsi) is faster than usb-storage (usb bot (bulk-only 
 
 [issues on uas driver](https://forums.linuxmint.com/viewtopic.php?t=320801)
 
+```bash
+echo "blacklisy uas" >> /etc/modprobe.d/blacklist.conf
+```
+
 ## hdparm
 
 disable power management
