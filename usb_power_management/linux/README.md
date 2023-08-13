@@ -7,8 +7,12 @@ although uas (usb attached scsi) is faster than usb-storage (usb bot (bulk-only 
 [issues on uas driver](https://forums.linuxmint.com/viewtopic.php?t=320801)
 
 ```bash
+# look for bus number and device number of which 
+lsusb -t
+# check if uas is not builtin
+find /lib/modules/$(uname -r) | grep uas
 # not built-in, but dynamically loaded
-echo "blacklisy uas" >> /etc/modprobe.d/blacklist.conf
+echo "blacklist uas" >> /etc/modprobe.d/blacklist.conf
 ```
 
 ## hdparm
