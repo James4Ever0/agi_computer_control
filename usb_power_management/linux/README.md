@@ -30,12 +30,14 @@ echo "options usb-storage quirks=174c:2364:u,152d:0583:u" > /etc/modprobe.d/blac
 ###########################################################
 # get module dependencies
 modinfo uas
-# check if uas is not builtin (maybe we should just delete that damn kernel module)
+# check if uas is not builtin (maybe we should just delete that damn kernel module (not working?))
 find /lib/modules/$(uname -r) | grep uas
 # not built-in, but dynamically loaded
 echo "blacklist uas" >> /etc/modprobe.d/blacklist.conf
 # after reboot, check if uas is disabled.
 lsmod | grep uas
+
+# 
 ```
 
 ## hdparm
