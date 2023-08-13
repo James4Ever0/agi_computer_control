@@ -2,6 +2,8 @@ do not use 'laptop-mode' or 'powertop' or 'tlp'
 
 ## uas versus usb-storage
 
+although uas (usb attached scsi) is faster than usb-storage, it is not stable. a bad standard specification and massive 
+
 [issues on uas driver](https://forums.linuxmint.com/viewtopic.php?t=320801)
 
 ## hdparm
