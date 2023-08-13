@@ -1,5 +1,9 @@
 do not use 'laptop-mode' or 'powertop' or 'tlp'
 
+## mountpoint auto remove
+
+if program is still running and writing to mountpoint but disk is not available, then file will be created under that mountpoint, 
+
 ## uas versus usb-storage
 
 note: doing this might not help much, since we have this kind of disk detaching issue even with usb-storage driver (might be insufficient power?)
@@ -101,3 +105,5 @@ mount -a
 under `/sys/bus/pci/drivers/(xhci_hci|ehci)`, echo usb device ids (once at a time) to `unbind` and `bind` respectively to reset usb devices.
 
 the same for `/sys/bus/usb/drivers/*`.
+
+find device id by "lsusb". use command "usbreset" from package "usbutils".
