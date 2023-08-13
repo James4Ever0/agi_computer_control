@@ -20,7 +20,17 @@ echo -e "\n\n" | mount -t davfs http://127.0.0.1:8080/ /mnt/root_webdav/
 
 ## auto mount external/removable drives (to fixed path)
 
-disable 
+check if automount is enabled
+
+```bash
+gsettings list-recursively org.gnome.desktop.media-handling 
+```
+
+disable gnome automount:
+
+```bash
+
+```
 
 write this to `/etc/fstab`:
 
