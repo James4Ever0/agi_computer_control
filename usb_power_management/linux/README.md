@@ -19,3 +19,15 @@ echo -e "\n\n" | mount -t davfs http://127.0.0.1:8080/ /mnt/root_webdav/
 ```
 
 ## auto mount external/removable drives (to fixed path)
+
+write this to `/etc/fstab`:
+
+```
+UUID=XXXXXXXXXXXXXXX    /myhdd <fstype>  auto,nofail,noatime,rw,user    0   0
+```
+
+run this command with crontab:
+
+```bash
+mount -a
+```
