@@ -7,8 +7,12 @@ although uas (usb attached scsi) is faster than usb-storage (usb bot (bulk-only 
 [issues on uas driver](https://forums.linuxmint.com/viewtopic.php?t=320801)
 
 ```bash
-# look for bus number and device number of which 
+# look for bus number and device number of which using uas driver
 lsusb -t
+# get device id
+lsusb
+
+
 # check if uas is not builtin
 find /lib/modules/$(uname -r) | grep uas
 # not built-in, but dynamically loaded
