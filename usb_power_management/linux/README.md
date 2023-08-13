@@ -8,6 +8,16 @@ disable power management
 hdparm -B 255 /dev/sd<n>
 ```
 
+## dirty bytes
+
+```bash
+echo $((16*1024*1024)) > /proc/sys/vm/dirty_bytes
+0
+echo $((16*1024*1024)) > /proc/sys/vm/dirty_background_bytes 
+0
+
+```
+
 ## webdav
 
 server (may manually/explicitly restart on reconnection):
