@@ -12,10 +12,15 @@ hdparm -B 255 /dev/sd<n>
 
 ```bash
 echo $((16*1024*1024)) > /proc/sys/vm/dirty_bytes
-0
-echo $((16*1024*1024)) > /proc/sys/vm/dirty_background_bytes 
-0
+echo $((48*1024*1024)) > /proc/sys/vm/dirty_background_bytes
+```
 
+## sync
+
+when trying to activate external disks in regular intervals, remember to sync changes to devices:
+
+```bash
+touch <mountpoint>/
 ```
 
 ## webdav
