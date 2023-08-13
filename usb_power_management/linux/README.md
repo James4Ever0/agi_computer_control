@@ -47,4 +47,4 @@ mount -a
 
 ## reset usb
 
-echo 
+under `/sys/bus/pci/drivers/(xhci_hci|ehci)`, echo usb device ids (once at a time) to `unbind` and `bind` respectively to reset usb devices.
