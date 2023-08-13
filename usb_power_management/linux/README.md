@@ -2,7 +2,7 @@ do not use 'laptop-mode' or 'powertop' or 'tlp'
 
 ## mountpoint
 
-if program is still running and writing to mountpoint but disk is not available, then file will be created under that mountpoint, making it impossible to remount the disk to the same location (non-) unless remove that mountpoint by force.
+if program is still running and writing to mountpoint but disk is not available, then file will be created under that mountpoint, making it impossible to remount the disk to the same location (non-empty) unless remove that mountpoint by force.
 
 ## uas versus usb-storage
 
