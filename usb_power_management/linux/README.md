@@ -28,6 +28,8 @@ echo "options usb-storage quirks=7825:a2a4:u,174c:55aa:u,0dd8:ba00:u" > /etc/mod
 
 # method 2: disable uas kernel module entirely (not working?)
 ###########################################################
+# get module dependencies
+modinfo uas
 # check if uas is not builtin
 find /lib/modules/$(uname -r) | grep uas
 # not built-in, but dynamically loaded
