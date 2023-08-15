@@ -87,7 +87,7 @@ if controlMethod == ControlMethod.xvfb:
                 self.xdo = xdo.Xdo(display=self.display) # it will get this from env. #}
                 self.xdo = xdo.Xdo()
                 self.resolution = (self.xdo.window_size.height, self.xdo.window_size.width) # get from display specs.
-
+                
             def getKeySequenceFromKeyLiteral(
                 self, key_literal: HIDActionTypes.keys
             ) -> Union[None, str]:

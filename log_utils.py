@@ -6,7 +6,6 @@ To use 'managed' loggers, you must import 'logger' from this file and pass it to
 # TODO: find a tool or make some script to take input from stdin and log & filter output
 
 # python version check
-from typing import Union
 
 import sys  # recommend: 3.11.2
 
@@ -105,7 +104,7 @@ FORMAT = (  # add timestamp.
 
 SHORT_FORMAT =  "%(asctime)s <%(name)s:%(levelname)s> [%(pathname)s:%(lineno)s - %(funcName)s()]\n%(short_msg)s"
 class Formatter(logging.Formatter):
-    """override logging.Formatter to use an aware datetime object"""
+    """override default 'logging.Formatter' to use timezone-aware datetime object"""
 
     def converter(self, timestamp):
         # Create datetime in UTC
