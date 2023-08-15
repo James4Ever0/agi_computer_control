@@ -101,6 +101,24 @@ ways of connection:
 
 vnc, ssh, tty, tmux, hdmi capture & hid emulator, window capture and directed inputs (os specific)
 
-----
+---
 
 the point is not making this exhaustive. it is about making some standard i/o and adapt to every situation.
+
+---
+
+改变开发思路：将功能和娱乐相结合
+
+受众：游戏娱乐向 实用向
+
+发布程序到steam平台
+
+为此需要宣传、绘画设计等等
+
+---
+
+用elo进行打分 分高的可以在官网有较高的模型权重排名
+
+---
+
+technically this would not be a normal game. it is a metagame, which is the game of all games. it can play other games, play itself, even create itself.
