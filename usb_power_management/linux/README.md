@@ -2,6 +2,10 @@ do not use 'laptop-mode' or 'powertop' or 'tlp'
 
 ## mountpoint
 
+you may listen to events emitted by `udevadm monitor` and kill rclone server if detached.
+
+----
+
 call `rmdir <mountpoint>` for safer removal.
 
 if the program is still running and writing to mountpoint but disk is not available, then file will be created under that mountpoint, making it impossible to remount the disk to the same location (non-empty) unless remove that mountpoint by force.
