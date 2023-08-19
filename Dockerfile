@@ -1,0 +1,2 @@
+FROM ubuntu:22.04
+####### LAZERO DEVELOPMENT SERVER #######

@@ -6,6 +6,10 @@
 recordings
 recordings/*
 
+!Makefile
+!Dockerfile
+*.new.py
+
 !*.yaml
 !*.yml
 !.gitignore
