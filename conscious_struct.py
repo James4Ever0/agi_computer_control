@@ -1134,7 +1134,6 @@ import re
 import parse
 import random
 
-
 # this process is actually training it.
 def trainModelWithDataBasePath(
     basePath: str,

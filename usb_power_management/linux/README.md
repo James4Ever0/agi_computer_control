@@ -2,7 +2,17 @@ do not use 'laptop-mode' or 'powertop' or 'tlp'
 
 ## mountpoint
 
-you may listen to events emitted by `udevadm monitor` and kill rclone server if detached.
+need some event-driven/async control flow to handle this. always control the program according to the latest status.
+
+----
+
+command `eject <mountpoint>` will do `umount` and `rmdir` simultaneously.
+
+----
+
+you may listen to events emitted by `udevadm monitor` and kill rclone server if detached. after rclone server is killed, you can remove the mountpoint and its content if it is not mounted.
+
+you may use system events monitoring to solve the problem. applicable on multiple platforms.
 
 ----
 

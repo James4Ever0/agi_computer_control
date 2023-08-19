@@ -3,13 +3,16 @@ import math
 import serial
 from beartype import beartype
 from beartype.vale import Is
-from typing import Annotated
+from typing import Annotated, TYPE_CHECKING
 from typing_extensions import TypeAlias
 import sys
 sys.path.append("../")
-{% from "hid_utils.py.j2" import impl_abstract %}
 
-from hid_utils import *
+if TYPE_CHECKING:
+    from ..hid_utils import *
+else:
+    from hid_utils import *
+{% from "hid_utils.py.j2" import impl_abstract with context%}
 
 # use xephyr (leafpad, fullscreen) for unit test.
 

@@ -6,7 +6,7 @@ from beartype.vale import Is
 from typing_extensions import Annotated, TypeAlias
 from conscious_struct import HIDActionTypes, HIDActionBase
 from log_utils import logger_print
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Union
 
 from abc import ABC, abstractmethod
 
@@ -33,20 +33,20 @@ class HIDInterface(ABC):
     def _key_release(self, key_literal: HIDActionTypes.keys):
         ...
 
-    def mouse_move(self, x: float, y: float):
+    def mouse_move(self, x: Union[int, float], y: Union[int, float]):
         """
         Move mouse to absolute position (x, y).
         """
         return self._mouse_move(x=x, y=y)
 
     @abstractmethod
-    def _mouse_move(self, x: float, y: float):
+    def _mouse_move(self, x: Union[int, float], y: Union[int, float]):
         ...
 
     def mouse_click(
         self,
-        x: float,
-        y: float,
+        x: Union[int, float],
+        y: Union[int, float],
         button_literal: HIDActionTypes.mouse_buttons,
         pressed: bool,
     ):
@@ -60,21 +60,33 @@ class HIDInterface(ABC):
     @abstractmethod
     def _mouse_click(
         self,
-        x: float,
-        y: float,
+        x: Union[int, float],
+        y: Union[int, float],
         button_literal: HIDActionTypes.mouse_buttons,
         pressed: bool,
     ):
         ...
 
-    def mouse_scroll(self, x: float, y: float, dx: float, dy: float):
+    def mouse_scroll(
+        self,
+        x: Union[int, float],
+        y: Union[int, float],
+        dx: Union[int, float],
+        dy: Union[int, float],
+    ):
         """
         Scroll mouse (dx, dy) at absolute position (x, y).
         """
         return self._mouse_scroll(x=x, y=y, dx=dx, dy=dy)
 
     @abstractmethod
-    def _mouse_scroll(self, x: float, y: float, dx: float, dy: float):
+    def _mouse_scroll(
+        self,
+        x: Union[int, float],
+        y: Union[int, float],
+        dx: Union[int, float],
+        dy: Union[int, float],
+    ):
         ...
 
 
@@ -124,9 +136,6 @@ def strip_key_literal(key_literal: HIDActionTypes.keys) -> Tuple[bool, bool, str
         raise Exception(f"Unable to strip key literal: {repr(key_literal)}")
     else:
         return is_special, is_media, keychar
-
-
-from typing import Union
 
 
 @beartype

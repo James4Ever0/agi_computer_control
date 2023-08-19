@@ -3,11 +3,16 @@ import math
 import serial
 from beartype import beartype
 from beartype.vale import Is
-from typing import Annotated
+from typing import Annotated, TYPE_CHECKING
 from typing_extensions import TypeAlias
 import sys
+
 sys.path.append("../")
-from hid_utils import *
+
+if TYPE_CHECKING:
+    from ..hid_utils import *
+else:
+    from hid_utils import *
 
 # use xephyr (leafpad, fullscreen) for unit test.
 
@@ -27,10 +32,10 @@ from common_keycodes import KeyLiteralToKCOMKeycode, HIDActionTypes
 import inspect
 
 
-
 # confusing!
 
 # TODO: unit test underway
+
 
 @beartype
 def get_scroll_code(c_scroll: movement) -> one_byte:
@@ -88,7 +93,6 @@ def write_and_read(_bytes: bytes):
     # use enum.Flag to replace enum.Enum in this situation.
 
 
-
 @beartype
 def reduce_flags_to_bytes(  # force this to be non-empty!
     flags: List[Flag],
@@ -99,7 +103,8 @@ def reduce_flags_to_bytes(  # force this to be non-empty!
     # def reduce_flags_to_bytes(opcodes: List[Union[one_byte, two_bytes]]):
     if flags == []:
         assert is_bearable(
-            pos_int, byte_length), f"invalid byte_length (positive integer): {byte_length}"
+            pos_int, byte_length
+        ), f"invalid byte_length (positive integer): {byte_length}"
         return b"\x00" * byte_length
     flag = reduce(lambda a, b: a | b, flags)
     opcode = flag.value
@@ -118,6 +123,7 @@ def reduce_flags_to_bytes(  # force this to be non-empty!
     byte_code = opcode.to_bytes(byte_length, byteorder=byteorder)
 
     return byte_code
+
 
 # cannot use match here? python 3.10+ required
 
@@ -176,8 +182,7 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
     def keyboard(
         control_codes: List[ControlCode] = [ControlCode.NULL],
         key_literals: Annotated[
-            List[HIDActionTypes.keys], Is[lambda l: len(
-                l) <= 6 and len(l) >= 0]
+            List[HIDActionTypes.keys], Is[lambda l: len(l) <= 6 and len(l) >= 0]
         ] = [],
     ):  # check for "HID Usage ID"
         reserved_byte = b"\x00"
@@ -226,7 +231,10 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
 
     @beartype
     def mouse_relative(
-        x: movement, y: movement, scroll: movement, button_codes: List[MouseButton] = [MouseButton.NULL]
+        x: movement,
+        y: movement,
+        scroll: movement,
+        button_codes: List[MouseButton] = [MouseButton.NULL],
     ):
         x_code = get_rel_code_kcom(x)
         y_code = get_rel_code_kcom(y)
@@ -296,15 +304,17 @@ elif deviceType in [DeviceType.kcom2, DeviceType.kcom3]:
 
 elif deviceType == DeviceType.ch9329:
     import ch9329Comm
+
     # import parse
     from types import MethodType
+
     # from types import MethodWrapperType
 
     @beartype
     class CH9329Util:
         def __init__(self, port: serial.Serial, **kwargs):
             self.port = port
-            super_class_init = getattr(super(), '__init__', None)
+            super_class_init = getattr(super(), "__init__", None)
             if super_class_init:
                 # not method-wrapper.
                 if isinstance(super_class_init, MethodType):
@@ -315,7 +325,12 @@ elif deviceType == DeviceType.ch9329:
                     # self.super_class = super_class_init(**kwargs)
                     super().__init__(**kwargs)
 
-        def communicate(self, DATA: Annotated[bytes, Is[lambda b: len(b) > 0]], CMD: one_byte,  LEN: one_byte):
+        def communicate(
+            self,
+            DATA: Annotated[bytes, Is[lambda b: len(b) > 0]],
+            CMD: one_byte,
+            LEN: one_byte,
+        ):
             # 将字符转写为数据包
             HEAD = b"\x57\xAB"  # 帧头
             ADDR = b"\x00"  # 地址
@@ -358,8 +373,7 @@ elif deviceType == DeviceType.ch9329:
                 DATA_hex_list.append(byte)
             DATA_add_hex_list = sum(DATA_hex_list)
 
-            SUM = self.checksum(HEAD_add_hex_list, ADDR,
-                                CMD, LEN, DATA_add_hex_list)
+            SUM = self.checksum(HEAD_add_hex_list, ADDR, CMD, LEN, DATA_add_hex_list)
             packet = HEAD + ADDR + CMD + LEN + DATA + bytes([SUM])  # 数据包
             self.port.write(packet)  # 将命令代码写入串口
             # return True  # 如果成功，则返回True，否则引发异常
@@ -426,8 +440,7 @@ elif deviceType == DeviceType.ch9329:
             # [ControlCode.NULL] or [], both works
             control_codes: List[ControlCode] = [ControlCode.NULL],
             key_literals: Annotated[
-                List[HIDActionTypes.keys], Is[lambda l: len(
-                    l) <= 8 and len(l) >= 0]
+                List[HIDActionTypes.keys], Is[lambda l: len(l) <= 8 and len(l) >= 0]
             ] = [],
         ):
             # 将字符转写为数据包
@@ -508,8 +521,7 @@ elif deviceType == DeviceType.ch9329:
             self, port: serial.Serial, screen_width: pos_int, screen_height: pos_int
         ):
             # self.port = port
-            initargs = dict(screen_width=screen_width,
-                            screen_height=screen_height)
+            initargs = dict(screen_width=screen_width, screen_height=screen_height)
             super().__init__(port=port, **initargs)
             self.super_instance = ch9329Comm.mouse.DataComm(**initargs)
 
@@ -543,8 +555,7 @@ elif deviceType == DeviceType.ch9329:
                 else getattr(super(), funcName)
             )(x, y, ctrl=ctrl, port=self.port)
             if ret == False:
-                raise Exception(
-                    "Error calling super method: {}".format(funcName))
+                raise Exception("Error calling super method: {}".format(funcName))
 
         def send_data_absolute(
             self,
@@ -614,10 +625,13 @@ elif deviceType == DeviceType.ch9329:
             # # return True  # 如果成功，则返回True，否则引发异常
 
         def send_data_relatively(
-            self, x: int, y: int, scroll: movement, button_codes: List[MouseButton] = [MouseButton.NULL]
+            self,
+            x: int,
+            y: int,
+            scroll: movement,
+            button_codes: List[MouseButton] = [MouseButton.NULL],
         ):
-            ctrl = self.get_ctrl(
-                x, y, button_codes=button_codes, inbound=False)
+            ctrl = self.get_ctrl(x, y, button_codes=button_codes, inbound=False)
             # currentFuncName = inspect.currentframe().f_code.co_name
             # self.call_super_method(currentFuncName, x, y,
             #                        button_codes, inbound=False)
@@ -689,7 +703,10 @@ elif deviceType == DeviceType.ch9329:
             # # return True  # 如果成功，则返回True，否则引发异常
 
         def move_to_basic(
-            self, x: non_neg_int, y: non_neg_int, button_codes: List[MouseButton] = [MouseButton.NULL]
+            self,
+            x: non_neg_int,
+            y: non_neg_int,
+            button_codes: List[MouseButton] = [MouseButton.NULL],
         ):
             currentFuncName = inspect.currentframe().f_code.co_name
             self.call_super_method(
@@ -708,7 +725,11 @@ elif deviceType == DeviceType.ch9329:
             )
 
         # this is right click. we need to override this.
-        def click(self, button: MouseButton, get_delay: Callable[[], float] = lambda: random.uniform(0.1, 0.45)):
+        def click(
+            self,
+            button: MouseButton,
+            get_delay: Callable[[], float] = lambda: random.uniform(0.1, 0.45),
+        ):
             self.send_data_relatively(0, 0, [button])
             time.sleep(get_delay())  # 100到450毫秒延迟
             self.send_data_relatively(0, 0)
@@ -724,7 +745,6 @@ elif deviceType == DeviceType.ch9329:
     # keyboard.release = MethodType(release, keyboard)
 
 else:
-    raise Exception("Unknown device type: {deviceType}".format(
-        deviceType=deviceType))
+    raise Exception("Unknown device type: {deviceType}".format(deviceType=deviceType))
 
 ser.close()

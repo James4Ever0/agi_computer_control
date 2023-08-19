@@ -21,14 +21,20 @@
 # unittest for xrdp:
 # 1. run docker in fullscreen mode, run background keylogger first, then accept inputs through rdp.
 # 2. run some full screen app on windows (virtualbox), along with keylogger.
-{% from "hid_utils.py.j2" import impl_abstract %}
+{% from "hid_utils.py.j2" import impl_abstract with context%}
 import sys
 
 sys.path.append("../")
+
 from beartype import beartype
-from hid_utils import *
 from conscious_struct import HIDActionTypes
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, TYPE_CHECKING
+import time
+
+if TYPE_CHECKING:
+    from ..hid_utils import *
+else:
+    from hid_utils import *
 
 if sys.version_info >= (3, 11):
     from enum import StrEnum
@@ -77,6 +83,13 @@ if controlMethod == ControlMethod.xvfb:
 
     if xdt == Xdotool.libxdo:
         import xdo
+        def xdo_del(self):
+            try:
+                xdo._libxdo.xdo_free(self._xdo)
+            except: # python shutting down. just ignore this.
+                print("Unable to free xdo object. Likely Python is shutting down.")
+
+        xdo.Xdo.__del__ = xdo_del
 
         @beartype
         class LibxdoHID(HIDInterface):
@@ -86,8 +99,20 @@ if controlMethod == ControlMethod.xvfb:
                 {# self.display = os.environ["DISPLAY"]
                 self.xdo = xdo.Xdo(display=self.display) # it will get this from env. #}
                 self.xdo = xdo.Xdo()
+                {# self.window = xdo.CURRENTWINDOW
+                self.window_size = self.xdo.get_window_size(self.window)
                 self.resolution = (self.xdo.window_size.height, self.xdo.window_size.width) # get from display specs.
-                
+             #}
+            def getButtonIdFromButtonLiteral(self, button_literal: HIDActionTypes.mouse_buttons):
+                # Generally, 1 is left, 2 is middle, 3 is right, 4 is wheel up, 5 is wheel down.
+                translation_map = {
+                    "Button.left": 1,
+                    "Button.middle": 2,
+                    "Button.right": 3
+                }
+                button_id = translation_map[button_literal]
+                return button_id
+
             def getKeySequenceFromKeyLiteral(
                 self, key_literal: HIDActionTypes.keys
             ) -> Union[None, str]:
@@ -95,18 +120,15 @@ if controlMethod == ControlMethod.xvfb:
                 keysequence = key_literal_to_xk_keysym(key_literal)
                 return keysequence # not joined by "+"
 
-            def {{impl_abstract("key_release")}}
+{% for k,v in dict(release='up', press='down').items() %}
+            def {{impl_abstract('key_'+k)}}
                 keysequence = self.getKeySequenceFromKeyLiteral(key_literal)
                 if keysequence:
-                    self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, keysequence)
-            
-            def {{impl_abstract("key_press")}}
-                keysequence = self.getKeySequenceFromKeyLiteral(key_literal)
-                if keysequence:
-                    self.xdo.send_keysequence_window_down(xdo.CURRENTWINDOW, keysequence)
-            
+                    self.xdo.send_keysequence_window_{{v}}(xdo.CURRENTWINDOW, keysequence.encode('utf8'))
+
+{% endfor%}
             def {{impl_abstract("mouse_move")}}
-                self.xdo.mouse_move(x, y, screen=0)
+                self.xdo.move_mouse(x, y, screen=0)
 
             def {{impl_abstract("mouse_click")}}
                 self.mouse_move(x,y)
@@ -227,5 +249,14 @@ if controlMethod == ControlMethod.xvfb:
                 mon_shot = mss.mss().shot(output="terminal4.png")
             # print(mon_shot)
             # nope. no attention/diff mechanism.
-            disp.grab().save("terminal3.png")
+
+            xdo_hid = LibxdoHID()
+            xdo_hid.mouse_move(300,300)
+            xdo_hid.key_press("'q'")
+            time.sleep(0.2)
+            xdo_hid.key_release("'q'")
+            time.sleep(0.3)
+
+            disp.grab().save("terminal5.png")
+            time.sleep(0.3)
             # proc.stop()

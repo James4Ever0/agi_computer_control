@@ -21,14 +21,19 @@
 # unittest for xrdp:
 # 1. run docker in fullscreen mode, run background keylogger first, then accept inputs through rdp.
 # 2. run some full screen app on windows (virtualbox), along with keylogger.
-
 import sys
 
 sys.path.append("../")
+
 from beartype import beartype
-from hid_utils import *
 from conscious_struct import HIDActionTypes
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, TYPE_CHECKING
+import time
+
+if TYPE_CHECKING:
+    from ..hid_utils import *
+else:
+    from hid_utils import *
 
 if sys.version_info >= (3, 11):
     from enum import StrEnum
@@ -58,7 +63,6 @@ class Xdotool(StrEnum):
 controlMethod = ControlMethod.xvfb
 xdt = Xdotool.libxdo
 
-from abc import ABC, abstractmethod
 
 if controlMethod == ControlMethod.xvfb:
     # instead use:
@@ -74,53 +78,91 @@ if controlMethod == ControlMethod.xvfb:
 
     # think of some abstract class, which all implementations follow.
     # think of "HIDBase" instead of your imagination. just follow existing guidelines.
-    # TODO: use abstract implementation pattern (template)
-    class HIDInterface(ABC):
-        @abstractmethod
-        def key_press(self, key_literal: HIDActionTypes.keys):
-            ...
-
-        @abstractmethod
-        def key_release(self, key_literal: HIDActionTypes.keys):
-            ...
-
-        @abstractmethod
-        def mouse_move(self, x: float, y: float):
-            ...
-
-        @abstractmethod
-        def mouse_click(
-            self,
-            x: float,
-            y: float,
-            button_literal: HIDActionTypes.mouse_buttons,
-            pressed: bool,
-        ):
-            ...
-
-        @abstractmethod
-        def mouse_scroll(self, x: float, y: float, dx: float, dy: float):
-            ...
 
     if xdt == Xdotool.libxdo:
         import xdo
+
+        def xdo_del(self):
+            try:
+                xdo._libxdo.xdo_free(self._xdo)
+            except:  # python shutting down. just ignore this.
+                print("Unable to free xdo object. Likely Python is shutting down.")
+
+        xdo.Xdo.__del__ = xdo_del
 
         @beartype
         class LibxdoHID(HIDInterface):
             def __init__(
                 self,
             ):
-                self.display = os.environ["DISPLAY"]
-                self.xdo = xdo.Xdo(display=self.display)
-                self.resolution = ...
+                self.xdo = xdo.Xdo()
+
+            def getButtonIdFromButtonLiteral(
+                self, button_literal: HIDActionTypes.mouse_buttons
+            ):
+                # Generally, 1 is left, 2 is middle, 3 is right, 4 is wheel up, 5 is wheel down.
+                translation_map = {
+                    "Button.left": 1,
+                    "Button.middle": 2,
+                    "Button.right": 3,
+                }
+                button_id = translation_map[button_literal]
+                return button_id
 
             def getKeySequenceFromKeyLiteral(
                 self, key_literal: HIDActionTypes.keys
-            ) -> str:
-                return keysequence
+            ) -> Union[None, str]:
+                keysequence = key_literal_to_xk_keysym(key_literal)
+                return keysequence  # not joined by "+"
 
-            def key_press(self, key_literal: HIDActionTypes.keys):
-                self.xdo.send_keysequence_window_up(xdo.CURRENTWINDOW, keysequence)
+            def _key_release(self, key_literal: HIDActionTypes.keys):
+                keysequence = self.getKeySequenceFromKeyLiteral(key_literal)
+                if keysequence:
+                    self.xdo.send_keysequence_window_up(
+                        xdo.CURRENTWINDOW, keysequence.encode("utf8")
+                    )
+
+            def _key_press(self, key_literal: HIDActionTypes.keys):
+                keysequence = self.getKeySequenceFromKeyLiteral(key_literal)
+                if keysequence:
+                    self.xdo.send_keysequence_window_down(
+                        xdo.CURRENTWINDOW, keysequence.encode("utf8")
+                    )
+
+            def _mouse_move(self, x: Union[int, float], y: Union[int, float]):
+                self.xdo.move_mouse(x, y, screen=0)
+
+            def _mouse_click(
+                self,
+                x: Union[int, float],
+                y: Union[int, float],
+                button_literal: HIDActionTypes.mouse_buttons,
+                pressed: bool,
+            ):
+                self.mouse_move(x, y)
+                button_id = self.getButtonIdFromButtonLiteral(button_literal)
+                if pressed:
+                    self.xdo.mouse_down(xdo.CURRENTWINDOW, button_id)
+                else:
+                    self.xdo.mouse_up(xdo.CURRENTWINDOW, button_id)
+
+            def _mouse_scroll(
+                self,
+                x: Union[int, float],
+                y: Union[int, float],
+                dx: Union[int, float],
+                dy: Union[int, float],
+            ):
+                self.mouse_move(x, y)
+                # send up/down/left/right keys instead.
+                if dx < 0:
+                    self.xdo.send_keysequence_window(xdo.CURRENTWINDOW, "Left")
+                else:
+                    self.xdo.send_keysequence_window(xdo.CURRENTWINDOW, "Right")
+                if dy < 0:
+                    self.xdo.send_keysequence_window(xdo.CURRENTWINDOW, "Up")
+                else:
+                    self.xdo.send_keysequence_window(xdo.CURRENTWINDOW, "Down")
 
     # from pyvirtualdisplay import Display
     from pyvirtualdisplay.smartdisplay import SmartDisplay
@@ -218,5 +260,14 @@ if controlMethod == ControlMethod.xvfb:
                 mon_shot = mss.mss().shot(output="terminal4.png")
             # print(mon_shot)
             # nope. no attention/diff mechanism.
-            disp.grab().save("terminal3.png")
+
+            xdo_hid = LibxdoHID()
+            xdo_hid.mouse_move(300, 300)
+            xdo_hid.key_press("'q'")
+            time.sleep(0.2)
+            xdo_hid.key_release("'q'")
+            time.sleep(0.3)
+
+            disp.grab().save("terminal5.png")
+            time.sleep(0.3)
             # proc.stop()
