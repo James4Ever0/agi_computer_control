@@ -1,0 +1,5 @@
+services:
+  xorg-vnc-client:
+    build: .
+  vnc-server:
+    image: "dorowu/ubuntu-desktop-lxde-vnc:focal"
