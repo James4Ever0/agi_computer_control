@@ -124,7 +124,6 @@ the point is not making this exhaustive. it is about making some standard i/o an
 
 technically this would not be a normal game. it is a metagame, which is the game of all games. it can play other games, play itself, even create itself.
 
-
 ---
 
 devcontainer is useful for creating reproducible environments locally (if of the same architecture, like x86) or remotely (different architecture, like Apple M1).
@@ -134,3 +133,7 @@ devcontainer is useful for creating reproducible environments locally (if of the
 because setting this up properly during development is a pain in the ass (in most time), let's pack it up into a docker container, for your safety.
 
 if you want to release this and use it in production, you can refactor the code, configure platform specific dependencies and send it to devops.
+
+---
+
+devcontainer won't work as expected on windows 11 as we put our repo on external disk
