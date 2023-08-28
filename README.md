@@ -137,3 +137,7 @@ if you want to release this and use it in production, you can refactor the code,
 ---
 
 devcontainer won't work as expected on windows 11 as we put our repo on external disk
+
+---
+
+your aim is too damn big! shall you begin to train some primitive neural network with functionality of only emitting and receiving ascii words, even just a single character like 'C'. get your hands dirty!
