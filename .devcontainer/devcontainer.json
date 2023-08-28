@@ -1,0 +1,5 @@
+{
+    "name": "agi_computer_control_env",
+    "image": "dorowu/ubuntu-desktop-lxde-vnc:focal",
+    "appPort": 5900
+}
