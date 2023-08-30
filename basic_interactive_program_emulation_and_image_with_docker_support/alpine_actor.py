@@ -162,10 +162,10 @@ if os.name == "nt":
     safe_exception_types.append(wexpect.wexpect_util.EOF)  # you can try to ignore this.
 import traceback
 
-def main():
+def run_actor_forever(actor_class):
     # killAndPruneAllContainers()
     while True:
-        actor = AlpineActor()
+        actor = actor_class()
         try:
             actor.run()
         except KeyboardInterrupt:
@@ -188,7 +188,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_actor_forever(AlpineActor)
 #     import cProfile
 #     fpath = "alpine_actor.profile"
 #     # # print("running")
