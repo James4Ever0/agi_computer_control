@@ -172,19 +172,23 @@ def run_actor_forever(actor_class):
             print("exit on user demand")
             break
         except Exception as e:
-            safe = False
-            for exc_type in safe_exception_types:
-                if isinstance(e, exc_type):
-                    safe = True
-            if safe:
-                traceback.print_exc()
-                print("safe exception:", e)
-            else:
-                log_and_print_unknown_exception()
+            check_if_is_safe_exception(e)
         del actor
         print()
         print("restarting actor")
         gc.collect()
+
+def check_if_is_safe_exception(e):
+    safe = False
+    for exc_type in safe_exception_types:
+        if isinstance(e, exc_type):
+            safe = True
+    if safe:
+        traceback.print_exc()
+        print("safe exception:", e)
+    else:
+        log_and_print_unknown_exception()
+    return safe
 
 
 if __name__ == "__main__":
