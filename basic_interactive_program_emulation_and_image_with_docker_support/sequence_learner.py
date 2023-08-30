@@ -43,6 +43,7 @@ class PredictorWrapper:
 if __name__ == "__main__":
     pw = PredictorWrapper(10, NaivePredictor)
     pw.enqueue([0,1,2,3,4])
+    total_seq = pw.predict(100)
     # ksize = 10
     # predictor = NaivePredictor(ksize=ksize)
     # seq = deque([0, 1, 2, 3, 4], maxlen=ksize)
@@ -51,4 +52,4 @@ if __name__ == "__main__":
     #     tok = predictor.predict(list(seq))
     #     seq.append(tok)
     #     total_seq.append(tok)
-    # print("total seq:", total_seq)
+    print("total seq:", total_seq)
