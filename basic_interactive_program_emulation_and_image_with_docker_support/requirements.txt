@@ -1,0 +1,5 @@
+pexpect; os_name == 'posix'
+wexpect; os_name == 'nt'
+docker
+func-timeout
+progressbar2
