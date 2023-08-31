@@ -1,7 +1,6 @@
 from naive_actor import NaiveActor
 from vocabulary import AsciiVocab
 
-
 class _AutoSeparatedString(str):
     __slots__ = ["sep"]
 
@@ -190,8 +189,6 @@ def check_if_is_safe_exception(e):
         log_and_print_unknown_exception()
     return safe
 
-class AlpineBytesActor(AlpineActor):
-    ...
 
 if __name__ == "__main__":
     run_actor_forever(AlpineActor)
