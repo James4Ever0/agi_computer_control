@@ -230,7 +230,7 @@ class NaiveActor:
         print("write:", get_repr(content), sep="\t")
         self.write_bytes += len(content)
 
-        write_method = self.write_method(self.process)
+        write_method = self.__class__.write_method(self.process)\
 
         write_method(content)
         self.write_entropy_calc.count(content)
