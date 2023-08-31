@@ -1,14 +1,15 @@
 from alpine_actor import run_actor_forever, AlpineActor
 from sequence_learner import NaivePredictor, PredictorWrapper
-from vocabulary import AsciiVocab
-
+# from vocabulary import AsciiVocab
+from vocabulary import BytesVocab
 import random
 
 
 class PredictiveAlpineActor(AlpineActor):
     def __init__(self):
         self.predictorWrapper = PredictorWrapper(256, NaivePredictor)
-        self.predictorWrapper.seq.extend([ord(c) for c in AsciiVocab.generate()])
+        self.predictorWrapper.seq.extend(list(BytesVocab.generate()))
+        # self.predictorWrapper.seq.extend([ord(c) for c in AsciiVocab.generate()])
         super().__init__()
 
     @property

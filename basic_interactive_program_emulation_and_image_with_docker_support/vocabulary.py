@@ -1,14 +1,10 @@
 import random
+from type_utils import *
 
-def ensure_str(content):
-    if isinstance(content, bytes):
-    content = content.decode()
-    if not isinstance(content, str):
-        raise Exception("Invalid content type: %s\nShould be: str" % type(content))
-    return content
 class NaiveVocab:
     charlist = ["a"]
     startpoint = ""
+    content_typeguard = enforce_str
 
     @classmethod
     def generate(cls):
@@ -20,7 +16,7 @@ class NaiveVocab:
 
     @classmethod
     def filter(cls, content):
-        content = 
+        content = cls.content_typeguard(content)
         result = cls.startpoint
         for char in content:
             if char in cls.charlist:
@@ -33,4 +29,5 @@ class AsciiVocab(NaiveVocab):
 
 class BytesVocab(NaiveVocab):
     startpoint = b""
-    charlist = [bytes(x) for x in range(256)]
+    charlist = [bytes([x]) for x in range(256)]
+    content_typeguard = enforce_bytes

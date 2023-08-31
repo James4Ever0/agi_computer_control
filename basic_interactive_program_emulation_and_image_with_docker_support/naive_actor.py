@@ -5,13 +5,7 @@ import traceback
 from vocabulary import NaiveVocab
 from cmath import nan
 
-
-def enforce_bytes(s):
-    if isinstance(s, str):
-        s = s.encode()
-    if not isinstance(s, bytes):
-        raise Exception("unknown line content type:", type(s))
-    return s
+from type_utils import *
 
 def safeDiv(a,b):
     """
