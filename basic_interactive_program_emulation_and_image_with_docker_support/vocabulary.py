@@ -27,3 +27,5 @@ class NaiveVocab:
 
 class AsciiVocab(NaiveVocab):
     charlist = [chr(x) for x in range(256)]
+
+class 
