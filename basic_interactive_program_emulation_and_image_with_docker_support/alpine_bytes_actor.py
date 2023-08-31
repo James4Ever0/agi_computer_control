@@ -1,8 +1,8 @@
 from vocabulary import BytesVocab
 from alpine_actor import AlpineActor, run_actor_forever
+from bytes_actor import BytesActor
 
-
-class AlpineBytesActor(AlpineActor):
+class AlpineBytesActor(AlpineActor, BytesActor):
     @AlpineActor.timeit
     def loop(self):
         _ = self.read()

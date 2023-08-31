@@ -305,7 +305,9 @@ class NaiveActor:
             print(f"[loop\t{str(self.loop_count)}]".center(60, "-"))
             self.loop_count += 1
 
+def run_naive(cls):
+    actor = cls(f"{sys.executable} naive_interactive.py")
+    actor.run()
 
 if __name__ == "__main__":
-    actor = NaiveActor(f"{sys.executable} naive_interactive.py")
-    actor.run()
+    run_naive(NaiveActor)

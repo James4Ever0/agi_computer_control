@@ -61,7 +61,7 @@ def log_and_print_unknown_exception():
     exc_type, exc_info, exc_tb = sys.exc_info()
     # traceback.print_exc()
     if exc_type is not None:
-        exc_str = better_exceptions.format_exception(exc_type, exc_info, exc_tb)
+        exc_str = "\n".join(better_exceptions.format_exception(exc_type, exc_info, exc_tb))
         logger.debug(exc_str)
         print(exc_str)
 
