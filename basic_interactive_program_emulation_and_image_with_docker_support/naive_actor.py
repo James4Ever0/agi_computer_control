@@ -5,6 +5,14 @@ import traceback
 from vocabulary import NaiveVocab
 from cmath import nan
 
+
+def enforce_bytes(s):
+    if isinstance(s, str):
+        s = s.encode()
+    if not isinstance(s, bytes):
+        raise Exception("unknown line content type:", type(s))
+    return s
+
 def safeDiv(a,b):
     """
     Return a/b if no exception is raised, otherwise nan.
@@ -26,12 +34,12 @@ def leftAndRightSafeDiv(a,b):
 
 if os.name == "nt":
     import wexpect as pexpect
+    expected_wexpect_version = "4.0.0"
+    wexp_version =  pexpect.__version__
+    assert wexp_version == expected_wexpect_version, "wexpected version should be: {}\ncurrently: {}".format(expected_wexpect_version, wexp_version)
     import wexpect.host as host
     import socket
 
-    logger = host.logger
-    EOF_CHAR = host.EOF_CHAR
-    EOF = host.EOF
 
     def spawnsocket_read_nonblocking(self, size=1):
         """This reads at most size characters from the child application. If
@@ -43,6 +51,10 @@ if os.name == "nt":
         It will not wait for 30 seconds for another 99 characters to come in.
 
         This is a wrapper around Wtty.read()."""
+
+        logger = host.logger
+        EOF_CHAR = host.EOF_CHAR
+        EOF = host.EOF
 
         if self.closed:
             logger.info("I/O operation on closed file in read_nonblocking().")
@@ -79,6 +91,10 @@ if os.name == "nt":
 
         This is a wrapper around Wtty.read()."""
 
+        logger = host.logger
+        EOF_CHAR = host.EOF_CHAR
+        EOF = host.EOF
+
         if self.closed:
             logger.warning("I/O operation on closed file in read_nonblocking().")
             raise ValueError("I/O operation on closed file in read_nonblocking().")
@@ -113,9 +129,53 @@ if os.name == "nt":
 
     host.SpawnSocket.read_nonblocking = spawnsocket_read_nonblocking
     host.SpawnPipe.read_nonblocking = spawnpipe_read_nonblocking
+
+    def spawnbase_sendline(self, s=b""):
+        s = enforce_bytes(s)
+        n = self.send(s+b"\r\n")
+        return n
+
+    host.SpawnBase.sendline = spawnbase_sendline
+
 else:
     import pexpect
 
+    expected_pexpect_version = "4.6.0"
+    pexp_version =  pexpect.__version__
+    assert pexp_version == expected_pexpect_version, "pexpected version should be: {}\ncurrently: {}".format(expected_pexpect_version, pexp_version)
+
+    def spawn_sendline(self, s=b""):
+        s = enforce_bytes(s)
+        return self.send(s + bytes(os.linesep))
+
+    pexpect.spawn.sendline = spawn_sendline
+
+    def spawnbase_read_nonblocking(self, size=1, timeout=None):
+        """This reads data from the file descriptor.
+
+        This is a simple implementation suitable for a regular file. Subclasses using ptys or pipes should override it.
+
+        The timeout parameter is ignored.
+        """
+
+        try:
+            s = os.read(self.child_fd, size)
+        except OSError as err:
+            if err.args[0] == errno.EIO:
+                # Linux-style EOF
+                self.flag_eof = True
+                raise pexpect.spawnbase.EOF('End Of File (EOF). Exception style platform.')
+            raise
+        if s == b'':
+            # BSD-style EOF
+            self.flag_eof = True
+            raise pexpect.spawnbase.EOF('End Of File (EOF). Empty string style platform.')
+
+        # s = self._decoder.decode(s, final=False)
+        self._log(s, 'read')
+        return s
+
+    pexpect.spawnbase.SpawnBase.read_nonblocking = spawnbase_read_nonblocking
 
 # https://code.activestate.com/recipes/440554/
 # wxpython, wexpect/winpexpect, pexpect
@@ -169,10 +229,12 @@ class NaiveActor:
         # return pexpect.spawn(cmd, interact=True)  # will display
 
     def write(self, content):
-        self.write_bytes += len(content)
+        # if isinstance(content, bytes):
+        #     content = content.decode()
+        content = enforce_bytes(content)
         print("write:", get_repr(content), sep="\t")
-        if isinstance(content, bytes):
-            content = content.decode()
+        self.write_bytes += len(content)
+
         self.process.sendline(content)
         self.write_entropy_calc.count(content)
         return content
