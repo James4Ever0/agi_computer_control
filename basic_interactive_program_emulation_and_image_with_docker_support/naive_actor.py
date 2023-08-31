@@ -206,6 +206,7 @@ from entropy_utils import ContentEntropyCalculator
 
 
 class NaiveActor:
+    write_method = lambda proc: proc.sendline
     def __init__(self, cmd):
         self.process = self.spawn(cmd)
         self.timeout = 1
@@ -229,7 +230,9 @@ class NaiveActor:
         print("write:", get_repr(content), sep="\t")
         self.write_bytes += len(content)
 
-        self.process.sendline(content)
+        write_method = self.write_method(self.process)
+
+        write_method(content)
         self.write_entropy_calc.count(content)
         return content
 
