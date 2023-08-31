@@ -274,6 +274,7 @@ class NaiveActor:
         return content
 
     def __del__(self):
+        # TODO: separate calculation logic from here, to be used in metaheuristics
         end_time = time.time()
         up_time = end_time - self.start_time
         read_ent = self.read_entropy_calc.entropy
