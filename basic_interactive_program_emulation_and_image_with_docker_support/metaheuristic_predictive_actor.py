@@ -9,7 +9,9 @@ class MetaheuristicPredictiveWrapper:
         self.wrapper = PredictorWrapper()
         self.actor = ...
     def new(self,):
+        del self.actor
         self.actor = ...
     @staticmethod
     def score():
-        ...
+        stats = self.actor.stats
+        # score by what?
