@@ -13,6 +13,7 @@ class ActorStats(BaseModel):
     start_time: float
     end_time: float
     up_time: float
+    loop_count: int
     read_ent: float
     write_ent: float
     rw_ratio: float
@@ -305,18 +306,18 @@ class NaiveActor:
         # TODO: separate calculation logic from here, to be used in metaheuristics
         stats = self.stats()
         print("summary".center(50, "="))
-        print("start time:", formatTimeAtShanghai(start_time), sep="\t")
-        print("end time:", formatTimeAtShanghai(end_time), sep="\t")
-        print("up time:", up_time, sep="\t")
-        print("loop count:", self.loop_count, sep="\t")
+        print("start time:", formatTimeAtShanghai(stats.start_time), sep="\t")
+        print("end time:", formatTimeAtShanghai(stats.end_time), sep="\t")
+        print("up time:", stats.up_time, sep="\t")
+        print("loop count:", stats.loop_count, sep="\t")
         print("total bytes read:", self.read_bytes, sep="\t")
         print("total bytes write:", self.write_bytes, sep="\t")
-        print("r/w ratio:", rw_ratio)
-        print("w/r ratio:", wr_ratio)
-        print("read bytes entropy:", read_ent)
-        print("write bytes entropy:", write_ent)
-        print("r/w entropy ratio:", rw_ent_ratio)
-        print("w/r entropy ratio:", wr_ent_ratio)
+        print("r/w ratio:", stats.rw_ratio)
+        print("w/r ratio:", stats.wr_ratio)
+        print("read bytes entropy:", stats.read_ent)
+        print("write bytes entropy:", stats.write_ent)
+        print("r/w entropy ratio:", stats.rw_ent_ratio)
+        print("w/r entropy ratio:", stats.wr_ent_ratio)
 
     def stats(self):
         start_time = self.start_time
@@ -324,18 +325,20 @@ class NaiveActor:
         up_time = end_time - self.start_time
         read_ent = self.read_entropy_calc.entropy
         write_ent = self.write_entropy_calc.entropy
+        loop_count = self.loop_count
         rw_ratio, wr_ratio = leftAndRightSafeDiv(self.read_bytes, self.write_bytes)
         rw_ent_ratio, wr_ent_ratio = leftAndRightSafeDiv(read_ent, write_ent)
         stats = ActorStats(
-            start_time,
-            end_time,
-            up_time,
-            read_ent,
-            write_ent,
-            rw_ratio,
-            wr_ratio,
-            rw_ent_ratio,
-            wr_ent_ratio,
+            start_time=start_time,
+            end_time=end_time,
+            up_time=up_time,
+            loop_count=loop_count,
+            read_ent=read_ent,
+            write_ent=write_ent,
+            rw_ratio=rw_ratio,
+            wr_ratio=wr_ratio,
+            rw_ent_ratio=rw_ent_ratio,
+            wr_ent_ratio=wr_ent_ratio,
         )
         return stats
 
