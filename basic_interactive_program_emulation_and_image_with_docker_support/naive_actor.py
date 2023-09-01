@@ -251,6 +251,10 @@ class NaiveActor:
         self.read_entropy_calc = ContentEntropyCalculator()
         self.write_entropy_calc = ContentEntropyCalculator()
         self._stats = ...
+        self.recent_loop_threshold = 300
+        """
+        To limiting history data size for calculating recent statistics.
+        """
 
     def spawn(self, cmd):
         return pexpect.spawn(cmd)
@@ -324,6 +328,7 @@ class NaiveActor:
 
     @property
     def stats(self):
+        # TODO: calculate recent statistics, not just full statistics
         # somehow cached.
         if not (
             isinstance(self._stats, ActorStats)
