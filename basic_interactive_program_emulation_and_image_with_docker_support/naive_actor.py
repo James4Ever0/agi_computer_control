@@ -1,6 +1,7 @@
 # import twisted
 # this could be used as test case.
 # TODO: improve task execution logic, eliminate long running blocking tasks.
+# TODO: use celery to schedule tasks
 import os
 import traceback
 from vocabulary import NaiveVocab
