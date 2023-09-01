@@ -1,5 +1,6 @@
 # import twisted
 # this could be used as test case.
+# TODO: survive reopening the laptop lid
 # TODO: improve task execution logic, eliminate long running blocking tasks.
 # TODO: use celery to schedule tasks
 import os
