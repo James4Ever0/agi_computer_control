@@ -19,19 +19,21 @@ class NaivePredictor:
     def one_hot(self, x):
         x_one_hot = np.eye(self.ksize)[x]
         return x_one_hot
-    
+
+
 from collections import deque
+
 
 class PredictorWrapper:
     def __init__(self, ksize, predictor_cls):
         self.predictor = predictor_cls(ksize)
-        self.seq= deque([], maxlen=ksize)
-    
-    def enqueue(self, seq:List[int]):
+        self.seq = deque([], maxlen=ksize)
+
+    def enqueue(self, seq: List[int]):
         for tok in seq:
             self.seq.append(tok)
-    
-    def predict(self, seqlen:int):
+
+    def predict(self, seqlen: int):
         ret_seq = []
         for _ in range(seqlen):
             tok = self.predictor.predict(list(self.seq))
@@ -42,7 +44,7 @@ class PredictorWrapper:
 
 if __name__ == "__main__":
     pw = PredictorWrapper(10, NaivePredictor)
-    pw.enqueue([0,1,2,3,4])
+    pw.enqueue([0, 1, 2, 3, 4])
     total_seq = pw.predict(100)
     # ksize = 10
     # predictor = NaivePredictor(ksize=ksize)

@@ -275,12 +275,7 @@ class NaiveActor:
 
     def __del__(self):
         # TODO: separate calculation logic from here, to be used in metaheuristics
-        end_time = time.time()
-        up_time = end_time - self.start_time
-        read_ent = self.read_entropy_calc.entropy
-        write_ent = self.write_entropy_calc.entropy
-        rw_ratio, wr_ratio = leftAndRightSafeDiv(self.read_bytes, self.write_bytes)
-        rw_ent_ratio, wr_ent_ratio = leftAndRightSafeDiv(read_ent, write_ent)
+        end_time, up_time, read_ent, write_ent, rw_ratio, wr_ratio, rw_ent_ratio, wr_ent_ratio = self.stats()
         print("summary".center(50, "="))
         print("start time:", formatTimeAtShanghai(self.start_time), sep="\t")
         print("end time:", formatTimeAtShanghai(end_time), sep="\t")
@@ -294,6 +289,15 @@ class NaiveActor:
         print("write bytes entropy:", write_ent)
         print('r/w entropy ratio:', rw_ent_ratio)
         print('w/r entropy ratio:', wr_ent_ratio)
+
+    def stats(self):
+        end_time = time.time()
+        up_time = end_time - self.start_time
+        read_ent = self.read_entropy_calc.entropy
+        write_ent = self.write_entropy_calc.entropy
+        rw_ratio, wr_ratio = leftAndRightSafeDiv(self.read_bytes, self.write_bytes)
+        rw_ent_ratio, wr_ent_ratio = leftAndRightSafeDiv(read_ent, write_ent)
+        return end_time,up_time,read_ent,write_ent,rw_ratio,wr_ratio,rw_ent_ratio,wr_ent_ratio
 
     def loop(self):
         self.read()
