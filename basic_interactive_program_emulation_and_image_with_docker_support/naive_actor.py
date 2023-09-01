@@ -248,6 +248,7 @@ class NaiveActor:
         self.read_tail_bytes = 200
         self.read_entropy_calc = ContentEntropyCalculator()
         self.write_entropy_calc = ContentEntropyCalculator()
+        self._stats = ...
 
     def spawn(self, cmd):
         return pexpect.spawn(cmd)
@@ -320,27 +321,31 @@ class NaiveActor:
         print("w/r entropy ratio:", stats.wr_ent_ratio)
 
     def stats(self):
-        start_time = self.start_time
-        end_time = time.time()
-        up_time = end_time - self.start_time
-        read_ent = self.read_entropy_calc.entropy
-        write_ent = self.write_entropy_calc.entropy
-        loop_count = self.loop_count
-        rw_ratio, wr_ratio = leftAndRightSafeDiv(self.read_bytes, self.write_bytes)
-        rw_ent_ratio, wr_ent_ratio = leftAndRightSafeDiv(read_ent, write_ent)
-        stats = ActorStats(
-            start_time=start_time,
-            end_time=end_time,
-            up_time=up_time,
-            loop_count=loop_count,
-            read_ent=read_ent,
-            write_ent=write_ent,
-            rw_ratio=rw_ratio,
-            wr_ratio=wr_ratio,
-            rw_ent_ratio=rw_ent_ratio,
-            wr_ent_ratio=wr_ent_ratio,
-        )
-        return stats
+        if not (
+            isinstance(self._stats, ActorStats)
+            and self._stats.loop_count == self.loop_count
+        ):
+            start_time = self.start_time
+            end_time = time.time()
+            up_time = end_time - self.start_time
+            read_ent = self.read_entropy_calc.entropy
+            write_ent = self.write_entropy_calc.entropy
+            loop_count = self.loop_count
+            rw_ratio, wr_ratio = leftAndRightSafeDiv(self.read_bytes, self.write_bytes)
+            rw_ent_ratio, wr_ent_ratio = leftAndRightSafeDiv(read_ent, write_ent)
+            self._stats = ActorStats(
+                start_time=start_time,
+                end_time=end_time,
+                up_time=up_time,
+                loop_count=loop_count,
+                read_ent=read_ent,
+                write_ent=write_ent,
+                rw_ratio=rw_ratio,
+                wr_ratio=wr_ratio,
+                rw_ent_ratio=rw_ent_ratio,
+                wr_ent_ratio=wr_ent_ratio,
+            )
+        return self._stats
 
     def loop(self):
         self.read()
