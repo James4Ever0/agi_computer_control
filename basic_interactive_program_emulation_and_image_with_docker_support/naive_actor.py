@@ -14,6 +14,8 @@ class ActorStats(BaseModel):
     end_time: float
     up_time: float
     loop_count: int
+    read_bytes: int
+    write_bytes: int
     read_ent: float
     write_ent: float
     rw_ratio: float
@@ -305,14 +307,14 @@ class NaiveActor:
 
     def __del__(self):
         # TODO: separate calculation logic from here, to be used in metaheuristics
-        stats = self.stats()
+        stats = self.stats
         print("summary".center(50, "="))
         print("start time:", formatTimeAtShanghai(stats.start_time), sep="\t")
         print("end time:", formatTimeAtShanghai(stats.end_time), sep="\t")
         print("up time:", stats.up_time, sep="\t")
         print("loop count:", stats.loop_count, sep="\t")
-        print("total bytes read:", self.read_bytes, sep="\t")
-        print("total bytes write:", self.write_bytes, sep="\t")
+        print("total bytes read:", stats.read_bytes, sep="\t")
+        print("total bytes write:", stats.write_bytes, sep="\t")
         print("r/w ratio:", stats.rw_ratio)
         print("w/r ratio:", stats.wr_ratio)
         print("read bytes entropy:", stats.read_ent)
@@ -320,7 +322,9 @@ class NaiveActor:
         print("r/w entropy ratio:", stats.rw_ent_ratio)
         print("w/r entropy ratio:", stats.wr_ent_ratio)
 
+    @property
     def stats(self):
+        # somehow cached.
         if not (
             isinstance(self._stats, ActorStats)
             and self._stats.loop_count == self.loop_count
@@ -339,6 +343,8 @@ class NaiveActor:
                 up_time=up_time,
                 loop_count=loop_count,
                 read_ent=read_ent,
+                read_bytes=self.read_bytes,
+                write_bytes=self.write_bytes,
                 write_ent=write_ent,
                 rw_ratio=rw_ratio,
                 wr_ratio=wr_ratio,
