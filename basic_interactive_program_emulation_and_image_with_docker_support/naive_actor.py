@@ -6,34 +6,54 @@ from vocabulary import NaiveVocab
 from cmath import nan
 
 from type_utils import *
+from pydantic import BaseModel
 
-def safeDiv(a,b):
+
+class ActorStats(BaseModel):
+    start_time: float
+    end_time: float
+    up_time: float
+    read_ent: float
+    write_ent: float
+    rw_ratio: float
+    wr_ratio: float
+    rw_ent_ratio: float
+    wr_ent_ratio: float
+
+
+def safeDiv(a, b):
     """
     Return a/b if no exception is raised, otherwise nan.
     """
     ret = nan
     try:
-        ret = a/b
+        ret = a / b
     except ZeroDivisionError:
         pass
     return ret
 
-def leftAndRightSafeDiv(a,b):
+
+def leftAndRightSafeDiv(a, b):
     """
     Return a/b and b/a, in safe division manner.
     """
-    left_div = safeDiv(a,b)
-    right_div = safeDiv(b,a)
+    left_div = safeDiv(a, b)
+    right_div = safeDiv(b, a)
     return left_div, right_div
+
 
 if os.name == "nt":
     import wexpect as pexpect
+
     expected_wexpect_version = "4.0.0"
-    wexp_version =  pexpect.__version__
-    assert wexp_version == expected_wexpect_version, "wexpected version should be: {}\ncurrently: {}".format(expected_wexpect_version, wexp_version)
+    wexp_version = pexpect.__version__
+    assert (
+        wexp_version == expected_wexpect_version
+    ), "wexpected version should be: {}\ncurrently: {}".format(
+        expected_wexpect_version, wexp_version
+    )
     import wexpect.host as host
     import socket
-
 
     def spawnsocket_read_nonblocking(self, size=1):
         """This reads at most size characters from the child application. If
@@ -126,7 +146,7 @@ if os.name == "nt":
 
     def spawnbase_sendline(self, s=b""):
         s = enforce_bytes(s)
-        n = self.send(s+b"\r\n")
+        n = self.send(s + b"\r\n")
         return n
 
     host.SpawnBase.sendline = spawnbase_sendline
@@ -135,8 +155,12 @@ else:
     import pexpect
 
     expected_pexpect_version = "4.6.0"
-    pexp_version =  pexpect.__version__
-    assert pexp_version == expected_pexpect_version, "pexpected version should be: {}\ncurrently: {}".format(expected_pexpect_version, pexp_version)
+    pexp_version = pexpect.__version__
+    assert (
+        pexp_version == expected_pexpect_version
+    ), "pexpected version should be: {}\ncurrently: {}".format(
+        expected_pexpect_version, pexp_version
+    )
 
     def spawn_sendline(self, s=b""):
         s = enforce_bytes(s)
@@ -158,15 +182,19 @@ else:
             if err.args[0] == errno.EIO:
                 # Linux-style EOF
                 self.flag_eof = True
-                raise pexpect.spawnbase.EOF('End Of File (EOF). Exception style platform.')
+                raise pexpect.spawnbase.EOF(
+                    "End Of File (EOF). Exception style platform."
+                )
             raise
-        if s == b'':
+        if s == b"":
             # BSD-style EOF
             self.flag_eof = True
-            raise pexpect.spawnbase.EOF('End Of File (EOF). Empty string style platform.')
+            raise pexpect.spawnbase.EOF(
+                "End Of File (EOF). Empty string style platform."
+            )
 
         # s = self._decoder.decode(s, final=False)
-        self._log(s, 'read')
+        self._log(s, "read")
         return s
 
     pexpect.spawnbase.SpawnBase.read_nonblocking = spawnbase_read_nonblocking
@@ -207,6 +235,7 @@ from entropy_utils import ContentEntropyCalculator
 
 class NaiveActor:
     write_method = lambda proc: proc.sendline
+
     def __init__(self, cmd):
         self.process = self.spawn(cmd)
         self.timeout = 1
@@ -230,8 +259,7 @@ class NaiveActor:
         print("write:", get_repr(content), sep="\t")
         self.write_bytes += len(content)
 
-        write_method = self.__class__.write_method(self.process)\
-
+        write_method = self.__class__.write_method(self.process)
         write_method(content)
         self.write_entropy_calc.count(content)
         return content
@@ -275,9 +303,9 @@ class NaiveActor:
 
     def __del__(self):
         # TODO: separate calculation logic from here, to be used in metaheuristics
-        end_time, up_time, read_ent, write_ent, rw_ratio, wr_ratio, rw_ent_ratio, wr_ent_ratio = self.stats()
+        stats = self.stats()
         print("summary".center(50, "="))
-        print("start time:", formatTimeAtShanghai(self.start_time), sep="\t")
+        print("start time:", formatTimeAtShanghai(start_time), sep="\t")
         print("end time:", formatTimeAtShanghai(end_time), sep="\t")
         print("up time:", up_time, sep="\t")
         print("loop count:", self.loop_count, sep="\t")
@@ -287,17 +315,29 @@ class NaiveActor:
         print("w/r ratio:", wr_ratio)
         print("read bytes entropy:", read_ent)
         print("write bytes entropy:", write_ent)
-        print('r/w entropy ratio:', rw_ent_ratio)
-        print('w/r entropy ratio:', wr_ent_ratio)
+        print("r/w entropy ratio:", rw_ent_ratio)
+        print("w/r entropy ratio:", wr_ent_ratio)
 
     def stats(self):
+        start_time = self.start_time
         end_time = time.time()
         up_time = end_time - self.start_time
         read_ent = self.read_entropy_calc.entropy
         write_ent = self.write_entropy_calc.entropy
         rw_ratio, wr_ratio = leftAndRightSafeDiv(self.read_bytes, self.write_bytes)
         rw_ent_ratio, wr_ent_ratio = leftAndRightSafeDiv(read_ent, write_ent)
-        return end_time,up_time,read_ent,write_ent,rw_ratio,wr_ratio,rw_ent_ratio,wr_ent_ratio
+        stats = ActorStats(
+            start_time,
+            end_time,
+            up_time,
+            read_ent,
+            write_ent,
+            rw_ratio,
+            wr_ratio,
+            rw_ent_ratio,
+            wr_ent_ratio,
+        )
+        return stats
 
     def loop(self):
         self.read()
@@ -310,9 +350,11 @@ class NaiveActor:
             print(f"[loop\t{str(self.loop_count)}]".center(60, "-"))
             self.loop_count += 1
 
+
 def run_naive(cls):
     actor = cls(f"{sys.executable} naive_interactive.py")
     actor.run()
+
 
 if __name__ == "__main__":
     run_naive(NaiveActor)
