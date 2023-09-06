@@ -185,7 +185,7 @@ else:
         try:
             s = os.read(self.child_fd, size)
         except OSError as err:
-            if err.args[0] == errno.EIO:
+            if err.args[0] == pexpect.spawnbase.errno.EIO:
                 # Linux-style EOF
                 self.flag_eof = True
                 raise pexpect.spawnbase.EOF(
