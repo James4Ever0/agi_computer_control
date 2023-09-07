@@ -1,5 +1,24 @@
 from naive_actor import NaiveActor
 from vocabulary import AsciiVocab
+import easyprocess
+
+import os, sys, getpass, elevate
+
+if sys.maxsize < 2**32:
+    print("Your system is 32bit or lower.")
+    if os.name == "posix":
+        # check if is sudo
+        print("*nix system detected.")
+        # username = os.environ.get("USER", os.environ.get("USERNAME", "unknown"))
+        username = getpass.getuser()
+        # ref: https://www.geeksforgeeks.org/how-to-get-the-current-username-in-python/
+        is_sudo = username == "root"
+        if not is_sudo:
+            msg = f"You ({username}) are not sudo. Docker may malfunction."
+            # raise Exception(msg)
+            print(msg)
+            print("Elevating now.")
+            elevate.elevate(graphical=False)
 
 class _AutoSeparatedString(str):
     __slots__ = ["sep"]
@@ -34,7 +53,6 @@ import time
 
 # import docker  # pip3 install docker
 import progressbar
-import func_timeout
 import better_exceptions
 
 # client = docker.from_env()
@@ -46,7 +64,6 @@ rthandler = RotatingFileHandler(
 )
 # TODO: container & process profiler
 import logging
-import sys
 
 logger = logging.getLogger("alpine_actor")
 
@@ -68,8 +85,6 @@ def log_and_print_unknown_exception():
 
 # timeout this function.
 # from functools import partial
-import easyprocess
-import os
 
 
 def killAndPruneAllContainers():
@@ -120,28 +135,7 @@ class AlpineActor(NaiveActor):
         killAndPruneAllContainers()
         super().__del__()
 
-    @staticmethod
-    def timeit(func):
-        def inner_func(self):
-            start_time = time.time()
-            # func(self)
-            try:
-                ret = func_timeout.func_timeout(self.max_loop_time, func, args=(self,))
-            except func_timeout.FunctionTimedOut:
-                print("Loop timeout %d exceeded." % self.max_loop_time)
-                return
-            end_time = time.time()
-            rw_time = end_time - start_time
-            print("rw time:", rw_time, sep="\t")
-            if rw_time > self.max_rwtime:
-                print("exit because of long rw time.\nmax rw time:", self.max_rwtime)
-                return
-            # return True
-            return ret
-
-        return inner_func
-
-    @timeit
+    @NaiveActor.timeit
     def loop(self):
         _ = self.read()
         write_content = AsciiVocab.generate()

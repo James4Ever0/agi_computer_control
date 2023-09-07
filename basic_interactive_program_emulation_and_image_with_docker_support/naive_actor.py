@@ -4,6 +4,8 @@
 # TODO: improve task execution logic, eliminate long running blocking tasks.
 # TODO: use celery to schedule tasks
 import os
+import sys
+
 import traceback
 from vocabulary import NaiveVocab
 from cmath import nan
@@ -11,6 +13,8 @@ from cmath import nan
 from type_utils import *
 from pydantic import BaseModel
 
+def unicodebytes(string:str):
+    return bytes(string, encoding='utf8')
 
 class ActorStats(BaseModel):
     start_time: float
@@ -170,7 +174,7 @@ else:
 
     def spawn_sendline(self, s=b""):
         s = enforce_bytes(s)
-        return self.send(s + bytes(os.linesep))
+        return self.send(s + unicodebytes(os.linesep))
 
     pexpect.spawn.sendline = spawn_sendline
 
@@ -209,7 +213,6 @@ else:
 # wxpython, wexpect/winpexpect, pexpect
 # https://peps.python.org/pep-3145/
 # https://peps.python.org/pep-3156/
-import sys
 from collections import deque
 
 
@@ -235,13 +238,33 @@ def formatTimeAtShanghai(timestamp):
     dt = datetime.datetime.fromtimestamp(timestamp, tz=timezone)
     return dt.isoformat()
 
-
+import func_timeout
 from entropy_utils import ContentEntropyCalculator
 
 
 class NaiveActor:
     write_method = lambda proc: proc.sendline
 
+    @staticmethod
+    def timeit(func):
+        def inner_func(self):
+            start_time = time.time()
+            # func(self)
+            try:
+                ret = func_timeout.func_timeout(self.max_loop_time, func, args=(self,))
+            except func_timeout.FunctionTimedOut:
+                print("Loop timeout %d exceeded." % self.max_loop_time)
+                return
+            end_time = time.time()
+            rw_time = end_time - start_time
+            print("rw time:", rw_time, sep="\t")
+            if rw_time > self.max_rwtime:
+                print("exit because of long rw time.\nmax rw time:", self.max_rwtime)
+                return
+            # return True
+            return ret
+
+        return inner_func
     def __init__(self, cmd):
         self.process = self.spawn(cmd)
         self.timeout = 1

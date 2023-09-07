@@ -4,7 +4,6 @@ from sequence_learner import NaivePredictor, PredictorWrapper
 from vocabulary import BytesVocab
 import random
 
-
 class PredictiveAlpineActor(AlpineActor):
     def __init__(self):
         self.predictorWrapper = PredictorWrapper(256, NaivePredictor)

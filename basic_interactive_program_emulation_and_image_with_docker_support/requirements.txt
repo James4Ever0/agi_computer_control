@@ -3,3 +3,6 @@ wexpect; os_name == 'nt'
 docker
 func-timeout
 progressbar2
+better-exceptions
+easyprocess
+elevate
