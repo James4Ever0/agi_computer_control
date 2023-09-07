@@ -85,7 +85,7 @@ def log_and_print_unknown_exception():
 
 # timeout this function.
 # from functools import partial
-
+import func_timeout
 
 def killAndPruneAllContainers():
     proc = easyprocess.EasyProcess("docker container ls").call()
