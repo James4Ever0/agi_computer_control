@@ -49,7 +49,7 @@ class AutoSpacedString(_AutoSeparatedString):
 # print(a+a)
 # print(a+a+a)
 # you had better adopt async/await syntax.
-import time
+# import time
 
 # import docker  # pip3 install docker
 import progressbar
