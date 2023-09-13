@@ -173,3 +173,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 fastapi-celery
+logs
+.git_backup
+.atomic_commit_flag
+.atomic_commit_lock_nt
+.inprogress_gitignore
