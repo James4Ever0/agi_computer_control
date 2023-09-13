@@ -1,5 +1,7 @@
 import random
+
 from type_utils import *
+
 
 class NaiveVocab:
     charlist = ["a"]
@@ -26,6 +28,7 @@ class NaiveVocab:
 
 class AsciiVocab(NaiveVocab):
     charlist = [chr(x) for x in range(256)]
+
 
 class BytesVocab(NaiveVocab):
     startpoint = b""

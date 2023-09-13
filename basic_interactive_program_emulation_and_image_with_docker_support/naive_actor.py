@@ -3,18 +3,31 @@
 # TODO: survive reopening the laptop lid
 # TODO: improve task execution logic, eliminate long running blocking tasks.
 # TODO: use celery to schedule tasks
+import datetime
 import os
 import sys
-
+import time
 import traceback
-from vocabulary import NaiveVocab
 from cmath import nan
 
-from type_utils import *
+# https://code.activestate.com/recipes/440554/
+# wxpython, wexpect/winpexpect, pexpect
+# https://peps.python.org/pep-3145/
+# https://peps.python.org/pep-3156/
+from collections import deque
+
+import func_timeout
+import pytz
 from pydantic import BaseModel
 
-def unicodebytes(string:str):
-    return bytes(string, encoding='utf8')
+from entropy_utils import ContentEntropyCalculator
+from type_utils import *
+from vocabulary import NaiveVocab
+
+
+def unicodebytes(string: str):
+    return bytes(string, encoding="utf8")
+
 
 class ActorStats(BaseModel):
     start_time: float
@@ -52,6 +65,10 @@ def leftAndRightSafeDiv(a, b):
     return left_div, right_div
 
 
+READ_KNOWN_EXCEPTIONS = []
+# SOCKET_TIMEOUT = .2
+# SOCKET_TIMEOUT = .01
+SOCKET_TIMEOUT = 0.001
 if os.name == "nt":
     import wexpect as pexpect
 
@@ -64,6 +81,11 @@ if os.name == "nt":
     )
     import wexpect.host as host
     import socket
+
+    def spawnsocket_connect_to_child(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((self.host, self.port))
+        self.sock.settimeout(SOCKET_TIMEOUT)
 
     def spawnsocket_read_nonblocking(self, size=1):
         """This reads at most size characters from the child application. If
@@ -151,6 +173,7 @@ if os.name == "nt":
             else:
                 raise
 
+    host.SpawnSocket.connect_to_child = spawnsocket_connect_to_child
     host.SpawnSocket.read_nonblocking = spawnsocket_read_nonblocking
     host.SpawnPipe.read_nonblocking = spawnpipe_read_nonblocking
 
@@ -171,6 +194,9 @@ else:
     ), "pexpected version should be: {}\ncurrently: {}".format(
         expected_pexpect_version, pexp_version
     )
+
+    READ_KNOWN_EXCEPTIONS.append(pexpect.pty_spawn.TIMEOUT)
+    READ_KNOWN_EXCEPTIONS.append(pexpect.spawnbase.EOF)  # are you sure?
 
     def spawn_sendline(self, s=b""):
         s = enforce_bytes(s)
@@ -209,25 +235,18 @@ else:
 
     pexpect.spawnbase.SpawnBase.read_nonblocking = spawnbase_read_nonblocking
 
-# https://code.activestate.com/recipes/440554/
-# wxpython, wexpect/winpexpect, pexpect
-# https://peps.python.org/pep-3145/
-# https://peps.python.org/pep-3156/
-from collections import deque
-
 
 def get_repr(content):
     if isinstance(content, str):
         content = content.encode()
     repr_content = content.hex()
     len_content = len(repr_content) / 2
+    assert (
+        len_content % 1 == 0.0
+    ), f"possible counting mechanism failure\nnon-integral content length detected: {len_content}"
+    len_content = int(len_content)
     cut_len = 10
     return f"[{len_content}\tbyte{'s' if len_content != 0 else ''}] {repr_content[:cut_len*2]}{'...' if len_content > cut_len else ''}"
-
-
-import time
-import pytz
-import datetime
 
 
 timezone_str = "Asia/Shanghai"
@@ -238,12 +257,10 @@ def formatTimeAtShanghai(timestamp):
     dt = datetime.datetime.fromtimestamp(timestamp, tz=timezone)
     return dt.isoformat()
 
-import func_timeout
-from entropy_utils import ContentEntropyCalculator
-
 
 class NaiveActor:
     write_method = lambda proc: proc.sendline
+    actorStatsClass = ActorStats
 
     @staticmethod
     def timeit(func):
@@ -265,9 +282,13 @@ class NaiveActor:
             return ret
 
         return inner_func
+
     def __init__(self, cmd):
         self.process = self.spawn(cmd)
-        self.timeout = 1
+        self.timeout = SOCKET_TIMEOUT
+        # self.timeout = 0.2 # equivalent to wexpect
+        # self.timeout = 0.001
+        # self.timeout = 1 # will cause havoc if set it too long
         self.read_bytes = 0
         self.write_bytes = 0
         self.loop_count = 0
@@ -321,8 +342,9 @@ class NaiveActor:
                     head_content += char
                 else:
                     tail_content.append(char)
-            except:
-                traceback.print_exc()
+            except Exception as e:
+                if type(e) not in READ_KNOWN_EXCEPTIONS:
+                    traceback.print_exc()
                 break
         tail_content = b"".join(list(tail_content))
         if read_byte_len <= self.read_head_bytes + self.read_tail_bytes:
@@ -352,36 +374,40 @@ class NaiveActor:
         print("r/w entropy ratio:", stats.rw_ent_ratio)
         print("w/r entropy ratio:", stats.wr_ent_ratio)
 
+    def getStatsDict(self):
+        start_time = self.start_time
+        end_time = time.time()
+        up_time = end_time - self.start_time
+        read_ent = self.read_entropy_calc.entropy
+        write_ent = self.write_entropy_calc.entropy
+        loop_count = self.loop_count
+        rw_ratio, wr_ratio = leftAndRightSafeDiv(self.read_bytes, self.write_bytes)
+        rw_ent_ratio, wr_ent_ratio = leftAndRightSafeDiv(read_ent, write_ent)
+        statsDict = dict(
+            start_time=start_time,
+            end_time=end_time,
+            up_time=up_time,
+            loop_count=loop_count,
+            read_ent=read_ent,
+            read_bytes=self.read_bytes,
+            write_bytes=self.write_bytes,
+            write_ent=write_ent,
+            rw_ratio=rw_ratio,
+            wr_ratio=wr_ratio,
+            rw_ent_ratio=rw_ent_ratio,
+            wr_ent_ratio=wr_ent_ratio,
+        )
+
     @property
     def stats(self):
         # TODO: calculate recent statistics, not just full statistics
         # somehow cached.
         if not (
-            isinstance(self._stats, ActorStats)
+            isinstance(self._stats, self.actorStatsClass)
             and self._stats.loop_count == self.loop_count
         ):
-            start_time = self.start_time
-            end_time = time.time()
-            up_time = end_time - self.start_time
-            read_ent = self.read_entropy_calc.entropy
-            write_ent = self.write_entropy_calc.entropy
-            loop_count = self.loop_count
-            rw_ratio, wr_ratio = leftAndRightSafeDiv(self.read_bytes, self.write_bytes)
-            rw_ent_ratio, wr_ent_ratio = leftAndRightSafeDiv(read_ent, write_ent)
-            self._stats = ActorStats(
-                start_time=start_time,
-                end_time=end_time,
-                up_time=up_time,
-                loop_count=loop_count,
-                read_ent=read_ent,
-                read_bytes=self.read_bytes,
-                write_bytes=self.write_bytes,
-                write_ent=write_ent,
-                rw_ratio=rw_ratio,
-                wr_ratio=wr_ratio,
-                rw_ent_ratio=rw_ent_ratio,
-                wr_ent_ratio=wr_ent_ratio,
-            )
+            statsDict = self.getStatsDict()
+            self._stats = self.actorStatsClass(**statsDict)
         return self._stats
 
     def loop(self):
@@ -389,11 +415,23 @@ class NaiveActor:
         self.write(NaiveVocab.generate())
         return True
 
+    def heartbeat(self):
+        # to prove the program as if still running.
+        # do not override this method, unless you know what you are doing.
+        return True
+
     def run(self):
-        # while True:
-        while self.loop():
-            print(f"[loop\t{str(self.loop_count)}]".center(60, "-"))
-            self.loop_count += 1
+        loop = True
+        while self.heartbeat():
+            loop = self.loop()
+            if loop is True:
+                print(f"[loop\t{str(self.loop_count)}]".center(60, "-"))
+                self.loop_count += 1
+            else:
+                break
+        print(
+            f"{'heartbeat' if loop else 'loop'} failed.\nexiting at #{self.loop_count}."
+        )
 
 
 def run_naive(cls):

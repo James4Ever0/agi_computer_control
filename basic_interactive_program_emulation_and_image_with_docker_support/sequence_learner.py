@@ -1,9 +1,11 @@
-import numpy as np
+from collections import deque
 from typing import List
+
+import numpy as np
 
 
 class NaivePredictor:
-    def __init__(self, ksize):
+    def __init__(self, ksize: int):
         self.ksize = ksize
         self.kernel = np.random.rand(self.ksize)
 
@@ -21,12 +23,9 @@ class NaivePredictor:
         return x_one_hot
 
 
-from collections import deque
-
-
 class PredictorWrapper:
-    def __init__(self, ksize, predictor_cls):
-        self.predictor = predictor_cls(ksize)
+    def __init__(self, ksize: int, predictor_cls: NaivePredictor):
+        self.predictor: NaivePredictor = predictor_cls(ksize)
         self.seq = deque([], maxlen=ksize)
 
     def enqueue(self, seq: List[int]):

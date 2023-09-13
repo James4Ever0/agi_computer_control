@@ -1,8 +1,11 @@
-from alpine_actor import run_actor_forever, AlpineActor
+import random
+
+from alpine_actor import AlpineActor, run_actor_forever
 from sequence_learner import NaivePredictor, PredictorWrapper
+
 # from vocabulary import AsciiVocab
 from vocabulary import BytesVocab
-import random
+
 
 class PredictiveAlpineActor(AlpineActor):
     def __init__(self):

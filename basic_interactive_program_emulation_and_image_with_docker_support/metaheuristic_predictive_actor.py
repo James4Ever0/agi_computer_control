@@ -1,22 +1,129 @@
+import math
+
 # extract the kernel from the dead ones.
 # the new kernel will be added to the random kernel.
+# import copy
+import weakref
+from typing import Callable
+
 import numpy as np
-from sequence_learner import PredictorWrapper
+from typing_extensions import Literal
+
+from alpine_actor import run_actor_forever
 from naive_actor import ActorStats
+from sequence_learner import PredictorWrapper
+
+ACTIVATION_FUNCMAP = {
+    "atan": lambda n: math.atan(n) / math.pi * 2,
+    "tanh": math.tanh,
+}  # input: -oo, oo; output: -1, 1
+
+
+class MetaheuristicActorStats(ActorStats):
+    ...
 
 
 class MetaheuristicPredictiveWrapper:
     top_k = 100
 
-    def __init__(self):
-        self.wrapper = PredictorWrapper()
-        self.actor = ...
+    def __init__(
+        self,
+        ksize: int,
+        actorClass,
+        predictorClass,
+        activation: Literal["atan", "tanh"],
+        eps=1e-5,
+    ):
+        class MetaheuristicActor(actorClass):
+            actorStatsClass = MetaheuristicActorStats
+            metaWrapperWeakref: Callable[[], MetaheuristicPredictiveWrapper]  # slot
+
+            def __del__(self):
+                metaWrapper = self.metaWrapperWeakref()
+                super().__del__()
+                ...
+
+            def getStatsDict(self):
+                statsDict = super().getStatsDict()
+                statsDict.update(dict())
+                return statsDict
+
+        self.actorClass = MetaheuristicActor
+        self.predictorClass = predictorClass
+        self.ksize = ksize
+        self.trial_count = 0
+        self.average_performance = 0
+        self.activation = ACTIVATION_FUNCMAP[activation]
+        self.eps = eps
+
+    def __next__(self):
+        # use inheritance instead of this!
+        # use weakref of this
+        while True:
+            actor_instance = self.actorClass(...)
+            # old_actor_del = copy.copy(actor_instance.__del__)
+            # old_actor_stat = copy.copy(actor_instance.stat)
+
+            # def actor_del(self):
+            #     ...
+            #     old_actor_del(self)
+
+            # def actor_stat(self):
+            #     ...
+            #     old_actor_stat(self)
+
+            # actor_instance.__del__ = actor_del
+            # actor_instance.stat = actor_stat
+            yield actor_instance
 
     def new(
         self,
     ):
         del self.actor
-        self.actor = ...
+        del self.wrapper
+        self.wrapper = PredictorWrapper(self.ksize, self.predictorClass)
+        self.actor = self.actorClass()
+
+    def get_kernel(self) -> np.ndarray:
+        return self.wrapper.predictor.kernel.copy()
+
+    def set_kernel(self, kernel: np.ndarray):
+        kernel_shape = kernel.shape
+        desired_shape = (self.ksize,)
+        assert (
+            kernel_shape == desired_shape
+        ), f"kernel shape mismatch: {kernel_shape} != {desired_shape}"
+        self.wrapper.predictor.kernel = kernel
+
+    kernel = property(fget=get_kernel, fset=set_kernel)
+
+    def remix(self):
+        old_kernel = self.kernel
+        old_score = self.score()
+        avg_performance = self.refresh_average_performance(
+            old_score
+        )  # warning! base shall never be 1
+        # log (avg performance as base) & tanh/atan
+        old_add_weight = math.log(old_score / avg_performance, avg_performance)
+        old_add_weight = self.activation(old_add_weight) / 2
+        # old_add_weight = self.activation(old_add_weight*self.trial_count) / 2
+        # old_add_weight = self.activation(old_add_weight*(1+math.log(self.trial_count)) / 2
+        self.new()
+        new_kernel = self.kernel
+        # emit noise if not doing well?
+        # zharmony vice versa?
+        self.kernel = new_kernel * (0.5 - old_add_weight) + old_kernel * (
+            0.5 + old_add_weight
+        )
+
+    def refresh_average_performance(self, score: float):
+        self.average_performance = (
+            self.average_performance * self.trial_count + score
+        ) / (self.trial_count + 1)
+        self.trial_count += 1
+        if self.average_performance == 1:
+            self.average_performance += self.eps
+        return self.average_performance
 
     def score(self):
         stats: ActorStats = self.actor.stats
@@ -38,5 +145,12 @@ class MetaheuristicPredictiveWrapper:
         w/r entropy ratio: 1.2430041745764768
         """
         # for now, just take the up time
-        score = stats.up_time
+        score = stats.up_time + self.eps
         return score
+
+
+if __name__ == "__main__":
+    actor_generator = MetaheuristicPredictiveWrapper(
+        ksize=100, actorClass=..., predictorClass=..., activation="tanh"
+    )
+    run_actor_forever(actor_generator)

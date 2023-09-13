@@ -5,6 +5,7 @@ def enforce_bytes(s):
         raise Exception("unknown line content type:", type(s))
     return s
 
+
 def enforce_str(content):
     if isinstance(content, bytes):
         content = content.decode()

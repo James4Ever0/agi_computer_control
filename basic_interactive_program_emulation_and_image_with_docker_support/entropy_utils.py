@@ -1,8 +1,7 @@
-from scipy.stats import entropy
-import numpy as np
-
-
 from contextlib import contextmanager
+
+import numpy as np
+from scipy.stats import entropy
 
 
 class EntropyCalculator:
@@ -56,6 +55,7 @@ def calculate_content_entropy(content):
     with entropyContext(is_content=True) as calc:
         calc.count(content)
         return calc.entropy
+
 
 # def calculate_content_entropy(content, full=False):
 # if isinstance(content, str):

@@ -1,7 +1,6 @@
 # import time
 from vocabulary import NaiveVocab
 
-
 # will sleep for random time and respond.
 
 

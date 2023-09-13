@@ -1,10 +1,12 @@
-from timeout_utils import *
-
+import asyncio
 import os
 
 # import multitasking
 # after all, we are single threaded
 import time
+
+from timeout_utils import *
+
 
 @retrying_timeout_func(1, 11)  # passed
 def os_sleep():
@@ -19,9 +21,6 @@ def time_sleep():
     print("running time sleep")
     time.sleep(3)
     print("exit time sleep")
-
-
-import asyncio
 
 
 async def set_after(fut, delay, value):

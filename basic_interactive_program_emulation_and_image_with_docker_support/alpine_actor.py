@@ -1,11 +1,36 @@
+# this will freeze the terminal. what the heck is going wrong?
+# maybe we need to profile this program.
+import gc
+import getpass
+
+# TODO: container & process profiler
+import logging
+import os
+import sys
+import traceback
+
+# client = docker.from_env()
+from logging.handlers import RotatingFileHandler
+
+import better_exceptions
+import easyprocess
+import elevate
+
+# timeout this function.
+# from functools import partial
+import func_timeout
+
+# import docker  # pip3 install docker
+import progressbar
+
 from naive_actor import NaiveActor
 from vocabulary import AsciiVocab
-import easyprocess
 
-import os, sys, getpass, elevate
-
+LEGACY_DOCKER = False
 if sys.maxsize < 2**32:
     print("Your system is 32bit or lower.")
+    print("Assume using legacy docker.")
+    LEGACY_DOCKER = True
     if os.name == "posix":
         # check if is sudo
         print("*nix system detected.")
@@ -19,6 +44,7 @@ if sys.maxsize < 2**32:
             print(msg)
             print("Elevating now.")
             elevate.elevate(graphical=False)
+
 
 class _AutoSeparatedString(str):
     __slots__ = ["sep"]
@@ -51,19 +77,11 @@ class AutoSpacedString(_AutoSeparatedString):
 # you had better adopt async/await syntax.
 # import time
 
-# import docker  # pip3 install docker
-import progressbar
-import better_exceptions
-
-# client = docker.from_env()
-from logging.handlers import RotatingFileHandler
 
 log_filename = "alpine_actor.log"
 rthandler = RotatingFileHandler(
     log_filename, maxBytes=1024 * 1024 * 15, backupCount=3, encoding="utf-8"
 )
-# TODO: container & process profiler
-import logging
 
 logger = logging.getLogger("alpine_actor")
 
@@ -78,23 +96,39 @@ def log_and_print_unknown_exception():
     exc_type, exc_info, exc_tb = sys.exc_info()
     # traceback.print_exc()
     if exc_type is not None:
-        exc_str = "\n".join(better_exceptions.format_exception(exc_type, exc_info, exc_tb))
+        exc_str = "\n".join(
+            better_exceptions.format_exception(exc_type, exc_info, exc_tb)
+        )
         logger.debug(exc_str)
         print(exc_str)
 
 
-# timeout this function.
-# from functools import partial
-import func_timeout
+def docker_cmd(*args):
+    return " ".join(["docker", *args])
 
-def killAndPruneAllContainers():
-    proc = easyprocess.EasyProcess("docker container ls").call()
+
+def docker_container_cmd(*args):
+    return docker_cmd("container", *args)
+
+
+if LEGACY_DOCKER:
+    LIST_CONTAINER = docker_cmd("ps -a")
+    KILL_CONTAINER = docker_cmd("rm -f")
+    # KILL_CONTAINER = docker_cmd("kill")
+else:
+    LIST_CONTAINER = docker_container_cmd("ls")
+    KILL_CONTAINER = docker_container_cmd("kill")
+
+
+@func_timeout.func_set_timeout(timeout=10)
+def killAndPruneAllContainers():  # not working for legacy docker.
+    proc = easyprocess.EasyProcess(LIST_CONTAINER).call()
     # proc = easyprocess.EasyProcess("docker container ls -a").call()
     if proc.stdout:
         lines = proc.stdout.split("\n")[1:]
         container_ids = [line.split(" ")[0] for line in lines]
         for cid in progressbar.progressbar(container_ids):
-            cmd = f"docker container kill {cid}"
+            cmd = f"{KILL_CONTAINER} {cid}"
             try:
                 func_timeout.func_timeout(2, os.system, args=(cmd,))
             except func_timeout.FunctionTimedOut:
@@ -102,7 +136,8 @@ def killAndPruneAllContainers():
                     f'timeout while killing container "{cid}".\nmaybe the container is not running.'
                 )
             # os.system(f"docker container kill -s SIGKILL {cid}")
-        os.system("docker container prune -f")
+        if not LEGACY_DOCKER:
+            os.system("docker container prune -f")
 
 
 # BUG: deprecated! may not connect to docker socket on windows.
@@ -130,6 +165,8 @@ class AlpineActor(NaiveActor):
         self.max_loop_time = 3
         killAndPruneAllContainers()
         super().__init__("docker run --rm -it alpine:3.7")
+        # TODO: detect if the container is down by heartbeat-like mechanism
+        # TODO: retrieve created container id
 
     def __del__(self):
         killAndPruneAllContainers()
@@ -144,38 +181,62 @@ class AlpineActor(NaiveActor):
         return True
 
 
-# this will freeze the terminal. what the heck is going wrong?
-# maybe we need to profile this program.
-import gc
-
-safe_exception_types = []
+SAFE_EXCEPTION_TYPES = []
 if os.name == "nt":
     import wexpect
 
-    safe_exception_types.append(wexpect.wexpect_util.EOF)  # you can try to ignore this.
-import traceback
+    SAFE_EXCEPTION_TYPES.append(wexpect.wexpect_util.EOF)  # you can try to ignore this.
 
+
+# from typing import Generator
 def run_actor_forever(actor_class):
     # killAndPruneAllContainers()
+    if hasattr(actor_class, "__next__"):
+        # if isinstance(actor_class, Generator):
+        make_actor = lambda: next(actor_class)
+    else:
+        make_actor = lambda: actor_class()
+
+    @func_timeout.func_set_timeout(timeout=131)
+    def internal_loop():
+        ret = None
+        # actor = actor_class()
+        actor = make_actor()
+
+        @func_timeout.func_set_timeout(timeout=100)
+        def run_actor():
+            try:
+                actor.run()
+            except KeyboardInterrupt:
+                print("exit on user demand")
+                return "INTERRUPTED"
+            except Exception as e:
+                check_if_is_safe_exception(e)
+
+        ret = run_actor()
+        del actor
+        if ret is None:
+            print()
+            print("restarting actor")
+        gc.collect()
+        return ret
+
     while True:
-        actor = actor_class()
+        ret = None
         try:
-            actor.run()
-        except KeyboardInterrupt:
-            print("exit on user demand")
-            break
+            ret = internal_loop()
+            if ret == "INTERRUPTED":
+                break
         except Exception as e:
             check_if_is_safe_exception(e)
-        del actor
-        print()
-        print("restarting actor")
-        gc.collect()
+
 
 def check_if_is_safe_exception(e):
     safe = False
-    for exc_type in safe_exception_types:
-        if isinstance(e, exc_type):
-            safe = True
+    # for exc_type in SAFE_EXCEPTION_TYPES:
+    #     if isinstance(e, exc_type):
+    if type(e) in SAFE_EXCEPTION_TYPES:
+        safe = True
     if safe:
         traceback.print_exc()
         print("safe exception:", e)

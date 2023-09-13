@@ -1,6 +1,8 @@
+import functools
+
 import func_timeout
 import retrying
-import functools
+
 # let's not use multitasking
 
 # timeout decorator for func with no arg/kwarg
