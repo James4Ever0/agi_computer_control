@@ -305,7 +305,10 @@ for p in IGNORED_PATHS:
         missing_ignored_paths.append(p)
         cmd = GIT_RM_CACHED_CMDGEN(p)
         ret = os.system(cmd)
-        assert ret in [0, 128], f"error while removing path '{p}' from git cache"
+        if ret not in [0, 128]:
+            logger_print(
+                f"warning: abnormal exit code {ret} while removing path '{p}' from git cache"
+            )
 
 has_gitignore = False
 if missing_ignored_paths != []:
@@ -539,7 +542,7 @@ def commit():
 
 GIT_LIST_CONFIG = f"{GIT} config -l"
 GIT_ADD_GLOBAL_CONFIG_CMDGEN = (
-    lambda conf: f"{GIT} config --global --add {conf.replace('=',' ')}"
+    lambda conf: f"{GIT} config --global --add {conf.replace('=',' ')[0]} \"{conf.replace('=',' ')[1]}\""
 )
 
 
@@ -553,9 +556,9 @@ def add_safe_directory():
     assert (
         p.returncode == 0
     ), f"Abnormal return code {p.returncode} while listing git configuration"
-    target_conf = f"safe.directory={curdir}"
+    target_conf = f'safe.directory={curdir}'
     if target_conf not in p.stdout.decode("utf-8"):
-        return_code = os.system(GIT_RM_CACHED_CMDGEN(target_conf))
+        return_code = os.system(GIT_ADD_GLOBAL_CONFIG_CMDGEN(target_conf))
         assert (
             return_code == 0
         ), "Abnormal return code while adding current directory to safe directories"
