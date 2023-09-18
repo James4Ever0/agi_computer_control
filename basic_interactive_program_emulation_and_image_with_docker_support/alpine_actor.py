@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 import traceback
+import shutil
 
 # client = docker.from_env()
 from logging.handlers import RotatingFileHandler
@@ -25,6 +26,11 @@ import progressbar
 
 from naive_actor import NaiveActor
 from vocabulary import AsciiVocab
+
+REQUIRED_BINARIES = ['docker']
+
+for name in REQUIRED_BINARIES:
+    assert shutil.which(name), f"{name} is not available in PATH." # you can specify absolute path here
 
 LEGACY_DOCKER = False
 if sys.maxsize < 2**32:
@@ -129,9 +135,20 @@ else:
 # suggestion: restart docker service on macos.
 # TODO: make unittests for failsafe protocols and watchdogs
 # TODO: check docker binary if it is in PATH
-# TODO: count failures of 
+# TODO: count failures of microtasks like this method and create remedy routines which trying to repair and continue execution
+
+def killAndPruneAllContainers():
+    fail_counter = 0
+    for _ in range(3):
+        try:
+            success = _killAndPruneAllContainers()
+            assert success, "Failed to execute docker kill and prune"
+        except:
+            fail_counter +=1
+
 @func_timeout.func_set_timeout(timeout=10)
-def killAndPruneAllContainers():  # not working for legacy docker.
+def _killAndPruneAllContainers():  # not working for legacy docker.
+    success = False
     proc = easyprocess.EasyProcess(LIST_CONTAINER).call()
     # proc = easyprocess.EasyProcess("docker container ls -a").call()
     if proc.stdout:
@@ -141,6 +158,7 @@ def killAndPruneAllContainers():  # not working for legacy docker.
             cmd = f"{KILL_CONTAINER} {cid}"
             try:
                 func_timeout.func_timeout(2, os.system, args=(cmd,))
+                success = True
             except func_timeout.FunctionTimedOut:
                 print(
                     f'timeout while killing container "{cid}".\nmaybe the container is not running.'
@@ -148,6 +166,8 @@ def killAndPruneAllContainers():  # not working for legacy docker.
             # os.system(f"docker container kill -s SIGKILL {cid}")
         if not LEGACY_DOCKER:
             os.system("docker container prune -f")
+    return success
+
 
 
 # BUG: deprecated! may not connect to docker socket on windows.

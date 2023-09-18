@@ -13,5 +13,26 @@ WINDOWS_KILL_DOCKER_COMMAND = 'taskkill /FI "IMAGENAME eq Docker*" /F'
 # Stop-Service & Start-Service
 # net stop com.docker.service/docker & net start com.docker.service/docker
 import platform
+import elevate
 
 sysname = platform.system()
+
+REQUIRED_BINARIES = ['docker']
+elevate_needed = False
+
+if sysname == 'Windows':
+    REQUIRED_BINARIES.append('taskkill')
+elif sysname == 'Linux':
+    REQUIRED_BINARIES.append('systemctl')
+    elevate_needed = True
+elif sysname == 'Darwin':
+    REQUIRED_BINARIES.append('killall')
+    REQUIRED_BINARIES.append('open')
+    REQUIRED_BINARIES.append(MACOS_DOCKER_APP_BINARY)
+else:
+    raise Exception('Unknown platform: {}'.format(sysname))
+
+import shutil
+
+for name in REQUIRED_BINARIES:
+    assert shutil.which(name), f"{name} is not available in PATH."
