@@ -1,5 +1,5 @@
-pexpect; os_name == 'posix'
-wexpect; os_name == 'nt'
+pexpect==4.6.0; os_name == 'posix'
+wexpect==4.0.0; os_name == 'nt'
 docker
 func-timeout
 progressbar2

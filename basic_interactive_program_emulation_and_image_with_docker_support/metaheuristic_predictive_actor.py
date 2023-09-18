@@ -145,7 +145,10 @@ class MetaheuristicPredictiveWrapper:
         w/r entropy ratio: 1.2430041745764768
         """
         # for now, just take the up time
-        score = stats.up_time + self.eps
+        # uptime seems to be less universal.
+        # let's use loop count for now.
+        score = stats.loop_count + self.eps
+        # score = stats.up_time + self.eps
         return score
 
 

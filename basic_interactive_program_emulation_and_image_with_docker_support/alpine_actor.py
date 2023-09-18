@@ -119,7 +119,14 @@ else:
     LIST_CONTAINER = docker_container_cmd("ls")
     KILL_CONTAINER = docker_container_cmd("kill")
 
-
+# this error has been recorded.
+# we cannot just leave it like this.
+# we need some watchdog thread.
+# DOCKER CLI ON MACOS IS NOT RESPONSIVE!
+# WHAT TO DO WITH THIS?
+# DO NOT FOOL ME INTO BUYING E5-2650V2 OR REGECC RAMS!
+# suggestion: use ssh-based interaction with containers.
+# suggestion: restart docker service on macos.
 @func_timeout.func_set_timeout(timeout=10)
 def killAndPruneAllContainers():  # not working for legacy docker.
     proc = easyprocess.EasyProcess(LIST_CONTAINER).call()
@@ -197,6 +204,8 @@ def run_actor_forever(actor_class):
     else:
         make_actor = lambda: actor_class()
 
+    # we just cannot use such long timeout limit.
+    # need watchdog alternative.
     @func_timeout.func_set_timeout(timeout=131)
     def internal_loop():
         ret = None
