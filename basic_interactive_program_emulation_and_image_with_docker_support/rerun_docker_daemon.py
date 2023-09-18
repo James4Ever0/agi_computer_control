@@ -5,7 +5,11 @@ LINUX_RESTART_DOCKER_COMMAND = "sudo systemctl restart docker"
 
 # DOES NOT WORK ON WIN11
 # kill com.docker.backend.exe? seems to be hanging
-WINDOWS_RESTART_DOCKER_COMMAND = 'powershell -Command "Restart-Service -Name *docker*"' # need elevated permissions
+WINDOWS_KILL_DOCKER_COMMAND = 'taskkill /FI "IMAGENAME eq Docker*" /F'
+# start program minimized
+# find 'Docker Desktop.exe'
+# which docker -> ../../ -> 'Docker Desktop.exe'
+# WINDOWS_RESTART_DOCKER_COMMAND = 'powershell -Command "Restart-Service -Name *docker*"' # need elevated permissions
 # Stop-Service & Start-Service
 # net stop com.docker.service/docker & net start com.docker.service/docker
 import platform
