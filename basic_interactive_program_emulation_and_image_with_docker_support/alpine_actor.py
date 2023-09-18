@@ -127,6 +127,9 @@ else:
 # DO NOT FOOL ME INTO BUYING E5-2650V2 OR REGECC RAMS!
 # suggestion: use ssh-based interaction with containers.
 # suggestion: restart docker service on macos.
+# TODO: make unittests for failsafe protocols and watchdogs
+# TODO: check docker binary if it is in PATH
+# TODO: count failures of 
 @func_timeout.func_set_timeout(timeout=10)
 def killAndPruneAllContainers():  # not working for legacy docker.
     proc = easyprocess.EasyProcess(LIST_CONTAINER).call()
