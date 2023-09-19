@@ -1,3 +1,4 @@
+# TODO: eliminate stale containers by restarting docker every 10 sessions.
 MACOS_DOCKER_APP_BINARY = "/Applications/Docker.app/Contents/MacOS/Docker"
 # killall Docker && open --background -a Docker
 # ps aux | grep Docker.app | grep -v grep | awk '{print $2}' | xargs -Iabc kill abc
