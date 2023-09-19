@@ -1,7 +1,7 @@
 # this will freeze the terminal. what the heck is going wrong?
 # maybe we need to profile this program.
 import gc
-import getpass
+# import getpass
 
 # TODO: container & process profiler
 import logging
@@ -138,14 +138,21 @@ else:
 # TODO: check docker binary if it is in PATH
 # TODO: count failures of microtasks like this method and create remedy routines which trying to repair and continue execution
 
-def killAndPruneAllContainers():
+from rerun_docker_daemon import restart_and_verify
+
+def killAndPruneAllContainers(trial_count = 3):
     fail_counter = 0
-    for _ in range(3):
+    for _ in range(trial_count):
         try:
             success = _killAndPruneAllContainers()
             assert success, "Failed to execute docker kill and prune"
+            return success
         except:
-            fail_counter +=1
+            fail_counter += 1
+    if fail_counter > trial_count:
+        print("relaunching docker")
+        restart_and_verify()
+        return killAndPruneAllContainers(trial_count)
 
 @func_timeout.func_set_timeout(timeout=10)
 def _killAndPruneAllContainers():  # not working for legacy docker.
@@ -198,6 +205,7 @@ class AlpineActor(NaiveActor):
         super().__init__("docker run --rm -it alpine:3.7")
         # TODO: detect if the container is down by heartbeat-like mechanism
         # TODO: retrieve created container id
+        # TODO: detect if we have the real container instead of fake container (do we have a real container session? or just dummy session with no docker behind), using pexpect's default capability.
 
     def __del__(self):
         killAndPruneAllContainers()

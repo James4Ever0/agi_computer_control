@@ -397,6 +397,7 @@ class NaiveActor:
             rw_ent_ratio=rw_ent_ratio,
             wr_ent_ratio=wr_ent_ratio,
         )
+        return statsDict
 
     @property
     def stats(self):

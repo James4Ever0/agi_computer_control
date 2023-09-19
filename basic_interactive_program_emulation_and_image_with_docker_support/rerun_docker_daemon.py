@@ -154,6 +154,10 @@ def check_required_binaries():
         assert os.path.exists(resolved_path), f"{name} does not exist.\nfilepath: {resolved_path}"
         print(f"{name} ok")
 
+def restart_and_verify():
+    restart_docker()
+    verify_docker_launched()
+    print('docker restart verified')
 
 if elevate_needed:
     elevate.elevate(graphical=False)
@@ -164,6 +168,4 @@ if __name__ == "__main__":
     # do it once more.
     for i in range(2):
         print(f"trial #{i}")
-        restart_docker()
-        verify_docker_launched()
-        print('docker restart verified')
+        restart_and_verify()
