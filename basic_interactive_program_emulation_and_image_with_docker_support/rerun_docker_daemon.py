@@ -1,5 +1,8 @@
 MACOS_DOCKER_APP_BINARY = "/Applications/Docker.app/Contents/MacOS/Docker"
 # killall Docker && open --background -a Docker
+# ps aux | grep Docker.app | grep -v grep | awk '{print $2}' | xargs -Iabc kill abc
+# killall docker
+import subprocess
 
 LINUX_RESTART_DOCKER_COMMAND = "sudo systemctl restart docker"
 
@@ -22,17 +25,50 @@ elevate_needed = False
 
 if sysname == 'Windows':
     REQUIRED_BINARIES.append('taskkill')
+    def kill_docker():
+        ...
+    def start_docker():
+        ...
 elif sysname == 'Linux':
     REQUIRED_BINARIES.append('systemctl')
     elevate_needed = True
+    def kill_docker():
+        ...
+    def start_docker():
+        ...
 elif sysname == 'Darwin':
     REQUIRED_BINARIES.append('killall')
     REQUIRED_BINARIES.append('open')
     REQUIRED_BINARIES.append(MACOS_DOCKER_APP_BINARY)
+    def kill_docker():
+        ...
+    def start_docker():
+        ...
 else:
-    raise Exception('Unknown platform: {}'.format(sysname))
+    raise Exception(f'Unknown platform: {sysname}')
+
+
+DOCKER_KILLED_KW = 'Cannot connect to the Docker daemon'
+def verify_docker_killed(timeout = 5, encoding='utf-8'):
+    output = subprocess.Popen(['docker', 'ps'], stdout=subprocess.PIPE).communicate(timeout=timeout)[0].decode(encoding)
+    killed = DOCKER_KILLED_KW in output
+    if not killed:
+        raise Exception(f'Docker not killed.\nCaptured output from command `docker ps`:\n{output}')
+
+def restart_docker():
+    kill_docker()
+    verify_docker_killed()
+    start_docker()
 
 import shutil
 
 for name in REQUIRED_BINARIES:
     assert shutil.which(name), f"{name} is not available in PATH."
+
+
+if __name__ == '__main__':
+    # kill & perform checks if you really have killed docker.
+    # restart & check if restart is successful.
+    # do it once more.
+    if elevate_needed:
+        elevate.elevate(graphical=False)
