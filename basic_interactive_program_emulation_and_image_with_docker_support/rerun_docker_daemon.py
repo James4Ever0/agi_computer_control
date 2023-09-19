@@ -2,9 +2,13 @@ MACOS_DOCKER_APP_BINARY = "/Applications/Docker.app/Contents/MacOS/Docker"
 # killall Docker && open --background -a Docker
 # ps aux | grep Docker.app | grep -v grep | awk '{print $2}' | xargs -Iabc kill abc
 # killall docker
+MACOS_KILL_DOCKER_APP = '''bash -c "ps aux | grep Docker.app | grep -v grep | awk '{print $2}' | xargs -Iabc kill abc"'''
 import subprocess
 
-LINUX_RESTART_DOCKER_COMMAND = "sudo systemctl restart docker"
+LINUX_CONTROL_DOCKER_SERVICE_CMDGEN = lambda action: f"sudo systemctl {action} docker"
+LINUX_RESTART_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("restart")
+LINUX_STOP_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("stop")
+LINUX_START_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("start")
 
 # DOES NOT WORK ON WIN11
 # kill com.docker.backend.exe? seems to be hanging
@@ -22,56 +26,88 @@ import os
 
 sysname = platform.system()
 
-REQUIRED_BINARIES = ['docker']
+REQUIRED_BINARIES = ["docker"]
 elevate_needed = False
 
-DOCKER_DESKTOP_EXE = 'Docker Desktop.exe'
+DOCKER_DESKTOP_EXE = "Docker Desktop.exe"
 
-def execute_os_command_and_assert_safe_exit(cmd:str):
+
+def execute_os_command_and_assert_safe_exit(cmd: str):
     ret = os.system(cmd)
-    assert ret == 0, f"Abnormal exit code {ret} while executing following command:\n{cmd}"
+    assert (
+        ret == 0
+    ), f"Abnormal exit code {ret} while executing following command:\n{cmd}"
 
-if sysname == 'Windows':
-    REQUIRED_BINARIES.append('taskkill')
-    docker_path = shutil.which('docker')
+
+kill_docker_cmds = []
+start_docker_cmds = []
+if sysname == "Windows":
+    REQUIRED_BINARIES.append("taskkill")
+
+    docker_path = shutil.which("docker")
     docker_bin_path = os.path.dirname(docker_path)
     docker_desktop_dir_path = os.path.split(os.path.split(docker_bin_path)[0])[0]
     docker_desktop_exe_path = os.path.join(docker_desktop_dir_path, DOCKER_DESKTOP_EXE)
-    assert os.path.exists(docker_desktop_exe_path), f'Failed to find docker desktop executable at: "{docker_desktop_exe_path}"'
-    def kill_docker():
-        execute_os_command_and_assert_safe_exit(WINDOWS_KILL_DOCKER_COMMAND)
-    def start_docker():
-        execute_os_command_and_assert_safe_exit(f'start "{docker_desktop_exe_path}"')
-elif sysname == 'Linux':
-    REQUIRED_BINARIES.append('systemctl')
+
+    assert os.path.exists(
+        docker_desktop_exe_path
+    ), f'Failed to find docker desktop executable at: "{docker_desktop_exe_path}"'
+
+    kill_docker_cmds.append(WINDOWS_KILL_DOCKER_COMMAND)
+    start_docker_cmds.append(f'"{docker_desktop_exe_path}"')
+elif sysname == "Linux":
+    REQUIRED_BINARIES.append("systemctl")
     elevate_needed = True
-    def kill_docker():
-        ...
-    def start_docker():
-        ...
-elif sysname == 'Darwin':
-    REQUIRED_BINARIES.append('killall')
-    REQUIRED_BINARIES.append('open')
-    REQUIRED_BINARIES.append(MACOS_DOCKER_APP_BINARY)
-    def kill_docker():
-        ...
-    def start_docker():
-        ...
+
+    kill_docker_cmds.append(LINUX_STOP_DOCKER_COMMAND)
+    start_docker_cmds.append(LINUX_START_DOCKER_COMMAND)
+elif sysname == "Darwin":
+    REQUIRED_BINARIES.extend(["killall", "open", MACOS_DOCKER_APP_BINARY])
+
+    kill_docker_cmds.extend(["killall Docker", "killall docker", MACOS_KILL_DOCKER_APP])
+    start_docker_cmds.append(MACOS_DOCKER_APP_BINARY)
 else:
-    raise Exception(f'Unknown platform: {sysname}')
+    raise Exception(f"Unknown platform: {sysname}")
 
 
-DOCKER_KILLED_KW = 'Cannot connect to the Docker daemon'
-def verify_docker_killed(timeout = 5, encoding='utf-8'):
-    output = subprocess.Popen(['docker', 'ps'], stdout=subprocess.PIPE).communicate(timeout=timeout)[0].decode(encoding)
+def kill_docker():
+    for cmd in kill_docker_cmds:
+        execute_os_command_and_assert_safe_exit(cmd)
+
+
+def start_docker():
+    for cmd in start_docker_cmds:
+        execute_os_command_and_assert_safe_exit(cmd)
+
+
+DOCKER_KILLED_KW = "Cannot connect to the Docker daemon"
+
+
+def verify_docker_killed(timeout=5, encoding="utf-8", inverse:bool=False):
+    output = (
+        subprocess.Popen(["docker", "ps"], stdout=subprocess.PIPE)
+        .communicate(timeout=timeout)[0]
+        .decode(encoding)
+    )
     killed = DOCKER_KILLED_KW in output
-    if not killed:
-        raise Exception(f'Docker not killed.\nCaptured output from command `docker ps`:\n{output}')
+    if not inverse:
+        if not killed:
+            raise Exception(
+                f"Docker not killed.\nCaptured output from command `docker ps`:\n{output}"
+            )
+    else:
+        if killed:
+            raise Exception(
+                f"Docker not started.\nCaptured output from command `docker ps`:\n{output}"
+            )
+
+def verify_docker_launched(retries = 7, sleep=3)
 
 def restart_docker():
     kill_docker()
     verify_docker_killed()
     start_docker()
+
 
 import shutil
 
@@ -79,10 +115,11 @@ for name in REQUIRED_BINARIES:
     assert shutil.which(name), f"{name} is not available in PATH."
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # kill & perform checks if you really have killed docker.
     # restart & check if restart is successful.
     # do it once more.
     if elevate_needed:
         elevate.elevate(graphical=False)
-    
+    restart_docker()
+    verify_docker_killed(inverse=True)
