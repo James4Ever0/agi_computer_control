@@ -29,12 +29,12 @@ class MetaheuristicPredictiveWrapper:
     def __init__(
         self,
         ksize: int,
-        actorClass,
-        predictorClass,
+        predictiveActorClass,
+        # predictorClass,
         activation: Literal["atan", "tanh"],
         eps=1e-5,
     ):
-        class MetaheuristicActor(actorClass):
+        class MetaheuristicPredictiveActor(predictiveActorClass):
             actorStatsClass = MetaheuristicActorStats
             metaWrapperWeakref: Callable[[], MetaheuristicPredictiveWrapper]  # slot
 
@@ -48,8 +48,8 @@ class MetaheuristicPredictiveWrapper:
                 statsDict.update(dict())
                 return statsDict
 
-        self.actorClass = MetaheuristicActor
-        self.predictorClass = predictorClass
+        self.predictiveActorClass = MetaheuristicPredictiveActor
+        # self.predictorClass = predictorClass
         self.ksize = ksize
         self.trial_count = 0
         self.average_performance = 0
@@ -59,20 +59,23 @@ class MetaheuristicPredictiveWrapper:
     def __next__(self):
         # use inheritance instead of this!
         # use weakref of self
-        actor_instance = self.actorClass()
-        actor_instance.metaWrapperWeakref = weakref.ref(self)
-        return actor_instance
+        self.new()
+        return self.actor
+        # actor_instance = self.actorClass()
+        # actor_instance.metaWrapperWeakref = weakref.ref(self)
+        # return actor_instance
 
     def new(
         self,
     ):
         del self.actor
-        del self.wrapper
-        self.wrapper = PredictorWrapper(self.ksize, self.predictorClass)
-        self.actor = self.actorClass()
+        # del self.wrapper
+        # self.wrapper = PredictorWrapper(self.ksize, self.predictorClass)
+        self.actor = self.predictiveActorClass(ksize= self.ksize)
+        self.actor.metaWrapperWeakref = weakref.ref(self)
 
     def get_kernel(self) -> np.ndarray:
-        return self.wrapper.predictor.kernel.copy()
+        return self.actor.predictorWrapper.predictor.kernel.copy()
 
     def set_kernel(self, kernel: np.ndarray):
         kernel_shape = kernel.shape
@@ -80,7 +83,7 @@ class MetaheuristicPredictiveWrapper:
         assert (
             kernel_shape == desired_shape
         ), f"kernel shape mismatch: {kernel_shape} != {desired_shape}"
-        self.wrapper.predictor.kernel = kernel
+        self.actor.predictorWrapper.predictor.kernel = kernel
 
     kernel = property(fget=get_kernel, fset=set_kernel)
 
@@ -140,13 +143,13 @@ class MetaheuristicPredictiveWrapper:
 
 
 if __name__ == "__main__":
-    from alpine_actor import AlpineActor
-    from predictive_alpine_actor import PredictorWrapper
+    # from alpine_actor import AlpineActor
+    from predictive_alpine_actor import PredictiveAlpineActor  # PredictorWrapper
 
     actor_generator = MetaheuristicPredictiveWrapper(
         ksize=100,
-        actorClass=AlpineActor,
-        predictorClass=PredictorWrapper,
+        predictiveActorClass=PredictiveAlpineActor,
+        # predictorClass=PredictorWrapper,
         activation="tanh",
     )
     # breakpoint()

@@ -8,8 +8,8 @@ from vocabulary import BytesVocab
 
 
 class PredictiveAlpineActor(AlpineActor):
-    def __init__(self):
-        self.predictorWrapper = PredictorWrapper(256, NaivePredictor)
+    def __init__(self, ksize = 256):
+        self.predictorWrapper = PredictorWrapper(ksize, NaivePredictor)
         self.predictorWrapper.seq.extend(list(BytesVocab.generate()))
         # self.predictorWrapper.seq.extend([ord(c) for c in AsciiVocab.generate()])
         super().__init__()
