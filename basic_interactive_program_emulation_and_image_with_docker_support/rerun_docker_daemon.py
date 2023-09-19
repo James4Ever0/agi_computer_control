@@ -127,6 +127,8 @@ def verify_docker_launched(retries=7, sleep=3):
 
 
 def restart_docker():
+    check_required_binaries()
+    print("prerequisites checked")
     kill_docker()
     print("docker killed")
     verify_docker_killed()
@@ -137,10 +139,12 @@ def restart_docker():
 
 import shutil
 
-for name in REQUIRED_BINARIES:
-    resolved_path = shutil.which(name)
-    assert shutil.which(name), f"{name} is not available in PATH."
-    assert os.path.exists(resolved_path), f"{name} does not exist.\nfilepath: {resolved_path}"
+def check_required_binaries():
+    for name in REQUIRED_BINARIES:
+        resolved_path = shutil.which(name)
+        assert resolved_path, f"{name} is not available in PATH."
+        assert os.path.exists(resolved_path), f"{name} does not exist.\nfilepath: {resolved_path}"
+        print(f"{name} ok")
 
 
 if elevate_needed:
