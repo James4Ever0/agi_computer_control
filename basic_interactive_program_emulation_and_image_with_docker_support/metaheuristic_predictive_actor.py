@@ -59,22 +59,22 @@ class MetaheuristicPredictiveWrapper:
     def __next__(self):
         # use inheritance instead of this!
         # use weakref of this
-        while True:
-            actor_instance = self.actorClass(...)
-            # old_actor_del = copy.copy(actor_instance.__del__)
-            # old_actor_stat = copy.copy(actor_instance.stat)
+        actor_instance = self.actorClass()
+        actor_instance.metaWrapperWeakref = weakref.ref(self)
+        # old_actor_del = copy.copy(actor_instance.__del__)
+        # old_actor_stat = copy.copy(actor_instance.stat)
 
-            # def actor_del(self):
-            #     ...
-            #     old_actor_del(self)
+        # def actor_del(self):
+        #     ...
+        #     old_actor_del(self)
 
-            # def actor_stat(self):
-            #     ...
-            #     old_actor_stat(self)
+        # def actor_stat(self):
+        #     ...
+        #     old_actor_stat(self)
 
-            # actor_instance.__del__ = actor_del
-            # actor_instance.stat = actor_stat
-            yield actor_instance
+        # actor_instance.__del__ = actor_del
+        # actor_instance.stat = actor_stat
+        return actor_instance
 
     def new(
         self,
@@ -153,7 +153,10 @@ class MetaheuristicPredictiveWrapper:
 
 
 if __name__ == "__main__":
+    from alpine_actor import AlpineActor
+    from predictive_alpine_actor import PredictorWrapper
     actor_generator = MetaheuristicPredictiveWrapper(
-        ksize=100, actorClass=..., predictorClass=..., activation="tanh"
+        ksize=100, actorClass=AlpineActor, predictorClass=PredictorWrapper, activation="tanh"
     )
+    breakpoint()
     run_actor_forever(actor_generator)
