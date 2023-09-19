@@ -23,6 +23,9 @@ class MetaheuristicActorStats(ActorStats):
     ...
 
 
+import copy
+
+
 class MetaheuristicPredictiveWrapper:
     top_k = 100
 
@@ -37,13 +40,19 @@ class MetaheuristicPredictiveWrapper:
         class MetaheuristicPredictiveActor(predictiveActorClass):
             actorStatsClass = MetaheuristicActorStats
             metaWrapperWeakref: Callable[[], MetaheuristicPredictiveWrapper]  # slot
+            metaInfo: list[list[str]]
 
             def __del__(self):
                 metaWrapper = self.metaWrapperWeakref()
-                print("trial count:", metaWrapper.trial_count)
-                print("average performance:", metaWrapper.average_performance)
-                super().__del__()
-                ...
+                metaInfo = copy.deepcopy(getattr(self, "metaInfo", []))
+                try:
+                    super().__del__()
+                finally:
+                    print("Metaheuristic".center(50, "="))
+                    print("trial count:", metaWrapper.trial_count)
+                    print("average performance:", metaWrapper.average_performance)
+                    for print_params in metaInfo:
+                        print(*print_params)
 
             def getStatsDict(self):
                 statsDict = super().getStatsDict()
@@ -101,13 +110,18 @@ class MetaheuristicPredictiveWrapper:
         old_add_weight = self.activation(old_add_weight) / 2
         # old_add_weight = self.activation(old_add_weight*self.trial_count) / 2
         # old_add_weight = self.activation(old_add_weight*(1+math.log(self.trial_count)) / 2
+        self.actor.metaInfo = [
+            ("old kernel weight:", old_kernel_weight),
+            ("new kernel weight:", new_kernel_weight),
+        ]
         self.new()
         new_kernel = self.kernel
         # emit noise if not doing well?
         # zharmony vice versa?
-        self.kernel = new_kernel * (0.5 - old_add_weight) + old_kernel * (
-            0.5 + old_add_weight
-        )
+        new_kernel_weight = 0.5 - old_add_weight
+        old_kernel_weight = 0.5 + old_add_weight
+        print()
+        self.kernel = new_kernel * new_kernel_weight + old_kernel * old_kernel_weight
 
     def refresh_average_performance(self, score: float):
         self.average_performance = (
@@ -150,7 +164,7 @@ if __name__ == "__main__":
     from predictive_alpine_actor import PredictiveAlpineActor  # PredictorWrapper
 
     actor_generator = MetaheuristicPredictiveWrapper(
-        ksize=256, # too small!
+        ksize=256,  # too small!
         # ksize=100,
         predictiveActorClass=PredictiveAlpineActor,
         # predictorClass=PredictorWrapper,
