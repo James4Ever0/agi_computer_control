@@ -54,17 +54,23 @@ if sysname == "Windows":
 
     kill_docker_cmds.append(WINDOWS_KILL_DOCKER_COMMAND)
     start_docker_cmds.append(f'start "" "{docker_desktop_exe_path}"') # bloody chatgpt.
+    def hide_docker():
+        ...
 elif sysname == "Linux":
     REQUIRED_BINARIES.append("systemctl")
     elevate_needed = True
 
     kill_docker_cmds.append(LINUX_STOP_DOCKER_COMMAND)
     start_docker_cmds.append(LINUX_START_DOCKER_COMMAND)
+    def hide_docker():
+        ...
 elif sysname == "Darwin":
     REQUIRED_BINARIES.extend(["killall", "open", MACOS_DOCKER_APP_BINARY])
 
     kill_docker_cmds.extend(["killall Docker", "killall docker", MACOS_KILL_DOCKER_APP])
     start_docker_cmds.append(MACOS_DOCKER_APP_BINARY)
+    def hide_docker():
+        ...
 else:
     raise Exception(f"Unknown platform: {sysname}")
 
@@ -135,6 +141,8 @@ def restart_docker():
     print("kill has been verified")
     start_docker()
     print("docker restarted")
+    hide_docker()
+    print("docker window minimized")
 
 
 import shutil
