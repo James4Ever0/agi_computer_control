@@ -40,16 +40,17 @@ if sys.maxsize < 2**32:
     if os.name == "posix":
         # check if is sudo
         print("*nix system detected.")
+        # you don't need to do root checking
         # username = os.environ.get("USER", os.environ.get("USERNAME", "unknown"))
-        username = getpass.getuser()
-        # ref: https://www.geeksforgeeks.org/how-to-get-the-current-username-in-python/
-        is_sudo = username == "root"
-        if not is_sudo:
-            msg = f"You ({username}) are not sudo. Docker may malfunction."
-            # raise Exception(msg)
-            print(msg)
-            print("Elevating now.")
-            elevate.elevate(graphical=False)
+        # username = getpass.getuser()
+        # # ref: https://www.geeksforgeeks.org/how-to-get-the-current-username-in-python/
+        # is_sudo = username == "root"
+        # if not is_sudo:
+        #     msg = f"You ({username}) are not sudo. Docker may malfunction."
+        #     # raise Exception(msg)
+        #     print(msg)
+        #     print("Elevating now.")
+        elevate.elevate(graphical=False)
 
 
 class _AutoSeparatedString(str):

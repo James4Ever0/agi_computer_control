@@ -17,18 +17,31 @@ WINDOWS_KILL_DOCKER_COMMAND = 'taskkill /FI "IMAGENAME eq Docker*" /F'
 # net stop com.docker.service/docker & net start com.docker.service/docker
 import platform
 import elevate
+import shutil
+import os
 
 sysname = platform.system()
 
 REQUIRED_BINARIES = ['docker']
 elevate_needed = False
 
+DOCKER_DESKTOP_EXE = 'Docker Desktop.exe'
+
+def execute_os_command_and_assert_safe_exit(cmd:str):
+    ret = os.system(cmd)
+    assert ret == 0, f"Abnormal exit code {ret} while executing following command:\n{cmd}"
+
 if sysname == 'Windows':
     REQUIRED_BINARIES.append('taskkill')
+    docker_path = shutil.which('docker')
+    docker_bin_path = os.path.dirname(docker_path)
+    docker_desktop_dir_path = os.path.split(os.path.split(docker_bin_path)[0])[0]
+    docker_desktop_exe_path = os.path.join(docker_desktop_dir_path, DOCKER_DESKTOP_EXE)
+    assert os.path.exists(docker_desktop_exe_path), f'Failed to find docker desktop executable at: "{docker_desktop_exe_path}"'
     def kill_docker():
-        ...
+        execute_os_command_and_assert_safe_exit(WINDOWS_KILL_DOCKER_COMMAND)
     def start_docker():
-        ...
+        execute_os_command_and_assert_safe_exit(f'start "{docker_desktop_exe_path}"')
 elif sysname == 'Linux':
     REQUIRED_BINARIES.append('systemctl')
     elevate_needed = True
@@ -72,3 +85,4 @@ if __name__ == '__main__':
     # do it once more.
     if elevate_needed:
         elevate.elevate(graphical=False)
+    
