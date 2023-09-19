@@ -33,11 +33,10 @@ DOCKER_DESKTOP_EXE = "Docker Desktop.exe"
 
 
 def execute_os_command_and_assert_safe_exit(cmd: str):
-    ret = os.system(cmd)
+    ret = os.system(cmd) # use cmd.exe on windows.
     assert (
         ret == 0
     ), f"Abnormal exit code {ret} while executing following command:\n{cmd}"
-
 
 kill_docker_cmds = []
 start_docker_cmds = []
@@ -54,7 +53,7 @@ if sysname == "Windows":
     ), f'Failed to find docker desktop executable at: "{docker_desktop_exe_path}"'
 
     kill_docker_cmds.append(WINDOWS_KILL_DOCKER_COMMAND)
-    start_docker_cmds.append(f'"{docker_desktop_exe_path}"')
+    start_docker_cmds.append(f'start "" "{docker_desktop_exe_path}"') # bloody chatgpt.
 elif sysname == "Linux":
     REQUIRED_BINARIES.append("systemctl")
     elevate_needed = True
@@ -139,15 +138,18 @@ def restart_docker():
 import shutil
 
 for name in REQUIRED_BINARIES:
+    resolved_path = shutil.which(name)
     assert shutil.which(name), f"{name} is not available in PATH."
+    assert os.path.exists(resolved_path), f"{name} does not exist.\nfilepath: {resolved_path}"
 
+
+if elevate_needed:
+    elevate.elevate(graphical=False)
 
 if __name__ == "__main__":
     # kill & perform checks if you really have killed docker.
     # restart & check if restart is successful.
     # do it once more.
-    if elevate_needed:
-        elevate.elevate(graphical=False)
     for i in range(2):
         print(f"trial #{i}")
         restart_docker()
