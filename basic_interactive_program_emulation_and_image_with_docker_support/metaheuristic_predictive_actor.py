@@ -40,6 +40,8 @@ class MetaheuristicPredictiveWrapper:
 
             def __del__(self):
                 metaWrapper = self.metaWrapperWeakref()
+                print("trial count:", metaWrapper.trial_count)
+                print("average performance:", metaWrapper.average_performance)
                 super().__del__()
                 ...
 
