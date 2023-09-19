@@ -80,16 +80,22 @@ def start_docker():
         execute_os_command_and_assert_safe_exit(cmd)
 
 
-DOCKER_KILLED_KW = "Cannot connect to the Docker daemon"
+DOCKER_KILLED_KWS = [
+    "the docker daemon is not running",
+    "Cannot connect to the Docker daemon",
+    "error during connect",
+]
 
 
-def verify_docker_killed(timeout=5, encoding="utf-8", inverse:bool=False):
+def verify_docker_killed(timeout=5, encoding="utf-8", inverse: bool = False):
     output = (
-        subprocess.Popen(["docker", "ps"], stdout=subprocess.PIPE)
-        .communicate(timeout=timeout)[0]
+        subprocess.Popen(
+            ["docker", "ps"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        .communicate(timeout=timeout)[1]
         .decode(encoding)
     )
-    killed = DOCKER_KILLED_KW in output
+    killed = any([kw in output for kw in DOCKER_KILLED_KWS])
     if not inverse:
         if not killed:
             raise Exception(
@@ -101,12 +107,33 @@ def verify_docker_killed(timeout=5, encoding="utf-8", inverse:bool=False):
                 f"Docker not started.\nCaptured output from command `docker ps`:\n{output}"
             )
 
-def verify_docker_launched(retries = 7, sleep=3)
+
+import time
+
+
+def verify_docker_launched(retries=7, sleep=3):
+    success = False
+    for i in range(retries):
+        try:
+            verify_docker_killed(inverse=True)
+            success = True
+            break
+        except Exception as e:
+            if i < retries - 1:
+                print(f"Retrying in {sleep} seconds...")
+                time.sleep(sleep)
+            else:
+                raise e
+    return success
+
 
 def restart_docker():
     kill_docker()
+    print("docker killed")
     verify_docker_killed()
+    print("kill has been verified")
     start_docker()
+    print("docker restarted")
 
 
 import shutil
@@ -121,5 +148,8 @@ if __name__ == "__main__":
     # do it once more.
     if elevate_needed:
         elevate.elevate(graphical=False)
-    restart_docker()
-    verify_docker_killed(inverse=True)
+    for i in range(2):
+        print(f"trial #{i}")
+        restart_docker()
+        verify_docker_launched()
+        print('docker restart verified')
