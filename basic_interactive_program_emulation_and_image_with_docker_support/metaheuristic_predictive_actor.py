@@ -55,11 +55,12 @@ class MetaheuristicPredictiveWrapper:
         self.average_performance = 0
         self.activation = ACTIVATION_FUNCMAP[activation]
         self.eps = eps
+        self.new()
 
     def __next__(self):
         # use inheritance instead of this!
         # use weakref of self
-        self.new()
+        self.remix()
         return self.actor
         # actor_instance = self.actorClass()
         # actor_instance.metaWrapperWeakref = weakref.ref(self)
@@ -68,11 +69,11 @@ class MetaheuristicPredictiveWrapper:
     def new(
         self,
     ):
-        del self.actor
-        # del self.wrapper
-        # self.wrapper = PredictorWrapper(self.ksize, self.predictorClass)
-        self.actor = self.predictiveActorClass(ksize= self.ksize)
-        self.actor.metaWrapperWeakref = weakref.ref(self)
+        if hasattr(self, "actor"):
+            delattr(self, "actor")
+        actor = self.predictiveActorClass(ksize=self.ksize)
+        actor.metaWrapperWeakref = weakref.ref(self)
+        setattr(self, "actor", actor)
 
     def get_kernel(self) -> np.ndarray:
         return self.actor.predictorWrapper.predictor.kernel.copy()
