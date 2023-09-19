@@ -148,7 +148,8 @@ if __name__ == "__main__":
     from predictive_alpine_actor import PredictiveAlpineActor  # PredictorWrapper
 
     actor_generator = MetaheuristicPredictiveWrapper(
-        ksize=100,
+        ksize=256, # too small!
+        # ksize=100,
         predictiveActorClass=PredictiveAlpineActor,
         # predictorClass=PredictorWrapper,
         activation="tanh",
