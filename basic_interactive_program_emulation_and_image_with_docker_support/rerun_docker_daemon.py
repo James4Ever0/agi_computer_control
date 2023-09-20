@@ -52,9 +52,16 @@ def execute_os_command_and_assert_safe_exit(cmd: str, safe_codes: List[int] = [0
 
 kill_docker_cmds = []
 start_docker_cmds = []
-if sysname == "Windows":
-    import pygetwindow
 
+if sysname in ["Windows", "Darwin"]:
+    import pygetwindow
+else:
+
+    def check_if_docker_window_exists():
+        return False
+
+
+if sysname == "Windows":
     REQUIRED_BINARIES.append("taskkill")
 
     docker_path = shutil.which("docker")
@@ -73,9 +80,11 @@ if sysname == "Windows":
         for win in pygetwindow.getWindowsWithTitle(WINDOW_TITLE_KW):
             win: pygetwindow.Win32Window
             win.hide()
-    
+
     def check_if_docker_window_exists():
-        exist = any([WINDOW_TITLE_KW in t for t in pygetwindow.getAllTitles()])
+        wins = pygetwindow.getWindowsWithTitle(WINDOW_TITLE_KW)
+        exist = len(wins) > 0
+        print(f"window exists? {exist}")
         return exist
 
 elif sysname == "Linux":
@@ -87,12 +96,8 @@ elif sysname == "Linux":
 
     def hide_docker():
         ...
-        
-    def check_if_docker_window_exists():
-        return False
 
 elif sysname == "Darwin":
-    import pygetwindow
     import applescript
 
     HIDE_DOCKER_ASCRIPT_OBJ = applescript.AppleScript(HIDE_DOCKER_ASCRIPT)
@@ -105,9 +110,10 @@ elif sysname == "Darwin":
 
     def hide_docker():
         HIDE_DOCKER_ASCRIPT_OBJ.run()
-        # pygetwindow.getWindowsWithTitle(WINDOW_TITLE_KW)
+
     def check_if_docker_window_exists():
         exist = any([WINDOW_TITLE_KW in t for t in pygetwindow.getAllTitles()])
+        print(f"window exists? {exist}")
         return exist
 
 else:
@@ -155,11 +161,14 @@ def verify_docker_killed(timeout=5, encoding="utf-8", inverse: bool = False):
 import time
 
 
-def verify_docker_launched(retries=7, sleep=3):
+def verify_docker_launched(retries=7, sleep=3, daemon=False):
     success = False
     for i in range(retries):
         try:
-            exist = check_if_docker_window_exists()
+            if not daemon:
+                exist = check_if_docker_window_exists()
+            else:
+                exist = False
             if not exist:
                 verify_docker_killed(inverse=True)
             success = True
@@ -204,7 +213,8 @@ def restart_and_verify():
     print("docker restart verified")
     hide_docker()
     print("docker window minimized")
-
+    verify_docker_launched(daemon = True)
+    print("docker daemon restart verified")
 
 if elevate_needed:
     elevate.elevate(graphical=False)
