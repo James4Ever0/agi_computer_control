@@ -1,9 +1,15 @@
 # TODO: eliminate stale containers by restarting docker every 10 sessions.
 MACOS_DOCKER_APP_BINARY = "/Applications/Docker.app/Contents/MacOS/Docker"
-# killall Docker && open --background -a Docker
+# killall Docker && open -j -a Docker
 # ps aux | grep Docker.app | grep -v grep | awk '{print $2}' | xargs -Iabc kill abc
+HIDE_DOCKER_ASCRIPT = """
+tell application "System Events"
+    set visible of processes where name is "Docker Desktop" to false
+end tell
+"""
+WINDOW_TITLE_KW = "Docker Desktop"
 # killall docker
-MACOS_KILL_DOCKER_APP = '''bash -c "ps aux | grep Docker.app | grep -v grep | awk '{print $2}' | xargs -Iabc kill abc"'''
+MACOS_KILL_DOCKER_APP = """ bash -c 'ps aux | grep Docker.app | grep -v grep | awk "{print \\$2}" | xargs -I abc kill abc' """
 import subprocess
 
 LINUX_CONTROL_DOCKER_SERVICE_CMDGEN = lambda action: f"sudo systemctl {action} docker"
@@ -25,6 +31,8 @@ import elevate
 import shutil
 import os
 
+kill_safe_codes = [0]
+start_safe_codes = [0]
 sysname = platform.system()
 
 REQUIRED_BINARIES = ["docker"]
@@ -32,16 +40,21 @@ elevate_needed = False
 
 DOCKER_DESKTOP_EXE = "Docker Desktop.exe"
 
+from typing import List
 
-def execute_os_command_and_assert_safe_exit(cmd: str):
-    ret = os.system(cmd) # use cmd.exe on windows.
+
+def execute_os_command_and_assert_safe_exit(cmd: str, safe_codes: List[int] = [0]):
+    ret = os.system(cmd)  # use cmd.exe on windows.
     assert (
-        ret == 0
+        ret in safe_codes
     ), f"Abnormal exit code {ret} while executing following command:\n{cmd}"
+
 
 kill_docker_cmds = []
 start_docker_cmds = []
 if sysname == "Windows":
+    import pygetwindow
+
     REQUIRED_BINARIES.append("taskkill")
 
     docker_path = shutil.which("docker")
@@ -54,36 +67,48 @@ if sysname == "Windows":
     ), f'Failed to find docker desktop executable at: "{docker_desktop_exe_path}"'
 
     kill_docker_cmds.append(WINDOWS_KILL_DOCKER_COMMAND)
-    start_docker_cmds.append(f'start "" "{docker_desktop_exe_path}"') # bloody chatgpt.
+    start_docker_cmds.append(f'start "" "{docker_desktop_exe_path}"')  # bloody chatgpt.
+
     def hide_docker():
         ...
+
 elif sysname == "Linux":
     REQUIRED_BINARIES.append("systemctl")
     elevate_needed = True
 
     kill_docker_cmds.append(LINUX_STOP_DOCKER_COMMAND)
     start_docker_cmds.append(LINUX_START_DOCKER_COMMAND)
+
     def hide_docker():
         ...
+
 elif sysname == "Darwin":
+    # import pygetwindow
+    import applescript
+    HIDE_DOCKER_ASCRIPT_OBJ = applescript.AppleScript(HIDE_DOCKER_ASCRIPT)
+    kill_safe_codes.append(256)
     REQUIRED_BINARIES.extend(["killall", "open", MACOS_DOCKER_APP_BINARY])
 
     kill_docker_cmds.extend(["killall Docker", "killall docker", MACOS_KILL_DOCKER_APP])
-    start_docker_cmds.append(MACOS_DOCKER_APP_BINARY)
+    # start_docker_cmds.append(MACOS_DOCKER_APP_BINARY)
+    start_docker_cmds.append(f"open -j -a {MACOS_DOCKER_APP_BINARY}")
+
     def hide_docker():
-        ...
+        HIDE_DOCKER_ASCRIPT_OBJ.run()
+        # pygetwindow.getWindowsWithTitle(WINDOW_TITLE_KW)
+
 else:
     raise Exception(f"Unknown platform: {sysname}")
 
 
 def kill_docker():
     for cmd in kill_docker_cmds:
-        execute_os_command_and_assert_safe_exit(cmd)
+        execute_os_command_and_assert_safe_exit(cmd, kill_safe_codes)
 
 
 def start_docker():
     for cmd in start_docker_cmds:
-        execute_os_command_and_assert_safe_exit(cmd)
+        execute_os_command_and_assert_safe_exit(cmd, start_safe_codes)
 
 
 DOCKER_KILLED_KWS = [
@@ -142,23 +167,29 @@ def restart_docker():
     print("kill has been verified")
     start_docker()
     print("docker restarted")
-    hide_docker()
-    print("docker window minimized")
 
 
 import shutil
+
 
 def check_required_binaries():
     for name in REQUIRED_BINARIES:
         resolved_path = shutil.which(name)
         assert resolved_path, f"{name} is not available in PATH."
-        assert os.path.exists(resolved_path), f"{name} does not exist.\nfilepath: {resolved_path}"
-        print(f"{name} ok")
+        assert os.path.exists(
+            resolved_path
+        ), f"{name} does not exist.\nfilepath: {resolved_path}"
+        print(f"'{name}' found")
 
+
+# working!
 def restart_and_verify():
     restart_docker()
     verify_docker_launched()
-    print('docker restart verified')
+    print("docker restart verified")
+    hide_docker()
+    print("docker window minimized")
+
 
 if elevate_needed:
     elevate.elevate(graphical=False)
@@ -170,3 +201,4 @@ if __name__ == "__main__":
     for i in range(2):
         print(f"trial #{i}")
         restart_and_verify()
+        time.sleep(3)  # m1 is running too damn fast. or is it?
