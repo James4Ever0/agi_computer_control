@@ -2,6 +2,7 @@ pexpect==4.6.0; os_name == 'posix'
 wexpect==4.0.0; os_name == 'nt'
 py-applescript; platform_system == 'Darwin'
 pygetwindow; platform_system == 'Windows'
+pygetwindow; platform_system == 'Darwin'
 docker
 func-timeout
 progressbar2

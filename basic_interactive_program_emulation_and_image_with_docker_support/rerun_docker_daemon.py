@@ -70,7 +70,13 @@ if sysname == "Windows":
     start_docker_cmds.append(f'start "" "{docker_desktop_exe_path}"')  # bloody chatgpt.
 
     def hide_docker():
-        ...
+        for win in pygetwindow.getWindowsWithTitle(WINDOW_TITLE_KW):
+            win: pygetwindow.Win32Window
+            win.hide()
+    
+    def check_if_docker_window_exists():
+        exist = any([WINDOW_TITLE_KW in t for t in pygetwindow.getAllTitles()])
+        return exist
 
 elif sysname == "Linux":
     REQUIRED_BINARIES.append("systemctl")
@@ -81,10 +87,14 @@ elif sysname == "Linux":
 
     def hide_docker():
         ...
+        
+    def check_if_docker_window_exists():
+        return False
 
 elif sysname == "Darwin":
-    # import pygetwindow
+    import pygetwindow
     import applescript
+
     HIDE_DOCKER_ASCRIPT_OBJ = applescript.AppleScript(HIDE_DOCKER_ASCRIPT)
     kill_safe_codes.append(256)
     REQUIRED_BINARIES.extend(["killall", "open", MACOS_DOCKER_APP_BINARY])
@@ -96,6 +106,9 @@ elif sysname == "Darwin":
     def hide_docker():
         HIDE_DOCKER_ASCRIPT_OBJ.run()
         # pygetwindow.getWindowsWithTitle(WINDOW_TITLE_KW)
+    def check_if_docker_window_exists():
+        exist = any([WINDOW_TITLE_KW in t for t in pygetwindow.getAllTitles()])
+        return exist
 
 else:
     raise Exception(f"Unknown platform: {sysname}")
@@ -146,7 +159,9 @@ def verify_docker_launched(retries=7, sleep=3):
     success = False
     for i in range(retries):
         try:
-            verify_docker_killed(inverse=True)
+            exist = check_if_docker_window_exists()
+            if not exist:
+                verify_docker_killed(inverse=True)
             success = True
             break
         except Exception as e:
