@@ -84,7 +84,6 @@ if sysname == "Windows":
     def check_if_docker_window_exists():
         wins = pygetwindow.getWindowsWithTitle(WINDOW_TITLE_KW)
         exist = len(wins) > 0
-        print(f"window exists? {exist}")
         return exist
 
 elif sysname == "Linux":
@@ -113,7 +112,6 @@ elif sysname == "Darwin":
 
     def check_if_docker_window_exists():
         exist = any([WINDOW_TITLE_KW in t for t in pygetwindow.getAllTitles()])
-        print(f"window exists? {exist}")
         return exist
 
 else:
@@ -167,6 +165,7 @@ def verify_docker_launched(retries=7, sleep=3, daemon=False):
         try:
             if not daemon:
                 exist = check_if_docker_window_exists()
+                print(f"window exists? {exist}")
             else:
                 exist = False
             if not exist:
@@ -209,10 +208,11 @@ def check_required_binaries():
 # working!
 def restart_and_verify():
     restart_docker()
-    verify_docker_launched()
-    print("docker restart verified")
-    hide_docker()
-    print("docker window minimized")
+    if sysname in ['Windows', 'Darwin']:
+        verify_docker_launched()
+        print("docker restart verified")
+        hide_docker()
+        print("docker window minimized")
     verify_docker_launched(daemon = True)
     print("docker daemon restart verified")
 
