@@ -7,16 +7,20 @@ import datetime
 import os
 import sys
 import time
-# import copy
+
+import copy
 import traceback
 from cmath import nan
 from log_common import *
+
 
 class InteractiveChallengeFailed(Exception):
     """
     If "expect" like challenge failed for some reason, raise this exception.
     """
+
     ...
+
 
 # https://code.activestate.com/recipes/440554/
 # wxpython, wexpect/winpexpect, pexpect
@@ -77,7 +81,19 @@ READ_KNOWN_EXCEPTIONS = []
 # SOCKET_TIMEOUT = .2
 # SOCKET_TIMEOUT = .01
 SOCKET_TIMEOUT = 0.001
+from contextlib import contextmanager
+
 if os.name == "nt":
+    NT_CONTEXT = dict(NT_READ_NONBLOCKING_DECODE=False, NT_ENCODING="utf-8")
+
+    @contextmanager
+    def nt_read_nonblocking_decode_context():
+        NT_CONTEXT["NT_READ_NONBLOCKING_DECODE"] = True
+        try:
+            yield
+        finally:
+            NT_CONTEXT["NT_READ_NONBLOCKING_DECODE"] = False
+
     import wexpect as pexpect
 
     expected_wexpect_version = "4.0.0"
@@ -132,7 +148,13 @@ if os.name == "nt":
             logger.info("EOF('ConnectionResetError')")
             raise EOF("ConnectionResetError")
         except socket.timeout:
-            return b""
+            return "" if NT_CONTEXT["NT_READ_NONBLOCKING_DECODE"] else b""
+
+        return (
+            s.decode(NT_CONTEXT["NT_ENCODING"])
+            if NT_CONTEXT["NT_READ_NONBLOCKING_DECODE"]
+            else s
+        )
 
     def spawnpipe_read_nonblocking(self, size=1):
         """This reads at most size characters from the child application. If
@@ -166,7 +188,12 @@ if os.name == "nt":
                 logger.info("EOF: EOF character has been arrived")
                 s = s.split(EOF_CHAR)[0]
 
-            return s
+            # return s
+            return (
+                s.decode(NT_CONTEXT["NT_ENCODING"])
+                if NT_CONTEXT["NT_READ_NONBLOCKING_DECODE"]
+                else s
+            )
             # return s.decode()
         except host.pywintypes.error as e:
             if e.args[0] == host.winerror.ERROR_BROKEN_PIPE:  # 109
@@ -293,15 +320,17 @@ class NaiveActor:
 
         return inner_func
 
-    def __init__(self, cmd, encoding = 'utf-8'):
+    def __init__(self, cmd, encoding="utf-8"):
         self.process = self.spawn(cmd)
         self.encoding = encoding
-        # if os.name == 'nt':
-        #     win_expect_bytes = copy.copy(self.process.expect)
-        #     def win_expect_enc(content:str, *args, **kwargs):
-        #         bytes_content = content.encode(self.encoding)
-        #         return win_expect_bytes(bytes_content, *args, **kwargs)
-        #     self.process.expect = win_expect_enc
+
+        if os.name == 'nt':
+            NT_CONTEXT['NT_ENCODING'] = encoding
+            win_expect_old = copy.copy(self.process.expect)
+            def win_expect_new(*args, **kwargs):
+                with nt_read_nonblocking_decode_context():
+                    return win_expect_old(*args, **kwargs)
+            self.process.expect = win_expect_new
         self.timeout = SOCKET_TIMEOUT
         self.max_loop_time = 3
         self.max_init_time = 5
@@ -462,7 +491,9 @@ class NaiveActor:
         except:
             print("init check failed")
             log_and_print_unknown_exception()
-            raise InteractiveChallengeFailed(f"Failed to pass init challenge of: {self.__class__.__name__}")
+            raise InteractiveChallengeFailed(
+                f"Failed to pass init challenge of: {self.__class__.__name__}"
+            )
         while self.heartbeat():
             loop = self.loop()
             if loop is True:

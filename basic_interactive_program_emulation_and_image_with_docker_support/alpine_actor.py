@@ -1,6 +1,7 @@
 # this will freeze the terminal. what the heck is going wrong?
 # maybe we need to profile this program.
 import gc
+
 # import getpass
 
 # TODO: container & process profiler
@@ -23,10 +24,12 @@ from naive_actor import NaiveActor
 from vocabulary import AsciiVocab
 
 
-REQUIRED_BINARIES = ['docker']
+REQUIRED_BINARIES = ["docker"]
 
 for name in REQUIRED_BINARIES:
-    assert shutil.which(name), f"{name} is not available in PATH." # you can specify absolute path here
+    assert shutil.which(
+        name
+    ), f"{name} is not available in PATH."  # you can specify absolute path here
 
 LEGACY_DOCKER = False
 if sys.maxsize < 2**32:
@@ -81,6 +84,7 @@ class AutoSpacedString(_AutoSeparatedString):
 # import time
 from log_common import *
 
+
 def docker_cmd(*args):
     return " ".join(["docker", *args])
 
@@ -111,7 +115,8 @@ else:
 
 from rerun_docker_daemon import restart_and_verify
 
-def killAndPruneAllContainers(trial_count = 2):
+
+def killAndPruneAllContainers(trial_count=2):
     fail_counter = 0
     for i in range(trial_count):
         print(f"try to kill docker ({i+1} time(s))")
@@ -122,17 +127,18 @@ def killAndPruneAllContainers(trial_count = 2):
             return success
         except:
             fail_counter += 1
-    if fail_counter >= trial_count: # in fact, it can only equal to the count.
+    if fail_counter >= trial_count:  # in fact, it can only equal to the count.
         print("relaunching docker")
         restart_and_verify()
         return killAndPruneAllContainers(trial_count)
+
 
 @func_timeout.func_set_timeout(timeout=10)
 def _killAndPruneAllContainers():  # not working for legacy docker.
     success = False
     proc = easyprocess.EasyProcess(LIST_CONTAINER).call(timeout=4)
     if proc.return_code == 0:
-        success = True # usually this is the challange.
+        success = True  # usually this is the challange.
     # proc = easyprocess.EasyProcess("docker container ls -a").call()
     if proc.stdout:
         lines = proc.stdout.split("\n")[1:]
@@ -149,7 +155,6 @@ def _killAndPruneAllContainers():  # not working for legacy docker.
         if not LEGACY_DOCKER:
             os.system("docker container prune -f")
     return success
-
 
 
 # BUG: deprecated! may not connect to docker socket on windows.
@@ -184,9 +189,14 @@ class AlpineActor(NaiveActor):
         super().__del__()
 
     def _init_check(self):
-        self.process.expect("/ # ")
-        self.process.write("whoami\n")
-        self.process.expect("root")
+        print("checking container")
+        steps = [
+            lambda: self.process.expect("/ # "),
+            lambda: self.process.write(f"whoami{os.linesep}"),
+            lambda: self.process.expect("root"),
+        ]
+        for step in progressbar.progressbar(steps):
+            step()
 
     @NaiveActor.timeit
     def loop(self):
@@ -197,7 +207,7 @@ class AlpineActor(NaiveActor):
         return True
 
 
-SAFE_EXCEPTION_TYPES = [OSError] # are you sure? this can be many. not just io errors
+SAFE_EXCEPTION_TYPES = [OSError]  # are you sure? this can be many. not just io errors
 # SAFE_EXCEPTION_TYPES = []
 if os.name == "nt":
     import wexpect
