@@ -602,7 +602,7 @@ def commit():
 
 GIT_LIST_CONFIG = f"{GIT} config -l"
 GIT_ADD_GLOBAL_CONFIG_CMDGEN = (
-    lambda conf: f"{GIT} config --global --add {conf.replace('=',' ')[0]} \"{conf.replace('=',' ')[1]}\""
+    lambda conf: f"{GIT} config --global --add {conf.split('=')[0]} \"{conf.split('=')[1]}\""
 )
 
 
@@ -618,10 +618,12 @@ def add_safe_directory():
     ), f"Abnormal return code {p.returncode} while listing git configuration"
     target_conf = f"safe.directory={curdir}"
     if target_conf not in p.stdout.decode("utf-8"):
-        return_code = os.system(GIT_ADD_GLOBAL_CONFIG_CMDGEN(target_conf))
+        cmd = GIT_ADD_GLOBAL_CONFIG_CMDGEN(target_conf)
+        logger_print("Running command:", cmd)
+        return_code = os.system(cmd)
         assert (
             return_code == 0
-        ), "Abnormal return code while adding current directory to safe directories"
+        ), f"Abnormal return code {return_code} while adding current directory to safe directories"
     success = True
     return success
 
