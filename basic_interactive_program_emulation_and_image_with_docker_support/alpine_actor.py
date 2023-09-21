@@ -27,6 +27,7 @@ import progressbar
 from naive_actor import NaiveActor
 from vocabulary import AsciiVocab
 
+
 REQUIRED_BINARIES = ['docker']
 
 for name in REQUIRED_BINARIES:
@@ -140,16 +141,18 @@ else:
 
 from rerun_docker_daemon import restart_and_verify
 
-def killAndPruneAllContainers(trial_count = 3):
+def killAndPruneAllContainers(trial_count = 2):
     fail_counter = 0
-    for _ in range(trial_count):
+    for i in range(trial_count):
+        print(f"try to kill docker ({i} time(s))")
         try:
             success = _killAndPruneAllContainers()
             assert success, "Failed to execute docker kill and prune"
+            print("successfully killed all containers")
             return success
         except:
             fail_counter += 1
-    if fail_counter > trial_count:
+    if fail_counter >= trial_count: # in fact, it can only equal to the count.
         print("relaunching docker")
         restart_and_verify()
         return killAndPruneAllContainers(trial_count)
@@ -157,7 +160,9 @@ def killAndPruneAllContainers(trial_count = 3):
 @func_timeout.func_set_timeout(timeout=10)
 def _killAndPruneAllContainers():  # not working for legacy docker.
     success = False
-    proc = easyprocess.EasyProcess(LIST_CONTAINER).call()
+    proc = easyprocess.EasyProcess(LIST_CONTAINER).call(timeout=3)
+    if proc.return_code == 0:
+        success = True # usually this is the challange.
     # proc = easyprocess.EasyProcess("docker container ls -a").call()
     if proc.stdout:
         lines = proc.stdout.split("\n")[1:]
@@ -166,7 +171,6 @@ def _killAndPruneAllContainers():  # not working for legacy docker.
             cmd = f"{KILL_CONTAINER} {cid}"
             try:
                 func_timeout.func_timeout(2, os.system, args=(cmd,))
-                success = True
             except func_timeout.FunctionTimedOut:
                 print(
                     f'timeout while killing container "{cid}".\nmaybe the container is not running.'
@@ -199,8 +203,6 @@ def _killAndPruneAllContainers():  # not working for legacy docker.
 
 class AlpineActor(NaiveActor):
     def __init__(self):
-        self.max_rwtime = 0.5
-        self.max_loop_time = 3
         killAndPruneAllContainers()
         super().__init__("docker run --rm -it alpine:3.7")
         # TODO: detect if the container is down by heartbeat-like mechanism
@@ -211,6 +213,11 @@ class AlpineActor(NaiveActor):
         killAndPruneAllContainers()
         super().__del__()
 
+    def _init_check(self):
+        self.process.expect("/ # ")
+        self.process.write("whoami\n")
+        self.process.expect("root")
+
     @NaiveActor.timeit
     def loop(self):
         _ = self.read()
@@ -220,7 +227,8 @@ class AlpineActor(NaiveActor):
         return True
 
 
-SAFE_EXCEPTION_TYPES = []
+SAFE_EXCEPTION_TYPES = [OSError] # are you sure? this can be many. not just io errors
+# SAFE_EXCEPTION_TYPES = []
 if os.name == "nt":
     import wexpect
 
@@ -253,7 +261,7 @@ def run_actor_forever(actor_class):
                 print("exit on user demand")
                 return "INTERRUPTED"
             except Exception as e:
-                check_if_is_safe_exception(e)
+                safe = check_if_is_safe_exception(e)
 
         ret = run_actor()
         del actor
@@ -270,7 +278,7 @@ def run_actor_forever(actor_class):
             if ret == "INTERRUPTED":
                 break
         except Exception as e:
-            check_if_is_safe_exception(e)
+            safe = check_if_is_safe_exception(e)
 
 
 def check_if_is_safe_exception(e):

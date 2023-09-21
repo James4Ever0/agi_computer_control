@@ -4,7 +4,7 @@ import math
 # the new kernel will be added to the random kernel.
 # import copy
 import weakref
-from typing import Callable
+from typing import Callable, List
 
 import numpy as np
 from typing_extensions import Literal
@@ -40,7 +40,7 @@ class MetaheuristicPredictiveWrapper:
         class MetaheuristicPredictiveActor(predictiveActorClass):
             actorStatsClass = MetaheuristicActorStats
             metaWrapperWeakref: Callable[[], MetaheuristicPredictiveWrapper]  # slot
-            metaInfo: list[list[str]]
+            metaInfo: List[List[str]]
 
             def __del__(self):
                 metaWrapper = self.metaWrapperWeakref()

@@ -159,7 +159,7 @@ def verify_docker_killed(timeout=5, encoding="utf-8", inverse: bool = False):
 import time
 
 
-def verify_docker_launched(retries=7, sleep=3, daemon=False):
+def verify_docker_launched(retries=10, sleep=3, daemon=False):
     success = False
     for i in range(retries):
         try:

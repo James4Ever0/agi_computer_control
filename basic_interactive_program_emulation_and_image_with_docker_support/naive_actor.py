@@ -9,6 +9,11 @@ import sys
 import time
 import traceback
 from cmath import nan
+class InteractiveChallengeFailed(Exception):
+    """
+    If "expect" like challenge failed for some reason, raise this exception.
+    """
+    ...
 
 # https://code.activestate.com/recipes/440554/
 # wxpython, wexpect/winpexpect, pexpect
@@ -272,13 +277,15 @@ class NaiveActor:
             except func_timeout.FunctionTimedOut:
                 print("Loop timeout %d exceeded." % self.max_loop_time)
                 return
-            end_time = time.time()
-            rw_time = end_time - start_time
-            print("rw time:", rw_time, sep="\t")
-            if rw_time > self.max_rwtime:
-                print("exit because of long rw time.\nmax rw time:", self.max_rwtime)
-                return
-            # return True
+            finally:
+                end_time = time.time()
+                rw_time = end_time - start_time
+                print("rw time:", rw_time, sep="\t")
+                if rw_time > self.max_rwtime:
+                    print(
+                        "exit because of long rw time.\nmax rw time:", self.max_rwtime
+                    )
+                    return
             return ret
 
         return inner_func
@@ -286,6 +293,9 @@ class NaiveActor:
     def __init__(self, cmd):
         self.process = self.spawn(cmd)
         self.timeout = SOCKET_TIMEOUT
+        self.max_loop_time = 3
+        self.max_init_time = 5
+        self.max_rwtime = 0.5
         # self.timeout = 0.2 # equivalent to wexpect
         # self.timeout = 0.001
         # self.timeout = 1 # will cause havoc if set it too long
@@ -416,6 +426,20 @@ class NaiveActor:
         self.write(NaiveVocab.generate())
         return True
 
+    def init_check(self):
+        """
+        Check or wait until the interactive program emits expected output.
+        """
+        ret = func_timeout.func_timeout(self.max_init_time, self._init_check)
+        print("init check passed")
+        return ret
+
+    def _init_check(self):
+        """
+        Implementation of init checks.
+        """
+        ...
+
     def heartbeat(self):
         # to prove the program as if still running.
         # do not override this method, unless you know what you are doing.
@@ -423,6 +447,10 @@ class NaiveActor:
 
     def run(self):
         loop = True
+        try:
+            self.init_check()
+        except:
+            InteractiveChallengeFailed(f"Failed to pass init challenge of: {self.__class__.__name__}")
         while self.heartbeat():
             loop = self.loop()
             if loop is True:
