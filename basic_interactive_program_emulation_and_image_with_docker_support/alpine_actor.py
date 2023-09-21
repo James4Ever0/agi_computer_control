@@ -4,16 +4,11 @@ import gc
 # import getpass
 
 # TODO: container & process profiler
-import logging
 import os
 import sys
 import traceback
 import shutil
 
-# client = docker.from_env()
-from logging.handlers import RotatingFileHandler
-
-import better_exceptions
 import easyprocess
 import elevate
 
@@ -84,32 +79,7 @@ class AutoSpacedString(_AutoSeparatedString):
 # print(a+a+a)
 # you had better adopt async/await syntax.
 # import time
-
-
-log_filename = "alpine_actor.log"
-rthandler = RotatingFileHandler(
-    log_filename, maxBytes=1024 * 1024 * 15, backupCount=3, encoding="utf-8"
-)
-
-logger = logging.getLogger("alpine_actor")
-
-logger.setLevel(logging.DEBUG)
-logger.addHandler(rthandler)
-logger.addHandler(logging.StreamHandler(sys.stderr))
-
-better_exceptions.SUPPORTS_COLOR = False
-
-
-def log_and_print_unknown_exception():
-    exc_type, exc_info, exc_tb = sys.exc_info()
-    # traceback.print_exc()
-    if exc_type is not None:
-        exc_str = "\n".join(
-            better_exceptions.format_exception(exc_type, exc_info, exc_tb)
-        )
-        logger.debug(exc_str)
-        print(exc_str)
-
+from log_common import *
 
 def docker_cmd(*args):
     return " ".join(["docker", *args])
@@ -144,7 +114,7 @@ from rerun_docker_daemon import restart_and_verify
 def killAndPruneAllContainers(trial_count = 2):
     fail_counter = 0
     for i in range(trial_count):
-        print(f"try to kill docker ({i} time(s))")
+        print(f"try to kill docker ({i+1} time(s))")
         try:
             success = _killAndPruneAllContainers()
             assert success, "Failed to execute docker kill and prune"
@@ -160,7 +130,7 @@ def killAndPruneAllContainers(trial_count = 2):
 @func_timeout.func_set_timeout(timeout=10)
 def _killAndPruneAllContainers():  # not working for legacy docker.
     success = False
-    proc = easyprocess.EasyProcess(LIST_CONTAINER).call(timeout=3)
+    proc = easyprocess.EasyProcess(LIST_CONTAINER).call(timeout=4)
     if proc.return_code == 0:
         success = True # usually this is the challange.
     # proc = easyprocess.EasyProcess("docker container ls -a").call()
@@ -170,7 +140,7 @@ def _killAndPruneAllContainers():  # not working for legacy docker.
         for cid in progressbar.progressbar(container_ids):
             cmd = f"{KILL_CONTAINER} {cid}"
             try:
-                func_timeout.func_timeout(2, os.system, args=(cmd,))
+                func_timeout.func_timeout(3, os.system, args=(cmd,))
             except func_timeout.FunctionTimedOut:
                 print(
                     f'timeout while killing container "{cid}".\nmaybe the container is not running.'

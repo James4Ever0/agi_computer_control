@@ -7,8 +7,11 @@ import datetime
 import os
 import sys
 import time
+# import copy
 import traceback
 from cmath import nan
+from log_common import *
+
 class InteractiveChallengeFailed(Exception):
     """
     If "expect" like challenge failed for some reason, raise this exception.
@@ -290,8 +293,15 @@ class NaiveActor:
 
         return inner_func
 
-    def __init__(self, cmd):
+    def __init__(self, cmd, encoding = 'utf-8'):
         self.process = self.spawn(cmd)
+        self.encoding = encoding
+        # if os.name == 'nt':
+        #     win_expect_bytes = copy.copy(self.process.expect)
+        #     def win_expect_enc(content:str, *args, **kwargs):
+        #         bytes_content = content.encode(self.encoding)
+        #         return win_expect_bytes(bytes_content, *args, **kwargs)
+        #     self.process.expect = win_expect_enc
         self.timeout = SOCKET_TIMEOUT
         self.max_loop_time = 3
         self.max_init_time = 5
@@ -450,7 +460,9 @@ class NaiveActor:
         try:
             self.init_check()
         except:
-            InteractiveChallengeFailed(f"Failed to pass init challenge of: {self.__class__.__name__}")
+            print("init check failed")
+            log_and_print_unknown_exception()
+            raise InteractiveChallengeFailed(f"Failed to pass init challenge of: {self.__class__.__name__}")
         while self.heartbeat():
             loop = self.loop()
             if loop is True:
