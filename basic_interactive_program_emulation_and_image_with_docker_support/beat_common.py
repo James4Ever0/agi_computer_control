@@ -6,6 +6,8 @@ beat_client_data = dict(url = (
 from functools import lru_cache, wraps
 from time import monotonic_ns
 
+# use cacheout instead.
+# ref: https://github.com/dgilland/cacheout
 def timed_lru_cache(
     _func=None, *, seconds: int = 7000, maxsize: int = 128, typed: bool = False
 ):
@@ -43,12 +45,12 @@ def timed_lru_cache(
 
 
 import requests
-from frozendict import frozendict
+# from frozendict import frozendict
 # create a session object
 session = requests.Session() # effectively faster. really?
 @timed_lru_cache(seconds = 1, maxsize=1)
-def heartbeat_base(uuid:str, action:str):
-    params = dict(uuid=uuid, action=action)
+def heartbeat_base(uuid:str, action:str, pid:int):
+    params = dict(uuid=uuid, action=action, pid = pid)
     # r = session.get(beat_client_data['url'], params = params)
     r = session.get(beat_client_data['url'], params = params, timeout=beat_client_data['timeout'])
     assert r.status_code == 200

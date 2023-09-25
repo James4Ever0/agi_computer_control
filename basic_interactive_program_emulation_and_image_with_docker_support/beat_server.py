@@ -26,13 +26,20 @@ def get_now_and_timestamp():
 UUID_TO_TIMESTAMP = {}
 UUID_TO_REGISTERED_TIMESTAMP = {}
 UUID_TO_STATUS = {}  # alive -> True; dead -> False
+UUID_TO_PID = {}
 ALIVE_THRESHOLD = 30
+
 
 # TODO: delegate this kill signal to other process
 # TODO: pass pid with uuid
+# TODO: get unassigned uuid from here, instead of anywhere else
 @app.get(beat_server_address["beat_url"])
-def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"]):
+def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"], pid: int):
     # start = time.time()
+    if uuid not in UUID_TO_PID.keys():
+        UUID_TO_PID[uuid] = pid
+    elif (old_pid := UUID_TO_PID[uuid]) != pid:
+        raise Exception("PID mismatch! (old: {}, new: {})".format(old_pid, pid))
     strtime, timestamp = get_strtime_and_timestamp()
     if action == "hello":
         print(f"client {uuid} hello at: %s" % strtime)
@@ -52,8 +59,8 @@ def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"]):
         raise Exception(f"client {uuid} with unknown action:" + action)
     # end = time.time()
     if uuid not in UUID_TO_REGISTERED_TIMESTAMP.keys():
-       print(f"client {uuid} not registered. registering.")
-       UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
+        print(f"client {uuid} not registered. registering.")
+        UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
         # raise Exception(f"client {uuid} not registered.")
     UUID_TO_TIMESTAMP[uuid] = timestamp
     # print(f'request processing time: {end-start} secs', )
@@ -76,6 +83,7 @@ def check_alive():
     print(f"checking clients at {now_strtime}")
     for uuid, timestamp in UUID_TO_TIMESTAMP.items():
         registered_timestamp = UUID_TO_REGISTERED_TIMESTAMP[uuid]
+        pid = UUID_TO_PID[uuid]
         uptime = now_timestamp - registered_timestamp
         alive = True
         life = ALIVE_THRESHOLD - (now_timestamp - timestamp)
@@ -83,10 +91,11 @@ def check_alive():
             alive = False
         UUID_TO_STATUS[uuid] = alive
         up_status = f"up: {uptime:.3f} secs"
+        pid_info = f"pid: {pid}"
         if alive:
-            print(f"client {uuid} alive ({life:.3f} secs to death, {up_status})")
+            print(f"client {uuid} alive ({pid_info}, {life:.3f} secs to death, {up_status})")
         else:
-            print(f"client {uuid} ({up_status}) dead for {-life} seconds")
+            print(f"client {uuid} ({pid_info}, {up_status}) dead for {-life:.3f} seconds")
     status_list = UUID_TO_STATUS.values()
     print("summary".center(60, "="))
     print("total clients:", len(status_list))
