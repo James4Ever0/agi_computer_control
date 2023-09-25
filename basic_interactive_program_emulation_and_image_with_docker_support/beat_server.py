@@ -28,7 +28,8 @@ UUID_TO_REGISTERED_TIMESTAMP = {}
 UUID_TO_STATUS = {}  # alive -> True; dead -> False
 ALIVE_THRESHOLD = 30
 
-
+# TODO: delegate this kill signal to other process
+# TODO: pass pid with uuid
 @app.get(beat_server_address["beat_url"])
 def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"]):
     # start = time.time()
