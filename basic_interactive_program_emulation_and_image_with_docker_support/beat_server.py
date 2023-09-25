@@ -44,11 +44,11 @@ def beat_request(
     pid: int,
 ):
     # start = time.time()
-    for data_dict it, , it_name, in [(), ()]:
+    for data_dict, it, it_name in [(UUID_TO_PID, pid, "PID"), (UUID_TO_ROLE, role, 'ROLE')]:
 
-    if uuid not in UUID_TO_PID.keys():
-        UUID_TO_PID[uuid] = pid
-    elif (old_pid := UUID_TO_PID[uuid]) != pid:
+    if uuid not in data_dict.keys():
+        data_dict[uuid] = it
+    elif (old_pid := data_dict[uuid]) != it:
         raise Exception("PID mismatch! (old: {}, new: {})".format(old_pid, pid))
     strtime, timestamp = get_strtime_and_timestamp()
     if action == "hello":
