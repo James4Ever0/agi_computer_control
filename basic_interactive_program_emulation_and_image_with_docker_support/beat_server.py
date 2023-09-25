@@ -27,6 +27,7 @@ UUID_TO_TIMESTAMP = {}
 UUID_TO_REGISTERED_TIMESTAMP = {}
 UUID_TO_STATUS = {}  # alive -> True; dead -> False
 UUID_TO_PID = {}
+UUID_TO_ROLE = {}
 ALIVE_THRESHOLD = 30
 
 
@@ -34,9 +35,17 @@ ALIVE_THRESHOLD = 30
 # TODO: pass pid with uuid
 # TODO: get unassigned uuid from here, instead of anywhere else
 # TODO: distributed watchdog & recursive keep alive signal mechanism
+# TODO: count revive time & frequencies
 @app.get(beat_server_address["beat_url"])
-def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"], pid: int):
+def beat_request(
+    uuid: str,
+    action: Literal["hello", "heartbeat", "kill"],
+    role: Literal["killer", "client", "server"], # can also be server?
+    pid: int,
+):
     # start = time.time()
+    for data_dict it, , it_name, in [(), ()]:
+
     if uuid not in UUID_TO_PID.keys():
         UUID_TO_PID[uuid] = pid
     elif (old_pid := UUID_TO_PID[uuid]) != pid:
@@ -94,9 +103,13 @@ def check_alive():
         up_status = f"up: {uptime:.3f} secs"
         pid_info = f"pid: {pid}"
         if alive:
-            print(f"client {uuid} alive ({pid_info}, {life:.3f} secs to death, {up_status})")
+            print(
+                f"client {uuid} alive ({pid_info}, {life:.3f} secs to death, {up_status})"
+            )
         else:
-            print(f"client {uuid} ({pid_info}, {up_status}) dead for {-life:.3f} seconds")
+            print(
+                f"client {uuid} ({pid_info}, {up_status}) dead for {-life:.3f} seconds"
+            )
     status_list = UUID_TO_STATUS.values()
     print("summary".center(60, "="))
     print("total clients:", len(status_list))

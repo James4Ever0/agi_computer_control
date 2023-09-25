@@ -16,7 +16,7 @@ import uuid
 current_pid = os.getpid()
 print("current_pid:", current_pid)
 actor_uuid = str(uuid.uuid4())
-strtime = heartbeat_base(uuid=actor_uuid, action = 'hello', pid=current_pid)
+strtime = heartbeat_base(uuid=actor_uuid, action = 'hello', pid=current_pid, role='client')
 print('beat server hello: %s' % strtime)
 
 class InteractiveChallengeFailed(Exception):
@@ -487,7 +487,7 @@ class NaiveActor:
     def heartbeat(self):
         # to prove the program as if still running.
         # do not override this method, unless you know what you are doing.
-        access_time = heartbeat_base(uuid = actor_uuid, action = 'heartbeat', pid=current_pid)
+        access_time = heartbeat_base(uuid = actor_uuid, action = 'heartbeat', pid=current_pid, role='client')
         print('beat at:', access_time)
         return True
 

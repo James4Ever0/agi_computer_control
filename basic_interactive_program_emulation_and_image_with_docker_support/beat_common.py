@@ -49,8 +49,8 @@ import requests
 # create a session object
 session = requests.Session() # effectively faster. really?
 @timed_lru_cache(seconds = 1, maxsize=1)
-def heartbeat_base(uuid:str, action:str, pid:int):
-    params = dict(uuid=uuid, action=action, pid = pid)
+def heartbeat_base(uuid:str, action:str, pid:int, role:str):
+    params = dict(uuid=uuid, action=action, pid = pid, role=role)
     # r = session.get(beat_client_data['url'], params = params)
     r = session.get(beat_client_data['url'], params = params, timeout=beat_client_data['timeout'])
     assert r.status_code == 200
