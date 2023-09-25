@@ -12,7 +12,7 @@ timezone_str = "Asia/Shanghai"
 # timezone = pytz.timezone(timezone_str:='Asia/Shanghai')
 timezone = pytz.timezone(timezone_str)
 import schedule
-import threading
+# import threading
 
 from typing import Literal
 
@@ -33,6 +33,7 @@ ALIVE_THRESHOLD = 30
 
 @app.get(beat_server_address["info_url"])
 def get_info():
+    schedule.run_pending()
     _, timestamp = get_now_and_timestamp()
     return {
         "info": {
@@ -61,15 +62,16 @@ def beat_request(
     pid: int,
 ):
     # start = time.time()
-    for data_dict, it, it_name in [
-        (UUID_TO_PID, pid, "PID"),
-        (UUID_TO_ROLE, role, "ROLE"),
-    ]:
-        if uuid not in data_dict.keys():
-            data_dict[uuid] = it
-        elif (old_it := data_dict[uuid]) != it:
-            raise Exception(f"{it_name} mismatch! (old: {old_it}, new: {it})")
-        strtime, timestamp = get_strtime_and_timestamp()
+    if action != 'kill':
+        for data_dict, it, it_name in [
+            (UUID_TO_PID, pid, "PID"),
+            (UUID_TO_ROLE, role, "ROLE"),
+        ]:
+            if uuid not in data_dict.keys():
+                data_dict[uuid] = it
+            elif (old_it := data_dict[uuid]) != it:
+                raise Exception(f"{it_name} mismatch! (old: {old_it}, new: {it})")
+            strtime, timestamp = get_strtime_and_timestamp()
     if action == "hello":
         print(f"client {uuid} hello at: %s" % strtime)
         UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
@@ -89,11 +91,12 @@ def beat_request(
     else:
         raise Exception(f"client {uuid} with unknown action:" + action)
     # end = time.time()
-    if uuid not in UUID_TO_REGISTERED_TIMESTAMP.keys():
-        print(f"client {uuid} not registered. registering.")
-        UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
-        # raise Exception(f"client {uuid} not registered.")
-    UUID_TO_TIMESTAMP[uuid] = timestamp
+    if action != "kill":
+        if uuid not in UUID_TO_REGISTERED_TIMESTAMP.keys():
+                print(f"client {uuid} not registered. registering.")
+                UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
+                # raise Exception(f"client {uuid} not registered.")
+        UUID_TO_TIMESTAMP[uuid] = timestamp
     # print(f'request processing time: {end-start} secs', )
     return {beat_client_data["access_time_key"]: strtime}
 
@@ -116,8 +119,8 @@ def check_alive():
     print(f"checking clients at {now_strtime}")
     for uuid, registered_timestamp in UUID_TO_REGISTERED_TIMESTAMP.items():
         timestamp = UUID_TO_TIMESTAMP.get(uuid, registered_timestamp)
-        role = UUID_TO_ROLE[uuid]
-        pid = UUID_TO_PID[uuid]
+        role = UUID_TO_ROLE.get(uuid,'unknown')
+        pid = UUID_TO_PID.get(uuid,-1)
         uptime = now_timestamp - registered_timestamp
         alive = True
         life = ALIVE_THRESHOLD - (now_timestamp - timestamp)
@@ -147,23 +150,24 @@ from typing import List
 
 
 def role_statistics(roles: List[str]):
-    return len(roles), ", ".join([f"{r}: {roles.count(r)}" for r in set(roles)])
+    details = ", ".join([f"{r}: {roles.count(r)}" for r in set(roles)])
+    return len(roles), f"({details})" if details else ""
 
 
-import time
+# import time
 
 schedule.every(int(ALIVE_THRESHOLD / 3)).seconds.do(check_alive)
 
 
-def check_alive_thread():
-    while True:
-        time.sleep(1)
-        schedule.run_pending()
+# def check_alive_thread():
+#     while True:
+#         time.sleep(1)
+#         schedule.run_pending()
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    thread = threading.Thread(target=check_alive_thread, daemon=True)
-    thread.start()
+    # thread = threading.Thread(target=check_alive_thread, daemon=True)
+    # thread.start()
     uvicorn.run(app, **{k: beat_server_address[k] for k in ["host", "port"]})
