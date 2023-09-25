@@ -31,6 +31,23 @@ UUID_TO_ROLE = {}
 ALIVE_THRESHOLD = 30
 
 
+@app.get(beat_server_address["info_url"])
+def get_info():
+    _, timestamp = get_now_and_timestamp()
+    return {
+        "info": {
+            k: {
+                "status": v,
+                "pid": UUID_TO_PID[k],
+                "role": UUID_TO_ROLE[k],
+                "timestamp": UUID_TO_TIMESTAMP[k],
+            }
+            for k, v in UUID_TO_STATUS.items()
+        },
+        "timestamp": timestamp,
+    }
+
+
 # TODO: delegate this kill signal to other process
 # TODO: pass pid with uuid
 # TODO: get unassigned uuid from here, instead of anywhere else
@@ -40,11 +57,14 @@ ALIVE_THRESHOLD = 30
 def beat_request(
     uuid: str,
     action: Literal["hello", "heartbeat", "kill"],
-    role: Literal["killer", "client", "server"], # can also be server?
+    role: Literal["killer", "client", "server"],  # can also be server?
     pid: int,
 ):
     # start = time.time()
-    for data_dict, it, it_name in [(UUID_TO_PID, pid, "PID"), (UUID_TO_ROLE, role, 'ROLE')]:
+    for data_dict, it, it_name in [
+        (UUID_TO_PID, pid, "PID"),
+        (UUID_TO_ROLE, role, "ROLE"),
+    ]:
         if uuid not in data_dict.keys():
             data_dict[uuid] = it
         elif (old_it := data_dict[uuid]) != it:
@@ -56,9 +76,11 @@ def beat_request(
     elif action == "kill":
         print(f"client {uuid} killed at: %s" % strtime)
         for data_dict in [
-            UUID_TO_REGISTERED_TIMESTAMP,
             UUID_TO_TIMESTAMP,
+            UUID_TO_REGISTERED_TIMESTAMP,
             UUID_TO_STATUS,
+            UUID_TO_PID,
+            UUID_TO_ROLE,
         ]:
             if uuid in data_dict.keys():
                 del data_dict[uuid]
@@ -89,9 +111,12 @@ def get_now():
 
 def check_alive():
     now_strtime, now_timestamp = get_strtime_and_timestamp()
+    alive_roles = []
+    dead_roles = []
     print(f"checking clients at {now_strtime}")
-    for uuid, timestamp in UUID_TO_TIMESTAMP.items():
-        registered_timestamp = UUID_TO_REGISTERED_TIMESTAMP[uuid]
+    for uuid, registered_timestamp in UUID_TO_REGISTERED_TIMESTAMP.items():
+        timestamp = UUID_TO_TIMESTAMP.get(uuid, registered_timestamp)
+        role = UUID_TO_ROLE[uuid]
         pid = UUID_TO_PID[uuid]
         uptime = now_timestamp - registered_timestamp
         alive = True
@@ -105,15 +130,24 @@ def check_alive():
             print(
                 f"client {uuid} alive ({pid_info}, {life:.3f} secs to death, {up_status})"
             )
+            alive_roles.append(role)
         else:
             print(
                 f"client {uuid} ({pid_info}, {up_status}) dead for {-life:.3f} seconds"
             )
+            dead_roles.append(role)
     status_list = UUID_TO_STATUS.values()
     print("summary".center(60, "="))
     print("total clients:", len(status_list))
-    print("alive clients:", len([s for s in status_list if s == True]))
-    print("dead clients:", len([s for s in status_list if s == False]))
+    print("alive clients:", *role_statistics(alive_roles))
+    print("dead clients:", *role_statistics(dead_roles))
+
+
+from typing import List
+
+
+def role_statistics(roles: List[str]):
+    return len(roles), ", ".join([f"{r}: {roles.count(r)}" for r in set(roles)])
 
 
 import time

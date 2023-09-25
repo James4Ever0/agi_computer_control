@@ -38,9 +38,21 @@ class MetaheuristicPredictiveWrapper:
         eps=1e-5,
     ):
         class MetaheuristicPredictiveActor(predictiveActorClass):
+
             actorStatsClass = MetaheuristicActorStats
-            metaWrapperWeakref: Callable[[], MetaheuristicPredictiveWrapper]  # slot
-            metaInfo: List[List[str]]
+
+            def __init__(
+                self,
+                *args,
+                metaWrapperWeakref: Callable[[], MetaheuristicPredictiveWrapper] = ...,
+                # metaInfo: List[List[str]] = ...,
+                **kwargs,
+            ):
+                self.metaWrapperWeakref = metaWrapperWeakref
+                super().__init__(*args, **kwargs)
+
+            def setMetaInfo(self, metaInfo):
+                setattr(self, "metaInfo", metaInfo)
 
             def __del__(self):
                 metaWrapper = self.metaWrapperWeakref()
@@ -54,7 +66,7 @@ class MetaheuristicPredictiveWrapper:
                     print("trial count:", trial_count)
                     print("average performance:", average_performance)
                     for print_params in metaInfo:
-                        if len(print_params)>1:
+                        if len(print_params) > 1:
                             print(print_params[0] + ":", *print_params[1:])
                         elif len(print_params) == 1:
                             print(print_params[0])
@@ -84,13 +96,12 @@ class MetaheuristicPredictiveWrapper:
         # actor_instance.metaWrapperWeakref = weakref.ref(self)
         # return actor_instance
 
-    def new(
-        self,
-    ):
+    def new(self):
         if hasattr(self, "actor"):
             delattr(self, "actor")
-        actor = self.predictiveActorClass(ksize=self.ksize)
-        actor.metaWrapperWeakref = weakref.ref(self)
+        actor = self.predictiveActorClass(
+            metaWrapperWeakref=weakref.ref(self), ksize=self.ksize
+        )
         setattr(self, "actor", actor)
 
     def get_kernel(self) -> np.ndarray:
@@ -120,11 +131,14 @@ class MetaheuristicPredictiveWrapper:
 
         new_kernel_weight = 0.5 - old_add_weight
         old_kernel_weight = 0.5 + old_add_weight
-        self.actor.metaInfo = [
-            ("score", old_score),
-            ("old kernel weight", old_kernel_weight),
-            ("new kernel weight", new_kernel_weight),
-        ]
+
+        self.actor.setMetaInfo(
+            [
+                ("score", old_score),
+                ("old kernel weight", old_kernel_weight),
+                ("new kernel weight", new_kernel_weight),
+            ]
+        )
         self.new()
         new_kernel = self.kernel
         # emit noise if not doing well?
