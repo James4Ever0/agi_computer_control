@@ -49,7 +49,10 @@ def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"]):
     else:
         raise Exception(f"client {uuid} with unknown action:" + action)
     # end = time.time()
-    if uuid not in UUID
+    if uuid not in UUID_TO_REGISTERED_TIMESTAMP.keys():
+       print(f"client {uuid} not registered. registering.")
+       UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
+        # raise Exception(f"client {uuid} not registered.")
     UUID_TO_TIMESTAMP[uuid] = timestamp
     # print(f'request processing time: {end-start} secs', )
     return {beat_client_data["access_time_key"]: strtime}
@@ -79,7 +82,7 @@ def check_alive():
         UUID_TO_STATUS[uuid] = alive
         up_status = f"up: {uptime:.3f} secs"
         if alive:
-            print(f"client {uuid} alive ({life:.3f} secs to death, {up_status:.3f})")
+            print(f"client {uuid} alive ({life:.3f} secs to death, {up_status})")
         else:
             print(f"client {uuid} ({up_status}) dead for {-life} seconds")
     status_list = UUID_TO_STATUS.values()
