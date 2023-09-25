@@ -1,5 +1,6 @@
 import fastapi
 
+# TODO: replace this with gui-attached panel & advanced rescue/countermeasures
 app = fastapi.FastAPI()
 import datetime
 from beat_common import beat_server_address, beat_client_data
