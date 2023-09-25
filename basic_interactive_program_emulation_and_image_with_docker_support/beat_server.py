@@ -32,7 +32,6 @@ ALIVE_THRESHOLD = 30
 def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"]):
     # start = time.time()
     strtime, timestamp = get_strtime_and_timestamp()
-    UUID_TO_TIMESTAMP[uuid] = timestamp
     if action == "hello":
         print(f"client {uuid} hello at: %s" % strtime)
         UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
@@ -50,6 +49,8 @@ def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"]):
     else:
         raise Exception(f"client {uuid} with unknown action:" + action)
     # end = time.time()
+    if uuid not in UUID
+    UUID_TO_TIMESTAMP[uuid] = timestamp
     # print(f'request processing time: {end-start} secs', )
     return {beat_client_data["access_time_key"]: strtime}
 
@@ -76,9 +77,9 @@ def check_alive():
         if life < 0:
             alive = False
         UUID_TO_STATUS[uuid] = alive
-        up_status = f"up: {uptime} secs"
+        up_status = f"up: {uptime:.3f} secs"
         if alive:
-            print(f"client {uuid} alive ({life} secs to death, {up_status})")
+            print(f"client {uuid} alive ({life:.3f} secs to death, {up_status:.3f})")
         else:
             print(f"client {uuid} ({up_status}) dead for {-life} seconds")
     status_list = UUID_TO_STATUS.values()
