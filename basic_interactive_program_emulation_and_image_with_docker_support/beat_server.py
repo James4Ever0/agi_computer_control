@@ -29,15 +29,30 @@ ALIVE_THRESHOLD = 30
 
 
 @app.get(beat_server_address["beat_url"])
-def beat_request(uuid: str, action: Literal["hello", "heartbeat"]):
+def beat_request(uuid: str, action: Literal["hello", "heartbeat", "kill"]):
+    # start = time.time()
     strtime, timestamp = get_strtime_and_timestamp()
     UUID_TO_TIMESTAMP[uuid] = timestamp
     if action == "hello":
         print(f"client {uuid} hello at: %s" % strtime)
         UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
-    else:
+    elif action == "kill":
+        print(f"client {uuid} killed at: %s" % strtime)
+        for data_dict in [
+            UUID_TO_REGISTERED_TIMESTAMP,
+            UUID_TO_TIMESTAMP,
+            UUID_TO_STATUS,
+        ]:
+            if uuid in data_dict.keys():
+                del data_dict[uuid]
+    elif action == "heartbeat":
         print(f"received heartbeat from {uuid} at time {strtime}")
+    else:
+        raise Exception(f"client {uuid} with unknown action:" + action)
+    # end = time.time()
+    # print(f'request processing time: {end-start} secs', )
     return {beat_client_data["access_time_key"]: strtime}
+
 
 def get_strtime_and_timestamp():
     now, timestamp = get_now_and_timestamp()
@@ -51,8 +66,8 @@ def get_now():
 
 
 def check_alive():
-    now_strtime, now_timestamp= get_strtime_and_timestamp()
-    print(f'checking clients at {now_strtime}')
+    now_strtime, now_timestamp = get_strtime_and_timestamp()
+    print(f"checking clients at {now_strtime}")
     for uuid, timestamp in UUID_TO_TIMESTAMP.items():
         registered_timestamp = UUID_TO_REGISTERED_TIMESTAMP[uuid]
         uptime = now_timestamp - registered_timestamp
@@ -63,14 +78,14 @@ def check_alive():
         UUID_TO_STATUS[uuid] = alive
         up_status = f"up: {uptime} secs"
         if alive:
-            print(f"client {uuid} alive ({up_status}, {life} secs to death)")
+            print(f"client {uuid} alive ({life} secs to death, {up_status})")
         else:
-            print(f"client {uuid} (up: secs) dead for {-life} seconds")
+            print(f"client {uuid} ({up_status}) dead for {-life} seconds")
     status_list = UUID_TO_STATUS.values()
-    print("summary".center(60, '='))
-    print('total clients:', len(status_list))
-    print('alive clients:', len([s for s in status_list if s == True]))
-    print('dead clients:', len([s for s in status_list if s == False]))
+    print("summary".center(60, "="))
+    print("total clients:", len(status_list))
+    print("alive clients:", len([s for s in status_list if s == True]))
+    print("dead clients:", len([s for s in status_list if s == False]))
 
 
 import time
@@ -87,6 +102,6 @@ def check_alive_thread():
 if __name__ == "__main__":
     import uvicorn
 
-    thread = threading.Thread(target=check_alive_thread, daemon=True)
-    thread.start()
+    # thread = threading.Thread(target=check_alive_thread, daemon=True)
+    # thread.start()
     uvicorn.run(app, **{k: beat_server_address[k] for k in ["host", "port"]})

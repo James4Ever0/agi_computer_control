@@ -4,9 +4,11 @@ beat_client_data = dict(url = (
 ),timeout=2, access_time_key = 'access_time')
 
 import requests
-
+# create a session object
+session = requests.Session() # effectively faster. really?
 def heartbeat_base(params):
-    r = requests.get(beat_client_data['url'], params = params, timeout=beat_client_data['timeout'])
+    # r = session.get(beat_client_data['url'], params = params)
+    r = session.get(beat_client_data['url'], params = params, timeout=beat_client_data['timeout'])
     assert r.status_code == 200
     data = r.json()
     access_time = data[beat_client_data['access_time_key']]
