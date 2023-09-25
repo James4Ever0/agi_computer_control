@@ -102,6 +102,6 @@ def check_alive_thread():
 if __name__ == "__main__":
     import uvicorn
 
-    # thread = threading.Thread(target=check_alive_thread, daemon=True)
-    # thread.start()
+    thread = threading.Thread(target=check_alive_thread, daemon=True)
+    thread.start()
     uvicorn.run(app, **{k: beat_server_address[k] for k in ["host", "port"]})

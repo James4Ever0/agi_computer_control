@@ -10,3 +10,4 @@ better-exceptions
 easyprocess
 elevate
 requests
+frozendict

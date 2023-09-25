@@ -15,7 +15,7 @@ from log_common import *
 import uuid
 
 actor_uuid = str(uuid.uuid4())
-strtime = heartbeat_base(dict(uuid=actor_uuid, action = 'hello'))
+strtime = heartbeat_base(uuid=actor_uuid, action = 'hello')
 print('beat server hello: %s' % strtime)
 
 class InteractiveChallengeFailed(Exception):
@@ -486,8 +486,7 @@ class NaiveActor:
     def heartbeat(self):
         # to prove the program as if still running.
         # do not override this method, unless you know what you are doing.
-        params = dict(uuid = actor_uuid, action = 'heartbeat')
-        access_time = heartbeat_base(params)
+        access_time = heartbeat_base(uuid = actor_uuid, action = 'heartbeat')
         print('beat at:', access_time)
         return True
 
