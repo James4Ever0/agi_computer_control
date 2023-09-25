@@ -2,14 +2,22 @@ import fastapi
 
 app = fastapi.FastAPI()
 import datetime
+from beat_server_config import beat_server_address, beat_client_data
 
-@app.get('/beat_request')
-def beat_request(uuid:str):
-    strtime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+import pytz
+# with respect to our dearly Py3.6
+timezone_str = "Asia/Shanghai"
+# timezone = pytz.timezone(timezone_str:='Asia/Shanghai')
+timezone = pytz.timezone(timezone_str)
+
+@app.get(beat_server_address['beat_url'])
+def beat_request(uuid: str):
+    strtime = datetime.datetime.now(tz=timezone).strftime(r"%Y-%m-%d %H:%M:%S")
     print(f"received beat request from {uuid} at time {strtime}")
-    return strtime
+    return {beat_client_data['access_time_key']: strtime}
+
 
 if __name__ == "__main__":
-    port = 8981
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=port)
+
+    uvicorn.run(app, **beat_server_address)

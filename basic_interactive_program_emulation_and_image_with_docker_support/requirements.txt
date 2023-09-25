@@ -9,3 +9,4 @@ progressbar2
 better-exceptions
 easyprocess
 elevate
+requests

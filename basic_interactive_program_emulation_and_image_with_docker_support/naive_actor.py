@@ -4,15 +4,17 @@
 # TODO: improve task execution logic, eliminate long running blocking tasks.
 # TODO: use celery to schedule tasks
 import datetime
+from beat_server_config import heartbeat_base
 import os
 import sys
 import time
-
 import copy
 import traceback
 from cmath import nan
 from log_common import *
+import uuid
 
+timestamp = heartbeat_base(dict(uuid='hello'))
 
 class InteractiveChallengeFailed(Exception):
     """
@@ -482,7 +484,11 @@ class NaiveActor:
     def heartbeat(self):
         # to prove the program as if still running.
         # do not override this method, unless you know what you are doing.
+        params = dict(uuid = str(uuid.uuid4()))
+        access_time = heartbeat_base(params)
+        print('beat at:', access_time)
         return True
+
 
     def run(self):
         loop = True
