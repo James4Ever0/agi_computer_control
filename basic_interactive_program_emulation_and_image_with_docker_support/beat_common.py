@@ -11,6 +11,7 @@ beat_client_data = dict(
     timeout=2,
     access_time_key="access_time",
 )
+BEAT_FAILED = 255
 
 from functools import lru_cache, wraps
 from time import monotonic_ns
@@ -76,9 +77,16 @@ def heartbeat_base_nocache(uuid: str, action: str, pid: int, role: str):
 def query_info():
     return request_with_timeout_and_get_json_data(dict(), beat_client_data["info_url"])
 
+from log_common import log_and_print_unknown_exception
+import sys
 
 def request_with_timeout_and_get_json_data(params: dict, url: str, success_code=200):
-    r = session.get(url, params=params, timeout=beat_client_data["timeout"])
-    assert r.status_code == success_code
-    data = r.json()
+    try:
+        r = session.get(url, params=params, timeout=beat_client_data["timeout"])
+        assert r.status_code == success_code
+        data = r.json()
+    except:
+        log_and_print_unknown_exception()
+        print("fatal error. cannot beat.")
+        os.kill()
     return data

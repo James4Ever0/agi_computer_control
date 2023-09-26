@@ -26,6 +26,9 @@ def kill_dead_process():
         client_role = client_info_dict['role']
         if client_status is False:
             print(f"client {client_uuid} is dead.")
+            if client_pid == killer_pid:
+                print("cannot suicide")
+                continue
             dead_clients.append((client_uuid, client_pid, client_role))
     for client_uuid, client_pid, client_role in dead_clients:
         print("killing client:", client_uuid)

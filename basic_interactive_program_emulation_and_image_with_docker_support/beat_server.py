@@ -62,6 +62,7 @@ def beat_request(
     pid: int,
 ):
     # start = time.time()
+    strtime, timestamp = get_strtime_and_timestamp()
     if action != 'kill':
         for data_dict, it, it_name in [
             (UUID_TO_PID, pid, "PID"),
@@ -71,12 +72,11 @@ def beat_request(
                 data_dict[uuid] = it
             elif (old_it := data_dict[uuid]) != it:
                 raise Exception(f"{it_name} mismatch! (old: {old_it}, new: {it})")
-            strtime, timestamp = get_strtime_and_timestamp()
     if action == "hello":
-        print(f"client {uuid} hello at: %s" % strtime)
+        print(f"client {uuid} hello at:", strtime)
         UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
     elif action == "kill":
-        print(f"client {uuid} killed at: %s" % strtime)
+        print(f"client {uuid} killed at:", strtime)
         for data_dict in [
             UUID_TO_TIMESTAMP,
             UUID_TO_REGISTERED_TIMESTAMP,
