@@ -38,10 +38,9 @@ class MetaheuristicPredictiveWrapper:
         # predictorClass,
         activation: Literal["atan", "tanh"],
         eps=1e-5,
-        trials_on_same_kernel = 3,
+        trials_on_same_kernel=3,
     ):
         class MetaheuristicPredictiveActor(predictiveActorClass):
-
             actorStatsClass = MetaheuristicActorStats
 
             def __init__(
@@ -147,9 +146,11 @@ class MetaheuristicPredictiveWrapper:
         new_kernel = self.kernel
         # emit noise if not doing well?
         # harmony vice versa?
-        if (repeat_times:=self.trial_count % self.trials_on_same_kernel )== 0:
-            print(f'refreshing kernel (every {self.trials_on_same_kernel} time(s))')
-            self.kernel = new_kernel * new_kernel_weight + old_kernel * old_kernel_weight
+        if (repeat_times := self.trial_count % self.trials_on_same_kernel) == 0:
+            print(f"refreshing kernel (every {self.trials_on_same_kernel} time(s))")
+            self.kernel = (
+                new_kernel * new_kernel_weight + old_kernel * old_kernel_weight
+            )
         else:
             print(f"using old kernel (repeat: {repeat_times} time(s))")
             self.kernel = old_kernel
