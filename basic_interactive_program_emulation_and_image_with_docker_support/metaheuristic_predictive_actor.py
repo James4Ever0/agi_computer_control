@@ -1,5 +1,7 @@
 import math
 
+# TODO: rerun the same kernel for several times and get average performance (to eliminate residual errors)
+
 # extract the kernel from the dead ones.
 # the new kernel will be added to the random kernel.
 # import copy
@@ -36,6 +38,7 @@ class MetaheuristicPredictiveWrapper:
         # predictorClass,
         activation: Literal["atan", "tanh"],
         eps=1e-5,
+        trials_on_same_kernel = 3,
     ):
         class MetaheuristicPredictiveActor(predictiveActorClass):
 
@@ -82,6 +85,7 @@ class MetaheuristicPredictiveWrapper:
         # self.predictorClass = predictorClass
         self.ksize = ksize
         self.trial_count = 0
+        self.trials_on_same_kernel = trials_on_same_kernel
         self.average_performance = 0
         self.activation = ACTIVATION_FUNCMAP[activation]
         self.eps = eps
@@ -143,7 +147,12 @@ class MetaheuristicPredictiveWrapper:
         new_kernel = self.kernel
         # emit noise if not doing well?
         # harmony vice versa?
-        self.kernel = new_kernel * new_kernel_weight + old_kernel * old_kernel_weight
+        if (repeat_times:=self.trial_count % self.trials_on_same_kernel )== 0:
+            print(f'refreshing kernel (every {self.trials_on_same_kernel} time(s))')
+            self.kernel = new_kernel * new_kernel_weight + old_kernel * old_kernel_weight
+        else:
+            print(f"using old kernel (repeat: {repeat_times} time(s))")
+            self.kernel = old_kernel
 
     def refresh_average_performance(self, score: float):
         self.average_performance = (
