@@ -11,7 +11,7 @@ beat_client_data = dict(
     timeout=2,
     access_time_key="access_time",
 )
-BEAT_FAILED = 255
+# BEAT_FAILED = 255
 
 from functools import lru_cache, wraps
 from time import monotonic_ns
@@ -78,7 +78,8 @@ def query_info():
     return request_with_timeout_and_get_json_data(dict(), beat_client_data["info_url"])
 
 from log_common import log_and_print_unknown_exception
-import sys
+import os
+import signal
 
 def request_with_timeout_and_get_json_data(params: dict, url: str, success_code=200):
     try:
@@ -88,5 +89,11 @@ def request_with_timeout_and_get_json_data(params: dict, url: str, success_code=
     except:
         log_and_print_unknown_exception()
         print("fatal error. cannot beat.")
-        os.kill()
+        self_pid = os.getpid()
+        print(f'suicide now. (pid: {self_pid})')
+        kill_by_pid(self_pid)
     return data
+
+def kill_by_pid(pid):
+    kill_signal = getattr(signal, 'SIGKILL', signal.SIGTERM) # adaption for windows
+    os.kill(pid, kill_signal)

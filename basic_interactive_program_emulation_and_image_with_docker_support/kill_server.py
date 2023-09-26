@@ -33,7 +33,7 @@ def kill_dead_process():
     for client_uuid, client_pid, client_role in dead_clients:
         print("killing client:", client_uuid)
         try:
-            os.kill(client_pid, signal.SIGKILL)
+            kill_by_pid(client_pid)
         except ProcessLookupError:
             print(f'client {client_uuid} (pid: {client_pid}) is already killed')
         except:
