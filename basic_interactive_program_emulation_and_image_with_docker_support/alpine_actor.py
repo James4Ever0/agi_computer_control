@@ -1,5 +1,10 @@
 # this will freeze the terminal. what the heck is going wrong?
 # maybe we need to profile this program.
+
+# you should wait longer while doing init check.
+# maybe you can do some system responsiveness check.
+# check if the system is performing as quick as it should.
+
 import gc
 
 # import getpass

@@ -338,7 +338,7 @@ class NaiveActor:
             self.process.expect = win_expect_new
         self.timeout = SOCKET_TIMEOUT
         self.max_loop_time = 3
-        self.max_init_time = 5
+        self.max_init_time = 12
         self.max_rwtime = 0.5
         # self.timeout = 0.2 # equivalent to wexpect
         # self.timeout = 0.001
