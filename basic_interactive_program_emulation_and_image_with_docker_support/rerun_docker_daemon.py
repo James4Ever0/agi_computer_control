@@ -9,7 +9,7 @@ end tell
 """
 WINDOW_TITLE_KW = "Docker Desktop"
 # killall docker
-MACOS_TERM_DOCKER_APP = """ bash -c 'ps aux | grep Docker.app | grep -v grep | awk "{print \\$2}" | xargs -I abc kill abc' """
+# MACOS_TERM_DOCKER_APP = """ bash -c 'ps aux | grep Docker.app | grep -v grep | awk "{print \\$2}" | xargs -I abc kill abc' """
 MACOS_KILL_DOCKER_APP = """ bash -c 'ps aux | grep Docker.app | grep -v grep | awk "{print \\$2}" | xargs -I abc kill -s KILL abc' """
 import subprocess
 
@@ -20,7 +20,7 @@ LINUX_START_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("start")
 
 # DOES NOT WORK ON WIN11
 # kill com.docker.backend.exe? seems to be hanging
-WINDOWS_TERM_DOCKER_COMMAND = 'taskkill /FI "IMAGENAME eq Docker*"'
+# WINDOWS_TERM_DOCKER_COMMAND = 'taskkill /FI "IMAGENAME eq Docker*"'
 WINDOWS_KILL_DOCKER_COMMAND = 'taskkill /FI "IMAGENAME eq Docker*" /F'
 # start program minimized? instead use pygetwindow to hide the window once found.
 # find 'Docker Desktop.exe'
@@ -75,7 +75,7 @@ if sysname == "Windows":
         docker_desktop_exe_path
     ), f'Failed to find docker desktop executable at: "{docker_desktop_exe_path}"'
 
-    kill_docker_cmds.append(WINDOWS_TERM_DOCKER_COMMAND)
+    # kill_docker_cmds.append(WINDOWS_TERM_DOCKER_COMMAND)
     kill_docker_cmds.append(WINDOWS_KILL_DOCKER_COMMAND)
     start_docker_cmds.append(f'start "" "{docker_desktop_exe_path}"')  # bloody chatgpt.
 
@@ -106,9 +106,20 @@ elif sysname == "Darwin":
     kill_safe_codes.append(256)
     REQUIRED_BINARIES.extend(["killall", "open", MACOS_DOCKER_APP_BINARY])
 
-    kill_docker_cmds.extend(["killall Docker", "killall docker", MACOS_TERM_DOCKER_APP, MACOS_KILL_DOCKER_APP])
+    kill_docker_cmds.extend(
+        [
+            "killall Docker",
+            "killall docker",
+            #  MACOS_TERM_DOCKER_APP,
+            MACOS_KILL_DOCKER_APP,
+        ]
+    )
     # start_docker_cmds.append(MACOS_DOCKER_APP_BINARY)
+    
+    start_docker_cmds.append("open -j -a Docker")
     start_docker_cmds.append(f"open -j -a {MACOS_DOCKER_APP_BINARY}")
+    start_docker_cmds.append("open -a Docker")
+    start_docker_cmds.append(f"open -a {MACOS_DOCKER_APP_BINARY}")
 
     def hide_docker():
         HIDE_DOCKER_ASCRIPT_OBJ.run()
@@ -136,6 +147,7 @@ DOCKER_KILLED_KWS = [
     "Cannot connect to the Docker daemon",
     "error during connect",
 ]
+
 
 def verify_docker_killed(timeout=5, encoding="utf-8", inverse: bool = False):
     output = (
@@ -211,13 +223,14 @@ def check_required_binaries():
 def restart_and_verify():
     # this could be faulty! still stuck even if docker is killed on macOS
     restart_docker()
-    if sysname in ['Windows', 'Darwin']:
+    if sysname in ["Windows", "Darwin"]:
         verify_docker_launched()
         print("docker restart verified")
         hide_docker()
         print("docker window minimized")
-    verify_docker_launched(daemon = True)
+    verify_docker_launched(daemon=True)
     print("docker daemon restart verified")
+
 
 if elevate_needed:
     elevate.elevate(graphical=False)

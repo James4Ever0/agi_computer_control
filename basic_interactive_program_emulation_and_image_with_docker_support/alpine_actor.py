@@ -119,7 +119,7 @@ from rerun_docker_daemon import restart_and_verify
 def killAndPruneAllContainers(trial_count=2):
     fail_counter = 0
     for i in range(trial_count):
-        print(f"try to kill docker ({i+1} time(s))")
+        print(f"try to kill docker containers ({i+1} time(s))")
         try:
             success = _killAndPruneAllContainers()
             assert success, "Failed to execute docker kill and prune"
