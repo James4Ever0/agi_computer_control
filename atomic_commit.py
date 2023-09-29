@@ -2,9 +2,14 @@ import os
 import sys
 from log_utils import logger_print
 import shutil
+import subprocess
+
 from enum import auto
 from strenum import StrEnum
+REQUIRED_BINARIES = [RCLONE := "rclone", GIT := "git"]
 
+DISABLE_GIT_AUTOCRLF = f'{GIT} config --global core.autocrlf input'
+os.system(DISABLE_GIT_AUTOCRLF)
 # import parse
 from config_utils import EnvBaseModel, getConfig
 import filelock
@@ -20,6 +25,50 @@ class BackupUpdateCheckMode(StrEnum):
     git_commit_hash = auto()
 
 
+
+
+GIT_LIST_CONFIG = f"{GIT} config -l"
+GIT_ADD_GLOBAL_CONFIG_CMDGEN = (
+    lambda conf: f"{GIT} config --global --add {conf.split('=')[0]} \"{conf.split('=')[1]}\""
+)
+
+
+def add_safe_directory():
+    """
+    We do this here so you don't have to.
+    """
+    success = False
+    p = subprocess.run(GIT_LIST_CONFIG.split(), stdout=subprocess.PIPE)
+    curdir = os.path.abspath(".").replace("\\", "/")
+    assert (
+        p.returncode == 0
+    ), f"Abnormal return code {p.returncode} while listing git configuration"
+    target_conf = f"safe.directory={curdir}"
+    if target_conf not in p.stdout.decode("utf-8"):
+        cmd = GIT_ADD_GLOBAL_CONFIG_CMDGEN(target_conf)
+        logger_print("Running command:", cmd)
+        return_code = os.system(cmd)
+        assert (
+            return_code == 0
+        ), f"Abnormal return code {return_code} while adding current directory to safe directories"
+    success = True
+    return success
+
+
+def detect_upstream_branch():
+    try:
+        upstream = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', '@{upstream}'], stderr=subprocess.STDOUT).decode().strip()
+        logger_print("Upstream branch: " + upstream)
+        return upstream
+    except subprocess.CalledProcessError:
+        raise Exception("Error: Current branch has no upstream branch set\nHint: git branch --set-upstream-to=<origin name>/<branch> <current branch>")
+
+def detect_upstream_branch_and_add_safe_directory():
+    # do not swap the order.
+    success = add_safe_directory()
+    detect_upstream_branch()
+    return success
+
 # class BackupMode(StrEnum):
 #     incremental = auto()
 #     last_time_only = auto()
@@ -31,6 +80,10 @@ class GitHeadHashAcquisitionMode(StrEnum):
 
 
 from pydantic import Field, BaseModel
+
+# shall you detect if current branch has no upstream branch, and emit exception if so, to prevent 'up-to-date' info being slienced.
+
+# courtesy of ChatGPT
 
 REPO_UP_TO_DATE_KW = "Your branch is up to date with"
 REPO_BEHIND_KW = "Your branch is behind"
@@ -232,7 +285,6 @@ config = getConfig(AtomicCommitConfig)
 #   logger_print(path)
 
 # use rclone instead?
-REQUIRED_BINARIES = [RCLONE := "rclone", GIT := "git"]
 # REQUIRED_BINARIES = ["bash", "timemachine", "rsync", "git"]
 # if on windows, we check if bash is not coming from wsl.
 # WSL_BASH = ...
@@ -298,6 +350,8 @@ if config.INSTALL_DIR != "":
     # if config.INSTALL_DIR is not "":
     if os.path.exists(config.INSTALL_DIR):
         with chdir_context(config.INSTALL_DIR):
+            # add_safe_directory()
+            detect_upstream_branch_and_add_safe_directory()
             assert os.path.isdir(GITDIR), "Git directory not found!"
             success = git_fsck()
             if not success:
@@ -386,7 +440,6 @@ if missing_ignored_paths != []:
         os.remove(GITIGNORE_BACKUP)
 
 
-import subprocess
 
 
 def get_git_head_hash():
@@ -440,10 +493,10 @@ def get_script_path_and_exec_cmd(script_prefix):
 # deadlock: if both backup integrity & fsck failed, what to do?
 # when backup is done, put head hash as marker
 # default skip check: mod-time & size
-rclone_flags = " " + config.RCLONE_FLAGS if config.RCLONE_FLAGS != "" else ""
-BACKUP_COMMAND_COMMON = f"{RCLONE} sync {GITDIR} {INPROGRESS_DIR}" + rclone_flags
+rclone_flags = config.RCLONE_FLAGS
+BACKUP_COMMAND_COMMON = f"{RCLONE} sync {rclone_flags} {GITDIR} {INPROGRESS_DIR}"
 
-ROLLBACK_COMMAND = f"{RCLONE} sync {BACKUP_GIT_DIR} {GITDIR}" + rclone_flags
+ROLLBACK_COMMAND = f"{RCLONE} sync {rclone_flags} {BACKUP_GIT_DIR} {GITDIR}"
 
 # if config.BACKUP_MODE == BackupMode.last_time_only:
 BACKUP_COMMAND_GEN = lambda: BACKUP_COMMAND_COMMON
@@ -589,41 +642,14 @@ _, COMMIT_CMD = get_script_path_and_exec_cmd("commit")
 
 
 def commit():
+    logger_print(f"running commit command: {COMMIT_CMD}")
     success = False
-    add_config_success = add_safe_directory()
-    if add_config_success:
-        return_code = os.system(COMMIT_CMD)
-        assert (
-            return_code == 0
-        ), f"Failed to execute commit script with exit code {return_code}"
-        success = True
-    return success
-
-
-GIT_LIST_CONFIG = f"{GIT} config -l"
-GIT_ADD_GLOBAL_CONFIG_CMDGEN = (
-    lambda conf: f"{GIT} config --global --add {conf.split('=')[0]} \"{conf.split('=')[1]}\""
-)
-
-
-def add_safe_directory():
-    """
-    We do this here so you don't have to.
-    """
-    success = False
-    p = subprocess.run(GIT_LIST_CONFIG.split(), stdout=subprocess.PIPE)
-    curdir = os.path.abspath(".").replace("\\", "/")
+    # add_config_success = add_safe_directory()
+    # if add_config_success:
+    return_code = os.system(COMMIT_CMD)
     assert (
-        p.returncode == 0
-    ), f"Abnormal return code {p.returncode} while listing git configuration"
-    target_conf = f"safe.directory={curdir}"
-    if target_conf not in p.stdout.decode("utf-8"):
-        cmd = GIT_ADD_GLOBAL_CONFIG_CMDGEN(target_conf)
-        logger_print("Running command:", cmd)
-        return_code = os.system(cmd)
-        assert (
-            return_code == 0
-        ), f"Abnormal return code {return_code} while adding current directory to safe directories"
+        return_code == 0
+    ), f"Failed to execute commit script with exit code {return_code}"
     success = True
     return success
 
@@ -660,6 +686,13 @@ def atomic_commit():
     success = False
     commit_success = False
     commit_hash_changed = False
+    # add_safe_directory()
+    detect_upstream_branch_and_add_safe_directory()
+    # add_config_success = add_safe_directory()
+    # if not add_config_success:
+    #     logger_print("failed to add safe directory")
+    #     return success
+
     can_commit = atomic_commit_common()
 
     if can_commit:
@@ -694,18 +727,19 @@ def atomic_commit_common(
 ):
     git_not_corrupted = False
     can_commit = False
-    rollback_inprogress = os.path.exists(ROLLBACK_INPROGRESS_FLAG)
+    # rollback_inprogress = os.path.exists(ROLLBACK_INPROGRESS_FLAG)
     git_not_corrupted = git_fsck()
 
     if post_commit:
         post_commit_actions(commit_success, commit_hash_changed)
 
-    if not git_not_corrupted or rollback_inprogress:
-        if rollback():
-            can_commit = True
-    else:
+    if git_not_corrupted:
         if atomic_backup():
             can_commit = True
+    elif rollback():
+        can_commit = True
+    else:
+        logger_print("Rollback failed, exiting")
     return can_commit
 
 
