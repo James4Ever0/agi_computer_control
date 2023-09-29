@@ -227,13 +227,14 @@ if os.name == "nt":
 else:
     import pexpect
 
-    expected_pexpect_version = "4.6.0"
-    pexp_version = pexpect.__version__
-    assert (
-        pexp_version == expected_pexpect_version
-    ), "pexpected version should be: {}\ncurrently: {}".format(
-        expected_pexpect_version, pexp_version
-    )
+    # let's skip version check, for kail.
+    # expected_pexpect_version = "4.6.0"
+    # pexp_version = pexpect.__version__
+    # assert (
+    #     pexp_version == expected_pexpect_version
+    # ), "pexpected version should be: {}\ncurrently: {}".format(
+    #     expected_pexpect_version, pexp_version
+    # )
 
     READ_KNOWN_EXCEPTIONS.append(pexpect.pty_spawn.TIMEOUT)
     READ_KNOWN_EXCEPTIONS.append(pexpect.spawnbase.EOF)  # are you sure?

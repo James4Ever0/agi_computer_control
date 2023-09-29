@@ -80,12 +80,15 @@ def query_info():
 from log_common import log_and_print_unknown_exception
 import os
 import signal
-
+import func_timeout
 def request_with_timeout_and_get_json_data(params: dict, url: str, success_code=200):
     try:
         r = session.get(url, params=params, timeout=beat_client_data["timeout"])
         assert r.status_code == success_code
         data = r.json()
+    except func_timeout.dafunc.FunctionTimedOut as exc:
+        print(exc)
+        print("timed out by external wrapper")
     except:
         log_and_print_unknown_exception()
         print("fatal error. cannot beat.")
