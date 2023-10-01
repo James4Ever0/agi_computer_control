@@ -28,7 +28,7 @@ UUID_TO_REGISTERED_TIMESTAMP = {}
 UUID_TO_STATUS = {}  # alive -> True; dead -> False
 UUID_TO_PID = {}
 UUID_TO_ROLE = {}
-ALIVE_THRESHOLD = 30
+ALIVE_THRESHOLD = 30*2 # 30 is a bit of low.
 
 
 @app.get(beat_server_address["info_url"])
