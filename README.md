@@ -141,3 +141,11 @@ devcontainer won't work as expected on windows 11 as we put our repo on external
 ---
 
 your aim is too damn big! shall you begin to train some primitive neural network with functionality of only emitting and receiving ascii words, even just a single character like 'C'. get your hands dirty!
+
+---
+
+the basic docker service is just like havoc. it does not contain anything 'intelligent'. only 'life support'.
+
+we plan to containerize chatdev/open-interpreter/autogpt. after that, we will combine the two, and create some 'capitalism' among multiple containers.
+
+finally we will create some ever-evolving agent and use that as the building block for the megasystem.
