@@ -1,0 +1,1 @@
+let's try to containerize open-interpreter first. seems easier.
