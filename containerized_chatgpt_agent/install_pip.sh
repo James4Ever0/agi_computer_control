@@ -18,4 +18,3 @@ echo "Package installation failed. Running apt update and trying again..."
 apt update
 install_packages
 fi
-
