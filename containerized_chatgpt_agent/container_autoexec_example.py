@@ -23,8 +23,4 @@ Avaliable commands:
 type <character sequence>
 return
 delete
-
-Terminal view:
-
-
 """
