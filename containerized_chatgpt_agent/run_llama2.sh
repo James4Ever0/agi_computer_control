@@ -1,0 +1,1 @@
+docker exec -it ollama ollama run llama2

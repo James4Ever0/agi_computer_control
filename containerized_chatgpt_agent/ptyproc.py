@@ -24,13 +24,9 @@ maxterm = 3
 maxterm_granual = 5
 bark = 0
 term = 0
-import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-p", "--port", type=int, default=8788, help="port number")
-args = parser.parse_args()
-port = args.port
-assert port > 0 and port < 65535
+from port_util import port
+
 print("server running on port %d" % port)
 # you can turn off the barking dog sometimes.
 # we can use a big dog every since then.
