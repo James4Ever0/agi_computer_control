@@ -1,0 +1,15 @@
+# install xfce4, xvfb
+# run the screenshot process.
+# xvfb-run -n 99 -f ~/.Xauthority xfce4-session
+FROM ubuntu:22.04
+WORKDIR /root
+ENV DEBIAN_FRONTEND=noninteractive
+COPY install_pip_and_pyautogui_prequisites.sh .
+RUN bash install_pip_and_pyautogui_prequisites.sh
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple litellm requests fastapi uvicorn pytesseract ascii_magic pyautogui
+COPY ptyproc.py .
+COPY port_util.py .
+COPY visual_autoexec_example.py .
+COPY cursor.png .
+COPY visual_server_on_ubuntu.py .
+COPY visual_autoexec_main.sh main.sh

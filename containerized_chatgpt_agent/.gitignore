@@ -1,2 +1,5 @@
 run_interpreter_container.sh
 .env_*
+!cursor.png
+!Modelfile*
+!Dockerfile*

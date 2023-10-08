@@ -1,0 +1,8 @@
+FROM ubuntu:22.04
+WORKDIR /root
+COPY install_pip.sh .
+RUN bash install_pip.sh
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple litellm pyte ptyprocess requests tornado
+COPY ptyproc.py .
+COPY port_util.py .
+COPY container_autoexec_example.py .
