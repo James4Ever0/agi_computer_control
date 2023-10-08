@@ -29,12 +29,12 @@ import pytesseract
 def image_to_ascii(img: Image, columns=60):
     art = AsciiArt.from_pillow_image(img)
     ascii_text = art._img_to_art(columns=columns, monochrome=True)
-    return ascii_text
+    return ascii_text.strip()
 
 
 def image_to_words(img: Image):
     words = pytesseract.image_to_string(img)
-    return words
+    return words.strip()
 
 
 def image_to_ascii_and_words(img: Image):
@@ -58,19 +58,23 @@ app = fastapi.FastAPI()
 
 @app.get("/position")
 def get_position():
-    return pyautogui.position()
+    pos = pyautogui.position()
+    data = {"x": pos.x, "y": pos.y}
+    return data
 
 
 @app.get("/resolution")
 def get_resolution():
-    return pyautogui.size()
+    size=pyautogui.size()
+    data = {"width": size.width, "height": size.height}
+    return data
 
 
 @app.get("/text_screenshot")
 def get_text_screenshot():
     shot = screenshot_with_cursor()
     text = image_to_ascii_and_words(shot)
-    return text
+    return {'text':text}
 
 
 @app.get("/move_abs")
@@ -87,9 +91,11 @@ from typing import Literal
 
 
 @app.get("/click")
-def click_cursor(button: Literal["left", "right", "middle"]):
-    pyautogui.click(button=button)
-
+def click_cursor(button: Literal["left", "right", "middle"] = 'left'):
+    params = {}
+    if button:
+        params = {"button": button}
+    pyautogui.click(**params)
 
 @app.get("/type")
 def type_text(text: str):

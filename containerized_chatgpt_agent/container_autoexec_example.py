@@ -8,6 +8,18 @@
 # llama2 is not intelligent enough to complete this task.
 # still, we can build framework upon this.
 
+
+import ast
+
+
+def unescape(text: str):
+    text = ast.literal_eval(repr(text).replace("\\\\", "\\"))
+    return text
+
+
+def escape(text: str):
+    text = text.encode("unicode_escape").decode()
+    return text
 import litellm
 import base64
 import requests
@@ -17,12 +29,22 @@ print("using server on port %d" % port)
 openrouter_model_name = "mistralai/mistral-7b-instruct"
 cmd_prefix = "type "
 import random
-def random_command_generator(_min = 5, _max = 10):
+
+def generate_single_random_command(_min, _max):
     cmd = ""
     rng = lambda: random.randint(0,255)
     for _ in range(random.randint(_min, _max)):
         cmd += chr(rng())
+    cmd = escape(cmd)
     return cmd_prefix+cmd
+
+def random_command_generator(_min = 5, _max = 10, min_count=1, max_count=3):
+    count = random.randint(min_count, max_count)
+    cmdlist = []
+    for _ in range(count):
+        cmd = generate_single_random_command(_min, _max)
+        cmdlist.append(cmd)
+    return cmdlist
 
 # it is bad to run random commands.
 # maybe you should listen to the advice at https://github.com/Significant-Gravitas/AutoGPT/issues/346
@@ -35,26 +57,28 @@ def random_command_generator(_min = 5, _max = 10):
 
 # you just need to master the diff, the memory and the action
 
-prompt_gen= lambda content, random_command: f"""
+def prompt_gen(content, random_command_list): 
+    random_command_repr = "\n".join(random_command_list)
+    prompt = f"""
 Terminal environment:
 
 {content}
 
-Random command:
+Random commands:
 
-{random_command}
+{random_command_repr}
 
-Your command:
+Your commands:
 """
-
+    return prompt
 def get_terminal_data(port):
     r = requests.get(f"http://localhost:{port}/display")
     return r.text
 
 def construct_prompt(data):
-    random_command = random_command_generator()
-    prompt = prompt_gen(data, random_command)
-    return prompt, random_command
+    random_command_list = random_command_generator()
+    prompt = prompt_gen(data, random_command_list)
+    return prompt, random_command_list
 
 # model_tag = "openai/gpt-3.5-turbo"
 
@@ -86,7 +110,7 @@ def parse_command_list(response):
         if line.startswith(cmd_prefix):
             command = line[len(cmd_prefix):]
         # command = ast.literal_eval(repr(line).replace("\\\\","\\"))
-            command = ast.literal_eval(repr(command).replace("\\\\","\\"))
+            command = unescape(command)
             command_list.append(command)
     return command_list
 
@@ -110,10 +134,10 @@ SLEEP_TIME = 3
 
 while True:
     data = get_terminal_data(port)
-    prompt, random_command = construct_prompt(data.strip())
-    print("random command:", random_command)
+    prompt, random_commands = construct_prompt(data.strip())
+    print("random commands:", random_commands)
     response = get_reply_from_chatgpt(prompt)
-    execute_command(random_command[len(cmd_prefix):], port)
+    execute_command_list(random_commands, port)
     command_list = parse_command_list(response)
     execute_command_list(command_list, port)
     time.sleep(SLEEP_TIME)
