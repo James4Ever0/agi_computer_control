@@ -3,6 +3,8 @@ from port_util import port
 # TODO: multi-agent infrastructure, help each other to earn bucks
 # TODO: train the model on some 'visual' datasets
 # TODO: diff/diffuse the input
+# TODO: limit the output. prevent the ai from going too far (talkative), if it is not doing any valid operation
+# TODO: make the model 'error-free', that is, interpreting & executing the output no matter what it is
 
 urlbase = f"http://localhost:{port}"
 import functools
