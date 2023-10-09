@@ -10,6 +10,7 @@ RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple litellm requests fa
 COPY ptyproc.py .
 COPY port_util.py .
 COPY visual_autoexec_example.py .
+COPY diff_utils.py .
 COPY cursor.png .
 COPY visual_server_on_ubuntu.py .
 COPY visual_autoexec_main.sh main.sh

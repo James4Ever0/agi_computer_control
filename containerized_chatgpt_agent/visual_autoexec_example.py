@@ -2,9 +2,11 @@ from port_util import port
 
 # TODO: multi-agent infrastructure, help each other to earn bucks
 # TODO: train the model on some 'visual' datasets
-# TODO: diff/diffuse the input
+# TODO: diff/diffuse (memory fading) the input
 # TODO: limit the output. prevent the ai from going too far (talkative), if it is not doing any valid operation
 # TODO: make the model 'error-free', that is, interpreting & executing the output no matter what it is
+# TODO: zoom in/out & move around the focus area
+# TODO: focus on the mouse when it is moved
 
 urlbase = f"http://localhost:{port}"
 import functools
@@ -205,12 +207,12 @@ Your commands:
     return prompt, random_commands
 
 
-def get_reply_from_chatgpt(content: str):
+def get_reply_from_chatgpt(content: str, max_tokens = 100):
     messages = [{"content": content, "role": "system"}]
     print("sending:")
     print(messages)
     response = litellm.completion(
-        model_name, messages, api_base="http://localhost:11434"
+        model_name, messages, api_base="http://localhost:11434", max_tokens = max_tokens
     )
     choices = response["choices"]
     reply_content = choices[0]["message"]["content"]

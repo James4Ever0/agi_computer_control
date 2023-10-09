@@ -7,6 +7,7 @@ import uvicorn
 from port_util import port
 import pyautogui
 from PIL import Image
+from diff_utils import diff_methods
 
 pyautogui.FAILSAFE = False
 
@@ -36,21 +37,35 @@ def image_to_words(img: Image):
     words = pytesseract.image_to_string(img)
     return words.strip()
 
+prev_registry = {
+    'ascii_text':'',
+    'words': ''
+}
 
-def image_to_ascii_and_words(img: Image):
+def image_to_ascii_and_words(img: Image, method):
+    procedure = diff_methods.get(method, lambda prev_text, next_text: next_text)
+
     ascii_text = image_to_ascii(img)
+    ascii_text_processed = process_and_update(procedure, ascii_text, 'ascii_text')
+
     words = image_to_words(img)
+    words_processed = process_and_update(procedure, words, 'words')
 
     text = f"""
 Ascii image:
 
-{ascii_text}
+{ascii_text_processed}
 
 Text in image:
 
-{words}
+{words_processed}
 """
     return text
+
+def process_and_update(procedure, item, key):
+    output = procedure(prev_registry[key], item)
+    prev_registry[key] = item
+    return output
 
 
 app = fastapi.FastAPI()
@@ -65,16 +80,18 @@ def get_position():
 
 @app.get("/resolution")
 def get_resolution():
-    size=pyautogui.size()
+    size = pyautogui.size()
     data = {"width": size.width, "height": size.height}
     return data
 
 
 @app.get("/text_screenshot")
-def get_text_screenshot():
+def get_text_screenshot(
+    method: Literal["git_style_diff", "char_diff", "line_indexed_diff", 'no_diff'] = 'line_indexed_diff'
+):
     shot = screenshot_with_cursor()
-    text = image_to_ascii_and_words(shot)
-    return {'text':text}
+    text = image_to_ascii_and_words(shot, method)
+    return {"text": text}
 
 
 @app.get("/move_abs")
@@ -91,11 +108,12 @@ from typing import Literal
 
 
 @app.get("/click")
-def click_cursor(button: Literal["left", "right", "middle"] = 'left'):
+def click_cursor(button: Literal["left", "right", "middle"] = "left"):
     params = {}
     if button:
         params = {"button": button}
     pyautogui.click(**params)
+
 
 @app.get("/type")
 def type_text(text: str):

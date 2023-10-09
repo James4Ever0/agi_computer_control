@@ -4,6 +4,7 @@
 # TODO: build multi-agent framework
 # TODO: memory framework, cache & permanent storage
 # TODO: use image to ascii protocol (with ocr) for gui manipulation
+# TODO: get terminal size
 
 # llama2 is not intelligent enough to complete this task.
 # still, we can build framework upon this.
@@ -71,9 +72,20 @@ Random commands:
 Your commands:
 """
     return prompt
-def get_terminal_data(port):
+
+from diff_utils import diff_methods
+from typing import Literal
+
+prev_terminal_content = ""
+
+def get_terminal_data(port, method:Literal["git_style_diff", "char_diff", "line_indexed_diff", 'no_diff'] = 'line_indexed_diff'):
+    global prev_terminal_content
     r = requests.get(f"http://localhost:{port}/display")
-    return r.text
+    terminal_content = r.text
+    procedure = diff_methods.get(method, lambda prev, _next: _next)
+    result = procedure(prev_terminal_content, terminal_content)
+    prev_terminal_content = terminal_content
+    return result
 
 def construct_prompt(data):
     random_command_list = random_command_generator()
@@ -85,7 +97,7 @@ def construct_prompt(data):
 # import functools
 
 # @functools.lru_cache(maxsize=100)
-def get_reply_from_chatgpt(content: str):
+def get_reply_from_chatgpt(content: str, max_tokens = 100):
     messages = [{"content": content, "role": "system"}]
     # messages = [{"content": content, "role": "user"}]
     print("sending:")
@@ -94,7 +106,7 @@ def get_reply_from_chatgpt(content: str):
     # many info inside. you may want to take a look?
     # response = litellm.completion(f"openrouter/{openrouter_model_name}", messages)
     # response = litellm.completion("ollama/llama2", messages, api_base="http://localhost:11434")
-    response = litellm.completion("ollama/autoexec", messages, api_base="http://localhost:11434")
+    response = litellm.completion("ollama/autoexec", messages, api_base="http://localhost:11434", max_tokens = max_tokens)
     choices = response['choices']
     reply_content = choices[0]['message']['content']
     print("reply:")
@@ -117,7 +129,7 @@ def parse_command_list(response):
 def execute_command(command, port):
     print("executing command:", repr(command))
     b64command = base64.b64encode(command.encode('utf-8')).decode('utf-8')
-    params = dict(b64type= b64command)
+    params = dict(b64type = b64command)
     requests.get(f"http://localhost:{port}/input", params=params)
 
 def execute_command_list(command_list, port):
