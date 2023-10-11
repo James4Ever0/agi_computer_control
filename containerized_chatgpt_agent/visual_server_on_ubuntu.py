@@ -8,6 +8,7 @@ from port_util import port
 import pyautogui
 from PIL import Image
 from diff_utils import diff_methods
+from typing import Literal
 
 pyautogui.FAILSAFE = False
 

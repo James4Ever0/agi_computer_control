@@ -3,6 +3,10 @@ WORKDIR /root
 COPY install_pip.sh .
 RUN bash install_pip.sh
 RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple litellm pyte ptyprocess requests tornado
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple progressbar2
 COPY ptyproc.py .
+COPY terminal_config.py .
+COPY diff_utils.py .
+COPY ollama_utils.py .
 COPY port_util.py .
 COPY container_autoexec_example.py .

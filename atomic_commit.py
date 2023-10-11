@@ -9,6 +9,7 @@ from strenum import StrEnum
 REQUIRED_BINARIES = [RCLONE := "rclone", GIT := "git"]
 
 DISABLE_GIT_AUTOCRLF = f'{GIT} config --global core.autocrlf input'
+PRUNE_NOW = f'{GIT} gc --prune=now'
 os.system(DISABLE_GIT_AUTOCRLF)
 # import parse
 from config_utils import EnvBaseModel, getConfig
@@ -760,3 +761,6 @@ if __name__ == "__main__":
         success = atomic_commit()
         if not success:
             raise Exception("Failed to perform atomic commit.")
+        else:
+            logger_print("Cleaning up after successful commit:")
+            os.system(PRUNE_NOW)

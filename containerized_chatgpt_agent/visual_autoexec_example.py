@@ -1,5 +1,5 @@
 from port_util import port
-
+import ollama_utils
 # TODO: multi-agent infrastructure, help each other to earn bucks
 # TODO: train the model on some 'visual' datasets
 # TODO: diff/diffuse (memory fading) the input
@@ -7,11 +7,22 @@ from port_util import port
 # TODO: make the model 'error-free', that is, interpreting & executing the output no matter what it is
 # TODO: zoom in/out & move around the focus area
 # TODO: focus on the mouse when it is moved
+# TODO: correct mistakes, force it to learn random commands if not doing anything right
+# TODO: use utils designed for blind people to operate the GUI
+# TODO: make statistics on ai execution frequency & overall performance (including random commands), record every execution error and cause (who did it)
 
 urlbase = f"http://localhost:{port}"
 import functools
 
+generate_command_pool = lambda: {
+    "executed": [],
+    "not_executed": [],
+    "error": [],
+}
 
+prev_command_pool = generate_command_pool()
+
+EXEC_DELAY = 0.5
 @functools.lru_cache()
 def urlmake(path):
     return f"{urlbase}/{path}"
@@ -28,6 +39,8 @@ sess = requests.Session()
 def perform_action(path: str, params: dict):
     url = urlmake(path)
     response = sess.get(url, params=params)
+    response_code = response.status_code
+    assert response_code == 200, f"Error code: {response_code} {response.text}"
     return response
 
 
@@ -147,16 +160,23 @@ import traceback
 def action_executor(action_text: str):
     action_text = action_text.lstrip()
     err = None
+    executed = False
     for action, handler in action_handlers.items():
         if action_text.startswith(action):
             argument = action_text[len(action) + 1 :]
             print("excuting:", action, argument)
             try:
                 handler(argument)
+                prev_command_pool["executed"].append(action_text)
             except:
                 err = traceback.format_exc(limit=1)
                 print("err:", err)
+                prev_command_pool["error"].append(action_text)
+            executed = True
             break
+    if not executed:
+        prev_command_pool["not_executed"].append(action_text)
+    time.sleep(EXEC_DELAY)
     return err
 
 
@@ -186,6 +206,9 @@ def construct_prompt(
     random_commands_str = "\n".join(random_commands)
     last_random_errors = "\n".join(random_err_list)
     last_errors = "\n".join(err_list)
+    previous_executed_repr = "\n".join(prev_command_pool["executed"])
+    previous_error_repr = "\n".join(prev_command_pool["error"])
+    previous_not_executed_repr = "\n".join(prev_command_pool["not_executed"])
     prompt = f"""
 {data}
 
@@ -194,12 +217,27 @@ Pointer location: {x}, {y}
 Resolution: {width}x{height}
 
 Last random command errors:
+
 {last_random_errors}
 
 Last errors:
+
 {last_errors}
 
+Previous executed successfully:
+
+{previous_executed_repr}
+
+Previous executed with error:
+
+{previous_error_repr}
+
+Previous not executed:
+
+{previous_not_executed_repr}
+
 Next random commands:
+
 {random_commands_str}
 
 Your commands:
@@ -207,18 +245,25 @@ Your commands:
     return prompt, random_commands
 
 
-def get_reply_from_chatgpt(content: str, max_tokens = 100):
+def get_reply_from_chatgpt(content: str, max_tokens=50):
     messages = [{"content": content, "role": "system"}]
     print("sending:")
     print(messages)
     response = litellm.completion(
-        model_name, messages, api_base="http://localhost:11434", max_tokens = max_tokens
+        model_name, messages, api_base="http://localhost:11434", max_tokens=max_tokens
     )
     choices = response["choices"]
     reply_content = choices[0]["message"]["content"]
     print("reply:")
     print(reply_content)
     return reply_content
+
+def refresh_command_pool(command_pool, limit=3):
+    ret = {}
+    for k,v in command_pool.items():
+        new_v = v[-limit:]
+        ret[k] = new_v
+    return ret
 
 
 err_list = []
@@ -229,6 +274,8 @@ while True:
     prompt, random_commands = construct_prompt(
         data.strip(), width, height, random_err_list, err_list
     )
+    prev_command_pool = generate_command_pool()
+    # prev_command_pool = refresh_command_pool(prev_command_pool)
     print("random commands:", random_commands)
     response = get_reply_from_chatgpt(prompt)
     command_list = response.split("\n")

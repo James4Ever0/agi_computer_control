@@ -45,7 +45,7 @@ display = ""
 lag = 0.05
 executable = "bash"  # this is wrong. could get your computer in danger.
 # unless you want to take the risk. everything worth the try?
-cols, rows = 80, 25
+from terminal_config import cols, rows
 import time
 
 watch_rate = 0.5

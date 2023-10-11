@@ -7,9 +7,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 COPY install_pip_and_pyautogui_prequisites.sh .
 RUN bash install_pip_and_pyautogui_prequisites.sh
 RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple litellm requests fastapi uvicorn pytesseract ascii_magic pyautogui
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple progressbar2
 COPY ptyproc.py .
 COPY port_util.py .
 COPY visual_autoexec_example.py .
+COPY ollama_utils.py .
 COPY diff_utils.py .
 COPY cursor.png .
 COPY visual_server_on_ubuntu.py .
