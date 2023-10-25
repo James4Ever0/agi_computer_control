@@ -1,6 +1,7 @@
 # there must be some smaller groups called "company" evolved in the process.
 # the total amount of currency remained unchanged.
 import uuid
+from typing import Callable
 
 # TODO: socialism, communism
 # TODO: is your cybergod misbehaving because of psycological reasons
@@ -78,3 +79,65 @@ def put_into_bank(user_id, amount, user_registry, bank_registry):
 def extract_from_bank(user_id, amount, user_registry, bank_registry):
     result = pay_amount(amount, user_id, user_id, bank_registry, user_registry)
     return result
+
+
+def parse_command_to_components(command: str):
+    command_components = command.strip().split(" ")
+    command_components = [c.strip() for c in command_components]
+    command_components = [c.lower() for c in command_components if len(c) > 0]
+    return command_components
+
+
+def parse_amount(components: list[str]):
+    amount = components.pop(0)
+    amount = float(amount)
+    return amount
+
+
+import inspect
+
+
+def construct_command_excutor(executor):
+    sig = inspect.signature(executor)
+    parameter_names = list(sig.parameters.keys())
+
+    def command_executor(components: list[str], context: dict[str, str]):
+        kwargs = {
+            pname: parse_amount(components) if pname == "amount" else context[pname]
+            for pname in parameter_names
+        }
+        ret = executor(*kwargs)
+        return ret
+
+    return command_executor
+
+
+def pay_result_formatter():
+    ...
+
+command_handlers: dict[str, Callable[[list[str], dict[str, str]], dict]] = dict(
+    pay=construct_command_excutor(pay_amount),
+    check=construct_command_excutor(check_account),
+    put_into_bank=construct_command_excutor(put_into_bank),
+    extract_from_bank=construct_command_excutor(extract_from_bank),
+)
+result_formatters: dict[str, Callable[[dict,dict], dict]] = dict(pay=pay_result_formatter)
+
+
+def clerk(command: str, context: dict[str, str]):
+    command_components = parse_command_to_components(command)
+    ret = ...
+    if len(command_components) >= 2:
+        comp_0 = command_components[0]
+        rest_of_components = command_components[1:]
+        handler = command_handlers.get(comp_0, None)
+        formatter = result_formatters.get(comp_0, None)
+        if handler:
+            ret = handler(rest_of_components, context)
+            if formatter:
+                ret = formatter(ret, context)
+        else:
+            ...
+    else:
+        ...
+    return ret

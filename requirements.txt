@@ -1,3 +1,4 @@
+easyprocess
 jsonlines
 pynput
 einops

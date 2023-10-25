@@ -11,7 +11,6 @@
 # TODO: create some interface to describe what commands does, or narriation.
 import ollama_utils
 
-
 # llama2 is not intelligent enough to complete this task.
 # still, we can build framework upon this.
 
