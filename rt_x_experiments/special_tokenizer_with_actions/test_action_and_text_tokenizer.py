@@ -95,3 +95,5 @@ print(tokens_with_special)
 
 # or you could augment the training data, like input = x[:-3], target = x[3:]
 # either way, could possibly optimize the performance.
+
+# to use more tokens you need to change the first embedding layer
