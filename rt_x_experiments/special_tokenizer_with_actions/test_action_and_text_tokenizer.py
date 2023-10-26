@@ -91,3 +91,7 @@ print(tokens_with_special)
 # i will sort the "simutaneous" tokens and order by priority
 # what about training? is that purely online? or shall we alter the training method?
 # like: [a,b,c,d,e,f] -> [a,c,e], [b,d,f] -> sample by priority
+# this is compression. this can speed up things. but not necessarily improve quality, unless you trade performance with quality.
+
+# or you could augment the training data, like input = x[:-3], target = x[3:]
+# either way, could possibly optimize the performance.
