@@ -86,3 +86,8 @@ tokens_with_special = enc.encode(
 )
 print(tokens)  # no special token!
 print(tokens_with_special)
+
+# what if i allow the ai to emit multiple tokens a time?
+# i will sort the "simutaneous" tokens and order by priority
+# what about training? is that purely online? or shall we alter the training method?
+# like: [a,b,c,d,e,f] -> [a,c,e], [b,d,f] -> sample by priority
