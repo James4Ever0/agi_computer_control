@@ -85,3 +85,5 @@ def analyze_image_and_get_crop_center_list(image, center_count: int = 1):
         )
         center_list.append(center)
     return center_list
+
+# now, do you have to do positional embedding over magnified areas? you only get embeddings! maybe we don't have to! otherwise we need some fractal function to do this job.
