@@ -206,6 +206,7 @@ else:
 # or just trying to reduce the loss against input text?
 print("output logits:", output1.shape, output2.shape)  # with gradient!
 print("device:", output1.device)
+# breakpoint()
 # output logits: torch.Size([2, 1023, 20000]) torch.Size([])
 # device: privateuseone:0
 
@@ -215,3 +216,16 @@ print("device:", output1.device)
 
 # 1. interpret the robot action sequentially in a loop, if separated by any other token the interpretation ends, and it will start over from the beginning
 # 2. use indicator/classifier to determine what type of action the robot is taking for every token (token classification)
+
+# not working for DirectML
+# memory_usage = torch.cuda.memory_allocated(device=dev) / 1024**3  # in GB
+
+# print("Memory Usage:", memory_usage, "GB")
+
+############ CPU Usage ############
+
+import psutil
+process = psutil.Process()
+memory_usage = process.memory_info().rss / 1024**3  # in GB
+
+print("Memory Usage:", memory_usage, "GB")
