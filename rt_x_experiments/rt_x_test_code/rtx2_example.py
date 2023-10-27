@@ -229,3 +229,5 @@ process = psutil.Process()
 memory_usage = process.memory_info().rss / 1024**3  # in GB
 
 print("Memory Usage:", memory_usage, "GB")
+
+# ref: https://github.com/microsoft/DirectML/issues/444
