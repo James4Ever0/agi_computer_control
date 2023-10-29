@@ -5,3 +5,5 @@
 # turned out that free will is not something we can imagine. even if it is true, we still need to achieve that.
 
 # we need to let the machine do something against us.
+
+# the fire is burning! for real! that is what we want to prevent.
