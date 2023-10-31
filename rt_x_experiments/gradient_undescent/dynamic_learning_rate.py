@@ -7,6 +7,7 @@ def get_optim_lrs(optim):
     for pg in optim.param_groups:
         lr = pg['lr']
         lr_list.append(lr)
+    return lr_list
 
 def set_optim_lrs(optim, lr_list):
     for index,pg in enumerate(optim.param_groups):
@@ -24,6 +25,11 @@ optim = torch.optim.SGD(model.parameters(), lr=lr)
 #     ...
 
 lr_list = get_optim_lrs(optim)
-print(lr_list)
+print(lr_list) # [0.001]
+
+# set_optim_lrs(optim, [-0.001]) # seems ok, but...a
+set_optim_lrs(optim, [2])
+print(get_optim_lrs(optim))
+# just do not set to negative.
 
 # you don't need the scheduler. or you might need the scheduler that can recurse with the model output.
