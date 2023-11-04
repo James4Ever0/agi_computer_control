@@ -52,12 +52,14 @@ class DeviceType(StrEnum):
 
 
 # TODO: iterate over available devices, then select.
+
 # import serial.tools.list_ports
 # available_ports = serial.tools.list_ports.comports()
 
-serialDevices = {
+serialDevices = {# VID:PID=1A86:5523
     DeviceType.power: "/dev/serial/by-id/usb-1a86_5523-if00-port0",
     # kcom2/kcom3 & ch9329 not distinguishable by id (all ch340).
+    # these are identical. 'VID:PID=1A86:7523' in hwid.
     DeviceType.kcom2: (ch340 := "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"),
     # another hid device will be: ch9329
     DeviceType.kcom3: ch340,
