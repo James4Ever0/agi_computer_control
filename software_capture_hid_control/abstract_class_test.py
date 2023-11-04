@@ -5,7 +5,7 @@ class Example(ABC):
     @abstractmethod
     def a(self):
         print('a')
-        
+
     @abstractmethod
     def b(self):
         print('a')

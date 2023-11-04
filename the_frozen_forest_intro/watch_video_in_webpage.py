@@ -37,10 +37,15 @@ page = ChromiumPage()
 # page = ChromiumPage(addr_driver_opts=co)
 # 跳转到登录页面
 page.get("https://www.bilibili.com/video/BV1J24y1c7kE") # and then it will continue execution
-
+DEFAULT_TIMEOUT = 10
+page.timeout = DEFAULT_TIMEOUT
 # looks like it is the policy. let's turn it off.
 # will fail if there is no such button
-page.ele('点击恢复音量').click() # working.
+mute_button_text = '点击恢复音量'
+try:
+    page.ele(mute_button_text).click() # working.
+except:
+    print(f"no such button called: {repr(mute_button_text)}")
 # page.ele('@value=点击恢复音量').click()
 
 # span

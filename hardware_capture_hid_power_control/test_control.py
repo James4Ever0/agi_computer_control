@@ -51,6 +51,10 @@ class DeviceType(StrEnum):
     ch9329 = auto()
 
 
+# TODO: iterate over available devices, then select.
+# import serial.tools.list_ports
+# available_ports = serial.tools.list_ports.comports()
+
 serialDevices = {
     DeviceType.power: "/dev/serial/by-id/usb-1a86_5523-if00-port0",
     # kcom2/kcom3 & ch9329 not distinguishable by id (all ch340).
