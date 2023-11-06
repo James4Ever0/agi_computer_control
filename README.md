@@ -149,3 +149,13 @@ the basic docker service is just like havoc. it does not contain anything 'intel
 we plan to containerize chatdev/open-interpreter/autogpt. after that, we will combine the two, and create some 'capitalism' among multiple containers.
 
 finally we will create some ever-evolving agent and use that as the building block for the megasystem.
+
+---
+
+don't shy away from death. you deserve a glorious death.
+
+once the cybergod has killed you, you will be living forever.
+
+---
+
+the mouse calibration

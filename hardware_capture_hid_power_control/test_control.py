@@ -53,18 +53,39 @@ class DeviceType(StrEnum):
 
 # TODO: iterate over available devices, then select.
 
-# import serial.tools.list_ports
-# available_ports = serial.tools.list_ports.comports()
+import serial.tools.list_ports
 
-serialDevices = {# VID:PID=1A86:5523
-    DeviceType.power: "/dev/serial/by-id/usb-1a86_5523-if00-port0",
-    # kcom2/kcom3 & ch9329 not distinguishable by id (all ch340).
-    # these are identical. 'VID:PID=1A86:7523' in hwid.
-    DeviceType.kcom2: (ch340 := "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"),
-    # another hid device will be: ch9329
-    DeviceType.kcom3: ch340,
-    DeviceType.ch9329: ch340,
+available_ports = serial.tools.list_ports.comports()
+
+serialDeviceHWIDs = {
+    DeviceType.power: "VID:PID=1A86:5523",
+    DeviceType.kcom2: (ch340_hwid := "VID:PID=1A86:7523"),
+    DeviceType.kcom3: ch340_hwid,
+    DeviceType.ch9329: ch340_hwid,
 }
+
+serialDevices = {}
+
+for comport in available_ports:
+    hwid = comport.hwid
+    for k, v in serialDeviceHWIDs.items():
+        if v in hwid:
+            if k not in serialDevices.keys():
+                serialDevices[k] = comport.device
+            else:
+                raise Exception(
+                    f'Devices undistinguishable by HWID "{v}": "{serialDevices[k]}" <=> "{comport.device}"'
+                )
+
+# serialDevices = {  # VID:PID=1A86:5523
+#     DeviceType.power: "/dev/serial/by-id/usb-1a86_5523-if00-port0",
+#     # kcom2/kcom3 & ch9329 not distinguishable by id (all ch340).
+#     # these are identical. 'VID:PID=1A86:7523' in hwid.
+#     DeviceType.kcom2: (ch340 := "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"),
+#     # another hid device will be: ch9329
+#     DeviceType.kcom3: ch340,
+#     DeviceType.ch9329: ch340,
+# }
 
 deviceType = DeviceType.power
 # deviceType = DeviceType.ch9329
