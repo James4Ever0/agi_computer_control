@@ -158,4 +158,4 @@ once the cybergod has killed you, you will be living forever.
 
 ---
 
-the mouse calibration
+the mouse calibration issue can be of major concern. we don't find it anywhere.
