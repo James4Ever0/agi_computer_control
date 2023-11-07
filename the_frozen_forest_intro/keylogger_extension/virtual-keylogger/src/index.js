@@ -1,6 +1,9 @@
 console.log('Starting keylogger for browser');
 const serverPort = 4471
 const backendUrl = `http://localhost:${serverPort}/browserInputEvent`;
+// https://developer.mozilla.org/en-US/docs/Web/Events
+// noe we have click/dblclick, keypress events
+// how to handle them?
 const eventTypes = ['keydown', 'keyup', 'mousedown', 'mouseup', 'mousemove'];
 var keylogger_timestamp_private = null; // you can check if this thing still works.
 function addSpecificEventListener(event) {
@@ -14,9 +17,16 @@ function addSpecificEventListener(event) {
     // debugger
     keylogger_timestamp_private = new Date();
     const inputEvent = {
-      "eventType": event,
+      
+      // eventType: event,
+      // timestamp: keylogger_timestamp_private,
+      // data: JSON.stringify(event_data),
+
+      // "eventType": event,
       "timestamp": keylogger_timestamp_private,
-      "data": JSON.stringify(event_data),
+      "payload": {'eventType':event, 'data':event_data},
+      // "data": JSON.stringify(event_data),
+
       // data: JSON.stringify(e),
       // data: e,
     };
@@ -24,7 +34,8 @@ function addSpecificEventListener(event) {
     // console.log('payload:', JSON.stringify(inputEvent))
     fetch(`${backendUrl}`, {
       method: "POST",
-      mode: "cors",
+      // or you could remove the 'mode' parameter
+      mode: "cors", // you must use cors or the content will be unprocessable.
       // mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       // json: {browserEvent: inputEvent}
