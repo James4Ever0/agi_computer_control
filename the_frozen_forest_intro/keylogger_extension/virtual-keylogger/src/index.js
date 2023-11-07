@@ -1,23 +1,39 @@
+console.log('Starting keylogger for browser');
 const serverPort = 4471
 const backendUrl = `http://localhost:${serverPort}/browserInputEvent`;
 const eventTypes = ['keydown', 'keyup', 'mousedown', 'mouseup', 'mousemove'];
 var keylogger_timestamp_private = null; // you can check if this thing still works.
-
-function addSpecificEventListener(event){
+function addSpecificEventListener(event) {
   document.addEventListener(event, (e) => {
+    // console.log('event', event, e);
+    let event_keys = Object.keys(e.__proto__);
+    let event_data = {}
+    for (let k of event_keys) {
+      event_data[k] = e[k];
+    }
+    // debugger
     keylogger_timestamp_private = new Date();
     const inputEvent = {
       eventType: event,
-      timestamp: timestamp,
-      data: e,
+      timestamp: keylogger_timestamp_private,
+      data: JSON.stringify(event_data),
+      // data: JSON.stringify(e),
+      // data: e,
     };
-    fetch(`${backendUrl}/`, {
+    // console.log(inputEvent);
+    // console.log('payload:', JSON.stringify(inputEvent))
+    fetch(`${backendUrl}`, {
       method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      // headers: { "Content-Type": "application/json" },
+      // json: {browserEvent: inputEvent}
+      // body: inputEvent,
+      // body: "hello world",
+      // body: { body: JSON.stringify(inputEvent) },
       body: JSON.stringify(inputEvent),
     }).then((res) => {
       console.log(`posted ${event} event`, res);
+      // console.log(`posted ${event} event`, res.json());
     }).catch((err) => {
       console.log(`error posting ${event} event`, err);
     });
