@@ -24,6 +24,7 @@ import os
 ext_path = "keylogger_extension/virtual-keylogger"
 pathToExtension = os.path.abspath(ext_path)
 pathToCORSExtension = os.path.abspath("ForceCORS")
+pathToDarkReaderExtension = os.path.abspath("darkreader-chrome") # this will pop up window. make sure that you have persisted context
 print("loading extension path:", pathToExtension)
 import tempfile
 
@@ -32,12 +33,16 @@ with tempfile.TemporaryDirectory() as tmpdir:
         browser = playwright.chromium.launch_persistent_context(
             user_data_dir=tmpdir,
             headless=False,
+            # https://www.chromium.org/developers/how-tos/run-chromium-with-flags/
+            # https://peter.sh/experiments/chromium-command-line-switches/
             args=[
                 # browser = playwright.chromium.launch(headless=False,  args= [
                 # f"--disable-extensions-except={pathToExtension}",
-                f"--disable-extensions-except={pathToExtension},{pathToCORSExtension}",
-                f"--load-extension={pathToExtension}",
-                f"--load-extension={pathToCORSExtension}",
+                # "--force-dark-mode",
+                f"--disable-extensions-except={pathToExtension},{pathToCORSExtension},{pathToDarkReaderExtension}",
+                # f"--load-extension={pathToExtension}",
+                f"--load-extension={pathToCORSExtension},{pathToExtension},{pathToDarkReaderExtension}",
+                # f"--load-extension={pathToCORSExtension}",
             ],
         )
         # browser.on('keydown', handle_keyboard_event)
