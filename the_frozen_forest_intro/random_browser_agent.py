@@ -74,11 +74,11 @@ print(f"size: {view_width}x{view_height}")  # 2738x1526
 # you can crop at the top left corner to get rid of scrollbars. you can also detect their presence.
 print(f'saved size: {"x".join(str(s) for s in img.size)}')  # 2772x1526
 
-import time
+# import time
 
-QUIT_SECONDS = 10
-print(f"quit in {QUIT_SECONDS} seconds")
-time.sleep(QUIT_SECONDS)
+# QUIT_SECONDS = 10
+# print(f"quit in {QUIT_SECONDS} seconds")
+# time.sleep(QUIT_SECONDS)
 
 page.quit()
 print("browser quit")
