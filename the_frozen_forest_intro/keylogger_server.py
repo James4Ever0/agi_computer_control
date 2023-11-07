@@ -3,9 +3,11 @@
 serverPort = 4471
 
 import fastapi
+from fastapi.middleware.cors import CORSMiddleware
 
+origins = ['*']
 app = fastapi.FastAPI()
-
+app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods = origins, allow_headers = origins)
 from pydantic import BaseModel
 
 
@@ -74,9 +76,9 @@ app.router.route_class = ValidationErrorLoggingRoute
 #     timestamp: str,
 #     data: str,
 # ):
-def receiveBrowserInputEvent(data:BrowserEvent):
+def receiveBrowserInputEvent(request_data:BrowserEvent):
     # print("received body:", eventType, timestamp, data)
-    print("received body:", data)
+    print("received body:", request_data)
     return {"status": "ok"}
 
 

