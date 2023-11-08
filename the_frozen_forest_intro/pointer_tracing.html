@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Pointer Location</title>
+    <!-- tracking effectively, but not working in high contrast mode -->
+    <!-- <style>
+    .pointer {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: red !important;
+      border-radius: 50%;
+      pointer-events: none; /* This ensures that the pointer element does not interfere with mouse events */
+    }
+  </style> -->
+</head>
+
+<body>
+    <!-- let's embed the cursur png as code, eliminate the need of loading externally -->
+
+    <!-- <div class="pointer" id="pointer"><img src="./cursor.png"></div> -->
+
+    <script>
+        function createOmniscentPointerElement(elementId) { 
+            var divElement = document.createElement("div");
+            divElement.style.position = "absolute";
+            divElement.style.width = "10px";
+            divElement.style.height = "10px";
+            divElement.style.backgroundColor = "red";
+            divElement.style.borderRadius = "50%";
+            divElement.style.pointerEvents = "none";
+            divElement.id = elementId;
+
+            // Create the img element
+            var imgElement = document.createElement("img");
+            imgElement.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAUCAQAAAD8O3+kAAAA+ElEQVR4nHXOsSsEcBjG8S/nkOIGk+EyXHGuDIazyMRikbKgLC4ZZGAysPEnmC9lvOnKZjJcWQyUOqWQYpS7zrnjvpa7Y/jdO71Pn3qfFw7oOD/sd5C407IXpEmfnWmwE6CkNd9M/7AVoLL64lSdjSDpk5M11oOkD6aqrARJ7x2rsBwkvTNRZjFIeuPoBwtB0qLj78xBz19riSM+gSgjsWKetSZ9cck811ycUKALiABJKzbcdNiS53L27/mUVXclS/bUuskSiTZNuC05oqRnv/VYDtvULXkGgEi0cOurg4/EWpZjqLlllly1t0C8Rf3tAyNckaGvFX8Bxhaqb4UTp4MAAAAASUVORK5CYII=";
+
+            // Append the img element to the div element
+            divElement.appendChild(imgElement);
+
+            // Insert the div element into the document body
+            document.body.appendChild(divElement);
+            return divElement;
+        }
+        const pointerElementId = 'omniscent_pointer';
+        function isVariableEmpty(v){
+            return v === undefined | v == null
+        }
+        function getOmniscentPointer(){
+            // while (isVariableEmpty(vpointer)) {
+            var pointer = document.getElementById(pointerElementId);
+            if (isVariableEmpty(pointer)) {
+                console.log('pointer is undefined');
+                console.log('creating pointer element');
+                pointer = createOmniscentPointerElement(pointerElementId);
+                // pointer = createOmniscentPointerElement(pointerElementId);
+            }
+            // }
+            return pointer;
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Event listener for mouse movement
+            document.addEventListener('mousemove', function (event) {
+                const x = event.clientX;
+                const y = event.clientY;
+                // var pointer = getOmniscentPointer();
+                const pointer = getOmniscentPointer();
+                // debugger;
+
+                // Set the position of the pointer element
+                pointer.style.left = x + 'px';
+                pointer.style.top = y + 'px';
+            });
+        });
+    </script>
+</body>
+
+</html>

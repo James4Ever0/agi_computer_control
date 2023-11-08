@@ -14,7 +14,6 @@ app.add_middleware(
 from pydantic import BaseModel
 
 
-
 class MouseEventData(BaseModel):
     screenX: int
     screenY: int
@@ -61,24 +60,32 @@ class KeyboardEventData(BaseModel):
 
 class EventPayload(BaseModel):
     eventType: str
-    data:dict
+    data: dict
+
 
 class MouseEventPayload(BaseModel):
-    eventType: Literal['mousedown', 'mouseup', 'mousemove']
+    eventType: Literal["mousedown", "mouseup", "mousemove"]
     data: MouseEventData
 
+
 class KeyboardEventPayload(BaseModel):
-    eventType: Literal['keydown', 'keyup']
+    eventType: Literal["keydown", "keyup"]
     # eventType: Literal['keydown', 'keyup', 'keypress']
     data: KeyboardEventData
 
+
 # tradeoff when using string types: you need to call update_forward_refs()
+# import uuid
+
 
 class BrowserEvent(BaseModel):
     # eventType: str
     timestamp: str
     # data: str
-    payload: Union[MouseEventPayload, KeyboardEventPayload]
+    client_id: str
+    # client_id: uuid.UUID
+    # payload: Union[MouseEventPayload, KeyboardEventPayload]
+    payload: Union[MouseEventPayload, KeyboardEventPayload, EventPayload]
     # payload: EventPayload
 
 
@@ -89,6 +96,7 @@ class BrowserEvent(BaseModel):
 
 from fastapi import Request, Response
 from fastapi.routing import APIRoute
+
 # from log_utils import terminal_column_size
 terminal_column_size = 80
 import json
@@ -131,6 +139,9 @@ app.router.route_class = ValidationErrorLoggingRoute
 
 # sample_data_path = 'sample_event_data.json'
 # sample_data = {}
+# @app.get('/getIdentifier')
+# def get_identifier(client_id:str):
+#     return dict(client_id=client_id)
 
 @app.post("/browserInputEvent")
 # def receiveBrowserInputEvent(body:Dict[str, Any]):
@@ -142,8 +153,8 @@ app.router.route_class = ValidationErrorLoggingRoute
 def receiveBrowserInputEvent(request_data: BrowserEvent):
     # print("received body:", eventType, timestamp, data)
     print("received body:", request_data)
-    eventType = request_data.payload.eventType
-    data = request_data.payload.data
+    # eventType = request_data.payload.eventType
+    # data = request_data.payload.data
     # sample_data[eventType] = data
     # if len(sample_data.keys()) == 5:
     #     with open(sample_data_path, 'w+') as f:

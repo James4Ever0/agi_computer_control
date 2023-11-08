@@ -15,7 +15,7 @@ page.get(random_url)
 from DrissionPage.action_chains import ActionChains
 
 
-class ViewpointActionChains(ActionChains):
+class ViewportActionChains(ActionChains):
     def move_view(self, x, y):
         self.curr_x = 0
         self.curr_y = 0
@@ -27,7 +27,7 @@ class ViewpointActionChains(ActionChains):
 
 # same as our virtual machine. we can calibrate that, shall we?
 
-ac = ViewpointActionChains(page)
+ac = ViewportActionChains(page)
 # ac = ActionChains(page)
 ac.type("hello world\n")
 
@@ -58,7 +58,7 @@ print(f"actual path: {actual_save_path}")
 print(
     f"client size: {page.run_js('return document.body.clientWidth;')}x{page.run_js('return document.body.clientHeight;')}"
 )  # client size: 1232x4033
-# it seems not caring about our actual viewpoint location.
+# it seems not caring about our actual viewport location.
 
 from PIL import Image
 

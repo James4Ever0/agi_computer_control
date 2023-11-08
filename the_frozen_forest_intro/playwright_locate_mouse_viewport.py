@@ -1,4 +1,4 @@
-from playwright.sync_api import Playwright, sync_playwright, expect
+from playwright.sync_api import Playwright, sync_playwright
 
 paint_url = "https://paint.js.org/"
 screenshot_path = "paint.png"

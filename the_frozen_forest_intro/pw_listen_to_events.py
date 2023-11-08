@@ -3,8 +3,11 @@ from playwright.sync_api import sync_playwright
 # bad news: you cannot record/listen mouse events using playwright. very bad.
 # good news: you can record these events on your own device using os specific keylogger, if you know these events are fired to the browser, around the effective area.
 # bonus: use keylogger browser extensions
+import uuid
+# import json
 
 page_url = "https://www.baidu.com"
+serverPort = 4471
 
 # def handle_keyboard_event(event):
 #     print("Keyboard event:", event)
@@ -12,8 +15,11 @@ page_url = "https://www.baidu.com"
 # def handle_mouse_event(event):
 #     print("Mouse event:", event)
 
-# def print_request_sent(request):
-#   print("Request sent: " + request.url)
+
+def print_request_sent(request):
+    if "getIdentifier" in request.url:
+        print("Request sent: " + request.url)
+
 
 # def print_request_finished(request):
 #   print("Request finished: " + request.url)
@@ -24,10 +30,13 @@ import os
 ext_path = "keylogger_extension/virtual-keylogger"
 pathToExtension = os.path.abspath(ext_path)
 pathToCORSExtension = os.path.abspath("ForceCORS")
-pathToDarkReaderExtension = os.path.abspath("darkreader-chrome") # this will pop up window. make sure that you have persisted context
+pathToDarkReaderExtension = os.path.abspath(
+    "darkreader-chrome"
+)  # this will pop up window. make sure that you have persisted context
 print("loading extension path:", pathToExtension)
 import tempfile
 
+pageIdentifierPrefix = "pageIdentifier_"
 with tempfile.TemporaryDirectory() as tmpdir:
     with sync_playwright() as playwright:  # this is incognito. not so good.
         browser = playwright.chromium.launch_persistent_context(
@@ -47,7 +56,34 @@ with tempfile.TemporaryDirectory() as tmpdir:
         )
         # browser.on('keydown', handle_keyboard_event)
         # playwright.on('keydown', handle_keyboard_event)
+        pageIdentifier = str(uuid.uuid4())
         page = browser.new_page()
+        page.expose_binding( # ugly but effective hack
+            f"{pageIdentifierPrefix}{pageIdentifier.replace('-', '_')}", lambda: None
+        )
+        # page.on('request', print_request_sent)
+        # def route_page_identifier(route):
+        #    print('routing') # routing, but not working.
+        #    return route.fulfill(status = 200, json = {"client_id": pageIdentifier})
+        # page.route(
+        #     f"http://localhost:{serverPort}/getIdentifier",
+        #     # route_page_identifier,
+        #     lambda route:
+        #     # route.abort('connectionfailed')
+        #     route.continue_(url = route.request.url+"?client_id="+pageIdentifier)
+        #     # route.fulfill(status = 200, json = {"client_id": pageIdentifier})
+        # )
+        # page.evaluate(f'window.generateUUID = () => {repr(pageIdentifier)}')
+        # pageIdentifier = page.evaluate('pageIdentifier')
+
+        # def generateUUID():
+        #     return pageIdentifier
+        # page.expose_function('generateUUID', generateUUID)
+        # BUG: having trouble running exposed functions in browser extensions
+        # we can simply expose callback and pass it to event listeners, without browser extension, but that cannot survive navigation.
+        # ref: https://github.com/microsoft/vscode-test-web/issues/69
+        # ref: https://github.com/microsoft/playwright/issues/12017
+        print("page identifier:", pageIdentifier)
 
         # Enable input events on the page
         # no such thing.
