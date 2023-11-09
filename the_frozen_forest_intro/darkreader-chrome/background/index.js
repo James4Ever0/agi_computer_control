@@ -1322,10 +1322,11 @@
             text: "#181a1b"
         }
     };
-    const DEFAULT_THEME = {
+    const DEFAULT_THEME = { // and that is our bad boy.
         mode: 1,
         brightness: 100,
-        contrast: 100,
+        contrast: 150,
+        // contrast: 100,
         grayscale: 0,
         sepia: 0,
         useFont: false,
@@ -5977,12 +5978,13 @@
 Welcome to Dark Reader!`;
     console.log(welcome);
     {
-        chrome.runtime.onInstalled.addListener(({reason}) => {
-            if (reason === "install") {
-                chrome.tabs.create({url: getHelpURL()});
-            }
-        });
-        chrome.runtime.setUninstallURL(UNINSTALL_URL);
+        // let's nullify this.
+        // chrome.runtime.onInstalled.addListener(({reason}) => {
+        //     if (reason === "install") {
+        //         chrome.tabs.create({url: getHelpURL()});
+        //     }
+        // });
+        // chrome.runtime.setUninstallURL(UNINSTALL_URL);
     }
     makeChromiumHappy();
 })();

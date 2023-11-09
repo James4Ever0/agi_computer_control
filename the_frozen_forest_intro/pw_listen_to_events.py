@@ -1,4 +1,14 @@
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, Page
+# here comes the question: what is comparable to a browser for GUI than for a terminal
+
+# shell environment and repl
+# bot says
+
+# why not just run this from the web? not quick enough?
+
+# https://hub.docker.com/r/replco/polygott
+# https://github.com/replit/prybar
+# https://github.com/replit/nixmodules
 
 # bad news: you cannot record/listen mouse events using playwright. very bad.
 # good news: you can record these events on your own device using os specific keylogger, if you know these events are fired to the browser, around the effective area.
@@ -20,6 +30,20 @@ def print_request_sent(request):
     if "getIdentifier" in request.url:
         print("Request sent: " + request.url)
 
+def handle_page_event(page: Page):
+    createAndExposePageIdentifierAsFunctionName(page)
+    print('new page at:', page.url)
+
+pageIdentifierPrefix = "pageIdentifier_"
+
+def createAndExposePageIdentifierAsFunctionName(page:Page):
+    pageIdentifier = str(uuid.uuid4())
+    page.expose_binding( # ugly but effective hack
+        f"{pageIdentifierPrefix}{pageIdentifier.replace('-', '_')}", lambda: None
+    )
+    print("page identifier:", pageIdentifier)
+    setattr(page, 'pageIdentifier', pageIdentifier)
+    return pageIdentifier
 
 # def print_request_finished(request):
 #   print("Request finished: " + request.url)
@@ -36,7 +60,6 @@ pathToDarkReaderExtension = os.path.abspath(
 print("loading extension path:", pathToExtension)
 import tempfile
 
-pageIdentifierPrefix = "pageIdentifier_"
 with tempfile.TemporaryDirectory() as tmpdir:
     with sync_playwright() as playwright:  # this is incognito. not so good.
         browser = playwright.chromium.launch_persistent_context(
@@ -48,6 +71,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
                 # browser = playwright.chromium.launch(headless=False,  args= [
                 # f"--disable-extensions-except={pathToExtension}",
                 # "--force-dark-mode",
+                # "--hide-scrollbars", # so it won't bother
                 f"--disable-extensions-except={pathToExtension},{pathToCORSExtension},{pathToDarkReaderExtension}",
                 # f"--load-extension={pathToExtension}",
                 f"--load-extension={pathToCORSExtension},{pathToExtension},{pathToDarkReaderExtension}",
@@ -56,11 +80,12 @@ with tempfile.TemporaryDirectory() as tmpdir:
         )
         # browser.on('keydown', handle_keyboard_event)
         # playwright.on('keydown', handle_keyboard_event)
-        pageIdentifier = str(uuid.uuid4())
-        page = browser.new_page()
-        page.expose_binding( # ugly but effective hack
-            f"{pageIdentifierPrefix}{pageIdentifier.replace('-', '_')}", lambda: None
-        )
+        browser.on('page', handle_page_event)
+
+        page = browser.new_page() # this thing is not emitted in the event listener.
+        createAndExposePageIdentifierAsFunctionName(page)
+        # pageIdentifier = createAndExposePageIdentifierAsFunctionName(page)
+
         # page.on('request', print_request_sent)
         # def route_page_identifier(route):
         #    print('routing') # routing, but not working.
@@ -83,7 +108,6 @@ with tempfile.TemporaryDirectory() as tmpdir:
         # we can simply expose callback and pass it to event listeners, without browser extension, but that cannot survive navigation.
         # ref: https://github.com/microsoft/vscode-test-web/issues/69
         # ref: https://github.com/microsoft/playwright/issues/12017
-        print("page identifier:", pageIdentifier)
 
         # Enable input events on the page
         # no such thing.
@@ -110,6 +134,8 @@ with tempfile.TemporaryDirectory() as tmpdir:
 
         # Wait for events
         # print("exit in %d seconds" % wait_sec)
+        # you can expect for popups.
+        # will you lose focus?
         while True:
             page.wait_for_timeout(1000 * wait_sec)
 

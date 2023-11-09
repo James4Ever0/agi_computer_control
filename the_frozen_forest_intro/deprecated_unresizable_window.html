@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- this is gpt's illusion. maybe electron works -->
+  <title>Unresizable Window</title>
+  <script>
+    window.onload = function() {
+      window.addEventListener('resize', function() {
+        window.resizeTo(800, 600); // Set the window size to 800x600
+      });
+    };
+  </script>
+</head>
+<body>
+  <h1>Unresizable Window Example</h1>
+  <p>Window will remain at 800x600 and cannot be resized.</p>
+</body>
+</html>

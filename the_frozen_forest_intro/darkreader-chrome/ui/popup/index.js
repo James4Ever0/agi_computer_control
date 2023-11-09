@@ -4239,6 +4239,7 @@
             min: 50,
             max: 150,
             step: 5,
+            // default: 150, // crank it up
             default: 100,
             name: getLocalMessage("contrast"),
             onChange: (value) => setConfig({contrast: value})
