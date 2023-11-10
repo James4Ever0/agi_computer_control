@@ -1,6 +1,10 @@
 from playwright.sync_api import sync_playwright, Page
 # here comes the question: what is comparable to a browser for GUI than for a terminal
 
+# now, we need to visualize the interface. i think website (jpeg based) is better than obs. for training, we have to develop a protocol based on websocket to send messages with time aligned events. also you can send commands with websocket
+
+# but before that, we can just ditch the protocol and create demo.
+
 # shell environment and repl
 # bot says
 
@@ -25,6 +29,8 @@ serverPort = 4471
 # def handle_mouse_event(event):
 #     print("Mouse event:", event)
 
+# here comes the question: how to train this bot?
+# there is only one thing that you can do: metalearning.
 
 def print_request_sent(request):
     if "getIdentifier" in request.url:
@@ -60,6 +66,8 @@ pathToDarkReaderExtension = os.path.abspath(
 print("loading extension path:", pathToExtension)
 import tempfile
 
+extensionPaths = ",".join([pathToExtension,pathToCORSExtension,pathToDarkReaderExtension])
+
 with tempfile.TemporaryDirectory() as tmpdir:
     with sync_playwright() as playwright:  # this is incognito. not so good.
         browser = playwright.chromium.launch_persistent_context(
@@ -72,9 +80,9 @@ with tempfile.TemporaryDirectory() as tmpdir:
                 # f"--disable-extensions-except={pathToExtension}",
                 # "--force-dark-mode",
                 # "--hide-scrollbars", # so it won't bother
-                f"--disable-extensions-except={pathToExtension},{pathToCORSExtension},{pathToDarkReaderExtension}",
+                f"--disable-extensions-except={extensionPaths}",
                 # f"--load-extension={pathToExtension}",
-                f"--load-extension={pathToCORSExtension},{pathToExtension},{pathToDarkReaderExtension}",
+                f"--load-extension={extensionPaths}",
                 # f"--load-extension={pathToCORSExtension}",
             ],
         )
