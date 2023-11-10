@@ -91,7 +91,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
         browser.on('page', handle_page_event)
 
         page = browser.new_page() # this thing is not emitted in the event listener.
-        createAndExposePageIdentifierAsFunctionName(page)
+        # createAndExposePageIdentifierAsFunctionName(page)
         # pageIdentifier = createAndExposePageIdentifierAsFunctionName(page)
 
         # page.on('request', print_request_sent)

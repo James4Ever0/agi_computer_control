@@ -77,12 +77,18 @@ class KeyboardEventPayload(BaseModel):
 # tradeoff when using string types: you need to call update_forward_refs()
 # import uuid
 
-
-class BrowserEvent(BaseModel):
+class EventModel(BaseModel):
     # eventType: str
-    timestamp: str
+    timestamp: float
+    # timestamp: str
     # data: str
     client_id: str
+
+class ScreenshotEvent(EventModel):
+    screenshot_data: str
+    # screenshot_data: str
+
+class BrowserEvent(EventModel):
     # client_id: uuid.UUID
     # payload: Union[MouseEventPayload, KeyboardEventPayload]
     payload: Union[MouseEventPayload, KeyboardEventPayload, EventPayload]
@@ -143,6 +149,12 @@ app.router.route_class = ValidationErrorLoggingRoute
 # def get_identifier(client_id:str):
 #     return dict(client_id=client_id)
 
+STATUS_OK_RESPONSE = {'status': 'ok'}
+
+@app.post("/submitScreenshot")
+def receiveScreenshotEvent(request_data: ScreenshotEvent):
+    return STATUS_OK_RESPONSE
+
 @app.post("/browserInputEvent")
 # def receiveBrowserInputEvent(body:Dict[str, Any]):
 # def receiveBrowserInputEvent(
@@ -161,7 +173,7 @@ def receiveBrowserInputEvent(request_data: BrowserEvent):
     #         f.write(json.dumps(sample_data, ensure_ascii=False, indent=4))
     #     print("sample data saved to", sample_data_path)
     #     exit(0)
-    return {"status": "ok"}
+    return STATUS_OK_RESPONSE
 
 
 if __name__ == "__main__":

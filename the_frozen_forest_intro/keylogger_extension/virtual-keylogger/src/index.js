@@ -2,7 +2,37 @@ console.log('Starting keylogger for browser');
 const serverPort = 4471
 const baseUrl = `http://localhost:${serverPort}`
 const backendUrl = `${baseUrl}/browserInputEvent`;
+const screenshotSubmitUrl = `${baseUrl}/submitScreenshot`;
 // const identifierUrl = `${baseUrl}/getIdentifier`;
+
+function getPythonStyleTimestamp() {
+  return new Date().getTime() / 1000
+}
+
+function getScreenshotDataUrl() {
+  const canvas = document.createElement('canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+
+  // Draw the screenshot of the viewport onto the canvas
+  ctx.drawImage(window, 0, 0, window.innerWidth, window.innerHeight);
+  // Convert the canvas content to a data URL representing the screenshot
+  const screenshotDataUrl = canvas.toDataURL('image/png');
+  // canvas.remove()
+  return screenshotDataUrl
+}
+
+function submitScreenshot(pageIdentifier) {
+  try {
+    let dataUrl = getScreenshotDataUrl()
+    fetch(screenshotSubmitUrl, { method: 'POST', data: JSON.stringify({ client_id: pageIdentifier, timestamp: getPythonStyleTimestamp(), screenshot_data: dataUrl }) }).catch(e => {
+      console.log('error posting screenshot:', e.message);
+    })
+  } catch (e) {
+    console.log('error while submitting screenshot:', e.message)
+  }
+}
 
 // function generateUUIDFallback() {
 //   var d = new Date().getTime();
@@ -52,7 +82,7 @@ function sendHIDEvent(event, e) {
     event_data[k] = e[k];
   }
   // debugger
-  keylogger_timestamp_private = new Date();
+  keylogger_timestamp_private = getPythonStyleTimestamp();
   const inputEvent = {
     // eventType: event,
     // timestamp: keylogger_timestamp_private,
@@ -106,6 +136,13 @@ function getPageIdentifierFromExposedFunctionName() {
   return 'unknown'
 }
 const pageIdentifier = getPageIdentifierFromExposedFunctionName();
+console.log(`pageIdentifier: ${pageIdentifier}`)
+const screenshotInterval = 2 * 1000;
+// usually we take screenshot on demand, not like this.
+
+// setInterval(() => submitScreenshot(pageIdentifier), screenshotInterval)
+// console.log(`taking screenshot every ${screenshotInterval} ms`)
+
 function addSpecificEventListener(event) {
   document.addEventListener(event, (e) => {
     // console.log('event', event, e);
