@@ -201,7 +201,7 @@ def execute_action_loop(
                     json=dict(
                         client_id=getattr(page, "pageIdentifier", "unknown"),
                         screenshot_data=screenshot_data,
-                        timestamp = time.time(),
+                        timestamp=time.time(),
                     ),
                 )
                 # breakpoint()
@@ -230,76 +230,135 @@ extensionPaths = ",".join(
         os.path.abspath("darkreader-chrome"),
     ]
 )
+
+import platform
+
+release_name = platform.release()
+if "kali" in release_name:
+    # google_chrome = r"/usr/bin/chromium"
+    # use "which -a chromium"
+    # /snap/bin/chromium
+    extra_args = ["--no-sandbox"]
+else:
+    google_chrome = r"C:\Users\z98hu\AppData\Local\Google\Chrome\Application\chrome.exe"  # let's play video.
+    extra_args = []
+
+
+def getChromeVersion(chromeExecutablePath):
+    browser = playwright.chromium.launch(
+        headless=True, executable_path=chromeExecutablePath
+    )
+    v = browser.version
+    browser.close()
+    return v
+
+
 # it is only getting slower. so why not just use docker
-google_chrome = r"C:\Users\z98hu\AppData\Local\Google\Chrome\Application\chrome.exe"  # let's play video.
-with sync_playwright() as playwright:
-    # use persistent context to load extensions.
-    context = playwright.chromium.launch_persistent_context(
-        "",  # what does this mean?
-        # browser = playwright.chromium.launch(
-        executable_path=google_chrome,
-        headless=False,
-        args=[
-            "--headless=new",
-            f"--disable-extensions-except={extensionPaths}",
-            f"--load-extension={extensionPaths}",
-        ]  # working.
-        # not working.
-        #   ignore_default_args=["--mute-audio"]
-    )
-    # context.tracing.start()
-    context.on("close", lambda e: print("context closed"))
-    # context.browser.on("disconnected", lambda e: print("browser disconnected"))
-    # context = browser.new_context()
-    context.on("page", handle_page_event)
-    # keep clicking buttons might initiate download or uploading events
-    # you need to prevent that.
 
-    init_page = context.new_page()
-    init_page.goto(url)
-    # createAndExposePageIdentifierAsFunctionName(init_page)
-    # this thing is duplicated. cause this event will be handled by the event listener already. don't have to trigger twice.
-    # handle_page_event(init_page)
+def getMajorBrowserVersionFromBrowserVersionString(versionString:str):
+    majorBrowserVersion = int(versionString.split(".")[0])
+    return majorBrowserVersion
 
-    viewport_width, viewport_height = (
-        init_page.viewport_size["width"],
-        init_page.viewport_size["height"],
-    )
-    counter = 0
-    # for quite some time, you cannot type a thing into the browser. that is bad.
-    while True:  # this loop can be troublesome.
-        # close any unfocused page
-        # topMostPage = random.choice(context.pages)
-        # topMostPage.bring_to_front()
+# ref: https://www.selenium.dev/blog/2023/headless-is-going-away/
+def getNewHeadlessKeywordFromMajorVersion(majorVersion:int):
+    MIN_CHROME_VERSION = 96
+    NEW_HEADLESS_CHROME_VERSION = 109
+    if majorVersion < MIN_CHROME_VERSION:
+        raise Exception(
+            f"Major browser version ({majorVersion}) must be >= MIN_CHROME_VERSION ({MIN_CHROME_VERSION})"
+        )
+    elif majorVersion < NEW_HEADLESS_CHROME_VERSION:
+        # return "chrome"
+        raise Exception(f"Headless keyword 'chrome' not be supported by Playwright.")
+    else:
+        return "new"
 
-        try:
-            counter = execute_action_loop(
-                context,
-                counter,
-                COUNTER_THRESHOLD,
-                viewport_width,
-                viewport_height,
-                SCREENSHOT_TIMEOUT,
-            )
-            # time.sleep(BREAKTIME_LENGTH)
-        except Exception as e:
-            print("exception:", e)
+import tempfile
+# it wants to open link in external application.
+# we need to stop it.
 
-        # print('state:',  page.evaluate('document.hidden'), 'url:', page.url)
-        # print('state:',  page.evaluate('window.statusbar'), 'url:', page.url)
+with tempfile.TemporaryDirectory() as tmpdir:
+    with sync_playwright() as playwright:
+        # use persistent context to load extensions.
+        browserVersion = getChromeVersion(google_chrome)
+        print(f"chromeVersion: {browserVersion}")  # 101.0.4951.41
+        majorBrowserVersion = getMajorBrowserVersionFromBrowserVersionString(browserVersion)
 
-        # for page in context.pages: # closing background pages (losing focus)
-        # if page.evaluate('document.visibilityState') is False:
-        #     print('closing background page:', page.url)
-        #     page.close()
-        # else:
-        #     topMostPage = page
-        # try:
-        # random_actor(init_page, viewport_width, viewport_height)
-        # except KeyboardInterrupt:
-        #     print('exiting due to keyboard interrupt')
-        #     break
-        # except Exception as e:
-        #     print(e)
-    context.close()
-    # browser.close()
+        # headlessKeyword = getNewHeadlessKeywordFromMajorVersion(majorBrowserVersion)
+        # print(f"using headless keyword: {headlessKeyword}")
+
+        context = playwright.chromium.launch_persistent_context(
+            # "",  # what does this mean? right here?
+            tmpdir,
+            # browser = playwright.chromium.launch(
+            executable_path=google_chrome,
+            headless=False,
+            args=[
+                # "--headless=new",  # cannot load extensions. does not support new headless mode.
+                # f"--headless={headlessKeyword}",
+                # does not work at all.
+                f"--disable-extensions-except={extensionPaths}",
+                f"--load-extension={extensionPaths}",
+                *extra_args,
+            ]  # working.
+            # not working.
+            #   ignore_default_args=["--mute-audio"]
+        )
+        # print('browser version:',context.browser.version) # None
+        # breakpoint()
+        # context.tracing.start()
+        context.on("close", lambda e: print("context closed"))
+        # context.browser.on("disconnected", lambda e: print("browser disconnected"))
+        # context = browser.new_context()
+        context.on("page", handle_page_event)
+        # keep clicking buttons might initiate download or uploading events
+        # you need to prevent that.
+
+        init_page = context.new_page()
+        init_page.goto(url)
+        # createAndExposePageIdentifierAsFunctionName(init_page)
+        # this thing is duplicated. cause this event will be handled by the event listener already. don't have to trigger twice.
+        # handle_page_event(init_page)
+
+        viewport_width, viewport_height = (
+            init_page.viewport_size["width"],
+            init_page.viewport_size["height"],
+        )
+        counter = 0
+        # for quite some time, you cannot type a thing into the browser. that is bad.
+        while True:  # this loop can be troublesome.
+            # close any unfocused page
+            # topMostPage = random.choice(context.pages)
+            # topMostPage.bring_to_front()
+
+            try:
+                counter = execute_action_loop(
+                    context,
+                    counter,
+                    COUNTER_THRESHOLD,
+                    viewport_width,
+                    viewport_height,
+                    SCREENSHOT_TIMEOUT,
+                )
+                # time.sleep(BREAKTIME_LENGTH)
+            except Exception as e:
+                print("exception:", e)
+
+            # print('state:',  page.evaluate('document.hidden'), 'url:', page.url)
+            # print('state:',  page.evaluate('window.statusbar'), 'url:', page.url)
+
+            # for page in context.pages: # closing background pages (losing focus)
+            # if page.evaluate('document.visibilityState') is False:
+            #     print('closing background page:', page.url)
+            #     page.close()
+            # else:
+            #     topMostPage = page
+            # try:
+            # random_actor(init_page, viewport_width, viewport_height)
+            # except KeyboardInterrupt:
+            #     print('exiting due to keyboard interrupt')
+            #     break
+            # except Exception as e:
+            #     print(e)
+        context.close()
+        # browser.close()
