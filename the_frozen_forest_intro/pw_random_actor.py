@@ -291,6 +291,7 @@ import tempfile
 # ref: https://www.chromium.org/administrators/windows-quick-start/
 # ref: https://www.chromium.org/administrators/mac-quick-start/
 # ref: https://superuser.com/questions/1481851/disable-chrome-to-ask-for-confirmation-to-open-external-application-everytime
+# ref: https://chromeenterprise.google/policies/
 
 with tempfile.TemporaryDirectory() as tmpdir:
     with sync_playwright() as playwright:
@@ -311,7 +312,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
             headless=False,
             args=[
                 # "--headless=new",  # cannot load extensions. old versions does not support new headless mode.
-                f"--headless={headlessKeyword}",
+                # f"--headless={headlessKeyword}",
                 # does not work at all.
                 f"--disable-extensions-except={extensionPaths}",
                 f"--load-extension={extensionPaths}",
@@ -327,7 +328,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
         context.on("close", lambda e: print("context closed"))
         # context.browser.on("disconnected", lambda e: print("browser disconnected"))
         # context = browser.new_context()
-        context.on("page", handle_page_event)
+        context.on("page", handle_page_event) # we could divert our attention to our newly created pages. effectively the same logic as popup.
         # keep clicking buttons might initiate download or uploading events
         # you need to prevent that.
 
