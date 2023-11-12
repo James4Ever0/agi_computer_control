@@ -154,6 +154,8 @@ SCREENSHOT_TIMEOUT = 3 * 1000
 # import func_timeout
 # ACTION_LOOP_TIMEOUT = 10
 
+class BrowserClosed(Exception):
+    ...
 
 # you can separate client from server, so you can restart server or client separately
 # @func_timeout.func_set_timeout(ACTION_LOOP_TIMEOUT)
@@ -175,7 +177,7 @@ def execute_action_loop(
     if total_pages_count > 0:
         print("active page count:", total_pages_count)  # sometimes, still more than 5
     else:
-        raise Exception("no page in browser. possibly closed.")
+        raise BrowserClosed("no page in browser. possibly closed.")
     for index, page in enumerate(context.pages):  # visible
         if page.is_closed():
             continue
@@ -293,6 +295,8 @@ import tempfile
 # ref: https://superuser.com/questions/1481851/disable-chrome-to-ask-for-confirmation-to-open-external-application-everytime
 # ref: https://chromeenterprise.google/policies/
 
+
+
 with tempfile.TemporaryDirectory() as tmpdir:
     with sync_playwright() as playwright:
         # use persistent context to load extensions.
@@ -312,7 +316,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
             headless=False,
             args=[
                 # "--headless=new",  # cannot load extensions. old versions does not support new headless mode.
-                # f"--headless={headlessKeyword}",
+                f"--headless={headlessKeyword}",
                 # does not work at all.
                 f"--disable-extensions-except={extensionPaths}",
                 f"--load-extension={extensionPaths}",
@@ -333,7 +337,8 @@ with tempfile.TemporaryDirectory() as tmpdir:
         # you need to prevent that.
 
         init_page = context.new_page()
-        init_page.goto(url)
+        init_page.goto(url,wait_until="domcontentloaded")
+        # init_page.goto(url)
         # createAndExposePageIdentifierAsFunctionName(init_page)
         # this thing is duplicated. cause this event will be handled by the event listener already. don't have to trigger twice.
         # handle_page_event(init_page)
@@ -359,6 +364,8 @@ with tempfile.TemporaryDirectory() as tmpdir:
                     SCREENSHOT_TIMEOUT,
                 )
                 # time.sleep(BREAKTIME_LENGTH)
+            except BrowserClosed as e:
+                raise e
             except Exception as e:
                 print("exception:", e)
 
