@@ -171,7 +171,11 @@ def execute_action_loop(
         for kp in random.sample(context.pages, kill_page_count):
             print("killing page:", kp.url)
             kp.close()
-    print("active page count:", len(context.pages))  # sometimes, still more than 5
+    total_pages_count = len(context.pages)
+    if total_pages_count > 0:
+        print("active page count:", total_pages_count)  # sometimes, still more than 5
+    else:
+        raise Exception("no page in browser. possibly closed.")
     for index, page in enumerate(context.pages):  # visible
         if page.is_closed():
             continue
@@ -237,7 +241,7 @@ release_name = platform.release()
 if "kali" in release_name:
     # google_chrome = r"/usr/bin/chromium"
     # use "which -a chromium"
-    # /snap/bin/chromium
+    google_chrome = r"/snap/bin/chromium"
     extra_args = ["--no-sandbox"]
 else:
     google_chrome = r"C:\Users\z98hu\AppData\Local\Google\Chrome\Application\chrome.exe"  # let's play video.
@@ -269,13 +273,24 @@ def getNewHeadlessKeywordFromMajorVersion(majorVersion:int):
         )
     elif majorVersion < NEW_HEADLESS_CHROME_VERSION:
         # return "chrome"
-        raise Exception(f"Headless keyword 'chrome' not be supported by Playwright.")
+        raise Exception(f"Headless keyword 'chrome' not supported by Playwright.")
     else:
         return "new"
 
 import tempfile
 # it wants to open link in external application.
 # we need to stop it.
+# ref: https://github.com/microsoft/playwright/issues/12015
+# ref: https://github.com/microsoft/playwright/issues/11014
+
+# recommend to set link blacklist
+# ref: https://github.com/chromedp/chromedp/issues/1050
+# ref: https://askubuntu.com/questions/1324149/how-to-configure-policies-preferences-for-chromium (snap version)
+# ref: https://superuser.com/questions/857892/how-to-block-chrome-extensions-url (windows)
+# ref: https://www.chromium.org/administrators/linux-quick-start/
+# ref: https://www.chromium.org/administrators/windows-quick-start/
+# ref: https://www.chromium.org/administrators/mac-quick-start/
+# ref: https://superuser.com/questions/1481851/disable-chrome-to-ask-for-confirmation-to-open-external-application-everytime
 
 with tempfile.TemporaryDirectory() as tmpdir:
     with sync_playwright() as playwright:
@@ -284,21 +299,23 @@ with tempfile.TemporaryDirectory() as tmpdir:
         print(f"chromeVersion: {browserVersion}")  # 101.0.4951.41
         majorBrowserVersion = getMajorBrowserVersionFromBrowserVersionString(browserVersion)
 
-        # headlessKeyword = getNewHeadlessKeywordFromMajorVersion(majorBrowserVersion)
-        # print(f"using headless keyword: {headlessKeyword}")
+        headlessKeyword = getNewHeadlessKeywordFromMajorVersion(majorBrowserVersion)
+        print(f"using headless keyword: {headlessKeyword}")
 
         context = playwright.chromium.launch_persistent_context(
             # "",  # what does this mean? right here?
             tmpdir,
+            color_scheme="dark",
             # browser = playwright.chromium.launch(
             executable_path=google_chrome,
             headless=False,
             args=[
-                # "--headless=new",  # cannot load extensions. does not support new headless mode.
-                # f"--headless={headlessKeyword}",
+                # "--headless=new",  # cannot load extensions. old versions does not support new headless mode.
+                f"--headless={headlessKeyword}",
                 # does not work at all.
                 f"--disable-extensions-except={extensionPaths}",
                 f"--load-extension={extensionPaths}",
+                "--disable-features=ExternalProtocolDialog", # are you sure?
                 *extra_args,
             ]  # working.
             # not working.

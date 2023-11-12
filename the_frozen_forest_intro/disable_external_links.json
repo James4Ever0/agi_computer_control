@@ -1,0 +1,4 @@
+{
+    "URLBlocklist": ["*"],
+    "URLAllowlist": ["http://*", "https://*"]
+}
