@@ -320,7 +320,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
                 # does not work at all.
                 f"--disable-extensions-except={extensionPaths}",
                 f"--load-extension={extensionPaths}",
-                "--disable-features=ExternalProtocolDialog", # are you sure?
+                # "--disable-features=ExternalProtocolDialog", # are you sure? really working or not?
                 *extra_args,
             ]  # working.
             # not working.
