@@ -99,6 +99,7 @@ class HierachicalTokenizationTransformer(nn.Module):
         super().__init__()
         self.TWO = 2
         self.ONE = 1
+        self.ZERO = 0
         self.binary_embedding = nn.Embedding(
             num_embeddings=self.TWO, embedding_dim=embed_dim
         )
@@ -140,41 +141,75 @@ class HierachicalTokenizationTransformer(nn.Module):
         self.pad_size = self.TWO**abstraction_level
 
     def forward(self, input_logits: Tensor):
-        batch_size, sequence_length = input_logits.shape
-        div, mod = divmod(sequence_length, self.pad_size)
-        pad_size = 0 if mod == 0 else self.pad_size-mod
-        pad_input_logits = F.pad(input_logits, (0, pad_size, 0, 0), "constant", 0)
+        _, sequence_length = input_logits.shape
+        assert sequence_length != 0, "zero length sequence encountered"
+        # div, mod = divmod(sequence_length, self.pad_size)
+        # pad_size = 0 if mod == 0 else self.pad_size-mod
+        # pad_input_logits = F.pad(input_logits, (0, pad_size, 0, 0), "constant", 0)
         # print(pad_input_logits.shape)
+        input_pad_size = []
+        msequence_length = int(sequence_length)
+        for _ in range(self.abstraction_level):
+            div, mod = divmod(msequence_length, self.TWO)
+            if mod == self.ONE:
+                input_pad_size.append(self.ONE)
+                div += self.ONE
+            else:
+                input_pad_size.append(self.ZERO)
+            msequence_length = div
         # breakpoint()
-        embedding = self.binary_embedding(pad_input_logits)
+        embedding = self.binary_embedding(input_logits)
+        # embedding = self.binary_embedding(pad_input_logits)
         for i in range(
-            0, len(self.abstractionLayers), 2
+            self.ZERO, len(self.abstractionLayers), self.TWO
         ):  # Step through every other layer
             embedding = self.abstractionLayers[i](embedding)  # 20, 30, 768
-            embedding = einops.rearrange(embedding, "b (s1 g) d -> b d s1 g", g=2)
-            embedding = self.abstractionLayers[i + 1](
+            # make sure it is divisible by 2
+            if input_pad_size[i // self.TWO] == self.ONE:  # either 1 or 0
+                # print('padding')
+                embedding = F.pad(
+                    embedding,
+                    (self.ZERO, self.ZERO, self.ZERO, self.ONE),
+                    "constant",
+                    self.ZERO,
+                )
+            # print(embedding.shape)
+            # breakpoint()
+            embedding = einops.rearrange(
+                embedding, "b (s1 g) d -> b d s1 g", g=self.TWO
+            )
+            embedding = self.abstractionLayers[i + self.ONE](
                 embedding
             )  # Apply attention and abstraction
-            embedding = einops.rearrange(embedding, "b d s 1 -> b s d")
-
+            embedding = einops.rearrange(embedding, f"b d s {self.ONE} -> b s d")
+        # basically: n -> 2*n - mod
         for i in range(
-            0, len(self.deabstractionLayers), 2
+            self.ZERO, len(self.deabstractionLayers), self.TWO
         ):  # Step through every other layer
             embedding = self.deabstractionLayers[i](embedding)
-            embedding = einops.rearrange(embedding, "b s d -> b d s 1")
-            embedding = self.deabstractionLayers[i + 1](
+            embedding = einops.rearrange(embedding, f"b s d -> b d s {self.ONE}")
+            embedding = self.deabstractionLayers[i + self.ONE](
                 embedding
             )  # Apply inverse attention and deabstraction
-            embedding = einops.rearrange(embedding, "b d s1 g -> b (s1 g) d", g=2)
+            embedding = einops.rearrange(
+                embedding, "b d s1 g -> b (s1 g) d", g=self.TWO
+            )
+            if (
+                input_pad_size[self.abstraction_level - i // self.TWO - self.ONE]
+                == self.ONE
+            ):
+                embedding = embedding[:, : -self.ONE, :]
 
-        pad_output_logits = self.decode_embedding(embedding)
-        output_logits = pad_output_logits[:, :sequence_length]
+        output_logits = self.decode_embedding(embedding)
+        # pad_output_logits = self.decode_embedding(embedding)
+        # output_logits = pad_output_logits[:, :sequence_length]
         return output_logits
 
 
 myTransformer = HierachicalTokenizationTransformer()
-# myTransformer = HierachicalTokenizationTransformer(abstraction_level=5, num_layers = 10)
-myTransformer = HierachicalTokenizationTransformer(abstraction_level=10, num_layers = 2)
+# myTransformer = HierachicalTokenizationTransformer(abstraction_level=5, num_layers=10)
+# myTransformer = HierachicalTokenizationTransformer(abstraction_level=20, num_layers=2)
+# input_data = torch.ones(20, 1000, dtype=torch.long)  # batch size: 20, sequence length: 30
 input_data = torch.ones(20, 30, dtype=torch.long)  # batch size: 20, sequence length: 30
 output_data = myTransformer.forward(input_data)
-print(output_data.shape) # 20, 30, 2
+print(output_data.shape)  # 20, 30, 2
