@@ -45,10 +45,20 @@ print(binary_representation_int)
 
 # we've got four level of abstractions.
 
+from pydantic import BaseModel
 
-class MultiheadAttentionStack(nn.Module):
+
+class TransformerArguments(BaseModel, arbitrary_types_allowed=True):
+    key_padding_mask: Tensor | None = None
+    need_weights: bool = True
+    attn_mask: Tensor | None = None
+    average_attn_weights: bool = True
+    is_causal: bool = False
+
+
+class MultiheadSelfAttentionStack(nn.Module):
     def __init__(self, embed_dim: int, num_heads: int, num_layers: int, **kwargs):
-        super(MultiheadAttentionStack, self).__init__()
+        super(MultiheadSelfAttentionStack, self).__init__()
         self.layers = nn.ModuleList(
             [
                 nn.MultiheadAttention(
@@ -58,26 +68,11 @@ class MultiheadAttentionStack(nn.Module):
             ]
         )
 
-    def forward(
-        self,
-        input_tensor: Tensor,
-        key_padding_mask: Tensor | None = None,
-        need_weights: bool = True,
-        attn_mask: Tensor | None = None,
-        average_attn_weights: bool = True,
-        is_causal: bool = False,
-    ):
+    def forward(self, input_tensor: Tensor, transformerArguments: TransformerArguments):
         output = input_tensor
         for layer in self.layers:
             output, _ = layer(
-                query=output,
-                key=output,
-                value=output,
-                key_padding_mask=key_padding_mask,
-                need_weights=need_weights,
-                attn_mask=attn_mask,
-                average_attn_weights=average_attn_weights,
-                is_causal=is_causal,
+                query=output, key=output, value=output, **transformerArguments.dict()
             )
         return output
 
@@ -92,6 +87,7 @@ class MultiheadAttentionStack(nn.Module):
 
 import einops
 import torch.nn.functional as F
+
 
 # hourglass replicate? not exactly. this is binary.
 # what about moe? lsm?
@@ -113,10 +109,16 @@ class HierachicalTokenizationTransformer(nn.Module):
         self.num_heads = num_heads
         self.num_layers = num_layers
         self.abstraction_level = abstraction_level
+        assert abstraction_level > 0, "abstraction level must be greater than zero"
 
-        for _ in range(abstraction_level):
+        self.mainTransformer = MultiheadSelfAttentionStack(
+            embed_dim=embed_dim, num_heads=num_heads, num_layers=num_layers
+        )
+
+        for _ in range(abstraction_level - 1):
+            # for _ in range(abstraction_level):
             # Create the attention and abstraction layers
-            att_layer = MultiheadAttentionStack(
+            att_layer = MultiheadSelfAttentionStack(
                 embed_dim=embed_dim, num_heads=num_heads, num_layers=num_layers
             )
             abstract_layer = nn.Linear(self.TWO, self.ONE)
@@ -128,7 +130,7 @@ class HierachicalTokenizationTransformer(nn.Module):
             )  # Add the abstraction layer to the list
 
             # Create the inverse attention and deabstraction layers
-            datt_layer = MultiheadAttentionStack(
+            datt_layer = MultiheadSelfAttentionStack(
                 embed_dim=embed_dim, num_heads=num_heads, num_layers=num_layers
             )
             deabstract_layer = nn.Linear(self.ONE, self.TWO)
@@ -142,27 +144,39 @@ class HierachicalTokenizationTransformer(nn.Module):
         self.decode_embedding = nn.Linear(self.embed_dim, self.TWO)
         self.pad_size = self.TWO**abstraction_level
 
-    def forward(
+    def _sparseTransformerForwardImpl(
         self,
-        input_logits: Tensor,
-        pad_direction: Literal["left", "right"],
-        key_padding_mask: Tensor | None = None,
-        need_weights: bool = True,
-        attn_mask: Tensor | None = None,
-        average_attn_weights: bool = True,
-        is_causal: bool = False,
-    ):  # it is trimmed from one side. is it causal?
-        assert (
-            len(input_logits.shape) == self.TWO
-        ), "input logits shall be of shape (batch_size, sequence_length)"
-        _, sequence_length = input_logits.shape
-        assert sequence_length != self.ZERO, "zero length sequence encountered"
-        # div, mod = divmod(sequence_length, self.pad_size)
-        # pad_size = 0 if mod == 0 else self.pad_size-mod
-        # pad_input_logits = F.pad(input_logits, (0, pad_size, 0, 0), "constant", 0)
-        # print(pad_input_logits.shape)
+        embedding: Tensor,
+        transformer: MultiheadSelfAttentionStack,
+        transformerArguments: TransformerArguments,
+    ):
+        embedding = einops.rearrange(embedding, "b (s1 g) d -> (b g) s1 d", g=self.TWO)
+        embedding = transformer(embedding, transformerArguments=transformerArguments)
+        embedding = einops.rearrange(embedding, "(b g) s1 d -> b (s1 g) d", g=self.TWO)
+        return embedding
+
+    def sparseTransformerForward(
+        self,
+        embedding: Tensor,
+        transformer: MultiheadSelfAttentionStack,
+        transformerArguments: TransformerArguments,
+        use_sliding=True,
+    ):
+        _embedding = self._sparseTransformerForwardImpl(
+            embedding, transformer, transformerArguments
+        )
+        if use_sliding:
+            slide_embedding = self.sparseTransformerForward(
+                embedding[:, 1:-1, :],
+                transformer,
+                transformerArguments,
+                use_sliding=False,
+            )
+            _embedding[:, 1:-1, :] = (_embedding[:, 1:-1, :] + slide_embedding) / 2
+        return _embedding
+
+    def calculateInputPadSizeFromSequenceLength(self, sequence_length: int):
         input_pad_size = []
-        residual_conn = []
         msequence_length = int(sequence_length)
         for _ in range(self.abstraction_level):
             div, mod = divmod(msequence_length, self.TWO)
@@ -172,81 +186,101 @@ class HierachicalTokenizationTransformer(nn.Module):
             else:
                 input_pad_size.append(self.ZERO)
             msequence_length = div
-        # breakpoint()
+        return input_pad_size
+
+    def padEmbedding(self, embedding: Tensor, pad_direction: Literal["left", "right"]):
+        embedding = F.pad(
+            embedding,
+            (self.ZERO, self.ZERO, self.ZERO, self.ONE)
+            if pad_direction == "right"
+            else (self.ZERO, self.ZERO, self.ONE, self.ZERO),
+            "constant",
+            self.ZERO,
+        )
+        return embedding
+
+    def chopEmbedding(self, embedding: Tensor, pad_direction: Literal["left", "right"]):
+        embedding = (
+            embedding[:, : -self.ONE, :]
+            if pad_direction == "right"
+            else embedding[:, self.ONE :, :]
+        )
+        return embedding
+
+    def abstractionForward(self, embedding: Tensor, abstractionLayer: nn.Linear):
+        embedding = einops.rearrange(embedding, "b (s1 g) d -> b s1 d g", g=self.TWO)
+        embedding = abstractionLayer(embedding)  # Apply attention and abstraction
+        embedding = einops.rearrange(embedding, f"b s d {self.ONE} -> b s d")
+        return embedding
+
+    def deabstractionForward(self, embedding: Tensor, deabstractionLayer: nn.Linear):
+        embedding = einops.rearrange(embedding, f"b s d -> b s d {self.ONE}")
+        embedding = deabstractionLayer(embedding)
+        embedding = einops.rearrange(embedding, "b s1 d g -> b (s1 g) d", g=self.TWO)
+        return embedding
+
+    def forward(
+        self,
+        input_logits: Tensor,
+        pad_direction: Literal["left", "right"],
+        transformerArguments: TransformerArguments,
+    ):  # it is trimmed from one side. is it causal?
+        assert (
+            len(input_logits.shape) == self.TWO
+        ), "input logits shall be of shape (batch_size, sequence_length)"
+        _, sequence_length = input_logits.shape
+        assert sequence_length != self.ZERO, "zero length sequence encountered"
+        input_pad_size = self.calculateInputPadSizeFromSequenceLength(sequence_length)
+        residual_conn = []
         embedding = self.binary_embedding(input_logits)
-        # embedding = self.binary_embedding(pad_input_logits)
         for i in range(
             self.ZERO, len(self.abstractionLayers), self.TWO
         ):  # Step through every other layer
-            embedding = self.abstractionLayers[i](
-                embedding,
-                key_padding_mask=key_padding_mask,
-                need_weights=need_weights,
-                attn_mask=attn_mask,
-                average_attn_weights=average_attn_weights,
-                is_causal=is_causal,
-            )  # 20, 30, 768
-            # make sure it is divisible by 2
-            residual_conn.append(embedding)
-            if input_pad_size[i // self.TWO] == self.ONE:  # either 1 or 0
-                # print('padding')
-                embedding = F.pad(
-                    embedding,
-                    (self.ZERO, self.ZERO, self.ZERO, self.ONE)
-                    if pad_direction == "right"
-                    else (self.ZERO, self.ZERO, self.ONE, self.ZERO),
-                    "constant",
-                    self.ZERO,
-                )
-            # print(embedding.shape)
-            # breakpoint()
-            embedding = einops.rearrange(
-                embedding, "b (s1 g) d -> b d s1 g", g=self.TWO
+            lookup_index = i // self.TWO
+            if input_pad_size[lookup_index] == self.ONE:  # either 1 or 0
+                embedding = self.padEmbedding(embedding, pad_direction)
+            embedding = self.sparseTransformerForward(
+                embedding, self.abstractionLayers[i], transformerArguments
             )
-            embedding = self.abstractionLayers[i + self.ONE](
-                embedding
-            )  # Apply attention and abstraction
-            embedding = einops.rearrange(embedding, f"b d s {self.ONE} -> b s d")
+            residual_conn.append(embedding)
+            embedding = self.abstractionForward(
+                embedding, self.abstractionLayers[i + self.ONE]
+            )
         # basically: n -> 2*n - mod
+        if input_pad_size[-1] == self.ONE:
+            embedding = self.padEmbedding(embedding, pad_direction)
+        embedding = self.sparseTransformerForward(
+            embedding, self.mainTransformer, transformerArguments
+        )
+        if input_pad_size[-1] == self.ONE:
+            embedding = self.chopEmbedding(embedding, pad_direction)
         for i in range(
             self.ZERO, len(self.deabstractionLayers), self.TWO
         ):  # Step through every other layer
-            embedding = self.deabstractionLayers[i](
-                embedding,
-                key_padding_mask=key_padding_mask,
-                need_weights=need_weights,
-                attn_mask=attn_mask,
-                average_attn_weights=average_attn_weights,
-                is_causal=is_causal,
+            lookup_index = self.abstraction_level - i // self.TWO - self.TWO
+            embedding = self.deabstractionForward(
+                embedding, self.deabstractionLayers[i + self.ONE]
             )
-            embedding = einops.rearrange(embedding, f"b s d -> b d s {self.ONE}")
-            embedding = self.deabstractionLayers[i + self.ONE](
-                embedding
-            )  # Apply inverse attention and deabstraction
-            embedding = einops.rearrange(
-                embedding, "b d s1 g -> b (s1 g) d", g=self.TWO
+            embedding += residual_conn[lookup_index]
+            embedding = self.sparseTransformerForward(
+                embedding, self.deabstractionLayers[i], transformerArguments
             )
-            if (
-                input_pad_size[self.abstraction_level - i // self.TWO - self.ONE]
-                == self.ONE
-            ):
-                embedding = (
-                    embedding[:, : -self.ONE, :]
-                    if pad_direction == "right"
-                    else embedding[:, self.ONE :, :]
-                )
-            embedding += residual_conn[self.abstraction_level - i // self.TWO - self.ONE]
+            if input_pad_size[lookup_index] == self.ONE:
+                embedding = self.chopEmbedding(embedding, pad_direction)
 
         output_logits = self.decode_embedding(embedding)
-        # pad_output_logits = self.decode_embedding(embedding)
-        # output_logits = pad_output_logits[:, :sequence_length]
         return output_logits
 
 
-myTransformer = HierachicalTokenizationTransformer()
+# myTransformer = HierachicalTokenizationTransformer()
 # myTransformer = HierachicalTokenizationTransformer(abstraction_level=5, num_layers=10)
-# myTransformer = HierachicalTokenizationTransformer(abstraction_level=20, num_layers=2)
+# myTransformer = HierachicalTokenizationTransformer(abstraction_level=100, num_layers=2)
+myTransformer = HierachicalTokenizationTransformer(abstraction_level=20, num_layers=2)
 # input_data = torch.ones(20, 1000, dtype=torch.long)  # batch size: 20, sequence length: 30
 input_data = torch.ones(20, 30, dtype=torch.long)  # batch size: 20, sequence length: 30
-output_data = myTransformer.forward(input_data, pad_direction="right", is_causal=True)
+output_data = myTransformer.forward(
+    input_data,
+    pad_direction="right",
+    transformerArguments=TransformerArguments(is_causal=True),
+)
 print(output_data.shape)  # 20, 30, 2
