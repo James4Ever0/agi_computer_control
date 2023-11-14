@@ -1,5 +1,7 @@
 import torch
 
+# let's use networkx to generate random graphs?
+
 # the method to train it? we only keep the input & output the same as the static model.
 
 # place some clock like neurons, just like the SNN
@@ -10,10 +12,32 @@ import torch
 
 # neurons that fire together, wire together
 
-simple_neuron = torch.nn.Linear(2, 1) # (0 (occupied), 1), 2
+# there are pending connections. if these connections has larger gradients, they will be welcomed.
 
-complex_neuron = torch.nn.Linear(1, 1) # 3, 4
-# input_port1, input_port2
+# calculate route to output. if there is no route to output, then no gradient.
+
+# it rolls out the monte carlo tree search in ppo. would you find some optimal neural network structure with that?
+
+class Connection:
+    def __init__(self):
+        self.connected_index = ...
+        self.weights = ...
+        self.bias = ...
+
+class Neuron:
+    def __init__(self): # you can choose like: 100x1 -> 1x50 (1 can be larger, like 2) or 10x10
+        # but 100x1, 1x50 can be perferred, since it includes the potential or hidden state
+        # we can also tune the decay factor inside the neuron.
+        self.index = ...
+        self.current_potential = ...
+        self.input_connection = ...
+        self.output_connection = ...
+
+# so we would iterate through our connection pool, propagate
+# how to do batch training?
+
+# input_neurons = ...
+# output_neurons = ...
 
 # calculate inter_neuron distance
 # we have to use sparse matrix
