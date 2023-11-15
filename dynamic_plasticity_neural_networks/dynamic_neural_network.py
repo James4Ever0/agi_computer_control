@@ -33,11 +33,27 @@ class Neuron:
         self.input_connection = ...
         self.output_connection = ...
 
+class NeuralPort:
+    def __init__(self):
+        self.index = ...
+        self.port_type = ...
+        self.current_potential = ...
+
 # so we would iterate through our connection pool, propagate
 # how to do batch training?
 
-# input_neurons = ...
-# output_neurons = ...
+input_ports = [] # assign ten indices
+output_ports = []
+
+# obviously they are not connected.
+# you can assess that by gradient. does it have gradient?
+
+# recurrent connection: (0, 1), (1, 2), (2, 0)
+# so we just do all the forwarding at once in random order. who cares the order? no one!
+# maybe you can take multiple random execution samples multiple times and average out to stablize the performance
+
+# so there are possibly two things to learn. the first is to learn the connectivity rule. the second is to learn the propagation rule.
+# does a regular/periodic propagation rule plausible in brain?
 
 # calculate inter_neuron distance
 # we have to use sparse matrix
