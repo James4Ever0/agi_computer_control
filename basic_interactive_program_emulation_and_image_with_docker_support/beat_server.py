@@ -12,6 +12,7 @@ timezone_str = "Asia/Shanghai"
 # timezone = pytz.timezone(timezone_str:='Asia/Shanghai')
 timezone = pytz.timezone(timezone_str)
 import schedule
+
 # import threading
 
 from typing import Literal
@@ -28,7 +29,7 @@ UUID_TO_REGISTERED_TIMESTAMP = {}
 UUID_TO_STATUS = {}  # alive -> True; dead -> False
 UUID_TO_PID = {}
 UUID_TO_ROLE = {}
-ALIVE_THRESHOLD = 30*2 # 30 is a bit of low.
+ALIVE_THRESHOLD = 30 * 2  # 30 is a bit of low.
 
 
 @app.get(beat_server_address["info_url"])
@@ -63,7 +64,7 @@ def beat_request(
 ):
     # start = time.time()
     strtime, timestamp = get_strtime_and_timestamp()
-    if action != 'kill':
+    if action != "kill":
         for data_dict, it, it_name in [
             (UUID_TO_PID, pid, "PID"),
             (UUID_TO_ROLE, role, "ROLE"),
@@ -93,9 +94,9 @@ def beat_request(
     # end = time.time()
     if action != "kill":
         if uuid not in UUID_TO_REGISTERED_TIMESTAMP.keys():
-                print(f"client {uuid} not registered. registering.")
-                UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
-                # raise Exception(f"client {uuid} not registered.")
+            print(f"client {uuid} not registered. registering.")
+            UUID_TO_REGISTERED_TIMESTAMP[uuid] = timestamp
+            # raise Exception(f"client {uuid} not registered.")
         UUID_TO_TIMESTAMP[uuid] = timestamp
     # print(f'request processing time: {end-start} secs', )
     return {beat_client_data["access_time_key"]: strtime}
@@ -119,8 +120,8 @@ def check_alive():
     print(f"checking clients at {now_strtime}")
     for uuid, registered_timestamp in UUID_TO_REGISTERED_TIMESTAMP.items():
         timestamp = UUID_TO_TIMESTAMP.get(uuid, registered_timestamp)
-        role = UUID_TO_ROLE.get(uuid,'unknown')
-        pid = UUID_TO_PID.get(uuid,-1)
+        role = UUID_TO_ROLE.get(uuid, "unknown")
+        pid = UUID_TO_PID.get(uuid, -1)
         uptime = now_timestamp - registered_timestamp
         alive = True
         life = ALIVE_THRESHOLD - (now_timestamp - timestamp)
