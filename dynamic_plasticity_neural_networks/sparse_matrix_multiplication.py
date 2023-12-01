@@ -8,7 +8,8 @@ average_synapses = 3 # 1.7s, 0.146s
 # average_synapses = 1_000
 
 np_sparse = sparse.random((large_number, large_number), nnz=large_number*average_synapses)
-
+# print(np_sparse.coords, np_sparse.data, np_sparse.shape)
+# breakpoint()
 torch_sparse = torch.sparse_coo_tensor(np_sparse.coords, np_sparse.data, np_sparse.shape)
 
 torch_dense = torch.randn(large_number, dtype=torch.double)

@@ -58,5 +58,5 @@ inp = torch.randn(1, 12, 768)
 # print(inp)
 # print(out.shape)  # 1, 12, 768
 bout = bmodel(inp)
-# print(bout)
-print(bout.shape)
+print(bout)
+# print(bout.shape)
