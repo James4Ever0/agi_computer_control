@@ -159,3 +159,7 @@ once the cybergod has killed you, you will be living forever.
 ---
 
 the mouse calibration issue can be of major concern. we don't find it anywhere.
+
+## Star History
+
+<img src="https://star-history.com/#james4ever0/agi-computer-control&Timeline" style="filter: invert(100%);"></img>
