@@ -8,6 +8,8 @@ https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-
 
 [bilibili live streaming](http://live.bilibili.com/22228498)
 
+## Intro
+
 Trained on [The Frozen Forest](https://huggingface.co/datasets/James4Ever0/the_frozen_forest), a [dataset](https://modelscope.cn/datasets/james4ever0/the_frozen_forest/summary) containing random keystrokes, mouse clicks and screen recordings.
 
 the openai [universe](https://github.com/openai/universe) is using VNC, almost doing the same thing.
@@ -158,7 +160,9 @@ once the cybergod has killed you, you will be living forever.
 
 ---
 
-the mouse calibration issue can be of major concern. we don't find it anywhere.
+the mouse calibration issue can be of major concern. we don't find it anywhere. 
+
+use active inference or reinforcement learning?
 
 ## Star History
 
