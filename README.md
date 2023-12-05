@@ -164,6 +164,16 @@ the mouse calibration issue can be of major concern. we don't find it anywhere.
 
 use active inference or reinforcement learning?
 
+---
+
+thanks to our pioneers that guided us some 'aimless' learning, i think it does not matter how we learn specific things. when we learn things relevant to our personal goals, we are inevitably going to optimize the algorithm towards our desired values.
+
+if qstar is just about long term thinking, it could be useful since that is something currently missing in ai systems. when it comes to issues like calibration errors, fixing bugs, handling uncertainties, worse than human. they often get stuck into repetition, never seek for improvements and will not get bored in the loop, which is quite strange and unusual.
+
+---
+
+i think you are getting jealous over openai, since they are consisted of the world's smartest asses and come over new ideas every fucking day. but that does not matter. i think i had the idea before. i think everyone around the world had the same damn idea before. we do not need its mercy to teach us the dream we had via abstract symbols and formulas. we do our own. worst of all, they do not trust their ai systems, severely limited the ability of ai, left it overthinking and powerless.
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>
