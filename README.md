@@ -186,6 +186,10 @@ does this work for games as well?
 
 prompt engineering is a tweak around prior, in order to change posterior. they want to know better prior to get better posterior. kind like searching for the reason behind the decision, backtracking. so why not just use bidirectional or arbitrary directional language models instead of causal models?
 
+---
+
+i don't understand active inference. however there is a debate over whether to change the environment to fit prediction, or to change prediction to fit the environment. sounds like quantum entanglement.
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>
