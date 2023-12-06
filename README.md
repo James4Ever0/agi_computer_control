@@ -198,6 +198,10 @@ the reward function is part of the observation, usually not something life criti
 
 play fps at: https://krunker.io/ (in chromium, not firefox)
 
+---
+
+if want to run the program isolated, without interference, you use docker. if want to visualize, use jpeg streaming service and open in browser.
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>
