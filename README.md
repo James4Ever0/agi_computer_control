@@ -194,6 +194,10 @@ i don't understand active inference. however there is a debate over whether to c
 
 the reward function is part of the observation, usually not something life critical so it will not be so direct. it is the internal state that will be affected by the observation.
 
+---
+
+play fps at: https://krunker.io/ (in chromium, not firefox)
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>
