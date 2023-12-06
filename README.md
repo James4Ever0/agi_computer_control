@@ -190,6 +190,10 @@ prompt engineering is a tweak around prior, in order to change posterior. they w
 
 i don't understand active inference. however there is a debate over whether to change the environment to fit prediction, or to change prediction to fit the environment. sounds like quantum entanglement.
 
+---
+
+the reward function is part of the observation, usually not something life critical so it will not be so direct. it is the internal state that will be affected by the observation.
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>
