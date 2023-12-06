@@ -34,3 +34,7 @@
 # so you can treat the video generation as the same process of text generation, and use mcts to improve it.
 
 # the video is abstract. you may generate high level features all the way down to segments and details.
+
+################### how to develop hidden latent space ###################
+
+# train multiple agents to watch video with random internal activities, average them out with others and find the tendency
