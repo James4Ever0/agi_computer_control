@@ -9,3 +9,7 @@ for other ideas, collect from some specialized sources, find code implementation
 ---
 
 it is however important to admit some uniqueness in human beings, and be proud of that. only in this way we can get the full potential out of machines, instead of delusionally rebuilding a new body of our own.
+
+---
+
+you have nonlinear editing world model underway.
