@@ -1,22 +1,29 @@
 import torch
 
+# q+astar & mcts
+
 # heuristic: compute cosine similarity between target token and actual token
 # sequence heuristic: seqlen heuristic
+
+# TODO: hierarchy of control
 
 # v1: separated word model & control model
 init_sequence = world_model(noise)
 
 # v2: unified word model & control model
-init_sequence = uniform_model(noise)
+# init_sequence = uniform_model(noise) # unified model will sure be cheating. let's defer this one.
 
 # v3: real world evaluators, no time traversal, but can change previous prompt (regret, backpropagate, (optionally) forget (maximize gradient) old (wrong) prediction  and learn (minimize gradient) actual (real) prediction)
-init_sequence = real_world()
+init_sequence = real_world(random_actions) # does this real world support time traversal?
+
+node_hash = real_world.commit()
+real_world.rollback(node_hash)
 
 # use special token + target as prompt
 prompt = special_token + target
 
 # use thought token as prompt
-prompt = get_thought_tokens(special_token + target) # thought tokens has to be "understood" by the model, so that we can know its intention (can we convert natural language prompt to thought tokens, aligned?)
+prompt = get_thought_tokens(special_token + target, seqlen) # thought tokens has to be "understood" by the model, so that we can know its intention (can we convert natural language prompt to thought tokens, aligned?)
 
 # perform gradient descent based on cosine similarity, more similar result to target, more learning.
 # only perform descent on the most similar one.

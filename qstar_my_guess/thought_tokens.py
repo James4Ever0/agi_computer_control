@@ -1,7 +1,15 @@
 import torch
 import math
 from beartype import beartype
+import torch.nn.functional as F
+from strenum import StrEnum
+from enum import auto
 
+class ThoughtTokenInsertionMethod(StrEnum):
+    autoregressive = auto()
+    iterate_and_insert_separately = auto()
+    iterate_and_insert_together = auto()
+    generative_insert = auto()
 
 @beartype
 def get_batch_and_seqlen(source_tokens: torch.Tensor):
@@ -23,11 +31,12 @@ def create_zeros_from_shape_and_insert_rate(
     zeros = torch.ones((batch, new_seqlen))
     return added_seqlen, new_seqlen, zeros
 
+
 @beartype
-def create_mask(batch:int, seqlen:int, k:int):
-    assert k > 0
-    assert k < seqlen
-    
+def create_mask(batch: int, seqlen: int, k: int):
+    assert k > 0, f"k ({k}) is not positive"
+    assert k < seqlen, f"k ({k}) must be less than seqlen ({seqlen})"
+
     # Generate random indices for each row
     random_indices = torch.stack([torch.randperm(seqlen)[:k] for _ in range(batch)])
 
@@ -36,6 +45,7 @@ def create_mask(batch:int, seqlen:int, k:int):
     mask.scatter_(1, random_indices, True)
 
     return mask
+
 
 @beartype
 def insert_source_token_to_zeros(
@@ -65,7 +75,14 @@ def insert_thought_token_to_zeros(
 def sample_thought_tokens(
     thought_token_vocabulary: list[int], batch: int, added_seqlen: int
 ):
-    thought_tokens = torch.Tensor()
+    # Sampled thought_token_vocabulary indices
+    sampled_indices = torch.randint(
+        0, len(thought_token_vocabulary), size=(batch, added_seqlen)
+    )
+
+    # Create tensor using sampled indices
+    thought_tokens = torch.tensor(thought_token_vocabulary)[sampled_indices]
+
     return thought_tokens
 
 
@@ -86,39 +103,69 @@ def insert_thought_tokens(
         thought_token_vocabulary, batch, added_seqlen
     )
     insert_thought_token_to_zeros(thought_tokens, zeros, source_token_locations)
-    processed_tokens = zeros
-    return processed_tokens, source_token_locations, thought_token_locations
+    return zeros, new_seqlen, source_token_locations, thought_token_locations
 
+@beartype
+def pad_seq_left(input_tensor:torch.Tensor, pad_size:int, value):
+    assert pad_size >= 0, f"pad size ({pad_size}) must be non negative"
+    ret = F.pad(input_tensor, (pad_size, 0), mode='constant', value=value)
+    return ret
 
 base_token_count = 1000
 thought_token_count = 2000
-total_token_count = base_token_count + thought_token_count
+pad_token_idx = base_token_count + thought_token_count
+total_token_count = pad_token_idx + 1
 
 thought_token_insert_rate = 0.2
-sample_size = (1, 20)
+source_batchsize = 1
+source_seqlen = 20
+source_size = (source_batchsize, source_seqlen)
+train_window_size = 10
 
+thought_token_vocabulary = [base_token_count + i for i in range(thought_token_count)]
 
 source_tokens = torch.randint(
-    0, base_token_count, sample_size
+    0, base_token_count, source_size
 )  # okay, lower than upper bound.
+
 (
     processed_tokens,
+    new_seqlen,
     source_token_locations,
     thought_token_locations,
 ) = insert_thought_tokens(
     source_tokens, thought_token_vocabulary, thought_token_insert_rate
 )
 
-input_tokens = processed_tokens[:-1]
-target_tokens = processed_tokens[1:]
+# the sample process shall start from zero.
+assert new_seqlen > 1
+padded_processed_tokens = pad_seq_left(processed_tokens, train_window_size - 1, pad_token_idx)
+
+for i in range(new_seqlen - 1):
+    input_tokens = padded_processed_tokens[:, i:i+train_window_size]
+    target_tokens = padded_processed_tokens[:, i+1:i+train_window_size+1]
+    yield input_tokens, target_tokens
 
 ### another version:
 
-# v1
-input_tokens = insert_thought_tokens(...)  # fully randomed input tokens.
+# v1.1
+for ... in ...:
+    input_tokens = insert_thought_tokens(padded_source_tokens[:, :-1]) # fully randomed input tokens.
+    target_tokens = insert_thought_tokens(padded_source_tokens[:, 1:])
+
+# v1.2
+
+for ... in ...:
+    insert_thought_tokens(padded_source_tokens[:, :])
+    for ... in ...:
+        yield ..., ...
+
 # v2
-input_tokens = processed_tokens[1:]
-output_token_prob = ...
-target_tokens = generate_target_tokens(output_token_prob, target_token_mask)
+for ... in ...:
+    input_tokens = processed_tokens[1:] # still read the original processed tokens,
+    output_token_prob = language_model(input_tokens)
+    target_token_mask = ...
+    target_tokens = generate_target_tokens(output_token_prob, target_token_mask)
+    yield input_tokens, target_tokens
 
 # output thought tokens affect input tokens?
