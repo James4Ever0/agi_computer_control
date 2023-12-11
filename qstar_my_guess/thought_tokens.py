@@ -1,5 +1,5 @@
 from re import T
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Optional
 import torch
 import math
 from beartype import beartype
@@ -18,6 +18,10 @@ class InsertionMethodCategory(Enum):
 class ThoughtTokenInsertionMethod(Enum):
     autoregressive = (auto(), InsertionMethodCategory.common_source)
     generative_insert = (auto(), InsertionMethodCategory.common_source)
+    generative_insert_and_overwrite = (
+        auto(),
+        InsertionMethodCategory.common_source,
+    )  # will use generated target tokens to replace original randomly inserted thought tokens.
     # not implemented
     iterate_and_insert_separately = (auto(), InsertionMethodCategory.separate_source)
     iterate_and_insert_together = (auto(), InsertionMethodCategory.separate_source)
@@ -213,14 +217,12 @@ def insert_thought_tokens_and_yield_train_pairs(
     yield from autoregressive_generator
 
 
-@overload
-def insert_thought_tokens_and_yield_train_pairs(
-    insertion_method: Literal[ThoughtTokenInsertionMethod.generative_insert],
+def generative_insert_thought_tokens_and_yield_train_pairs(
     source_tokens: torch.Tensor,
     thought_token_vocabulary: list[int],
     thought_token_insert_rate: float,
     non_thought_token_vocabulary: list[int],
-    target_token_prob_generator: torch.nn.Module,
+    target_token_prob_generator: Callable,
 ) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
     (
         autoregressive_generator,
@@ -238,6 +240,50 @@ def insert_thought_tokens_and_yield_train_pairs(
     )
 
 
+@overload
+def insert_thought_tokens_and_yield_train_pairs(
+    insertion_method: Literal[ThoughtTokenInsertionMethod.generative_insert],
+    source_tokens: torch.Tensor,
+    thought_token_vocabulary: list[int],
+    thought_token_insert_rate: float,
+    non_thought_token_vocabulary: list[int],
+    target_token_prob_generator: Callable,
+) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
+    yield from generative_insert_thought_tokens_and_yield_train_pairs(
+        source_tokens,
+        thought_token_vocabulary,
+        thought_token_insert_rate,
+        non_thought_token_vocabulary,
+        target_token_prob_generator,
+    )
+
+
+@overload
+def insert_thought_tokens_and_yield_train_pairs(
+    insertion_method: Literal[
+        ThoughtTokenInsertionMethod.generative_insert_and_overwrite
+    ],
+    source_tokens: torch.Tensor,
+    thought_token_vocabulary: list[int],
+    thought_token_insert_rate: float,
+    non_thought_token_vocabulary: list[int],
+    target_token_prob_generator: torch.nn.Module,
+) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
+    generator = generative_insert_thought_tokens_and_yield_train_pairs(
+        source_tokens,
+        thought_token_vocabulary,
+        thought_token_insert_rate,
+        non_thought_token_vocabulary,
+        target_token_prob_generator,
+    )
+    prev_target_tokens = None
+    for input_tokens, target_tokens in generator:
+        if prev_target_tokens is not None:
+            input_tokens = prev_target_tokens
+        yield input_tokens, target_tokens
+        prev_target_tokens = target_tokens.clone()
+
+
 @overtake(runtime_type_checker="beartype")
 def insert_thought_tokens_and_yield_train_pairs(
     insertion_method,
@@ -249,14 +295,23 @@ def insert_thought_tokens_and_yield_train_pairs(
 ):
     ...
 
+
 @beartype
-def crop_input_token_by_index_and_window_size(processed_tokens:torch.Tensor, index:int, window_size:int):
+def crop_input_token_by_index_and_window_size(
+    processed_tokens: torch.Tensor, index: int, window_size: int
+):
     cropped_tokens = processed_tokens[:, index : index + window_size]
     return cropped_tokens
 
+
 @beartype
-def crop_target_token_by_index_and_window_size(processed_tokens:torch.Tensor, index:int, window_size:int):
-    return crop_input_token_by_index_and_window_size(processed_tokens, index+1, window_size)
+def crop_target_token_by_index_and_window_size(
+    processed_tokens: torch.Tensor, index: int, window_size: int
+):
+    return crop_input_token_by_index_and_window_size(
+        processed_tokens, index + 1, window_size
+    )
+
 
 # the sample process shall start from zero.
 @beartype
@@ -264,31 +319,53 @@ def autoregressively_yield_train_pairs(
     padded_processed_tokens: torch.Tensor, train_window_size: int, new_seqlen: int
 ):
     for i in range(new_seqlen - 1):
-        input_tokens = crop_input_token_by_index_and_window_size(padded_processed_tokens, i, train_window_size)
-        target_tokens = crop_target_token_by_index_and_window_size(padded_processed_tokens, i, train_window_size)
+        input_tokens = crop_input_token_by_index_and_window_size(
+            padded_processed_tokens, i, train_window_size
+        )
+        target_tokens = crop_target_token_by_index_and_window_size(
+            padded_processed_tokens, i, train_window_size
+        )
         yield input_tokens, target_tokens
 
+
 @beartype
-def prob_to_token(token_prob: torch.Tensor, masked_location:torch.Tensor, masked_vocabulary:list[int]):
+def prob_to_token(
+    token_prob: torch.Tensor,
+    masked_location: Optional[torch.Tensor] = None,
+    masked_vocabulary: Optional[list[int]] = None,
+):
     ret_prob = token_prob.clone()
-    ret_prob[masked_location] = 0
-    ret_prob[:, masked_vocabulary] = 0
-    ret_tokens = torch.argmax(ret_prob, dim = 2)
-    ret_tokens[masked_location] = 0
+    if masked_vocabulary is not None:
+        ret_prob[:, masked_vocabulary] = 0
+    ret_tokens = torch.argmax(ret_prob, dim=2)
+    if masked_location is not None:
+        ret_tokens[masked_location] = 0
     return ret_tokens
 
 
 @beartype
-def generate_target_tokens_with_thought_token_loctions_and_non_thought_token_vocabulary(token_prob: torch.Tensor, thought_token_locations: torch.Tensor, thought_token_vocabulary:list[int], non_thought_token_vocabulary: list[int]):
-    assert len(token_prob.shape) == 3, f"wrong token probability tensor shape ({token_prob}). should be: (batch_size, sequence_length, vocabulary_size)"
+def generate_target_tokens_with_thought_token_loctions_and_non_thought_token_vocabulary(
+    token_prob: torch.Tensor,
+    thought_token_locations: torch.Tensor,
+    thought_token_vocabulary: list[int],
+    non_thought_token_vocabulary: list[int],
+):
+    assert (
+        len(token_prob.shape) == 3
+    ), f"wrong token probability tensor shape ({token_prob}). should be: (batch_size, sequence_length, vocabulary_size)"
     # what is the shape of this prob?
     non_thought_token_locations = ~thought_token_locations
 
-    thought_tokens = prob_to_token(token_prob, non_thought_token_locations,non_thought_token_vocabulary)
-    non_thought_tokens = prob_to_token(token_prob, thought_token_locations, thought_token_vocabulary)
+    thought_tokens = prob_to_token(
+        token_prob, non_thought_token_locations, non_thought_token_vocabulary
+    )
+    non_thought_tokens = prob_to_token(
+        token_prob, thought_token_locations, thought_token_vocabulary
+    )
     ret_tokens = thought_tokens + non_thought_tokens
 
     return ret_tokens
+
 
 # demo on how to use thought tokens.
 @beartype
@@ -296,15 +373,22 @@ def generative_insert_yield_train_pairs(
     autoregressive_generator: Iterable,
     target_token_prob_generator: Callable,
     padded_thought_token_locations: torch.Tensor,
-    thought_token_vocabulary:list[int],
+    thought_token_vocabulary: list[int],
     non_thought_token_vocabulary: list[int],
     train_window_size: int,
 ):
     for i, (input_tokens, _) in enumerate(autoregressive_generator):
         with torch.no_grad():
             output_token_prob = target_token_prob_generator(input_tokens)
-        thought_token_locations = crop_target_token_by_index_and_window_size(padded_thought_token_locations, i, train_window_size)
-        target_tokens = generate_target_tokens_with_thought_token_loctions_and_non_thought_token_vocabulary(output_token_prob, thought_token_locations,thought_token_vocabulary, non_thought_token_vocabulary)
+        thought_token_locations = crop_target_token_by_index_and_window_size(
+            padded_thought_token_locations, i, train_window_size
+        )
+        target_tokens = generate_target_tokens_with_thought_token_loctions_and_non_thought_token_vocabulary(
+            output_token_prob,
+            thought_token_locations,
+            thought_token_vocabulary,
+            non_thought_token_vocabulary,
+        )
         yield input_tokens, target_tokens
 
 
@@ -327,7 +411,9 @@ if __name__ == "__main__":
     thought_token_vocabulary = [
         base_token_count + i for i in range(thought_token_count)
     ]
-    non_thought_token_vocabulary = [i for i in range(total_token_count) if i not in thought_token_vocabulary]
+    non_thought_token_vocabulary = [
+        i for i in range(total_token_count) if i not in thought_token_vocabulary
+    ]
 
     source_tokens = torch.randint(
         0, base_token_count, source_size
