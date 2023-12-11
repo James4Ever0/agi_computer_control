@@ -16,8 +16,9 @@ init_sequence = world_model(noise)
 # v3: real world evaluators, no time traversal, but can change previous prompt (regret, backpropagate, (optionally) forget (maximize gradient) old (wrong) prediction  and learn (minimize gradient) actual (real) prediction)
 init_sequence = real_world(random_actions) # does this real world support time traversal?
 
-node_hash = real_world.commit()
-real_world.rollback(node_hash)
+if real_world.traversable: # @property
+    node_hash = real_world.commit() # usually this is automatically handled? no need to intentionally commit?
+    real_world.rollback(node_hash)
 
 # use special token + target as prompt
 prompt = special_token + target

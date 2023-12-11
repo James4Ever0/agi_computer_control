@@ -3,13 +3,40 @@ import math
 from beartype import beartype
 import torch.nn.functional as F
 from strenum import StrEnum
-from enum import auto
+from enum import auto, Enum
+import copy
 
-class ThoughtTokenInsertionMethod(StrEnum):
-    autoregressive = auto()
-    iterate_and_insert_separately = auto()
-    iterate_and_insert_together = auto()
-    generative_insert = auto()
+class InsertionMethodCategory(Enum):
+    common_source = auto()
+    separate_source = auto()
+
+class ThoughtTokenInsertionMethod(Enum):
+    autoregressive = (auto(), InsertionMethodCategory.common_source)
+    generative_insert = (auto(), InsertionMethodCategory.common_source)
+    iterate_and_insert_separately = (auto(), InsertionMethodCategory.separate_source)
+    iterate_and_insert_together = (auto(), InsertionMethodCategory.separate_source)
+
+    @property
+    def category(self):
+        return self.value[1]
+
+def equality_fulfillment_transformer(instance):
+    new_instance = copy.copy(instance)
+    assert hasattr(instance, 'fulfilled'), "cannot process instance with 'fulfilled' attribute"
+    setattr(new_instance, 'fulfilled', False)
+    old_eq = copy.copy(new_instance.__eq__)
+    def new_eq(self, other:object):
+        is_equal = old_eq(other)
+        if is_equal:
+            self.fulfilled = True
+        return is_equal
+    setattr(new_instance, '__eq__', new_eq)
+    return new_instance
+
+
+class UnknownThoughtTokenInsertionMethod(Exception):
+    def __init__(self, insert_method):
+        super().__init__(f"Method '{insert_method}' is not available.")
 
 @beartype
 def get_batch_and_seqlen(source_tokens: torch.Tensor):
@@ -102,8 +129,9 @@ def insert_thought_tokens(
     thought_tokens = sample_thought_tokens(
         thought_token_vocabulary, batch, added_seqlen
     )
-    insert_thought_token_to_zeros(thought_tokens, zeros, source_token_locations)
+    thought_token_locations = insert_thought_token_to_zeros(thought_tokens, zeros, source_token_locations)
     return zeros, new_seqlen, source_token_locations, thought_token_locations
+
 
 @beartype
 def pad_seq_left(input_tensor:torch.Tensor, pad_size:int, value):
@@ -111,40 +139,41 @@ def pad_seq_left(input_tensor:torch.Tensor, pad_size:int, value):
     ret = F.pad(input_tensor, (pad_size, 0), mode='constant', value=value)
     return ret
 
-base_token_count = 1000
-thought_token_count = 2000
-pad_token_idx = base_token_count + thought_token_count
-total_token_count = pad_token_idx + 1
-
-thought_token_insert_rate = 0.2
-source_batchsize = 1
-source_seqlen = 20
-source_size = (source_batchsize, source_seqlen)
-train_window_size = 10
-
-thought_token_vocabulary = [base_token_count + i for i in range(thought_token_count)]
-
-source_tokens = torch.randint(
-    0, base_token_count, source_size
-)  # okay, lower than upper bound.
-
-(
-    processed_tokens,
-    new_seqlen,
-    source_token_locations,
-    thought_token_locations,
-) = insert_thought_tokens(
-    source_tokens, thought_token_vocabulary, thought_token_insert_rate
-)
+@beartype
+def insert_thought_tokens_and_yield_train_pairs(source_tokens:torch.Tensor, thought_token_vocabulary:list[int], thought_token_insert_rate:float, insertion_method: ThoughtTokenInsertionMethod):
+    insertion_method = equality_fulfillment_transformer(insertion_method)
+    if insertion_method.category == InsertionMethodCategory.common_source:
+        (
+            processed_tokens,
+            new_seqlen,
+            source_token_locations,
+            thought_token_locations,
+        ) = insert_thought_tokens(
+            source_tokens, thought_token_vocabulary, thought_token_insert_rate
+        )
+        if insertion_method == ThoughtTokenInsertionMethod.autoregressive:
+            yield from autoregressively_yield_train_pairs(processed_tokens, train_window_size, pad_token_idx,new_seqlen)
+        
+        elif insertion_method == ThoughtTokenInsertionMethod.generative_insert:
+            yield from ...
+    else:
+        if insertion_method == ThoughtTokenInsertionMethod.iterate_and_insert_together:
+            yield from ...
+        
+        elif insertion_method == ThoughtTokenInsertionMethod.iterate_and_insert_separately:
+            yield from ...
+    if not insertion_method.fulfilled:
+        raise UnknownThoughtTokenInsertionMethod(insertion_method)
 
 # the sample process shall start from zero.
-assert new_seqlen > 1
-padded_processed_tokens = pad_seq_left(processed_tokens, train_window_size - 1, pad_token_idx)
+def autoregressively_yield_train_pairs(processed_tokens:torch.Tensor, train_window_size:int, pad_token_idx:int,new_seqlen:int):
+    assert new_seqlen > 1
+    padded_processed_tokens = pad_seq_left(processed_tokens, train_window_size - 1, pad_token_idx)
 
-for i in range(new_seqlen - 1):
-    input_tokens = padded_processed_tokens[:, i:i+train_window_size]
-    target_tokens = padded_processed_tokens[:, i+1:i+train_window_size+1]
-    yield input_tokens, target_tokens
+    for i in range(new_seqlen - 1):
+        input_tokens = padded_processed_tokens[:, i:i+train_window_size]
+        target_tokens = padded_processed_tokens[:, i+1:i+train_window_size+1]
+        yield input_tokens, target_tokens
 
 ### another version:
 
@@ -169,3 +198,25 @@ for ... in ...:
     yield input_tokens, target_tokens
 
 # output thought tokens affect input tokens?
+
+if __name__ == '__main__':
+    # begin test
+
+    base_token_count = 1000
+    thought_token_count = 2000
+    pad_token_idx = base_token_count + thought_token_count
+    total_token_count = pad_token_idx + 1
+
+    thought_token_insert_rate = 0.2
+    source_batchsize = 1
+    source_seqlen = 20
+    source_size = (source_batchsize, source_seqlen)
+    train_window_size = 10
+
+    thought_token_vocabulary = [base_token_count + i for i in range(thought_token_count)]
+
+    source_tokens = torch.randint(
+        0, base_token_count, source_size
+    )  # okay, lower than upper bound.
+
+    for _ in insert_thought_tokens_and_yield_train_pairs(source_tokens, thought_token_vocabulary, thought_token_insert_rate, ThoughtTokenInsertionMethod.autoregressive): ...
