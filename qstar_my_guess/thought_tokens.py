@@ -1,4 +1,3 @@
-from re import T
 from typing import Callable, Iterable, Optional
 import torch
 import math
@@ -31,7 +30,7 @@ class ThoughtTokenInsertionMethod(Enum):
         return self.value[1]
 
 
-def equality_fulfillment_transformer(instance):
+def equality_fulfillment_instance_transformer(instance):
     new_instance = copy.copy(instance)
     assert hasattr(
         instance, "fulfilled"
