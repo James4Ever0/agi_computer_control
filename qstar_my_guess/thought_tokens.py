@@ -157,12 +157,13 @@ def insert_thought_tokens_and_yield_train_pairs(source_tokens:torch.Tensor, thou
         elif insertion_method == ThoughtTokenInsertionMethod.generative_insert:
             yield from ...
     else:
+        padded_source_tokens =  pad_seq_left(source_tokens, train_window_size - 1, pad_token_idx)
         if insertion_method == ThoughtTokenInsertionMethod.iterate_and_insert_together:
             yield from ...
         
         elif insertion_method == ThoughtTokenInsertionMethod.iterate_and_insert_separately:
             yield from ...
-    if not insertion_method.fulfilled:
+    if not insertion_method.fulfilled: # type: ignore
         raise UnknownThoughtTokenInsertionMethod(insertion_method)
 
 # the sample process shall start from zero.
