@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Callable, Iterable
 import torch
 import math
 from beartype import beartype
@@ -6,11 +6,13 @@ import torch.nn.functional as F
 from enum import auto, Enum
 import copy
 from typing_extensions import overload, Literal
-from overtake import overtake # type: ignore
+from overtake import overtake  # type: ignore
+
 
 class InsertionMethodCategory(Enum):
     common_source = auto()
     separate_source = auto()
+
 
 class ThoughtTokenInsertionMethod(Enum):
     autoregressive = (auto(), InsertionMethodCategory.common_source)
@@ -23,23 +25,29 @@ class ThoughtTokenInsertionMethod(Enum):
     def category(self):
         return self.value[1]
 
+
 def equality_fulfillment_transformer(instance):
     new_instance = copy.copy(instance)
-    assert hasattr(instance, 'fulfilled'), "cannot process instance with 'fulfilled' attribute"
-    setattr(new_instance, 'fulfilled', False)
+    assert hasattr(
+        instance, "fulfilled"
+    ), "cannot process instance with 'fulfilled' attribute"
+    setattr(new_instance, "fulfilled", False)
     old_eq = copy.copy(new_instance.__eq__)
-    def new_eq(self, other:object):
+
+    def new_eq(self, other: object):
         is_equal = old_eq(other)
         if is_equal:
             self.fulfilled = True
         return is_equal
-    setattr(new_instance, '__eq__', new_eq)
+
+    setattr(new_instance, "__eq__", new_eq)
     return new_instance
 
 
 class UnknownThoughtTokenInsertionMethod(Exception):
     def __init__(self, insert_method):
         super().__init__(f"Method '{insert_method}' is not available.")
+
 
 @beartype
 def get_batch_and_seqlen(source_tokens: torch.Tensor):
@@ -96,7 +104,7 @@ def insert_thought_token_to_zeros(
     zeros: torch.Tensor,
     source_token_locations: torch.Tensor,
 ):
-    thought_token_locations = ~ source_token_locations # do not use "not"
+    thought_token_locations = ~source_token_locations  # do not use "not"
     zeros[thought_token_locations] = thought_tokens
     return thought_token_locations
 
@@ -132,67 +140,153 @@ def insert_thought_tokens(
     thought_tokens = sample_thought_tokens(
         thought_token_vocabulary, batch, added_seqlen
     )
-    thought_token_locations = insert_thought_token_to_zeros(thought_tokens, zeros, source_token_locations)
+    thought_token_locations = insert_thought_token_to_zeros(
+        thought_tokens, zeros, source_token_locations
+    )
     return zeros, new_seqlen, source_token_locations, thought_token_locations
 
 
 @beartype
-def pad_seq_left(input_tensor:torch.Tensor, pad_size:int, value):
+def pad_seq_left(input_tensor: torch.Tensor, pad_size: int, value):
     assert pad_size >= 0, f"pad size ({pad_size}) must be non negative"
-    ret = F.pad(input_tensor, (pad_size, 0), mode='constant', value=value)
+    ret = F.pad(input_tensor, (pad_size, 0), mode="constant", value=value)
     return ret
 
-@overload
-def insert_thought_tokens_and_yield_train_pairs(source_tokens:torch.Tensor, thought_token_vocabulary:list[int], thought_token_insert_rate:float, insertion_method: Literal[ThoughtTokenInsertionMethod.autoregressive]): ...
+
+@beartype
+def pad_processed_and_thought_tokens(
+    processed_tokens: torch.Tensor,
+    thought_token_locations: torch.Tensor,
+    train_window_size: int,
+    pad_token_idx: int,
+):
+    pad_size = train_window_size - 1
+    padded_processed_tokens = pad_seq_left(processed_tokens, pad_size, pad_token_idx)
+    padded_thought_token_locations = pad_seq_left(
+        thought_token_locations, pad_size, False
+    )
+    return padded_processed_tokens, padded_thought_token_locations
+
+
+@beartype
+def get_autoregressive_generator_and_thought_token_locations(
+    source_tokens: torch.Tensor,
+    thought_token_vocabulary: list[int],
+    thought_token_insert_rate: float,
+):
+    (
+        processed_tokens,
+        new_seqlen,
+        _,
+        thought_token_locations,
+    ) = insert_thought_tokens(
+        source_tokens, thought_token_vocabulary, thought_token_insert_rate
+    )
+
+    assert new_seqlen > 1
+    (
+        padded_processed_tokens,
+        padded_thought_token_locations,
+    ) = pad_processed_and_thought_tokens(
+        processed_tokens, thought_token_locations, train_window_size, pad_token_idx
+    )
+    autoregressive_generator = autoregressively_yield_train_pairs(
+        padded_processed_tokens, train_window_size, new_seqlen
+    )
+    return autoregressive_generator, padded_thought_token_locations
+
 
 @overload
-def insert_thought_tokens_and_yield_train_pairs(source_tokens:torch.Tensor, thought_token_vocabulary:list[int], thought_token_insert_rate:float, insertion_method: Literal[ThoughtTokenInsertionMethod.generative_insert], language_model:torch.nn.Module): ...
+def insert_thought_tokens_and_yield_train_pairs(
+    source_tokens: torch.Tensor,
+    thought_token_vocabulary: list[int],
+    thought_token_insert_rate: float,
+    insertion_method: Literal[ThoughtTokenInsertionMethod.autoregressive],
+) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
+    (
+        autoregressive_generator,
+        _,
+    ) = get_autoregressive_generator_and_thought_token_locations(
+        source_tokens, thought_token_vocabulary, thought_token_insert_rate
+    )
+    yield from autoregressive_generator
 
-@overtake(runtime_type_checker='beartype')
-def insert_thought_tokens_and_yield_train_pairs(source_tokens,thought_token_vocabulary, thought_token_insert_rate, insertion_method, language_model = None):
-    insertion_method = equality_fulfillment_transformer(insertion_method)
-    if insertion_method.category == InsertionMethodCategory.common_source:
-        (
-            processed_tokens,
-            new_seqlen,
-            source_token_locations,
-            thought_token_locations,
-        ) = insert_thought_tokens(
-            source_tokens, thought_token_vocabulary, thought_token_insert_rate
-        )
 
-        assert new_seqlen > 1
-        padded_processed_tokens = pad_seq_left(processed_tokens, train_window_size - 1, pad_token_idx)
-        autoregressive_generator = autoregressively_yield_train_pairs(padded_processed_tokens, train_window_size, new_seqlen)
+@overload
+def insert_thought_tokens_and_yield_train_pairs(
+    source_tokens: torch.Tensor,
+    thought_token_vocabulary: list[int],
+    thought_token_insert_rate: float,
+    insertion_method: Literal[ThoughtTokenInsertionMethod.generative_insert],
+    language_model: torch.nn.Module,
+) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
+    (
+        autoregressive_generator,
+        padded_thought_token_locations,
+    ) = get_autoregressive_generator_and_thought_token_locations(
+        source_tokens, thought_token_vocabulary, thought_token_insert_rate
+    )
+    yield from generative_insert_yield_train_pairs(
+        autoregressive_generator,
+        language_model,
+        padded_thought_token_locations,
+        train_window_size,
+    )
 
-        if insertion_method == ThoughtTokenInsertionMethod.autoregressive:
-            yield from autoregressive_generator
-        elif insertion_method == ThoughtTokenInsertionMethod.generative_insert:
-            yield from generative_insert_yield_train_pairs(autoregressive_generator, language_model, thought_token_locations, train_window_size,)
 
-    if not insertion_method.fulfilled: # type: ignore
-        raise UnknownThoughtTokenInsertionMethod(insertion_method)
+@overtake(runtime_type_checker="beartype")
+def insert_thought_tokens_and_yield_train_pairs(
+    source_tokens,
+    thought_token_vocabulary,
+    thought_token_insert_rate,
+    insertion_method,
+    language_model=None,
+):
+    ...
+
+@beartype
+def crop_input_token_by_index_and_window_size(processed_tokens:torch.Tensor, index:int, window_size:int):
+    cropped_tokens = processed_tokens[:, index : index + window_size]
+    return cropped_tokens
+
+@beartype
+def crop_target_token_by_index_and_window_size(processed_tokens:torch.Tensor, index:int, window_size:int):
+    return crop_input_token_by_index_and_window_size(processed_tokens, index+1, window_size)
 
 # the sample process shall start from zero.
-def autoregressively_yield_train_pairs(padded_processed_tokens:torch.Tensor, train_window_size:int, new_seqlen:int):
+@beartype
+def autoregressively_yield_train_pairs(
+    padded_processed_tokens: torch.Tensor, train_window_size: int, new_seqlen: int
+):
     for i in range(new_seqlen - 1):
-        input_tokens = padded_processed_tokens[:, i:i+train_window_size]
-        target_tokens = padded_processed_tokens[:, i+1:i+train_window_size+1]
+        input_tokens = crop_input_token_by_index_and_window_size(padded_processed_tokens, i, train_window_size)
+        target_tokens = crop_target_token_by_index_and_window_size(padded_processed_tokens, i, train_window_size)
         yield input_tokens, target_tokens
+
+@beartype
+def generate_target_tokens(token_prob: torch.Tensor, token_mask: torch.Tensor):
+    # what is the shape of this prob?
+    return ret
 
 # demo on how to use thought tokens.
 @beartype
-def generative_insert_yield_train_pairs(autoregressive_generator:Iterable, language_model:torch.nn.Module, thought_token_locations:torch.Tensor, train_window_size:int):
-    for input_tokens, target_tokens in autoregressive_generator:
-        input_tokens = processed_tokens[1:] # still read the original processed tokens,
-        output_token_prob = language_model(input_tokens)
-        target_token_mask = mask
+def generative_insert_yield_train_pairs(
+    autoregressive_generator: Iterable,
+    target_token_prob_generator: Callable,
+    padded_thought_token_locations: torch.Tensor,
+    train_window_size: int,
+):
+    for i, (input_tokens, _) in enumerate(autoregressive_generator):
+        with torch.no_grad():
+            output_token_prob = target_token_prob_generator(input_tokens)
+        target_token_mask = crop_target_token_by_index_and_window_size(padded_thought_token_locations, i, train_window_size)
         target_tokens = generate_target_tokens(output_token_prob, target_token_mask)
-        yield input_tokens, generative_target_tokens
+        yield input_tokens, target_tokens
+
 
 # output thought tokens affect input tokens?
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # begin test
 
     base_token_count = 1000
@@ -206,10 +300,18 @@ if __name__ == '__main__':
     source_size = (source_batchsize, source_seqlen)
     train_window_size = 10
 
-    thought_token_vocabulary = [base_token_count + i for i in range(thought_token_count)]
+    thought_token_vocabulary = [
+        base_token_count + i for i in range(thought_token_count)
+    ]
 
     source_tokens = torch.randint(
         0, base_token_count, source_size
     )  # okay, lower than upper bound.
 
-    for _ in insert_thought_tokens_and_yield_train_pairs(source_tokens, thought_token_vocabulary, thought_token_insert_rate, ThoughtTokenInsertionMethod.autoregressive):...
+    for _ in insert_thought_tokens_and_yield_train_pairs(
+        source_tokens,
+        thought_token_vocabulary,
+        thought_token_insert_rate,
+        ThoughtTokenInsertionMethod.autoregressive,
+    ):
+        ...
