@@ -475,7 +475,7 @@ if __name__ == "__main__":
     source_tokens = torch.randint(
         0, base_token_count, source_size
     )  # okay, lower than upper bound.
-    
+
     print("[autoregressive]".center(50, "-"))
     for input_tokens, target_tokens in insert_thought_tokens_and_yield_train_pairs(
         ThoughtTokenInsertionMethod.autoregressive,
