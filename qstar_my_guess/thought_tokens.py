@@ -224,7 +224,7 @@ def generative_insert_thought_tokens_and_yield_train_pairs(
     thought_token_insert_rate: NonNegativeFloat,
     non_thought_token_vocabulary: list[int],
     target_token_prob_generator: Callable,
-    probablistic_noise_ratio:ReplaceRatio,
+    probablistic_noise_ratio:ReplaceRatio = 0,
 ) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
     (
         autoregressive_generator,
@@ -239,6 +239,7 @@ def generative_insert_thought_tokens_and_yield_train_pairs(
         thought_token_vocabulary,
         non_thought_token_vocabulary,
         train_window_size,
+        probablistic_noise_ratio
     )
 
 
@@ -259,6 +260,26 @@ def insert_thought_tokens_and_yield_train_pairs(
         target_token_prob_generator,
     )
 
+@beartype
+def generate_porportional_mask_for_tensor(input_tensor:torch.Tensor, porportion: ReplaceRatio):
+    # Determine the number of elements to be zeroed
+    num_elements = input_tensor.numel()
+    num_zero_elements = int(porportion * num_elements)
+
+    # Create a boolean mask for randomly selecting 30% of the elements
+    mask = torch.zeros(num_elements, dtype=torch.bool)
+    mask[:num_zero_elements] = 1  # Set the first 30% elements to True
+    mask = mask[torch.randperm(num_elements)]  # Shuffle the mask randomly
+    return mask
+
+@beartype
+def swap_input_tokens_with_previous_target_tokens_by_swap_ratio(input_tokens:torch.Tensor,prev_target_tokens:torch.Tensor, input_token_swap_ratio):
+    input_mask = generate_porportional_mask_for_tensor(input_tokens, input_token_swap_ratio)
+    prev_target_mask = ~input_mask
+    input_tokens[input_mask] = 0
+    prev_target_tokens[prev_target_mask] = 0
+    input_tokens += prev_target_tokens
+    return input_tokens
 
 @overload
 def insert_thought_tokens_and_yield_train_pairs(
@@ -284,8 +305,11 @@ def insert_thought_tokens_and_yield_train_pairs(
     prev_target_tokens = None
     for input_tokens, target_tokens in generator:
         if prev_target_tokens is not None:
-            # input_token_swap_ratio
-            input_tokens = prev_target_tokens
+            if input_token_swap_ratio > 0:
+                input_tokens = swap_input_tokens_with_previous_target_tokens_by_swap_ratio(input_tokens, prev_target_tokens, input_token_swap_ratio)
+            else:
+                input_tokens = prev_target_tokens
+
         yield input_tokens, target_tokens
         prev_target_tokens = target_tokens.clone()
 
@@ -374,6 +398,28 @@ def generate_target_tokens_with_thought_token_loctions_and_non_thought_token_voc
 
     return ret_tokens
 
+@beartype
+def generate_gaussian_noise_within_bounds(size:tuple, lower:float, upper:float):
+    assert lower <= upper, f"rule lower ({lower}) <= upper ({upper}) does not comply"
+    # Parameters
+    mean = 0
+    std = 1
+    # Generate Gaussian noise
+    noise = torch.normal(mean, std, size=size)  # Generate 10 samples of Gaussian noise
+
+    # Scale the noise to the range [a, b]
+    scaled_noise = (noise - noise.mean()) / noise.std()  # Standardize the noise
+    scaled_noise = (scaled_noise * (upper - lower)) + (lower + upper) / 2  # Scale to the desired range
+    return scaled_noise
+
+
+@beartype
+def add_probablistic_noise_to_prob(token_prob:torch.Tensor, probablistic_noise_ratio:ReplaceRatio):
+    min_prob = float(token_prob.min())
+    max_prob = float(token_prob.max())
+    noise_prob = generate_gaussian_noise_within_bounds(token_prob.shape, min_prob, max_prob)
+    token_prob_with_noise = token_prob + noise_prob * probablistic_noise_ratio
+    return token_prob_with_noise
 
 # demo on how to use thought tokens.
 @beartype
@@ -384,10 +430,12 @@ def generative_insert_yield_train_pairs(
     thought_token_vocabulary: list[int],
     non_thought_token_vocabulary: list[int],
     train_window_size: int,
+    probablistic_noise_ratio: ReplaceRatio,
 ):
     for i, (input_tokens, _) in enumerate(autoregressive_generator):
         with torch.no_grad():
             output_token_prob = target_token_prob_generator(input_tokens)
+            output_token_prob = add_probablistic_noise_to_prob(output_token_prob,probablistic_noise_ratio)
         thought_token_locations = crop_target_token_by_index_and_window_size(
             padded_thought_token_locations, i, train_window_size
         )
