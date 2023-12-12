@@ -2,22 +2,24 @@ from typing import Callable, Iterable, Optional
 import torch
 import math
 from beartype import beartype
+from beartype.vale import Is
 import torch.nn.functional as F
 from enum import auto, Enum
 import copy
-from typing_extensions import overload, Literal
+from typing_extensions import overload, Literal, Annotated
 from overtake import overtake  # type: ignore
 
+ReplaceRatio = Annotated[float, Is[lambda number: 0 <= number < 1]]
+NonNegativeFloat = Annotated[float, Is[lambda number: number > 0]]
 
 class InsertionMethodCategory(Enum):
     common_source = auto()
     separate_source = auto()
 
-
 class ThoughtTokenInsertionMethod(Enum):
     autoregressive = (auto(), InsertionMethodCategory.common_source)
     generative_insert = (auto(), InsertionMethodCategory.common_source)
-    generative_insert_and_overwrite = (
+    generative_insert_and_overwrite = ( # with probablistic noise and original random token swap ratio
         auto(),
         InsertionMethodCategory.common_source,
     )  # will use generated target tokens to replace original randomly inserted thought tokens.
@@ -132,7 +134,7 @@ def sample_thought_tokens(
 def insert_thought_tokens(
     source_tokens: torch.Tensor,
     thought_token_vocabulary: list[int],
-    thought_token_insert_rate: float,
+    thought_token_insert_rate: NonNegativeFloat,
 ):
     batch, seqlen = get_batch_and_seqlen(source_tokens)
     added_seqlen, new_seqlen, zeros = create_zeros_from_shape_and_insert_rate(
@@ -176,7 +178,7 @@ def pad_processed_and_thought_tokens(
 def get_autoregressive_generator_and_thought_token_locations(
     source_tokens: torch.Tensor,
     thought_token_vocabulary: list[int],
-    thought_token_insert_rate: float,
+    thought_token_insert_rate: NonNegativeFloat,
 ):
     (
         processed_tokens,
@@ -205,7 +207,7 @@ def insert_thought_tokens_and_yield_train_pairs(
     insertion_method: Literal[ThoughtTokenInsertionMethod.autoregressive],
     source_tokens: torch.Tensor,
     thought_token_vocabulary: list[int],
-    thought_token_insert_rate: float,
+    thought_token_insert_rate: NonNegativeFloat,
 ) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
     (
         autoregressive_generator,
@@ -219,9 +221,10 @@ def insert_thought_tokens_and_yield_train_pairs(
 def generative_insert_thought_tokens_and_yield_train_pairs(
     source_tokens: torch.Tensor,
     thought_token_vocabulary: list[int],
-    thought_token_insert_rate: float,
+    thought_token_insert_rate: NonNegativeFloat,
     non_thought_token_vocabulary: list[int],
     target_token_prob_generator: Callable,
+    probablistic_noise_ratio:ReplaceRatio,
 ) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
     (
         autoregressive_generator,
@@ -244,7 +247,7 @@ def insert_thought_tokens_and_yield_train_pairs(
     insertion_method: Literal[ThoughtTokenInsertionMethod.generative_insert],
     source_tokens: torch.Tensor,
     thought_token_vocabulary: list[int],
-    thought_token_insert_rate: float,
+    thought_token_insert_rate: NonNegativeFloat,
     non_thought_token_vocabulary: list[int],
     target_token_prob_generator: Callable,
 ) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
@@ -264,9 +267,11 @@ def insert_thought_tokens_and_yield_train_pairs(
     ],
     source_tokens: torch.Tensor,
     thought_token_vocabulary: list[int],
-    thought_token_insert_rate: float,
+    thought_token_insert_rate: NonNegativeFloat,
     non_thought_token_vocabulary: list[int],
     target_token_prob_generator: torch.nn.Module,
+    probablistic_noise_ratio:ReplaceRatio,
+    input_token_swap_ratio:ReplaceRatio,
 ) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
     generator = generative_insert_thought_tokens_and_yield_train_pairs(
         source_tokens,
@@ -274,10 +279,12 @@ def insert_thought_tokens_and_yield_train_pairs(
         thought_token_insert_rate,
         non_thought_token_vocabulary,
         target_token_prob_generator,
+        probablistic_noise_ratio,
     )
     prev_target_tokens = None
     for input_tokens, target_tokens in generator:
         if prev_target_tokens is not None:
+            # input_token_swap_ratio
             input_tokens = prev_target_tokens
         yield input_tokens, target_tokens
         prev_target_tokens = target_tokens.clone()
@@ -291,6 +298,8 @@ def insert_thought_tokens_and_yield_train_pairs(
     thought_token_insert_rate,
     non_thought_token_vocabulary=None,
     target_token_prob_generator=None,
+    probablistic_noise_ratio = 0,
+    input_token_swap_ratio = 0
 ):
     ...
 
