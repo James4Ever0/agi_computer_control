@@ -11,11 +11,11 @@ import torch
 
 # TODO: hierarchy of control
 
-# v1: separated word model & control model
+# v1: separated world model & control model
 init_sequence = world_model(noise)
 
 # v2: unified word model & control model
-init_sequence = uniform_model(noise) # unified model will need some token generation restriction.
+init_sequence = uniform_model(noise, mode=world) # unified model will need some token generation restriction.
 
 # v3: real world evaluators, no time traversal, but can change previous prompt (regret, backpropagate, (optionally) forget (maximize gradient) old (wrong) prediction  and learn (minimize gradient) actual (real) prediction)
 init_sequence = real_world(random_actions) # does this real world support time traversal?
