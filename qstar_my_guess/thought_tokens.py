@@ -23,9 +23,10 @@ class ThoughtTokenInsertionMethod(Enum):
         auto(),
         InsertionMethodCategory.common_source,
     )  # will use generated target tokens to replace original randomly inserted thought tokens.
+
     # not implemented
-    iterate_and_insert_separately = (auto(), InsertionMethodCategory.separate_source)
-    iterate_and_insert_together = (auto(), InsertionMethodCategory.separate_source)
+    # iterate_and_insert_separately = (auto(), InsertionMethodCategory.separate_source)
+    # iterate_and_insert_together = (auto(), InsertionMethodCategory.separate_source)
 
     @property
     def category(self):
@@ -66,13 +67,13 @@ def get_batch_and_seqlen(source_tokens: torch.Tensor):
 
 
 @beartype
-def create_zeros_from_shape_and_insert_rate(
-    batch: int, seqlen: int, insert_rate: float
+def create_zeros_from_tensor_metadata_and_insert_rate(
+    batch: int, seqlen: int, dtype: torch.dtype,insert_rate: float
 ):
     assert insert_rate > 0, f"insert rate not positive: {insert_rate}"
     added_seqlen = math.ceil(thought_token_insert_rate * seqlen)
     new_seqlen = seqlen + added_seqlen
-    zeros = torch.ones((batch, new_seqlen))
+    zeros = torch.zeros((batch, new_seqlen), dtype=dtype)
     return added_seqlen, new_seqlen, zeros
 
 
@@ -137,8 +138,8 @@ def insert_thought_tokens(
     thought_token_insert_rate: NonNegativeFloat,
 ):
     batch, seqlen = get_batch_and_seqlen(source_tokens)
-    added_seqlen, new_seqlen, zeros = create_zeros_from_shape_and_insert_rate(
-        batch, seqlen, thought_token_insert_rate
+    added_seqlen, new_seqlen, zeros = create_zeros_from_tensor_metadata_and_insert_rate(
+        batch, seqlen, source_tokens.dtype, thought_token_insert_rate
     )
     source_token_locations = insert_source_token_to_zeros(
         source_tokens, zeros, batch, seqlen, new_seqlen
@@ -474,11 +475,16 @@ if __name__ == "__main__":
     source_tokens = torch.randint(
         0, base_token_count, source_size
     )  # okay, lower than upper bound.
-
-    for _ in insert_thought_tokens_and_yield_train_pairs(
+    
+    print("[autoregressive]".center(50, "-"))
+    for input_tokens, target_tokens in insert_thought_tokens_and_yield_train_pairs(
         ThoughtTokenInsertionMethod.autoregressive,
         source_tokens,
         thought_token_vocabulary,
         thought_token_insert_rate,
-    ):
-        ...
+    ):  
+        print(input_tokens)
+        print(target_tokens)
+        print("-"*50)
+        # breakpoint()
+    
