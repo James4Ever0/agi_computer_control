@@ -2,6 +2,8 @@ import torch
 
 # [outcome -> prompt that want outcome to be true] -> action
 
+# let the model think about how to convert environment feedback into feelings or steps, so that we can achieve it, differentiate it instead of comparing target pixel to pixel
+
 # just make human readable text appear in the prediction, or a special translator to translate text into outcome tokens. (ask the robot: what you have done?)
 
 # consciousness could be a system that decide to combine prediction (self-image) as part of the perception, and process them hierarchically
@@ -36,7 +38,7 @@ reverse_sequence = init_sequence.reverse()
 target_token = reverse_world_model(reverse_token + reverse_sequence)
 target_token = world_model(init_sequence + memory_retrieval_token)
 target_token = init_sequence[-10]
-target_token = info_retrieveal(init_sequence, ahead=10)
+target_token = info_retrieval(init_sequence, ahead=10)
 
 # future tokens: future predictions that being made short or slow (skipping intermediate steps, or making it faster), or contradict with common future predictions (unusual, less probable future tokens)
 
