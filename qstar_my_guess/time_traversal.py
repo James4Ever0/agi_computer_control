@@ -2,7 +2,7 @@ import torch
 
 # [outcome -> prompt that want outcome to be true] -> action
 
-# just make human readable text appear in the prediction. (what you have done?)
+# just make human readable text appear in the prediction, or a special translator to translate text into outcome tokens. (ask the robot: what you have done?)
 
 # consciousness could be a system that decide to combine prediction (self-image) as part of the perception, and process them hierarchically
 
