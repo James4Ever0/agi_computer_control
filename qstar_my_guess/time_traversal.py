@@ -1,5 +1,7 @@
 import torch
 
+# consciousness could be a system that decide to combine prediction (self-image) as part of the perception, and process them hierarchically
+
 # q+astar & mcts
 
 # heuristic: compute cosine similarity between target token and actual token
@@ -7,6 +9,10 @@ import torch
 
 # where do targets come from?
 # historical tokens: reverse order autoregressive model predictions, memory retrieval, past context
+
+# TODO: randomly act and compare actual outcome, change world model & prompt
+# TODO: make capitalism and machine community
+# TODO: use neural network instead of external goal generator when it is trusted, and can create some rhythmic consciousness instead of synthetic
 
 reverse_sequence = init_sequence.reverse()
 target_token = reverse_world_model(reverse_token + reverse_sequence)
@@ -103,4 +109,6 @@ reward = calculate_reward(computational_time, loss_delta)
 q_function_prediction_accuracy = compare_loss(q_predicted_loss, actual_loss)
 if q_function_prediction_accuracy < 0.1:
     # trusted, use it instead.
+    ...
+else: # continue traversal
     ...
