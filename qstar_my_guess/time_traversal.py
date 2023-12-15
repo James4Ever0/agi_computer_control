@@ -2,11 +2,19 @@ import torch
 
 # [outcome -> prompt that want outcome to be true] -> action
 
-# let the model think about how to convert environment feedback into feelings or steps, so that we can achieve it, differentiate it instead of comparing target pixel to pixel
+# let the model think about how to convert environment feedback into feelings or steps, so that we can achieve it, differentiate it instead of comparing target pixel to pixel to outcome. because usually we cannot just let the same scenario happen again, but feelings can be manipulated.
 
-# just make human readable text appear in the prediction, or a special translator to translate text into outcome tokens. (ask the robot: what you have done?)
+# how to train the feeling model?
+
+# current state + current feeling -> next state + next feeling ...
+
+# there must be some irreversible process in the feeling generation.
+
+# just make human readable text appear in the prediction, or a special translator to translate text into outcome tokens. (ask the robot: what you have done?) 
 
 # consciousness could be a system that decide to combine prediction (self-image) as part of the perception, and process them hierarchically
+
+# the target can be random, instead of carefully crafted. can mix with current state or some other state in order to determine the gradient.
 
 # q+astar & mcts
 
