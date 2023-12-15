@@ -1,5 +1,9 @@
 import torch
 
+# [outcome -> prompt that want outcome to be true] -> action
+
+# just make human readable text appear in the prediction. (what you have done?)
+
 # consciousness could be a system that decide to combine prediction (self-image) as part of the perception, and process them hierarchically
 
 # q+astar & mcts
@@ -7,37 +11,53 @@ import torch
 # heuristic: compute cosine similarity between target token and actual token
 # sequence heuristic: seqlen heuristic
 
+cosine_distance = (1 - torch.cosine_similarity(init_token, current_token)) + (
+    1 - torch.cosine_similarity(target_token, current_token)
+)
+heuristic_distance = cosine_distance + sequence_length
+
 # where do targets come from?
 # historical tokens: reverse order autoregressive model predictions, memory retrieval, past context
 
 # TODO: randomly act and compare actual outcome, change world model & prompt
+outcome = actual_world_model(random_act)
+virtual_world_model.change(random_act, outcome)
+prompt_model.change(outcome, random_act)
+
 # TODO: make capitalism and machine community
+if paid_price:
+    backpropagate(amount, resource_consumption)
+
+if want_to_listen:
+    continue_generation
 # TODO: use neural network instead of external goal generator when it is trusted, and can create some rhythmic consciousness instead of synthetic
 
 reverse_sequence = init_sequence.reverse()
 target_token = reverse_world_model(reverse_token + reverse_sequence)
-target_token = world_model(init_sequence+ memory_retrieval_token)
+target_token = world_model(init_sequence + memory_retrieval_token)
 target_token = init_sequence[-10]
-target_token = info_retrieveal(init_sequence, ahead = 10)
+target_token = info_retrieveal(init_sequence, ahead=10)
 
 # future tokens: future predictions that being made short or slow (skipping intermediate steps, or making it faster), or contradict with common future predictions (unusual, less probable future tokens)
 
 target_token = world_model(init_sequence)[-2]
-target_token = speed_change(future_predictions,factor = 0.5)
-target_token = speed_change(future_predictions,factor = 2)
+target_token = speed_change(future_predictions, factor=0.5)
+target_token = speed_change(future_predictions, factor=2)
 target_token = inverse(future_predictions)
-target_token = world_model(init_sequence, sample_below = 0.2)
+target_token = world_model(init_sequence, sample_below=0.2)
 
 
 # TODO: hierarchy of control (by two special tokens: <abstract> and <deabstract>. one can set max abstraction level)
-wrapped_model = model_abstraction_wrapper(unified_model, init_abstraction_level = 0, max_abstration_level = 5)
-wrapped_model.abstact() # insert one <abstract> left
-wrapped_model.deabstact() # insert one <deabstract> left
-wrapped_model.get_abstraction_level() # 0
+wrapped_model = model_abstraction_wrapper(
+    unified_model, init_abstraction_level=0, max_abstration_level=5
+)
+wrapped_model.abstact()  # insert one <abstract> left
+wrapped_model.deabstact()  # insert one <deabstract> left
+wrapped_model.get_abstraction_level()  # 0
 # TODO: slowing down and speeding up
-output = speed_adjustment(sequence, factor = 0.5)
+output = speed_adjustment(sequence, factor=0.5)
 # TODO: emitting multiple kinds of tokens at the same time, at separate channels
-world_tokens, action_tokens = unified_model(init_sequence, modes = [world, action])
+world_tokens, action_tokens = unified_model(init_sequence, modes=[world, action])
 # TODO: rollback gradient descent when no further improvement is found
 commit_hash = model.descent()
 model.rollback(commit_hash)
@@ -73,7 +93,7 @@ else:
     prompter_remember(current_prompt, current_outcome)
     actor_remember(current_action, current_outcome)
     actor_regret(prompt, current_action, target)
-    prompter_regret(prompt, target)# will change the prompt manufacturer
+    prompter_regret(prompt, target)  # will change the prompt manufacturer
     # prompt = prompt_manufacturer(target) -> action -> current_outcome
     # delta_prompt, delta_action, delta_current_outcome -> closer than target
 
@@ -88,7 +108,9 @@ prompt = special_token + target
 prompt = get_thought_tokens(
     special_token + target, seqlen
 )  # thought tokens has to be "understood" by the model, so that we can know its intention (can we convert natural language prompt to thought tokens, aligned?)
-meaning = get_thought_meaning(prompt, token_space = english) # kind of like the machine using input method.
+meaning = get_thought_meaning(
+    prompt, token_space=english
+)  # kind of like the machine using input method.
 
 # perform gradient descent based on cosine similarity, more similar result to target, more learning.
 # only perform descent on the most similar one, or the most plausible way.
@@ -110,5 +132,5 @@ q_function_prediction_accuracy = compare_loss(q_predicted_loss, actual_loss)
 if q_function_prediction_accuracy < 0.1:
     # trusted, use it instead.
     ...
-else: # continue traversal
+else:  # continue traversal
     ...
