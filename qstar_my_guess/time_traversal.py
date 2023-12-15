@@ -7,13 +7,34 @@ import torch
 
 # where do targets come from?
 # historical tokens: reverse order autoregressive model predictions, memory retrieval, past context
+
+reverse_sequence = init_sequence.reverse()
+target_token = reverse_world_model(reverse_token + reverse_sequence)
+target_token = world_model(init_sequence+ memory_retrieval_token)
+target_token = init_sequence[-10]
+target_token = info_retrieveal(init_sequence, ahead = 10)
+
 # future tokens: future predictions that being made short or slow (skipping intermediate steps, or making it faster), or contradict with common future predictions (unusual, less probable future tokens)
 
+target_token = world_model(init_sequence)[-2]
+target_token = speed_change(future_predictions,factor = 0.5)
+target_token = speed_change(future_predictions,factor = 2)
+target_token = inverse(future_predictions)
+target_token = world_model(init_sequence, sample_below = 0.2)
+
+
 # TODO: hierarchy of control (by two special tokens: <abstract> and <deabstract>. one can set max abstraction level)
+wrapped_model = model_abstraction_wrapper(unified_model, init_abstraction_level = 0, max_abstration_level = 5)
+wrapped_model.abstact() # insert one <abstract> left
+wrapped_model.deabstact() # insert one <deabstract> left
+wrapped_model.get_abstraction_level() # 0
 # TODO: slowing down and speeding up
-output = speed_adjustment()
+output = speed_adjustment(sequence, factor = 0.5)
 # TODO: emitting multiple kinds of tokens at the same time, at separate channels
+world_tokens, action_tokens = unified_model(init_sequence, modes = [world, action])
 # TODO: rollback gradient descent when no further improvement is found
+commit_hash = model.descent()
+model.rollback(commit_hash)
 
 # v1: separated world model & control model
 
@@ -65,6 +86,12 @@ meaning = get_thought_meaning(prompt, token_space = english) # kind of like the 
 
 # perform gradient descent based on cosine similarity, more similar result to target, more learning.
 # only perform descent on the most similar one, or the most plausible way.
+max_potential = 0
+for way in ways:
+    potential = get_potential_from_way(way)
+    if potential > max_potential:
+        candidate_way = way
+        max_potential = potential
 # next time learn about the same pattern, we still select the most similar one, closing the gap.
 
 # a*: minimize distance from target to result + distance from source (init state) to result
@@ -73,3 +100,7 @@ meaning = get_thought_meaning(prompt, token_space = english) # kind of like the 
 reward = calculate_reward(computational_time, loss_delta)
 
 # q function shall be used with caution. it will have some weight against actual evaulation. only if it is trusted, we can give it some high weight value in order to reduce computation.
+q_function_prediction_accuracy = compare_loss(q_predicted_loss, actual_loss)
+if q_function_prediction_accuracy < 0.1:
+    # trusted, use it instead.
+    ...
