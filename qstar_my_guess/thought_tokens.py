@@ -224,7 +224,7 @@ def generative_insert_thought_tokens_and_yield_train_pairs(
     thought_token_vocabulary: list[int],
     thought_token_insert_rate: NonNegativeFloat,
     non_thought_token_vocabulary: list[int],
-    target_token_prob_generator: Callable,
+    target_token_prob_generator: Callable[[torch.Tensor], torch.Tensor],
     probablistic_noise_ratio:ReplaceRatio = 0,
 ) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
     (
@@ -251,7 +251,7 @@ def insert_thought_tokens_and_yield_train_pairs(
     thought_token_vocabulary: list[int],
     thought_token_insert_rate: NonNegativeFloat,
     non_thought_token_vocabulary: list[int],
-    target_token_prob_generator: Callable,
+    target_token_prob_generator: Callable[[torch.Tensor], torch.Tensor],
 ) -> Iterable[tuple[torch.Tensor, torch.Tensor]]:
     yield from generative_insert_thought_tokens_and_yield_train_pairs(
         source_tokens,
@@ -426,7 +426,7 @@ def add_probablistic_noise_to_prob(token_prob:torch.Tensor, probablistic_noise_r
 @beartype
 def generative_insert_yield_train_pairs(
     autoregressive_generator: Iterable,
-    target_token_prob_generator: Callable,
+    target_token_prob_generator: Callable[[torch.Tensor], torch.Tensor],
     padded_thought_token_locations: torch.Tensor,
     thought_token_vocabulary: list[int],
     non_thought_token_vocabulary: list[int],

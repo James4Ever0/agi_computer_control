@@ -1,16 +1,20 @@
 import torch
+from beartype import beartype
+from typing import Callable
+
+# use mcts to find the closest solution to the prompt, and use gradient descent to strenghten the result. from rationale to intuition.
 
 # [outcome -> prompt that want outcome to be true] -> action
 
 # let the model think about how to convert environment feedback into feelings or steps, so that we can achieve it, differentiate it instead of comparing target pixel to pixel to outcome. because usually we cannot just let the same scenario happen again, but feelings can be manipulated.
 
-# how to train the feeling model?
+# how to train the feeling model? static reservior computing?
 
 # current state + current feeling -> next state + next feeling ...
 
 # there must be some irreversible process in the feeling generation.
 
-# just make human readable text appear in the prediction, or a special translator to translate text into outcome tokens. (ask the robot: what you have done?) 
+# just make human readable text appear in the prediction, or a special translator to translate text into outcome tokens. (ask the robot: what you have done?)
 
 # consciousness could be a system that decide to combine prediction (self-image) as part of the perception, and process them hierarchically
 
@@ -21,10 +25,18 @@ import torch
 # heuristic: compute cosine similarity between target token and actual token
 # sequence heuristic: seqlen heuristic
 
-cosine_distance = (1 - torch.cosine_similarity(init_token, current_token)) + (
-    1 - torch.cosine_similarity(target_token, current_token)
-)
-heuristic_distance = cosine_distance + sequence_length
+@beartype
+def calculate_heuristic_distance(init_token:torch.Tensor, current_token:torch.Tensor,target_token:torch.Tensor, sequence_length:torch.Tensor, dim:int= 1):
+    cosine_distance = (1 - torch.cosine_similarity(init_token, current_token, dim = dim)) + (
+        1 - torch.cosine_similarity(target_token, current_token, dim = dim)
+    )
+    heuristic_distance = cosine_distance + sequence_length
+    return heuristic_distance
+
+@beartype
+def reverse_sequence(sequence:torch.Tensor, dim:int = 1):
+    ret = torch.flip(sequence, dims=[dim])
+    return ret
 
 # where do targets come from?
 # historical tokens: reverse order autoregressive model predictions, memory retrieval, past context
@@ -42,8 +54,8 @@ if want_to_listen:
     continue_generation
 # TODO: use neural network instead of external goal generator when it is trusted, and can create some rhythmic consciousness instead of synthetic
 
-reverse_sequence = init_sequence.reverse()
-target_token = reverse_world_model(reverse_token + reverse_sequence)
+revseq = reverse_sequence(init_sequence)
+target_token = reverse_world_model(reverse_token + revseq)
 target_token = world_model(init_sequence + memory_retrieval_token)
 target_token = init_sequence[-10]
 target_token = info_retrieval(init_sequence, ahead=10)
@@ -103,7 +115,7 @@ else:
     prompter_remember(current_prompt, current_outcome)
     actor_remember(current_action, current_outcome)
     actor_regret(prompt, current_action, target)
-    prompter_regret(prompt, target)  # will change the prompt manufacturer
+    prompter_regret(prompt, target) # will change the prompt manufacturer
     # prompt = prompt_manufacturer(target) -> action -> current_outcome
     # delta_prompt, delta_action, delta_current_outcome -> closer than target
 
