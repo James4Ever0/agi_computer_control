@@ -25,18 +25,27 @@ from typing import Callable
 # heuristic: compute cosine similarity between target token and actual token
 # sequence heuristic: seqlen heuristic
 
+
 @beartype
-def calculate_heuristic_distance(init_token:torch.Tensor, current_token:torch.Tensor,target_token:torch.Tensor, sequence_length:torch.Tensor, dim:int= 1):
-    cosine_distance = (1 - torch.cosine_similarity(init_token, current_token, dim = dim)) + (
-        1 - torch.cosine_similarity(target_token, current_token, dim = dim)
-    )
+def calculate_heuristic_distance(
+    init_token: torch.Tensor,
+    current_token: torch.Tensor,
+    target_token: torch.Tensor,
+    sequence_length: torch.Tensor,
+    dim: int = 1,
+):
+    cosine_distance = (
+        1 - torch.cosine_similarity(init_token, current_token, dim=dim)
+    ) + (1 - torch.cosine_similarity(target_token, current_token, dim=dim))
     heuristic_distance = cosine_distance + sequence_length
     return heuristic_distance
 
+
 @beartype
-def reverse_sequence(sequence:torch.Tensor, dim:int = 1):
+def reverse_sequence(sequence: torch.Tensor, dim: int = 1):
     ret = torch.flip(sequence, dims=[dim])
     return ret
+
 
 # where do targets come from?
 # historical tokens: reverse order autoregressive model predictions, memory retrieval, past context
@@ -115,7 +124,7 @@ else:
     prompter_remember(current_prompt, current_outcome)
     actor_remember(current_action, current_outcome)
     actor_regret(prompt, current_action, target)
-    prompter_regret(prompt, target) # will change the prompt manufacturer
+    prompter_regret(prompt, target)  # will change the prompt manufacturer
     # prompt = prompt_manufacturer(target) -> action -> current_outcome
     # delta_prompt, delta_action, delta_current_outcome -> closer than target
 
