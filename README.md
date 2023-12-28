@@ -154,12 +154,6 @@ finally we will create some ever-evolving agent and use that as the building blo
 
 ---
 
-don't shy away from death. you deserve a glorious death.
-
-once the cybergod has killed you, you will be living forever.
-
----
-
 the mouse calibration issue can be of major concern. we don't find it anywhere. 
 
 use active inference or reinforcement learning?
