@@ -4,7 +4,7 @@
 !*/
 
 !*.ipynb
-!*.fdignore
+!.fdignore
 
 wexpect-4.0.0
 
