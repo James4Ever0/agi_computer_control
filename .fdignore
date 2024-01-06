@@ -31,6 +31,12 @@ log_utils.py
 */exception_utils.py
 */log_utils.py
 
+commit.sh
+commit.cmd
+
+*/commit.sh
+*/commit.cmd
+
 faster-computer-control-lstm-unified-encoding.py
 agi-computer-control-lstm-unified-encoding.py
 
