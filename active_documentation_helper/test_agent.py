@@ -7,8 +7,60 @@ import asyncio
 import json
 import beartype
 
+prompt = """You are a terminal operator under VT100 environment.
+
+Avaliable special codes:
+
+BACKSPACE TAB ENTER ESC PGUP PGDN END HOME LEFT RIGHT INS DEL
+CTRL+A ... CTRL+Z
+CTRL+0 ... CTRL+9
+F1 ... F12
+
+Besides for the built-in special codes, you can also directly write VT100 commands.
+
+Avaliable commands:
+
+TYPE VIEW
+
+Syntax: 
+
+Each line you generate will be either treated as a single special code or normal string input. The only way to write a newline is to use "ENTER" special code.
+
+If you want to write special code as literal strings, you can use a special command "TYPE", use it like this: `TYPE <special code>`
+
+By default you can only receive the changed lines each turn. If you want to view the whole screen, you can use "VIEW" command. Next turn will show you the full screen.
+
+Example 1: Hello world
+
+echo "Hello world!"
+ENTER
+
+Example 2: Special prefix usage, will print "ENTER"
+
+echo 
+TYPE ENTER
+ENTER
+
+Example 3: View the full screen, instead of only showing the changed lines
+
+echo "View the screen"
+ENTER
+VIEW
+
+"""
+
 @beartype.beartype
-async def recv(ws:websockets.WebSocketClientProtocol):
+def dump_full_screen(screen_by_line: dict[int, str]):
+    screen = ""
+    for k in sorted(screen_by_line.keys()):
+        screen += screen_by_line[k]
+        screen += "\n"
+    return screen
+
+
+@beartype.beartype
+async def recv(ws: websockets.WebSocketClientProtocol):
+    screen_by_line = {}
     while not ws.closed:
         # Background task: Infinite loop for receiving data
         try:
@@ -20,14 +72,24 @@ async def recv(ws:websockets.WebSocketClientProtocol):
         parse_failed = True
         try:
             data = json.loads(data)
-            cursor = data['c']
-            lines = data['lines'] # somehow it only send updated lines.
-            screen = ""
+            cursor = data["c"]
+            print("cursur at:", cursor)
+            lines = data["lines"]  # somehow it only send updated lines.
+            updated_screen = ""
+            updated_linenos = []
             for lineno, elems in lines:
+                line = ""
+                updated_linenos.append(lineno)
                 for char, _, _, _ in elems:
-                    screen += char
-                screen += "\n"
-            print(screen)
+                    line += char
+                screen_by_line[lineno] = line
+                updated_screen += f"[{str(lineno).center(2)}] {line}"
+                updated_screen += "\n"
+            print("updated content:")
+            print(updated_screen)
+            print("updated lines:", *updated_linenos)
+            print("fullscreen:")
+            print(dump_full_screen(screen_by_line))
             parse_failed = False
         except:
             pass
@@ -36,18 +98,131 @@ async def recv(ws:websockets.WebSocketClientProtocol):
             print("!!!!FAILED TO PARSE RESPONSE AS JSON!!!!")
 
 
-async def main():
-    command_list = ["i", "Hello world!", "\u001b", ":q!"]
+BACKSPACE = "\u0008"
+TAB = "\u0009"
+ESC = "\u001b"
+CSI = ESC + "["
+F_N = {
+    1: CSI + "[A",
+    2: CSI + "[B",
+    3: CSI + "[C",
+    4: CSI + "[D",
+    5: CSI + "[E",
+    6: CSI + "17~",
+    7: CSI + "18~",
+    8: CSI + "19~",
+    9: CSI + "20~",
+    10: CSI + "21~",
+    11: CSI + "23~",
+    12: CSI + "24~",
+}
+CONTROL_N = {
+    0: "\u0030",
+    1: "\u0031",
+    2: "\u0000",
+    3: "\u001b",
+    4: "\u001c",
+    5: "\u001d",
+    6: "\u001e",
+    7: "\u001f",
+    8: "\u007f",
+    9: "\u0039",
+}
+
+SPECIAL_CODES = {
+    "BACKSPACE": BACKSPACE,
+    "TAB": TAB,
+    "ENTER": "\n",
+    "ESC": ESC,
+    "PGUP": CSI + "5~",
+    "PGDN": CSI + "6~",
+    "END": CSI + "4~",
+    "HOME": CSI + "1~",
+    "LEFT": CSI + "D",
+    "RIGHT": CSI + "C",
+    "INS": CSI + "2~",
+    "DEL": CSI + "3~",
+}
+
+FN_CODES = {
+    "F1": F_N[1],
+    "F2": F_N[2],
+    "F3": F_N[3],
+    "F4": F_N[4],
+    "F5": F_N[5],
+    "F6": F_N[6],
+    "F7": F_N[7],
+    "F8": F_N[8],
+    "F9": F_N[9],
+    "F10": F_N[10],
+    "F11": F_N[11],
+    "F12": F_N[12],
+}
+
+CTRL_CODES = {
+    "CTRL+A": chr(ord("A") - 65 + 1),
+    "CTRL+B": chr(ord("B") - 65 + 1),
+    "CTRL+C": chr(ord("C") - 65 + 1),
+    "CTRL+D": chr(ord("D") - 65 + 1),
+    "CTRL+E": chr(ord("E") - 65 + 1),
+    "CTRL+F": chr(ord("F") - 65 + 1),
+    "CTRL+G": chr(ord("G") - 65 + 1),
+    "CTRL+H": chr(ord("H") - 65 + 1),
+    "CTRL+I": chr(ord("I") - 65 + 1),
+    "CTRL+J": chr(ord("J") - 65 + 1),
+    "CTRL+K": chr(ord("K") - 65 + 1),
+    "CTRL+L": chr(ord("L") - 65 + 1),
+    "CTRL+M": chr(ord("M") - 65 + 1),
+    "CTRL+N": chr(ord("N") - 65 + 1),
+    "CTRL+O": chr(ord("O") - 65 + 1),
+    "CTRL+P": chr(ord("P") - 65 + 1),
+    "CTRL+Q": chr(ord("Q") - 65 + 1),
+    "CTRL+R": chr(ord("R") - 65 + 1),
+    "CTRL+S": chr(ord("S") - 65 + 1),
+    "CTRL+T": chr(ord("T") - 65 + 1),
+    "CTRL+U": chr(ord("U") - 65 + 1),
+    "CTRL+V": chr(ord("V") - 65 + 1),
+    "CTRL+W": chr(ord("W") - 65 + 1),
+    "CTRL+X": chr(ord("X") - 65 + 1),
+    "CTRL+Y": chr(ord("Y") - 65 + 1),
+    "CTRL+Z": chr(ord("Z") - 65 + 1),
+    "CTRL+0": CONTROL_N[0],
+    "CTRL+1": CONTROL_N[1],
+    "CTRL+2": CONTROL_N[2],
+    "CTRL+3": CONTROL_N[3],
+    "CTRL+4": CONTROL_N[4],
+    "CTRL+5": CONTROL_N[5],
+    "CTRL+6": CONTROL_N[6],
+    "CTRL+7": CONTROL_N[7],
+    "CTRL+8": CONTROL_N[8],
+    "CTRL+9": CONTROL_N[9],
+}
+
+SPECIAL_CODES.update(FN_CODES)
+SPECIAL_CODES.update(CTRL_CODES)
+
+COMMANDS = ["TYPE", "VIEW"]
+
+@beartype.beartype
+def translate_command(cmd: str):
+    return SPECIAL_CODES.get(cmd, cmd)
+
+async def main(port=8028):
+    # command_list = ["i", "Hello world!", "\u001b", ":q!"]
+    command_list = ["i", "Hello world!", "ESC", ":q!"]
     async with websockets.connect(
-        "ws://localhost:8028/ws"
+        f"ws://localhost:{port}/ws"
     ) as ws:  # can also be `async for`, retry on `websockets.ConnectionClosed`
         recv_task = asyncio.create_task(recv(ws))
         for cmd in command_list:
-            print("Sending command: " + cmd)
+            print("Translating command:", cmd)
+            translated_cmd = translate_command(cmd)
+            print("Sending translated command:" + translated_cmd)
             await ws.send(cmd)
             await asyncio.sleep(1)
         await ws.close()
         await recv_task
+
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())

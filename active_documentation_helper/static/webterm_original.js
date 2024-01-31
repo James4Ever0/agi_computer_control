@@ -1,14 +1,5 @@
 "use strict";
 
-function dumpEventData(e){
-    let event_keys = Object.keys(e.__proto__);
-    let event_data = {}
-    for (let k of event_keys) {
-      event_data[k] = e[k];
-    }
-    return event_data;
-}
-
 window.onload = () => {
     let terminal = new Terminal("screen", 80, 24);
 
@@ -23,9 +14,7 @@ window.onload = () => {
 
     const element = document.getElementById("terminal");
     element.onkeydown = e => {
-        console.log("keydown", dumpEventData(e))
         let message = keyToMessage(e);
-        console.log("message (keydown)", message)
         if (message !== null) {
             socket.send(message);
             e.preventDefault();
@@ -33,9 +22,7 @@ window.onload = () => {
         }
     };
     element.onkeypress = e => {
-        console.log("keypress", dumpEventData(e))
         let message = keyToMessage(e);
-        console.log("message (keypress)", message)
         if (message !== null) {
             socket.send(message);
         }
@@ -126,7 +113,7 @@ function keyToMessage(e) {
         return null;    // special symbol.
     }
 
-    console.assert(e.type === "keydown") // keydown is for special keys.
+    console.assert(e.type === "keydown")
     let message = null;
     switch (e.which) {
     case 8:
