@@ -166,8 +166,8 @@ async def recv(ws: websockets.WebSocketClientProtocol):
             print("Updated lines:", *updated_linenos)
             print("Fullscreen:")
             fullscreen = dump_full_screen(screen_by_line, cursor)
+            print(fullscreen)
             if action_view:
-                print(fullscreen)
                 observations.append({"type": "full_screen", "data": fullscreen})
                 action_view = False
             parse_failed = False
