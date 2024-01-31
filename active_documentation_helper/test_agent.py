@@ -2,12 +2,17 @@
 # currently do not do anything fancy. please!
 
 # from websockets.sync import client
+from typing import Optional
 import websockets
 import asyncio
 import json
 import beartype
 
-prompt = """You are a terminal operator under VT100 environment.
+CURSOR = "<|pad|>"
+
+prompt = f"""You are a terminal operator under VT100 environment.
+
+Cursor location will be indicated by {CURSOR}.
 
 Avaliable special codes:
 
@@ -49,11 +54,23 @@ VIEW
 
 """
 
+
 @beartype.beartype
-def dump_full_screen(screen_by_line: dict[int, str]):
+def insert_cursor_at_column(line: str, column: int):
+    line_with_cursor = list(line)
+    line_with_cursor.insert(column, CURSOR)
+    return "".join(line_with_cursor)
+
+
+@beartype.beartype
+def dump_full_screen(screen_by_line: dict[int, str], cursor: Optional[tuple[int, int]]):
     screen = ""
     for k in sorted(screen_by_line.keys()):
-        screen += screen_by_line[k]
+        line = screen_by_line[k]
+        if cursor is not None:
+            if cursor[0] == k:
+                line = insert_cursor_at_column(line, cursor[1])
+        screen += line
         screen += "\n"
     return screen
 
@@ -73,6 +90,7 @@ async def recv(ws: websockets.WebSocketClientProtocol):
         try:
             data = json.loads(data)
             cursor = data["c"]
+            cursor = (cursor[1], cursor[0])
             print("cursur at:", cursor)
             lines = data["lines"]  # somehow it only send updated lines.
             updated_screen = ""
@@ -83,16 +101,22 @@ async def recv(ws: websockets.WebSocketClientProtocol):
                 for char, _, _, _ in elems:
                     line += char
                 screen_by_line[lineno] = line
-                updated_screen += f"[{str(lineno).center(2)}] {line}"
+                updated_screen_line = line
+
+                if lineno == cursor[0]:
+                    updated_screen_line = insert_cursor_at_column(
+                        updated_screen_line, cursor[1]
+                    )
+                updated_screen += f"[{str(lineno).center(2)}] {updated_screen_line}"
                 updated_screen += "\n"
             print("updated content:")
             print(updated_screen)
             print("updated lines:", *updated_linenos)
             print("fullscreen:")
-            print(dump_full_screen(screen_by_line))
+            print(dump_full_screen(screen_by_line, cursor))
             parse_failed = False
-        except:
-            pass
+        except Exception as e:
+            print(e)
         if parse_failed:
             print(data)
             print("!!!!FAILED TO PARSE RESPONSE AS JSON!!!!")
@@ -203,9 +227,11 @@ SPECIAL_CODES.update(CTRL_CODES)
 
 COMMANDS = ["TYPE", "VIEW"]
 
+
 @beartype.beartype
 def translate_command(cmd: str):
     return SPECIAL_CODES.get(cmd, cmd)
+
 
 async def main(port=8028):
     # command_list = ["i", "Hello world!", "\u001b", ":q!"]
@@ -217,7 +243,7 @@ async def main(port=8028):
         for cmd in command_list:
             print("Translating command:", cmd)
             translated_cmd = translate_command(cmd)
-            print("Sending translated command:" + translated_cmd)
+            print("Sending translated command:", translated_cmd)
             await ws.send(translated_cmd)
             await asyncio.sleep(1)
         await ws.close()
