@@ -62,6 +62,7 @@ Example 4: Wait for 3 seconds
 WAIT 3
 
 """
+action_view = False
 
 
 @beartype.beartype
@@ -86,6 +87,7 @@ def dump_full_screen(screen_by_line: dict[int, str], cursor: Optional[tuple[int,
 
 @beartype.beartype
 async def recv(ws: websockets.WebSocketClientProtocol):
+    global action_view
     screen_by_line = {}
     while not ws.closed:
         # Background task: Infinite loop for receiving data
@@ -121,8 +123,10 @@ async def recv(ws: websockets.WebSocketClientProtocol):
             print("updated content:")
             print(updated_screen)
             print("updated lines:", *updated_linenos)
-            print("fullscreen:")
-            print(dump_full_screen(screen_by_line, cursor))
+            if action_view:
+                print("fullscreen:")
+                print(dump_full_screen(screen_by_line, cursor))
+                action_view = False
             parse_failed = False
         except Exception as e:
             print(e)
@@ -236,25 +240,81 @@ SPECIAL_CODES.update(CTRL_CODES)
 
 COMMANDS = ["TYPE", "VIEW", "WAIT"]
 
+
 @beartype.beartype
-def translate_command(cmd: str):
+def translate_special_codes(cmd: str):
     return SPECIAL_CODES.get(cmd, cmd)
 
 
-async def main(port=8028):
+def handle_command(cmd: str):
+    command_content = {}
+    if cmd == "VIEW":
+        command_content["action"] = "view"
+    elif cmd.startswith("TYPE "):
+        command_content["action"] = "type"
+        command_content["data"] = cmd[5:]
+    elif cmd.startswith("WAIT "):
+        data = cmd[5:].strip()
+        try:
+            data = float(data)
+            command_content["action"] = "wait"
+            command_content["data"] = data
+        except:
+            pass
+    return command_content
+
+
+@beartype.beartype
+async def execute_command(command_content: dict):
+    global action_view
+    action = command_content["action"]
+    ret = ""
+    if action == "view":
+        action_view = True
+    elif action == "wait":
+        data = command_content["data"]
+        print("Waiting for %f seconds" % data)
+        await asyncio.sleep(data)
+    elif action == "type":
+        ret = command_content["data"]
+    return ret
+
+
+async def main(port=8028, regular_sleep_time=1):
+    # global action_view
     # command_list = ["i", "Hello world!", "\u001b", ":q!"]
     # command_list = ["i", "Hello world!", "ESC", ":q!"]
-    command_list = ["echo 'hello world'", "ENTER", "echo 'hello world'", "ENTER",]
+    command_list = [
+        "echo 'hello world'",
+        "ENTER",
+        "WAIT 1",
+        "TYPE echo 'hello world'",
+        "ENTER",
+        "VIEW",
+        "echo 'hello world'",
+        "ENTER",
+    ]
     async with websockets.connect(
         f"ws://localhost:{port}/ws"
     ) as ws:  # can also be `async for`, retry on `websockets.ConnectionClosed`
         recv_task = asyncio.create_task(recv(ws))
         for cmd in command_list:
-            print("Translating command:", cmd)
-            translated_cmd = translate_command(cmd)
-            print("Sending translated command:", translated_cmd)
-            await asyncio.sleep(1)
-            await ws.send(translated_cmd)
+            command_content = handle_command(cmd)
+            break_exec = False
+            if command_content:
+                translated_cmd = await execute_command(command_content)
+                if command_content['action'] == 'view':
+                    break_exec = True
+            else:
+                translated_cmd = translate_special_codes(cmd)
+            print("Regular sleep for %f seconds" % regular_sleep_time)
+            await asyncio.sleep(regular_sleep_time)
+
+            if break_exec:
+                print("Exiting reading action list because of 'VIEW' command")
+                break
+            if translated_cmd:
+                await ws.send(translated_cmd)
         await ws.close()
         await recv_task
 
