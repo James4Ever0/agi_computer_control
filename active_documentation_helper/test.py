@@ -28,8 +28,9 @@ import os
 import pty
 import shlex
 import signal
+
 # import webbrowser
-from pathlib import Path
+from functools import partial
 
 import aiohttp
 import asyncio
@@ -79,13 +80,13 @@ def open_terminal(command="vim", columns=80, lines=24):
     return Terminal(columns, lines, p_out), p_pid, p_out
 
 
-async def websocket_handler(request):
+async def websocket_handler(request, command: str):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
     request.app["websockets"].add(asyncio.current_task())
 
-    terminal, p_pid, p_out = open_terminal()
+    terminal, p_pid, p_out = open_terminal(command)
     await ws.send_str(terminal.dumps())
 
     def on_master_output():
@@ -136,9 +137,11 @@ async def on_shutdown(app):
 
 if __name__ == "__main__":
     port = 8028
+    command = "docker run -it --rm alpine"
+    print("Shell command: " + command)
     app = web.Application()
     app["websockets"] = set()
-    app.router.add_get("/ws", websocket_handler)
+    app.router.add_get("/ws", partial(websocket_handler, command=command))
     # app.router.add_static("/", Path(__file__).parent / "static", show_index=True)
     app.on_shutdown.append(on_shutdown)
 
