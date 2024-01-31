@@ -218,7 +218,7 @@ async def main(port=8028):
             print("Translating command:", cmd)
             translated_cmd = translate_command(cmd)
             print("Sending translated command:" + translated_cmd)
-            await ws.send(cmd)
+            await ws.send(translated_cmd)
             await asyncio.sleep(1)
         await ws.close()
         await recv_task
