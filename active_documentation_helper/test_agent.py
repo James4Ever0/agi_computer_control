@@ -164,11 +164,11 @@ async def recv(ws: websockets.WebSocketClientProtocol):
             print(updated_screen)
             observations.append({"type": "update", "data": updated_screen})
             print("Updated lines:", *updated_linenos)
+            print("Fullscreen:")
+            fullscreen = dump_full_screen(screen_by_line, cursor)
             if action_view:
-                print("Fullscreen:")
-                data = dump_full_screen(screen_by_line, cursor)
-                print(data)
-                observations.append({"type": "full_screen", "data": data})
+                print(fullscreen)
+                observations.append({"type": "full_screen", "data": fullscreen})
                 action_view = False
             parse_failed = False
         except Exception as e:
@@ -378,6 +378,7 @@ async def main(port: int = 8028, regular_sleep_time: int = 1, init_sleep_time: i
                 query = build_prompt()
                 response = model.run(query)
                 command_list = get_command_list(response)
+                print("Command list:", command_list)
                 await execute_command_list(command_list, ws, regular_sleep_time)
         except KeyboardInterrupt:
             print("Interrupted shell connection")
