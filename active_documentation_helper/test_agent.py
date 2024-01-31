@@ -16,7 +16,9 @@ CURSOR = "<|pad|>"
 
 INIT_PROMPT = f"""You are a terminal operator under VT100 environment.
 
-Cursor location will be indicated by {CURSOR}.
+The console is running under Alpine Linux.
+
+Cursor location will be indicated by {CURSOR}. Do not write {CURSOR} unless you mean it.
 
 Avaliable special codes:
 
@@ -117,7 +119,7 @@ def build_prompt():
 {last_full_screen_observation}
 """
         components.append(comp)
-    comp = f"""Your input to the terminal:
+    comp = f"""Your input to the terminal, according to syntax given above:
 """
     components.append(comp)
     prompt = "\n".join(components)
@@ -325,7 +327,7 @@ async def execute_command(command_content: dict):
 
 @beartype.beartype
 def get_command_list(response: str) -> list[str]:
-    return "\n".split(response)
+    return response.split("\n")
 
 
 @beartype.beartype
@@ -376,7 +378,7 @@ async def main(port: int = 8028, regular_sleep_time: int = 1, init_sleep_time: i
         try:
             while True:
                 query = build_prompt()
-                response = model.run(query)
+                response = model.run_once(query)
                 command_list = get_command_list(response)
                 print("Command list:", command_list)
                 await execute_command_list(command_list, ws, regular_sleep_time)
