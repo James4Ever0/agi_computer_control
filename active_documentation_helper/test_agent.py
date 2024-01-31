@@ -25,7 +25,7 @@ Besides for the built-in special codes, you can also directly write VT100 comman
 
 Avaliable commands:
 
-TYPE VIEW
+TYPE VIEW WAIT
 
 Syntax: 
 
@@ -33,7 +33,9 @@ Each line you generate will be either treated as a single special code or normal
 
 If you want to write special code as literal strings, you can use a special command "TYPE", use it like this: `TYPE <special code>`
 
-By default you can only receive the changed lines each turn. If you want to view the whole screen, you can use "VIEW" command. Next turn will show you the full screen.
+By default you can only receive the changed lines each turn. If you want to view the whole screen, you can use "VIEW" command. Anything after "VIEW" command will be discarded. Next turn will show you the full screen.
+
+If you do not want to take actions, use "WAIT" command like this: `WAIT <duration in seconds>`
 
 Example 1: Hello world
 
@@ -51,6 +53,10 @@ Example 3: View the full screen, instead of only showing the changed lines
 echo "View the screen"
 ENTER
 VIEW
+
+Example 4: Wait for 3 seconds
+
+WAIT 3
 
 """
 
@@ -225,7 +231,7 @@ CTRL_CODES = {
 SPECIAL_CODES.update(FN_CODES)
 SPECIAL_CODES.update(CTRL_CODES)
 
-COMMANDS = ["TYPE", "VIEW"]
+COMMANDS = ["TYPE", "VIEW", "WAIT"]
 
 
 @beartype.beartype
