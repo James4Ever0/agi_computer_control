@@ -127,7 +127,7 @@ def build_prompt():
 {last_full_screen_observation}
 """
         components.append(comp)
-    comp = f"""Your input to the terminal, according to syntax given above:
+    comp = f"""Your input to the terminal, according to syntax given above: (always prefix your talk with 'REM')
 """
     components.append(comp)
     prompt = "\n".join(components)
