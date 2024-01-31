@@ -10,10 +10,11 @@ import websockets
 import asyncio
 import json
 import beartype
+import llm
 
 CURSOR = "<|pad|>"
 
-prompt = f"""You are a terminal operator under VT100 environment.
+INIT_PROMPT = f"""You are a terminal operator under VT100 environment.
 
 Cursor location will be indicated by {CURSOR}.
 
@@ -85,9 +86,48 @@ def dump_full_screen(screen_by_line: dict[int, str], cursor: Optional[tuple[int,
     return screen
 
 
+observations = []
+
+
+def build_prompt():
+    global observations
+    last_updated_observation = None
+    last_full_screen_observation = None
+
+    for it in reversed(observations):
+        if it["type"] == "update":
+            if last_updated_observation:
+                last_updated_observation = it["data"]
+
+        if it["type"] == "full_screen":
+            if last_full_screen_observation:
+                last_full_screen_observation = it["data"]
+
+    # use last updated observation & last full screen observation
+    components = []
+    if last_updated_observation:
+        comp = f"""Updated lines: (format: [lineno] <content>)
+
+{last_updated_observation}
+"""
+        components.append(comp)
+    if last_full_screen_observation:
+        comp = f"""Full screen:
+
+{last_full_screen_observation}
+"""
+        components.append(comp)
+    comp = f"""Your input to the terminal:
+"""
+    components.append(comp)
+    prompt = "\n".join(components)
+    observations.clear()
+    return prompt
+
+
 @beartype.beartype
 async def recv(ws: websockets.WebSocketClientProtocol):
-    global action_view
+    global action_view, observations
     screen_by_line = {}
     while not ws.closed:
         # Background task: Infinite loop for receiving data
@@ -102,7 +142,7 @@ async def recv(ws: websockets.WebSocketClientProtocol):
             data = json.loads(data)
             cursor = data["c"]
             cursor = (cursor[1], cursor[0])
-            print("cursur at:", cursor)
+            print("Cursur at:", cursor)
             lines = data["lines"]  # somehow it only send updated lines.
             updated_screen = ""
             updated_linenos = []
@@ -120,12 +160,15 @@ async def recv(ws: websockets.WebSocketClientProtocol):
                     )
                 updated_screen += f"[{str(lineno).center(2)}] {updated_screen_line}"
                 updated_screen += "\n"
-            print("updated content:")
+            print("Updated content:")
             print(updated_screen)
-            print("updated lines:", *updated_linenos)
+            observations.append({"type": "update", "data": updated_screen})
+            print("Updated lines:", *updated_linenos)
             if action_view:
-                print("fullscreen:")
-                print(dump_full_screen(screen_by_line, cursor))
+                print("Fullscreen:")
+                data = dump_full_screen(screen_by_line, cursor)
+                print(data)
+                observations.append({"type": "full_screen", "data": data})
                 action_view = False
             parse_failed = False
         except Exception as e:
@@ -280,43 +323,67 @@ async def execute_command(command_content: dict):
     return ret
 
 
-async def main(port=8028, regular_sleep_time=1):
+@beartype.beartype
+def get_command_list(response: str) -> list[str]:
+    return "\n".split(response)
+
+
+@beartype.beartype
+async def execute_command_list(
+    command_list: list[str],
+    ws: websockets.WebSocketClientProtocol,
+    regular_sleep_time: int,
+):
+    for cmd in command_list:
+        command_content = handle_command(cmd)
+        break_exec = False
+        if command_content:
+            translated_cmd = await execute_command(command_content)
+            if command_content["action"] == "view":
+                break_exec = True
+        else:
+            translated_cmd = translate_special_codes(cmd)
+        print("Regular sleep for %f seconds" % regular_sleep_time)
+        await asyncio.sleep(regular_sleep_time)
+        if break_exec:
+            print("Exiting reading action list because of 'VIEW' command")
+            break
+        if translated_cmd:
+            await ws.send(translated_cmd)
+
+
+@beartype.beartype
+async def main(port: int = 8028, regular_sleep_time: int = 1, init_sleep_time: int = 1):
     # global action_view
     # command_list = ["i", "Hello world!", "\u001b", ":q!"]
     # command_list = ["i", "Hello world!", "ESC", ":q!"]
-    command_list = [
-        "echo 'hello world'",
-        "ENTER",
-        "WAIT 1",
-        "TYPE echo 'hello world'",
-        "ENTER",
-        "VIEW",
-        "echo 'hello world'",
-        "ENTER",
-    ]
+    # command_list = [
+    #     "echo 'hello world'",
+    #     "ENTER",
+    #     "WAIT 1",
+    #     "TYPE echo 'hello world'",
+    #     "ENTER",
+    #     "VIEW",
+    #     "echo 'hello world'",
+    #     "ENTER",
+    # ]
+    model = llm.LLM(prompt=INIT_PROMPT)
     async with websockets.connect(
         f"ws://localhost:{port}/ws"
     ) as ws:  # can also be `async for`, retry on `websockets.ConnectionClosed`
         recv_task = asyncio.create_task(recv(ws))
-        for cmd in command_list:
-            command_content = handle_command(cmd)
-            break_exec = False
-            if command_content:
-                translated_cmd = await execute_command(command_content)
-                if command_content['action'] == 'view':
-                    break_exec = True
-            else:
-                translated_cmd = translate_special_codes(cmd)
-            print("Regular sleep for %f seconds" % regular_sleep_time)
-            await asyncio.sleep(regular_sleep_time)
-
-            if break_exec:
-                print("Exiting reading action list because of 'VIEW' command")
-                break
-            if translated_cmd:
-                await ws.send(translated_cmd)
-        await ws.close()
-        await recv_task
+        await asyncio.sleep(init_sleep_time)
+        try:
+            while True:
+                query = build_prompt()
+                response = model.run(query)
+                command_list = get_command_list(response)
+                await execute_command_list(command_list, ws, regular_sleep_time)
+        except KeyboardInterrupt:
+            print("Interrupted shell connection")
+        finally:
+            await ws.close()
+            await recv_task
 
 
 if __name__ == "__main__":
