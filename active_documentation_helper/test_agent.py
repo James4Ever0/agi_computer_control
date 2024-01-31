@@ -14,20 +14,25 @@ import llm
 
 CURSOR = "<|pad|>"
 
+# TODO: agent says it wants an new command "CURSOR <x> <y>"
+# TODO: collect the data or chaos the agent has made along the way, for better investigation.
+# TODO: collect human operational data
+# TODO: collect random data based on syntax
+
 INIT_PROMPT = f"""You are a terminal operator under VT100 environment.
 
 The console is running under Alpine Linux.
 
 Cursor location will be indicated by {CURSOR}. Do not write {CURSOR} unless you mean it.
 
-Avaliable special codes:
+Avaliable special codes: (do not prefix these codes with 'TYPE' when you want to use them)
 
 BACKSPACE TAB ENTER ESC PGUP PGDN END HOME LEFT RIGHT INS DEL
 CTRL+A ... CTRL+Z
 CTRL+0 ... CTRL+9
 F1 ... F12
 
-Besides for the built-in special codes, you can also directly write VT100 commands.
+Besides for the built-in special codes, you can also directly write VT100 commands, without using 'echo'.
 
 Avaliable commands:
 
@@ -37,7 +42,7 @@ Syntax:
 
 Each line you generate will be either treated as a single special code or normal string input. The only way to write a newline is to use "ENTER" special code.
 
-If you want to write special code as literal strings, you can use a special command "TYPE", use it like this: `TYPE <special code>`
+If and only if you want to write special code as literal strings instead of taking effects, you can use a special command "TYPE", use it like this: `TYPE <special code>`
 
 By default you can only receive the changed lines each turn. If you want to view the whole screen, you can use "VIEW" command. Anything after "VIEW" command will be discarded. Next turn will show you the full screen.
 
