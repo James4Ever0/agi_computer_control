@@ -2,6 +2,9 @@
 # currently do not do anything fancy. please!
 
 # from websockets.sync import client
+
+# the language used here is called "godlang", an agent language designed for console, GUI and robot manipulations.
+
 from typing import Optional
 import websockets
 import asyncio
@@ -233,7 +236,6 @@ SPECIAL_CODES.update(CTRL_CODES)
 
 COMMANDS = ["TYPE", "VIEW", "WAIT"]
 
-
 @beartype.beartype
 def translate_command(cmd: str):
     return SPECIAL_CODES.get(cmd, cmd)
@@ -241,7 +243,8 @@ def translate_command(cmd: str):
 
 async def main(port=8028):
     # command_list = ["i", "Hello world!", "\u001b", ":q!"]
-    command_list = ["i", "Hello world!", "ESC", ":q!"]
+    # command_list = ["i", "Hello world!", "ESC", ":q!"]
+    command_list = ["echo 'hello world'", "ENTER", "echo 'hello world'", "ENTER",]
     async with websockets.connect(
         f"ws://localhost:{port}/ws"
     ) as ws:  # can also be `async for`, retry on `websockets.ConnectionClosed`
@@ -250,8 +253,8 @@ async def main(port=8028):
             print("Translating command:", cmd)
             translated_cmd = translate_command(cmd)
             print("Sending translated command:", translated_cmd)
-            await ws.send(translated_cmd)
             await asyncio.sleep(1)
+            await ws.send(translated_cmd)
         await ws.close()
         await recv_task
 

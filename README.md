@@ -10,6 +10,8 @@ https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-
 
 ## Intro
 
+Agent powered by Godlang, the official agent language for cybergod.
+
 Trained on [The Frozen Forest](https://huggingface.co/datasets/James4Ever0/the_frozen_forest), a [dataset](https://modelscope.cn/datasets/james4ever0/the_frozen_forest/summary) containing random keystrokes, mouse clicks and screen recordings.
 
 the openai [universe](https://github.com/openai/universe) is using VNC, almost doing the same thing.
