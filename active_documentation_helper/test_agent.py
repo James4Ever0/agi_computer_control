@@ -31,7 +31,7 @@ Besides for the built-in special codes, you can also directly write VT100 comman
 
 Avaliable commands:
 
-TYPE VIEW WAIT
+TYPE VIEW WAIT REM
 
 Syntax: 
 
@@ -41,7 +41,9 @@ If you want to write special code as literal strings, you can use a special comm
 
 By default you can only receive the changed lines each turn. If you want to view the whole screen, you can use "VIEW" command. Anything after "VIEW" command will be discarded. Next turn will show you the full screen.
 
-If you do not want to take actions, use "WAIT" command like this: `WAIT <duration in seconds>`
+If you want to wait for some time, use "WAIT" command like this: `WAIT <duration in seconds>`
+
+If you do not want to take actions, use "REM" command like: `REM <comments>`
 
 Example 1: Hello world
 
@@ -63,6 +65,12 @@ VIEW
 Example 4: Wait for 3 seconds
 
 WAIT 3
+
+Example 5: Use comment
+
+REM I will sleep for a second, then view the full screen
+WAIT 1
+VIEW
 
 """
 action_view = False
@@ -283,7 +291,7 @@ CTRL_CODES = {
 SPECIAL_CODES.update(FN_CODES)
 SPECIAL_CODES.update(CTRL_CODES)
 
-COMMANDS = ["TYPE", "VIEW", "WAIT"]
+COMMANDS = ["TYPE", "VIEW", "WAIT", "REM"]
 
 
 @beartype.beartype
@@ -306,6 +314,10 @@ def handle_command(cmd: str):
             command_content["data"] = data
         except:
             pass
+    elif cmd.startswith("REM "):
+        data = cmd[5:].strip()
+        command_content["action"] = "rem"
+        command_content['data'] = data
     return command_content
 
 
@@ -320,6 +332,9 @@ async def execute_command(command_content: dict):
         data = command_content["data"]
         print("Waiting for %f seconds" % data)
         await asyncio.sleep(data)
+    elif action == "rem":
+        data = command_content["data"]
+        print("Reminder:", data)
     elif action == "type":
         ret = command_content["data"]
     return ret
