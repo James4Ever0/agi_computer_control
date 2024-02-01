@@ -29,6 +29,8 @@ import pty
 import shlex
 import signal
 
+print(f"File '{os.path.basename(__file__)}' deprecated. Please use 'webterm.py' with arguments instead.")
+
 # import webbrowser
 from functools import partial
 
