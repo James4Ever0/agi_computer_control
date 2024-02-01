@@ -7,6 +7,9 @@
 // paste action might be equivalent to "TYPE" command
 // REM statements can be manually added later.
 
+// TODO: handle paste events (CTRL+SHIFT+V)
+// TODO: handle copy events (CTRL+SHIFT+C)
+
 function dumpEventData(e) {
     let event_keys = Object.keys(e.__proto__);
     let event_data = {}
@@ -16,13 +19,21 @@ function dumpEventData(e) {
     return event_data;
 }
 
+const encoder = new TextEncoder();
 window.onload = () => {
     let terminal = new Terminal("screen", 80, 24);
 
     let socket;
     function connect() {
         socket = new WebSocket(`ws://${window.location.host}/ws`);
-        socket.onmessage = e => terminal.update(JSON.parse(e.data));
+        socket.onmessage = (e) => {
+            let msg = JSON.parse(e.data);
+            if (msg.type == "update") { terminal.update(msg.data) }
+            else if (msg.type == "identifier") { document.title = `Terminal: ${msg.data}` }
+            else {
+                alert("unknown message from server:", e.data);
+            }
+        };
         // socket.onclose = () => setTimeout(connect, 5000) // no reconnection!
         socket.onclose = () => { console.log("Terminal closed."); alert("Terminal has been closed."); window.close(); }
     }
@@ -39,6 +50,7 @@ window.onload = () => {
         if (message !== null) {
             console.log("<keydown> ACTION:", action, "MESSAGE:", message, "TIMESTAMP:", timestamp)
             socket.send(message);
+            socket.send(encoder.encode(JSON.stringify({ action: action, timestamp: timestamp, message: message })))
             e.preventDefault();
             return false;
         }
@@ -56,6 +68,8 @@ window.onload = () => {
         if (message !== null) {
             console.log("<keypress> ACTION:", action, "MESSAGE:", message, "TIMESTAMP:", timestamp)
             socket.send(message);
+            socket.send(encoder.encode(JSON.stringify({ action: action, timestamp: timestamp, message: message })))
+
         }
     };
     element.focus()

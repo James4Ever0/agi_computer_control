@@ -30,12 +30,20 @@ import shlex
 import signal
 import webbrowser
 from pathlib import Path
+import uuid
+import pydantic
 
 import aiohttp
 import asyncio
 from aiohttp import web
 
 import pyte
+
+
+class TerminalClientEvent(pydantic.BaseModel):
+    action: str
+    message: str
+    timestamp: int
 
 
 class Terminal:
@@ -61,7 +69,10 @@ class Terminal:
             lines.append((y, data))
 
         self.screen.dirty.clear()
-        return json.dumps({"c": (cursor.x, cursor.y), "lines": lines})
+        return json.dumps(
+            {"type": "update", "data": {"c": (cursor.x, cursor.y), "lines": lines}}
+        )
+        # return json.dumps({"c": (cursor.x, cursor.y), "lines": lines})
 
 
 # def open_terminal(command="bash", columns=80, lines=24):
@@ -79,13 +90,25 @@ def open_terminal(command="vim", columns=80, lines=24):
     return Terminal(columns, lines, p_out), p_pid, p_out
 
 
+def generate_terminal_identifier():
+    ret = str(uuid.uuid4())
+    return ret
+
+
+# TODO: link log, print data & exception along with terminal_identifier
+# TODO: send the client terminal identifier and show as webpage title
+
+
 async def websocket_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
+    terminal_identifier = generate_terminal_identifier()
+
     request.app["websockets"].add(asyncio.current_task())
 
     terminal, p_pid, p_out = open_terminal()
+    await ws.send_str(json.dumps({"type": "identifier", "data": terminal_identifier}))
     await ws.send_str(terminal.dumps())
 
     def on_master_output():
@@ -98,10 +121,12 @@ async def websocket_handler(request):
             asyncio.create_task(ws.send_str(terminal.dumps()))
             success = True
         except IOError:
-            print("Closing because unable to read from process output.")
+            print(
+                f"Closing terminal <{terminal_identifier}> because unable to read from process output."
+            )
         finally:
             if not success:
-                print("Closing websocket unexpectedly.")
+                print(f"Closing websocket <{terminal_identifier}> unexpectedly.")
                 asyncio.create_task(ws.close())
 
     loop = asyncio.get_event_loop()
@@ -117,6 +142,16 @@ async def websocket_handler(request):
                     ws.send_str(terminal.dumps())
                 else:
                     p_out.write(msg.data.encode())
+            elif msg.type == aiohttp.WSMsgType.BINARY:
+                # try parsing as JSON
+                try:
+                    data = TerminalClientEvent.parse_raw(msg.data)
+                    print(f"Client <{terminal_identifier}> event:", data)
+                except:
+                    print(
+                        f"Unable to parse client <{terminal_identifier}> event:",
+                        msg.data,
+                    )
             elif msg.type == aiohttp.WSMsgType.ERROR:
                 raise ws.exception()
     except (asyncio.CancelledError, OSError):  # Process died?
@@ -127,6 +162,7 @@ async def websocket_handler(request):
         p_out.close()
         if not is_shutting_down:
             request.app["websockets"].remove(asyncio.current_task())
+    print(f"Client <{terminal_identifier}> exiting.")
     await ws.close()
     return ws
 
