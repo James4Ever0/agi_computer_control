@@ -15,9 +15,10 @@ import llm
 CURSOR = "<|pad|>"
 
 # TODO: agent says it wants an new command "CURSOR <x> <y>"
-# TODO: collect the data or chaos the agent has made along the way, for better investigation.
+# TODO: collect the data or chaos the agent has made along the way, for better investigation, or new features it wants.
 # TODO: collect human operational data
 # TODO: collect random data based on syntax
+# TODO: verify it is possible for human to operate and achieve targets in such environment, then later we would record our successful attempts to let the agent learn later.
 
 INIT_PROMPT = f"""You are a terminal operator under VT100 environment.
 
@@ -27,7 +28,7 @@ Cursor location will be indicated by {CURSOR}. Do not write {CURSOR} unless you 
 
 Avaliable special codes: (do not prefix these codes with 'TYPE' when you want to use them)
 
-BACKSPACE TAB ENTER ESC PGUP PGDN END HOME LEFT RIGHT INS DEL
+BACKSPACE TAB ENTER ESC PGUP PGDN END HOME LEFT RIGHT UP META+UP DOWN META+DOWN INS DEL
 CTRL+A ... CTRL+Z
 CTRL+0 ... CTRL+9
 F1 ... F12
@@ -233,6 +234,10 @@ SPECIAL_CODES = {
     "PGDN": CSI + "6~",
     "END": CSI + "4~",
     "HOME": CSI + "1~",
+    "UP": CSI + "A",
+    "META+UP": ESC + "P",
+    "DOWN": CSI + "B",
+    "META+DOWN": ESC + "N",
     "LEFT": CSI + "D",
     "RIGHT": CSI + "C",
     "INS": CSI + "2~",
@@ -322,7 +327,7 @@ def handle_command(cmd: str):
     elif cmd.startswith("REM "):
         data = cmd[5:].strip()
         command_content["action"] = "rem"
-        command_content['data'] = data
+        command_content["data"] = data
     return command_content
 
 
