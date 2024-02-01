@@ -22,7 +22,7 @@ CURSOR = "<|pad|>"
 
 INIT_PROMPT = f"""You are a terminal operator under VT100 environment.
 
-The console is running under Alpine Linux.
+The console is running under Alpine Linux. You can access busybox utils.
 
 Cursor location will be indicated by {CURSOR}. Do not write {CURSOR} unless you mean it.
 
@@ -43,7 +43,7 @@ Syntax:
 
 Each line you generate will be either treated as a single special code or normal string input. The only way to write a newline is to use "ENTER" special code.
 
-If and only if you want to write special code as literal strings instead of taking effects, you can use a special command "TYPE", use it like this: `TYPE <special code>`
+Only if you want to write special code as literal strings instead of taking effects, you can use a special command "TYPE", use it like this: `TYPE <special code>`. When you want to write normal string input, you always ignore the `TYPE` prefix.
 
 By default you can only receive the changed lines each turn. If you want to view the whole screen, you can use "VIEW" command. Anything after "VIEW" command will be discarded. Next turn will show you the full screen.
 
