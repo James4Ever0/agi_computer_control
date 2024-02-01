@@ -38,7 +38,7 @@ import asyncio
 from aiohttp import web
 
 import pyte
-
+import functools
 
 class TerminalClientEvent(pydantic.BaseModel):
     action: str
@@ -99,7 +99,7 @@ def generate_terminal_identifier():
 # TODO: send the client terminal identifier and show as webpage title
 
 
-async def websocket_handler(request):
+async def websocket_handler(request,command: str):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
@@ -107,7 +107,7 @@ async def websocket_handler(request):
 
     request.app["websockets"].add(asyncio.current_task())
 
-    terminal, p_pid, p_out = open_terminal()
+    terminal, p_pid, p_out = open_terminal(command)
     await ws.send_str(json.dumps({"type": "identifier", "data": terminal_identifier}))
     await ws.send_str(terminal.dumps())
 
@@ -183,13 +183,22 @@ async def on_shutdown(app):
 
 
 if __name__ == "__main__":
-    port = 8079
+    # parameters: port, command, launch browser or not (headless)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--port", type=int, default=8079)
+    parser.add_argument("-c", "--command", type=str, default = "vim")
+    parser.add_argument("--headless", action="store_true")
+    args = parser.parse_args()
+    port = args.port
+    command = args.command
+    headless = args.headless
     app = web.Application()
     app["websockets"] = set()
-    app.router.add_get("/ws", websocket_handler)
-    app.router.add_static("/", Path(__file__).parent / "static", show_index=True)
+    app.router.add_get("/ws", functools.partial(websocket_handler, command=command))
     app.on_shutdown.append(on_shutdown)
-
-    webbrowser.open_new_tab(f"http://localhost:{port}/index.html")
+    if not headless:
+        app.router.add_static("/", Path(__file__).parent / "static", show_index=True)
+        webbrowser.open_new_tab(f"http://localhost:{port}/index.html")
 
     web.run_app(app, port=port)
