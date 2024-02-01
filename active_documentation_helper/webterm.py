@@ -40,11 +40,12 @@ from aiohttp import web
 import pyte
 import functools
 
+# TODO: only send actions from client side, do not send message, to reduce complexity
+
 class TerminalClientEvent(pydantic.BaseModel):
     action: str
     message: str
     timestamp: int
-
 
 class Terminal:
     def __init__(self, columns, lines, p_in):
@@ -192,6 +193,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     port = args.port
     command = args.command
+    print("Shell command: " + command)
     headless = args.headless
     app = web.Application()
     app["websockets"] = set()
