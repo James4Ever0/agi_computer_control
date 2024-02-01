@@ -98,9 +98,10 @@ async def websocket_handler(request):
             asyncio.create_task(ws.send_str(terminal.dumps()))
             success = True
         except IOError:
-            print("Closing because unable to read from process output")
+            print("Closing because unable to read from process output.")
         finally:
             if not success:
+                print("Closing websocket unexpectedly.")
                 asyncio.create_task(ws.close())
 
     loop = asyncio.get_event_loop()
