@@ -89,8 +89,19 @@ async def websocket_handler(request):
     await ws.send_str(terminal.dumps())
 
     def on_master_output():
-        terminal.feed(p_out.read(65536))
-        asyncio.create_task(ws.send_str(terminal.dumps()))
+        success = False
+        try:
+            out_content = p_out.read(65536)
+            terminal.feed(
+                out_content
+            )  # should you send message to the client, and end this session, or just close this websocket.
+            asyncio.create_task(ws.send_str(terminal.dumps()))
+            success = True
+        except IOError:
+            print("Closing because unable to read from process output")
+        finally:
+            if not success:
+                asyncio.create_task(ws.close())
 
     loop = asyncio.get_event_loop()
     loop.add_reader(p_out, on_master_output)
