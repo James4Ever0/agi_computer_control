@@ -42,10 +42,15 @@ import functools
 
 # TODO: only send actions from client side, do not send message, to reduce complexity
 
+
 class TerminalClientEvent(pydantic.BaseModel):
     action: str
     message: str
     timestamp: int
+    """
+    Unit: miliseconds
+    """
+
 
 class Terminal:
     def __init__(self, columns, lines, p_in):
@@ -100,8 +105,12 @@ def generate_terminal_identifier():
 # TODO: send the client terminal identifier and show as webpage title
 
 
-async def websocket_handler(request,command: str):
+async def websocket_handler(request, command: str, view_interval: int = 2000):
+    """
+    view_interval: miliseconds
+    """
     ws = web.WebSocketResponse()
+    datalist: list[TerminalClientEvent] = []
     await ws.prepare(request)
 
     terminal_identifier = generate_terminal_identifier()
@@ -148,6 +157,7 @@ async def websocket_handler(request,command: str):
                 try:
                     data = TerminalClientEvent.parse_raw(msg.data)
                     print(f"Client <{terminal_identifier}> event:", data)
+                    datalist.append(data)
                 except:
                     print(
                         f"Unable to parse client <{terminal_identifier}> event:",
@@ -158,6 +168,33 @@ async def websocket_handler(request,command: str):
     except (asyncio.CancelledError, OSError):  # Process died?
         pass
     finally:
+        # convert datalist into godscript
+        # TODO: record terminal screen, interject into the godscript
+        # TODO: differentiate agent actions from terminal observations
+        # TODO: figure out how to handle the WAIT command and the time alignment
+        godscript = []
+        if len(datalist) > 0: # you should put more things than just agent actions, but also environment actions (feedback)
+            init_time = datalist[0].timestamp
+            last_time = init_time
+            for data in datalist:
+                current_time = data.timestamp
+                wait_time = current_time - last_time
+                if wait_time != 0:
+                    godscript.append(f"WAIT {wait_time/1000}")
+                last_time = current_time
+                if (current_time - init_time) > view_interval:
+                    godscript.append("VIEW")
+                    init_time = current_time
+                if data.action == "TYPE":
+                    godcommand = f"TYPE {data.message}"
+                    # can we use special token for space?
+                else:  # special
+                    godcommand = data.action
+                godscript.append(godcommand)
+            if godscript[-1] != "VIEW":
+                godscript.append("VIEW")
+        print("GODSCRIPT DUMP".center(60, "="))
+        print("\n".join(godscript))
         loop.remove_reader(p_out)
         os.kill(p_pid, signal.SIGTERM)
         p_out.close()
@@ -186,9 +223,10 @@ async def on_shutdown(app):
 if __name__ == "__main__":
     # parameters: port, command, launch browser or not (headless)
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port", type=int, default=8079)
-    parser.add_argument("-c", "--command", type=str, default = "vim")
+    parser.add_argument("-c", "--command", type=str, default="vim")
     parser.add_argument("--headless", action="store_true")
     args = parser.parse_args()
     port = args.port
@@ -202,5 +240,4 @@ if __name__ == "__main__":
     if not headless:
         app.router.add_static("/", Path(__file__).parent / "static", show_index=True)
         webbrowser.open_new_tab(f"http://localhost:{port}/index.html")
-
     web.run_app(app, port=port)
