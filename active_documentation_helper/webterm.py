@@ -173,7 +173,7 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
         # TODO: differentiate agent actions from terminal observations
         # TODO: figure out how to handle the WAIT command and the time alignment
         godscript = []
-        if len(datalist) > 0: # you should put more things than just agent actions, but also environment actions (feedback)
+        if len(datalist) > 0: # you should put more things than just agent actions into this list, but also environment actions (feedback)
             init_time = datalist[0].timestamp
             last_time = init_time
             for data in datalist:
