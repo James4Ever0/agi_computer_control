@@ -92,7 +92,11 @@ class LLM:
             int: The number of tokens in the text.
         """
         encoding = tiktoken.encoding_for_model("gpt-4")
-        return len(encoding.encode(text, disallowed_special=()))
+        return len(
+            encoding.encode( # shall you encode <|pad|> more differently?
+                text, allowed_special=set(["<|pad|>"]), disallowed_special=()
+            )
+        )
 
 
 @contextmanager

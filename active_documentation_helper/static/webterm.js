@@ -50,7 +50,7 @@ window.onload = () => {
         if (message !== null) {
             console.log("<keydown> ACTION:", action, "MESSAGE:", message, "TIMESTAMP:", timestamp)
             socket.send(message);
-            socket.send(encoder.encode(JSON.stringify({ action: action, timestamp: timestamp, message: message })))
+            socket.send(encoder.encode(JSON.stringify({ action: action, timestamp: timestamp, message: message }))) // binary
             e.preventDefault();
             return false;
         }
