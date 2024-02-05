@@ -19,6 +19,7 @@ CURSOR = "<|pad|>"
 # TODO: collect human operational data
 # TODO: collect random data based on syntax
 # TODO: verify it is possible for human to operate and achieve targets in such environment, then later we would record our successful attempts to let the agent learn later.
+# TODO: send agent action to the server
 
 INIT_PROMPT = f"""You are a terminal operator under VT100 environment.
 
@@ -28,7 +29,7 @@ Cursor location will be indicated by {CURSOR}. Do not write {CURSOR} unless you 
 
 Avaliable special codes: (do not prefix these codes with 'TYPE' when you want to use them)
 
-BACKSPACE TAB ENTER ESC PGUP PGDN END HOME LEFT RIGHT UP META+UP DOWN META+DOWN INS DEL
+BACKSPACE SPACE TAB ENTER ESC PGUP PGDN END HOME LEFT RIGHT UP META+UP DOWN META+DOWN INS DEL
 CTRL+A ... CTRL+Z
 CTRL+0 ... CTRL+9
 F1 ... F12
@@ -133,7 +134,7 @@ def build_prompt():
 {last_full_screen_observation}
 """
         components.append(comp)
-    comp = f"""Your input to the terminal, according to syntax given above: (always prefix your talk with 'REM')
+    comp = f"""Your input to the terminal, according to syntax given above: (always prefix your talk with 'REM', and return 1 to 2 commands each turn, in order to get instant feedback from terminal)
 """
     components.append(comp)
     prompt = "\n".join(components)
@@ -156,41 +157,50 @@ async def recv(ws: websockets.WebSocketClientProtocol):
         parse_failed = True
         try:
             data = json.loads(data)
-            cursor = data["c"]
-            cursor = (cursor[1], cursor[0])
-            print("Cursur at:", cursor)
-            lines = data["lines"]  # somehow it only send updated lines.
-            updated_screen = ""
-            updated_linenos = []
-            for lineno, elems in lines:
-                line = ""
-                updated_linenos.append(lineno)
-                for char, _, _, _ in elems:
-                    line += char
-                screen_by_line[lineno] = line
-                updated_screen_line = line
+            data_type = data.get("type", "unknown")
+            if data_type == "unknown":
+                raise Exception(
+                    "unknown data received  from websocket", str(data)[:60] + " ..."
+                )
+            elif data_type == "identifier":
+                print("identifier received from websocket", data['data'])
+            else:
+                data = data['data']
+                cursor = data["c"]
+                cursor = (cursor[1], cursor[0])
+                print("Cursur at:", cursor)
+                lines = data["lines"]  # somehow it only send updated lines.
+                updated_screen = ""
+                updated_linenos = []
+                for lineno, elems in lines:
+                    line = ""
+                    updated_linenos.append(lineno)
+                    for char, _, _, _ in elems:
+                        line += char
+                    screen_by_line[lineno] = line
+                    updated_screen_line = line
 
-                if lineno == cursor[0]:
-                    updated_screen_line = insert_cursor_at_column(
-                        updated_screen_line, cursor[1]
-                    )
-                updated_screen += f"[{str(lineno).center(2)}] {updated_screen_line}"
-                updated_screen += "\n"
-            print("Updated content:")
-            print(updated_screen)
-            observations.append({"type": "update", "data": updated_screen})
-            print("Updated lines:", *updated_linenos)
-            print("Fullscreen:")
-            fullscreen = dump_full_screen(screen_by_line, cursor)
-            print(fullscreen)
-            if action_view:
-                observations.append({"type": "full_screen", "data": fullscreen})
-                action_view = False
+                    if lineno == cursor[0]:
+                        updated_screen_line = insert_cursor_at_column(
+                            updated_screen_line, cursor[1]
+                        )
+                    updated_screen += f"[{str(lineno).center(2)}] {updated_screen_line}"
+                    updated_screen += "\n"
+                print("Updated content:")
+                print(updated_screen)
+                observations.append({"type": "update", "data": updated_screen})
+                print("Updated lines:", *updated_linenos)
+                print("Fullscreen:")
+                fullscreen = dump_full_screen(screen_by_line, cursor)
+                print(fullscreen)
+                if action_view:
+                    observations.append({"type": "full_screen", "data": fullscreen})
+                    action_view = False
             parse_failed = False
         except Exception as e:
-            print(e)
+            raise e
         if parse_failed:
-            print(data)
+            print(str(data)[:60])
             print("!!!!FAILED TO PARSE RESPONSE AS JSON!!!!")
 
 
@@ -226,6 +236,7 @@ CONTROL_N = {
 }
 
 SPECIAL_CODES = {
+    "SPACE": " ",
     "BACKSPACE": BACKSPACE,
     "TAB": TAB,
     "ENTER": "\n",
@@ -325,7 +336,7 @@ def handle_command(cmd: str):
         except:
             pass
     elif cmd.startswith("REM "):
-        data = cmd[5:].strip()
+        data = cmd[4:].strip()
         command_content["action"] = "rem"
         command_content["data"] = data
     return command_content
@@ -401,7 +412,8 @@ async def main(port: int = 8028, regular_sleep_time: int = 1, init_sleep_time: i
         recv_task = asyncio.create_task(recv(ws))
         await asyncio.sleep(init_sleep_time)
         try:
-            while True:
+            for _ in range(10): # do not try infinite loop. please. the webterm is logging data.
+            # while True:
                 query = build_prompt()
                 response = model.run_once(query)
                 command_list = get_command_list(response)

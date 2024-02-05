@@ -29,7 +29,9 @@ import pty
 import shlex
 import signal
 
-print(f"File '{os.path.basename(__file__)}' deprecated. Please use 'webterm.py' with arguments instead.")
+print(
+    f"File '{os.path.basename(__file__)}' deprecated. Please use 'webterm.py' with arguments instead."
+)
 
 # import webbrowser
 from functools import partial
@@ -102,10 +104,10 @@ async def websocket_handler(request, command: str):
             if msg.type == aiohttp.WSMsgType.TEXT:
                 if msg.data == pyte.control.ESC + "N":
                     terminal.screen.next_page()
-                    ws.send_str(terminal.dumps())
+                    await ws.send_str(terminal.dumps())
                 elif msg.data == pyte.control.ESC + "P":
                     terminal.screen.prev_page()
-                    ws.send_str(terminal.dumps())
+                    await ws.send_str(terminal.dumps())
                 else:
                     p_out.write(msg.data.encode())
             elif msg.type == aiohttp.WSMsgType.ERROR:
