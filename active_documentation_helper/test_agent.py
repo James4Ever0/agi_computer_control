@@ -20,12 +20,14 @@ CURSOR = "<|pad|>"
 # TODO: collect random data based on syntax
 # TODO: verify it is possible for human to operate and achieve targets in such environment, then later we would record our successful attempts to let the agent learn later.
 # TODO: send agent action to the server
+# TODO: specify view line range instead of viewing the full screen
+# TODO: specify more types of view commands
 
 INIT_PROMPT = f"""You are a terminal operator under VT100 environment.
 
 The console is running under Alpine Linux. You can access busybox utils.
 
-Cursor location will be indicated by {CURSOR}. Do not write {CURSOR} unless you mean it.
+Cursor location will be indicated by {CURSOR}. Do not write {CURSOR} by yourself.
 
 Avaliable special codes: (do not prefix these codes with 'TYPE' when you want to use them)
 
@@ -81,6 +83,11 @@ VIEW
 
 """
 action_view = False
+import time
+
+
+def get_timestamp():
+    return round(time.time() * 1000)
 
 
 @beartype.beartype
@@ -163,9 +170,9 @@ async def recv(ws: websockets.WebSocketClientProtocol):
                     "unknown data received  from websocket", str(data)[:60] + " ..."
                 )
             elif data_type == "identifier":
-                print("identifier received from websocket", data['data'])
+                print("identifier received from websocket", data["data"])
             else:
-                data = data['data']
+                data = data["data"]
                 cursor = data["c"]
                 cursor = (cursor[1], cursor[0])
                 print("Cursur at:", cursor)
@@ -339,6 +346,7 @@ def handle_command(cmd: str):
         data = cmd[4:].strip()
         command_content["action"] = "rem"
         command_content["data"] = data
+    # did not handle special?
     return command_content
 
 
@@ -379,8 +387,21 @@ async def execute_command_list(
             translated_cmd = await execute_command(command_content)
             if command_content["action"] == "view":
                 break_exec = True
+            elif command_content["action"] == "type":
+                await ws.send(
+                    json.dumps(
+                        dict(
+                            action="TYPE",
+                            timestamp=get_timestamp(),
+                            message=command_content["data"],
+                        )
+                    ).encode()
+                )
         else:
-            translated_cmd = translate_special_codes(cmd)
+            translated_cmd = translate_special_codes(cmd)  # special code for sure.
+            await ws.send(
+                json.dumps(dict(action=cmd, timestamp=get_timestamp(), message="")).encode()
+            )
         print("Regular sleep for %f seconds" % regular_sleep_time)
         await asyncio.sleep(regular_sleep_time)
         if break_exec:
@@ -412,8 +433,10 @@ async def main(port: int = 8028, regular_sleep_time: int = 1, init_sleep_time: i
         recv_task = asyncio.create_task(recv(ws))
         await asyncio.sleep(init_sleep_time)
         try:
-            for _ in range(10): # do not try infinite loop. please. the webterm is logging data.
-            # while True:
+            for _ in range(
+                10
+            ):  # do not try infinite loop. please. the webterm is logging data.
+                # while True:
                 query = build_prompt()
                 response = model.run_once(query)
                 command_list = get_command_list(response)
