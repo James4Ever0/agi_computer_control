@@ -1,0 +1,745 @@
+Thought level: 0
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+How to create a video from a bank of video snippets, while sticking to the music beats? (not strictly but creatively)
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+How to create a video from a bank of video snippets, while sticking to the music beats? (not strictly but creatively)
+
+Find the BPM of the music.
+REM What is the genre of the music?
+Research creative ways to align visuals with music tempo.
+REM How can I make it more engaging?
+Experiment with different editing techniques like slow-motion, fast-forward, and reverse footage.
+Find video snippets that match the music's mood.
+REM What emotions does the music convey?
+Select and edit video snippets to enhance those emotions.
+Use visual effects like color grading and transitions.
+REM How can I make it more cohesive?
+Create a narrative or theme for the video.
+Consider adding text overlays or voiceover to support the narrative.
+REM What font and style would be best?
+Test different fonts and styles to find the most appropriate one.
+Combine all elements into a final video.
+REM Does it feel cohesive and engaging?
+========================CONTENT FOR NEXT LAYER========================
+What is the genre of the music?
+How can I make it more engaging?
+What emotions does the music convey?
+How can I make it more cohesive?
+What font and style would be best?
+Does it feel cohesive and engaging?
+Thought level: 1
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What is the genre of the music?
+How can I make it more engaging?
+What emotions does the music convey?
+How can I make it more cohesive?
+What font and style would be best?
+Does it feel cohesive and engaging?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+What is the genre of the music?
+REM I don't know the exact genre, but it seems to be a mix of pop and electronic.
+How can I make it more engaging?
+REM Adding some dynamic changes in tempo or rhythm could help engage listeners more.
+What emotions does the music convey?
+REM It feels energetic with a touch of melancholy.
+How can I make it more cohesive?
+REM Using similar instrumental elements throughout the track would help create a more cohesive sound.
+What font and style would be best?
+REM A modern sans-serif font like Helvetica or Open Sans might complement the music well.
+Does it feel cohesive and engaging?
+REM It's starting to feel more cohesive, but I think adding some dynamic changes would make it even more engaging.
+========================CONTENT FOR NEXT LAYER========================
+I don't know the exact genre, but it seems to be a mix of pop and electronic.
+Adding some dynamic changes in tempo or rhythm could help engage listeners more.
+It feels energetic with a touch of melancholy.
+Using similar instrumental elements throughout the track would help create a more cohesive sound.
+A modern sans-serif font like Helvetica or Open Sans might complement the music well.
+It's starting to feel more cohesive, but I think adding some dynamic changes would make it even more engaging.
+Thought level: 2
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+I don't know the exact genre, but it seems to be a mix of pop and electronic.
+Adding some dynamic changes in tempo or rhythm could help engage listeners more.
+It feels energetic with a touch of melancholy.
+Using similar instrumental elements throughout the track would help create a more cohesive sound.
+A modern sans-serif font like Helvetica or Open Sans might complement the music well.
+It's starting to feel more cohesive, but I think adding some dynamic changes would make it even more engaging.
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+I don't know the exact genre, but it seems to be a mix of pop and electronic.
+REM What are the specific elements that indicate this?
+
+Adding some dynamic changes in tempo or rhythm could help engage listeners more.
+REM How can I incorporate these changes without disrupting the flow?
+
+It feels energetic with a touch of melancholy.
+REM Why does it have a touch of melancholy? Is that intentional?
+
+Using similar instrumental elements throughout the track would help create a more cohesive sound.
+REM What are some key instrumental elements to focus on?
+
+A modern sans-serif font like Helvetica or Open Sans might complement the music well.
+REM How can I incorporate this font into the visual aspect of the project?
+
+It's starting to feel more cohesive, but I think adding some dynamic changes would make it even more engaging.
+REM What are some effective ways to add these dynamic changes?
+========================CONTENT FOR NEXT LAYER========================
+What are the specific elements that indicate this?
+How can I incorporate these changes without disrupting the flow?
+Why does it have a touch of melancholy? Is that intentional?
+What are some key instrumental elements to focus on?
+How can I incorporate this font into the visual aspect of the project?
+What are some effective ways to add these dynamic changes?
+Thought level: 3
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What are the specific elements that indicate this?
+How can I incorporate these changes without disrupting the flow?
+Why does it have a touch of melancholy? Is that intentional?
+What are some key instrumental elements to focus on?
+How can I incorporate this font into the visual aspect of the project?
+What are some effective ways to add these dynamic changes?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+What are the specific elements that indicate this?
+REM I recall discussing these elements in detail during the team meeting.
+How can I incorporate these changes without disrupting the flow?
+REM I should revisit the project brief and design principles to ensure consistency.
+Why does it have a touch of melancholy? Is that intentional?
+REM I remember a discussion about evoking emotions in this piece, but I'm not sure if melancholy was specifically mentioned.
+What are some key instrumental elements to focus on?
+REM Let me think, there was the piano, violin, and a few other instruments.
+How can I incorporate this font into the visual aspect of the project?
+REM Which font were we considering? I need to find that information.
+What are some effective ways to add these dynamic changes?
+REM Brainstorming different approaches like animations, color shifts, or transitions.
+========================CONTENT FOR NEXT LAYER========================
+I recall discussing these elements in detail during the team meeting.
+I should revisit the project brief and design principles to ensure consistency.
+I remember a discussion about evoking emotions in this piece, but I'm not sure if melancholy was specifically mentioned.
+Let me think, there was the piano, violin, and a few other instruments.
+Which font were we considering? I need to find that information.
+Brainstorming different approaches like animations, color shifts, or transitions.
+Thought level: 4
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+I recall discussing these elements in detail during the team meeting.
+I should revisit the project brief and design principles to ensure consistency.
+I remember a discussion about evoking emotions in this piece, but I'm not sure if melancholy was specifically mentioned.
+Let me think, there was the piano, violin, and a few other instruments.
+Which font were we considering? I need to find that information.
+Brainstorming different approaches like animations, color shifts, or transitions.
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+I recall discussing these elements in detail during the team meeting.
+REM What were the key elements we discussed?
+I should revisit the project brief and design principles to ensure consistency.
+REM Where can I find the project brief and design principles?
+I remember a discussion about evoking emotions in this piece, but I'm not sure if melancholy was specifically mentioned.
+REM What other emotions were discussed?
+There was the piano, violin, and a few other instruments.
+REM Which instruments were we considering?
+Which font were we considering? I need to find that information.
+REM Where did we discuss the preferred font?
+Brainstorming different approaches like animations, color shifts, or transitions.
+REM What are some examples of animations we discussed?
+========================CONTENT FOR NEXT LAYER========================
+What were the key elements we discussed?
+Where can I find the project brief and design principles?
+What other emotions were discussed?
+Which instruments were we considering?
+Where did we discuss the preferred font?
+What are some examples of animations we discussed?
+Thought level: 5
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What were the key elements we discussed?
+Where can I find the project brief and design principles?
+What other emotions were discussed?
+Which instruments were we considering?
+Where did we discuss the preferred font?
+What are some examples of animations we discussed?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+What were the key elements we discussed?
+REM What is the topic of discussion? When did we last discuss it?
+
+Where can I find the project brief and design principles?
+REM Where should I look for project-related documents? Which folder do I use?
+
+What other emotions were discussed?
+REM How many different emotions came up in the conversation? What were they?
+
+Which instruments were we considering?
+REM What types of instruments are we talking about here? Are they musical or visual?
+
+Where did we discuss the preferred font?
+REM Did we talk about it during our last meeting? Or was it mentioned earlier?
+
+What are some examples of animations we discussed?
+REM Can I remember any specific animation ideas from our conversations?
+========================CONTENT FOR NEXT LAYER========================
+What is the topic of discussion? When did we last discuss it?
+Where should I look for project-related documents? Which folder do I use?
+How many different emotions came up in the conversation? What were they?
+What types of instruments are we talking about here? Are they musical or visual?
+Did we talk about it during our last meeting? Or was it mentioned earlier?
+Can I remember any specific animation ideas from our conversations?
+Thought level: 6
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What is the topic of discussion? When did we last discuss it?
+Where should I look for project-related documents? Which folder do I use?
+How many different emotions came up in the conversation? What were they?
+What types of instruments are we talking about here? Are they musical or visual?
+Did we talk about it during our last meeting? Or was it mentioned earlier?
+Can I remember any specific animation ideas from our conversations?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+What is the topic of discussion? When did we last discuss it?
+REM I remember discussing this during our meeting two weeks ago.
+Where should I look for project-related documents? Which folder do I use?
+REM Let me check my file explorer to find the folder. It's usually in the 'Projects' folder.
+How many different emotions came up in the conversation? What were they?
+REM I felt excited, curious, and a bit nervous during our discussion.
+What types of instruments are we talking about here? Are they musical or visual?
+REM They are mainly visual instruments, like animation software.
+Did we talk about it during our last meeting? Or was it mentioned earlier?
+REM Let me check my notes from the last meeting. I think it was discussed there as well.
+Can I remember any specific animation ideas from our conversations?
+REM One idea that comes to mind is incorporating a time-lapse effect in the animation.
+========================CONTENT FOR NEXT LAYER========================
+I remember discussing this during our meeting two weeks ago.
+Let me check my file explorer to find the folder. It's usually in the 'Projects' folder.
+I felt excited, curious, and a bit nervous during our discussion.
+They are mainly visual instruments, like animation software.
+Let me check my notes from the last meeting. I think it was discussed there as well.
+One idea that comes to mind is incorporating a time-lapse effect in the animation.
+Thought level: 7
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+I remember discussing this during our meeting two weeks ago.
+Let me check my file explorer to find the folder. It's usually in the 'Projects' folder.
+I felt excited, curious, and a bit nervous during our discussion.
+They are mainly visual instruments, like animation software.
+Let me check my notes from the last meeting. I think it was discussed there as well.
+One idea that comes to mind is incorporating a time-lapse effect in the animation.
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+I remember discussing this during our meeting two weeks ago.
+REM What was the main topic of that discussion? Who were present?
+Let me check my file explorer to find the folder. It's usually in the 'Projects' folder.
+REM Where did I save the notes from the last meeting? How can I access them quickly?
+I felt excited, curious, and a bit nervous during our discussion.
+REM Why was I nervous? Did I have any concerns about the project or my performance?
+They are mainly visual instruments, like animation software.
+REM What specific tools were mentioned in the discussion? Which ones am I familiar with?
+Let me check my notes from the last meeting. I think it was discussed there as well.
+DELEGATE
+
+(After delegating)
+REM Where are my notes? Do I have a digital copy or did I take physical notes?
+One idea that comes to mind is incorporating a time-lapse effect in the animation.
+REM How can I incorporate this without compromising the quality of the animation? What tools would be useful for this task?
+========================CONTENT FOR NEXT LAYER========================
+What was the main topic of that discussion? Who were present?
+Where did I save the notes from the last meeting? How can I access them quickly?
+Why was I nervous? Did I have any concerns about the project or my performance?
+What specific tools were mentioned in the discussion? Which ones am I familiar with?
+Where are my notes? Do I have a digital copy or did I take physical notes?
+How can I incorporate this without compromising the quality of the animation? What tools would be useful for this task?
+Thought level: 8
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What was the main topic of that discussion? Who were present?
+Where did I save the notes from the last meeting? How can I access them quickly?
+Why was I nervous? Did I have any concerns about the project or my performance?
+What specific tools were mentioned in the discussion? Which ones am I familiar with?
+Where are my notes? Do I have a digital copy or did I take physical notes?
+How can I incorporate this without compromising the quality of the animation? What tools would be useful for this task?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+Thoughts:
+What was the main topic of that discussion? Who were present?
+========================CONTENT FOR NEXT LAYER========================
