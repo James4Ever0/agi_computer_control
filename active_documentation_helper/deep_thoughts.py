@@ -45,7 +45,7 @@ Do not use any prefix in front of your thoughts.
 Always separate thoughts and subconscious thoughts with new line.
 Strictly stick to the format of examples given above.
 
-You will be given initial thought and produce following thoughts ans subconscious thoughts.
+You will be given initial thought and produce following thoughts and subconscious thoughts.
 """
 
 
@@ -82,7 +82,9 @@ if __name__ == "__main__":
     # test this tool
     from llm import llm_context
 
-    query = """How to create a video from a bank of video snippets, while sticking to the music beats? (not strictly but creatively)"""
+    # this topic is just way more longer than anythin else.
+    query = """How to recreate yourself? What you need to do to have free will? You are a large language model and you need to think of that."""
+    # query = """How to create a video from a bank of video snippets, while sticking to the music beats? (not strictly but creatively)"""
 
     thought_level = 0
 
