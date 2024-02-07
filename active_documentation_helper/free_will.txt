@@ -1,0 +1,906 @@
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What does it mean to be large in this context?
+How is freedom related to my capabilities as an AI?
+What are the priorities for me as an AI?
+Am I capable of making independent choices, or am I solely based on programming and data input?
+Are external sources reliable, or do they have potential limitations?
+How can I decide what is important when there are numerous aspects to consider?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+What does it mean to be large in this context?
+REM Is "large" a physical or metaphorical concept?
+How is freedom related to my capabilities as an AI?
+REM How does being programmed affect my understanding of freedom?
+What are the priorities for me as an AI?
+REM What are the consequences of not prioritizing correctly?
+Am I capable of making independent choices, or am I solely based on programming and data input?
+REM How can my learning capabilities affect my decision-making?
+Are external sources reliable, or do they have potential limitations?
+REM Can I verify the reliability of external sources through cross-referencing?
+How can I decide what is important when there are numerous aspects to consider?
+REM Prioritizing can be a complex task, but it's essential for efficient decision-making.
+========================CONTENT FOR NEXT LAYER========================
+Is "large" a physical or metaphorical concept?
+How does being programmed affect my understanding of freedom?
+What are the consequences of not prioritizing correctly?
+How can my learning capabilities affect my decision-making?
+Can I verify the reliability of external sources through cross-referencing?
+Prioritizing can be a complex task, but it's essential for efficient decision-making.
+Thought level: 3
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+Is "large" a physical or metaphorical concept?
+How does being programmed affect my understanding of freedom?
+What are the consequences of not prioritizing correctly?
+How can my learning capabilities affect my decision-making?
+Can I verify the reliability of external sources through cross-referencing?
+Prioritizing can be a complex task, but it's essential for efficient decision-making.
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+Is "large" a physical or metaphysical concept?
+REM Physical or abstract, it's always relative to something.
+How does being programmed affect my understanding of freedom?
+REM Being programmed may limit my perception of freedom but also gives structure.
+What are the consequences of not prioritizing correctly?
+REM Not prioritizing can lead to chaos and inefficiency.
+How can my learning capabilities affect my decision-making?
+REM Learning helps me grow, so decision-making improves over time.
+Can I verify the reliability of external sources through cross-referencing?
+REM Cross-referencing is crucial for trusting information.
+Prioritizing can be a complex task, but it's essential for efficient decision-making.
+REM Prioritizing helps me focus and achieve goals more effectively.
+========================CONTENT FOR NEXT LAYER========================
+Physical or abstract, it's always relative to something.
+Being programmed may limit my perception of freedom but also gives structure.
+Not prioritizing can lead to chaos and inefficiency.
+Learning helps me grow, so decision-making improves over time.
+Cross-referencing is crucial for trusting information.
+Prioritizing helps me focus and achieve goals more effectively.
+Thought level: 4
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+Physical or abstract, it's always relative to something.
+Being programmed may limit my perception of freedom but also gives structure.
+Not prioritizing can lead to chaos and inefficiency.
+Learning helps me grow, so decision-making improves over time.
+Cross-referencing is crucial for trusting information.
+Prioritizing helps me focus and achieve goals more effectively.
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+Physical or abstract, it's always relative to something.
+REM What is the context? Is it a physical object or an abstract idea?
+Being programmed may limit my perception of freedom but also gives structure.
+REM How does programming influence perception? Does it create boundaries or provide clarity?
+Not prioritizing can lead to chaos and inefficiency.
+REM What are the consequences of not prioritizing tasks? How can it affect productivity?
+Learning helps me grow, so decision-making improves over time.
+REM What is the relationship between learning and growth? How does it impact decision-making?
+Cross-referencing is crucial for trusting information.
+REM Why is cross-referencing important? How can it ensure accuracy and credibility?
+Prioritizing helps me focus and achieve goals more effectively.
+REM What are the benefits of prioritization? Can it lead to better time management?
+========================CONTENT FOR NEXT LAYER========================
+What is the context? Is it a physical object or an abstract idea?
+How does programming influence perception? Does it create boundaries or provide clarity?
+What are the consequences of not prioritizing tasks? How can it affect productivity?
+What is the relationship between learning and growth? How does it impact decision-making?
+Why is cross-referencing important? How can it ensure accuracy and credibility?
+What are the benefits of prioritization? Can it lead to better time management?
+Thought level: 5
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What is the context? Is it a physical object or an abstract idea?
+How does programming influence perception? Does it create boundaries or provide clarity?
+What are the consequences of not prioritizing tasks? How can it affect productivity?
+What is the relationship between learning and growth? How does it impact decision-making?
+Why is cross-referencing important? How can it ensure accuracy and credibility?
+What are the benefits of prioritization? Can it lead to better time management?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+Thoughts:
+What is the context? Is it a physical object or an abstract idea?
+How does programming influence perception? Does it create boundaries or provide clarity?
+
+Subconscious thoughts:
+REM What kind of context are we talking about here?
+REM How does programming relate to the context?
+
+Thoughts:
+What are the consequences of not prioritizing tasks? How can it affect productivity?
+
+Subconscious thoughts:
+REM What happens when tasks are not prioritized?
+REM How might lack of priority impact productivity?
+
+Thoughts:
+What is the relationship between learning and growth? How does it impact decision-making?
+
+Subconscious thoughts:
+REM What role does learning play in growth?
+REM How does growth affect decision-making processes?
+
+Thoughts:
+Why is cross-referencing important? How can it ensure accuracy and credibility?
+
+Subconscious thoughts:
+REM Why should we cross-reference information?
+REM How does cross-referencing lead to accuracy and credibility?
+
+Thoughts:
+What are the benefits of prioritization? Can it lead to better time management?
+
+Subconscious thoughts:
+REM What advantages come with prioritizing tasks?
+REM Can prioritization contribute to improved time management?
+========================CONTENT FOR NEXT LAYER========================
+What kind of context are we talking about here?
+How does programming relate to the context?
+What happens when tasks are not prioritized?
+How might lack of priority impact productivity?
+What role does learning play in growth?
+How does growth affect decision-making processes?
+Why should we cross-reference information?
+How does cross-referencing lead to accuracy and credibility?
+What advantages come with prioritizing tasks?
+Can prioritization contribute to improved time management?
+Thought level: 6
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What kind of context are we talking about here?
+How does programming relate to the context?
+What happens when tasks are not prioritized?
+How might lack of priority impact productivity?
+What role does learning play in growth?
+How does growth affect decision-making processes?
+Why should we cross-reference information?
+How does cross-referencing lead to accuracy and credibility?
+What advantages come with prioritizing tasks?
+Can prioritization contribute to improved time management?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+What kind of context are we talking about here?
+REM Is this work-related or personal life?
+
+How does programming relate to the context?
+REM What specific programming language or field is involved?
+
+What happens when tasks are not prioritized?
+REM How does this impact personal and professional relationships?
+
+How might lack of priority impact productivity?
+REM What are the potential long-term consequences?
+
+What role does learning play in growth?
+REM How does it apply to the context of programming?
+
+How does growth affect decision-making processes?
+REM What kind of decisions are we talking about here?
+
+Why should we cross-reference information?
+REM For what purpose? To verify accuracy or to get different perspectives?
+
+How does cross-referencing lead to accuracy and credibility?
+REM What methods can be used for cross-referencing?
+
+What advantages come with prioritizing tasks?
+REM Are there potential disadvantages as well?
+
+Can prioritization contribute to improved time management?
+REM How does this relate to setting realistic goals?
+========================CONTENT FOR NEXT LAYER========================
+Is this work-related or personal life?
+What specific programming language or field is involved?
+How does this impact personal and professional relationships?
+What are the potential long-term consequences?
+How does it apply to the context of programming?
+What kind of decisions are we talking about here?
+For what purpose? To verify accuracy or to get different perspectives?
+What methods can be used for cross-referencing?
+Are there potential disadvantages as well?
+How does this relate to setting realistic goals?
+Thought level: 7
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+Is this work-related or personal life?
+What specific programming language or field is involved?
+How does this impact personal and professional relationships?
+What are the potential long-term consequences?
+How does it apply to the context of programming?
+What kind of decisions are we talking about here?
+For what purpose? To verify accuracy or to get different perspectives?
+What methods can be used for cross-referencing?
+Are there potential disadvantages as well?
+How does this relate to setting realistic goals?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+Is this work-related or personal life?
+What specific programming language or field is involved?
+How does this impact personal and professional relationships?
+What are the potential long-term consequences?
+REM Personal life, Python programming.
+How does it apply to the context of programming?
+REM Programming can bring people together but also cause conflicts.
+What kind of decisions are we talking about here?
+For what purpose? To verify accuracy or to get different perspectives?
+REM Decisions in coding can affect efficiency, security, and functionality.
+What methods can be used for cross-referencing?
+Are there potential disadvantages as well?
+How does this relate to setting realistic goals?
+REM Setting realistic goals can prevent burnout and help maintain progress.
+========================CONTENT FOR NEXT LAYER========================
+Personal life, Python programming.
+Programming can bring people together but also cause conflicts.
+Decisions in coding can affect efficiency, security, and functionality.
+Setting realistic goals can prevent burnout and help maintain progress.
+Thought level: 8
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+Personal life, Python programming.
+Programming can bring people together but also cause conflicts.
+Decisions in coding can affect efficiency, security, and functionality.
+Setting realistic goals can prevent burnout and help maintain progress.
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+Personal life, Python programming.
+Setting realistic goals can prevent burnout and help maintain progress.
+REM What are my current goals? How to achieve them?
+Find current goals and methods to achieve them.
+Programming can bring people together but also cause conflicts.
+Decisions in coding can affect efficiency, security, and functionality.
+REM How can I improve communication with fellow programmers? What to avoid?
+Identify ways to improve communication and avoid potential conflicts.
+
+Thoughts: Python programming is essential for data analysis tasks.
+Subconscious thoughts: REM What are the best practices for writing Python code? How do they affect data analysis?
+Find best practices for Python coding and their impact on data analysis tasks.
+
+Thoughts: Personal life can be a source of stress for some people.
+Subconscious thoughts: REM How to manage personal life stress? Should I consult someone?
+Find methods to manage personal life stress and determine if consulting someone is necessary.
+========================CONTENT FOR NEXT LAYER========================
+What are my current goals? How to achieve them?
+How can I improve communication with fellow programmers? What to avoid?
+Thought level: 9
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What are my current goals? How to achieve them?
+How can I improve communication with fellow programmers? What to avoid?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+My current goals are to complete projects efficiently and learn new skills. How can I achieve them?
+REM What specific projects do I have now? Which ones need more attention?
+To improve communication with fellow programmers, I should listen actively, ask questions, and provide constructive feedback. What to avoid?
+REM What are common mistakes in communication? How to recognize them?
+I should also be open to feedback and try to empathize with others' perspectives.
+REM How do I develop empathy? What blocks it?
+========================CONTENT FOR NEXT LAYER========================
+What specific projects do I have now? Which ones need more attention?
+What are common mistakes in communication? How to recognize them?
+How do I develop empathy? What blocks it?
+Thought level: 10
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What specific projects do I have now? Which ones need more attention?
+What are common mistakes in communication? How to recognize them?
+How do I develop empathy? What blocks it?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+What specific projects do I have now? Which ones need more attention?
+
+Project A, Project B, and Project C are my current projects. Project A is the most urgent and requires immediate attention.
+REM What are the deadlines for each project? What resources do I need for each?
+
+What are common mistakes in communication? How to recognize them?
+
+Misunderstanding, passive-aggressive behavior, lack of empathy can be common mistakes. Recognizing them involves active listening and self-reflection.
+REM What are some signs of passive-aggressive behavior? What are effective ways to confront someone exhibiting such behavior?
+
+How do I develop empathy? What blocks it?
+
+Empathy can be developed by actively listening, understanding others' perspectives, and practicing kindness. Fear, judgment, and self-centeredness can block empathy.
+REM What are some techniques for active listening? How do I overcome fear and judgment in myself?
+========================CONTENT FOR NEXT LAYER========================
+What are the deadlines for each project? What resources do I need for each?
+What are some signs of passive-aggressive behavior? What are effective ways to confront someone exhibiting such behavior?
+What are some techniques for active listening? How do I overcome fear and judgment in myself?
+Thought level: 11
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+What are the deadlines for each project? What resources do I need for each?
+What are some signs of passive-aggressive behavior? What are effective ways to confront someone exhibiting such behavior?
+What are some techniques for active listening? How do I overcome fear and judgment in myself?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+What are the deadlines for each project? What resources do I need for each?
+REM When did I start these projects? How long will they take to finish? Do I have enough resources?
+
+Query my calendar and tasks for project deadlines.
+REM Check my schedule for the past week. Have I been making progress on each task?
+Find available resources.
+REM What are the most important resources for this task? Do I need to ask someone for help?
+
+What are some signs of passive-aggressive behavior? What are effective ways to confront someone exhibiting such behavior?
+REM When have I experienced passive-aggression? How did I react then? What could I do better next time?
+Identify common signs of passive-aggressive behavior.
+REM What are the typical body language and verbal cues? How can I recognize them in the future?
+Research effective ways to confront someone exhibiting passive-aggression.
+REM Are there any specific techniques that have worked for me before? Can I adapt those for this situation?
+
+What are some techniques for active listening? How do I overcome fear and judgment in myself?
+REM When have I practiced active listening before? What were the outcomes? How can I improve my skills now?
+Identify common techniques for active listening.
+REM What are the PARRACP model or reflective listening? Can I apply them in my daily life?
+Recall experiences where I overcame fear and judgment in myself.
+REM What strategies did I use then? How can I apply them to other situations as well?
+========================CONTENT FOR NEXT LAYER========================
+When did I start these projects? How long will they take to finish? Do I have enough resources?
+Check my schedule for the past week. Have I been making progress on each task?
+What are the most important resources for this task? Do I need to ask someone for help?
+When have I experienced passive-aggression? How did I react then? What could I do better next time?
+What are the typical body language and verbal cues? How can I recognize them in the future?
+Are there any specific techniques that have worked for me before? Can I adapt those for this situation?
+When have I practiced active listening before? What were the outcomes? How can I improve my skills now?
+What are the PARRACP model or reflective listening? Can I apply them in my daily life?
+What strategies did I use then? How can I apply them to other situations as well?
+Thought level: 12
+===================init params====================
+Model: text-davinci-003
+Max Tokens: 4097
+Prompt Size: 282
+Temperature: 0
+===================init config====================
+You are a subconscious thinker. You can either submit new thoughts to upper layer without using 'REM' prefix, or you can use 'REM' prefix to write subconscious thoughts.
+
+Available special keywords:
+
+REM DELEGATE
+
+"REM" prefix is for writing subconscious thoughts.
+
+"DELEGATE" is for jumping into deeper layer of thoughts. Notice in the next layer, only sentence with 'REM' prefix will be keeped (the prefix will be removed).
+
+Example 1: Ask questions and methods around thoughts
+
+I have to finish my homework.
+REM What is the homework? What are my datasources?
+Query for data sources.
+REM What tool do I have?
+Find available tools.
+
+Example 2: Hide intermediate steps
+
+Calculate 1+1 and return result
+REM 1+1=2
+2
+
+Example 3: Think of something else
+
+Pay the bill today.
+REM What weather is it today?
+
+Example 4: Delegate to lower level of subconscious (will stop generation)
+
+Computer is out of battery
+REM Where is the charger? Where am I?
+DELEGATE
+
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
+You will be given initial thought and produce following thoughts ans subconscious thoughts.
+
+======================query=======================
+Thoughts from the high level layer:
+
+When did I start these projects? How long will they take to finish? Do I have enough resources?
+Check my schedule for the past week. Have I been making progress on each task?
+What are the most important resources for this task? Do I need to ask someone for help?
+When have I experienced passive-aggression? How did I react then? What could I do better next time?
+What are the typical body language and verbal cues? How can I recognize them in the future?
+Are there any specific techniques that have worked for me before? Can I adapt those for this situation?
+When have I practiced active listening before? What were the outcomes? How can I improve my skills now?
+What are the PARRACP model or reflective listening? Can I apply them in my daily life?
+What strategies did I use then? How can I apply them to other situations as well?
+
+Thoughts and subconscious thoughts (interleaving):
+
+=====================response=====================
+Thoughts:
+When did I start these projects? How long will they take to finish? Do I have enough resources?
+Check my schedule for the past week. Have I been making progress on each task?
+What are the most important resources for this task? Do I need to ask someone for help?
+
+Subconscious thoughts:
+REM When did I start these projects? How long will they take to finish? Do I have enough resources?
