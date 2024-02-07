@@ -38,22 +38,62 @@ Computer is out of battery
 REM Where is the charger? Where am I?
 DELEGATE
 
+Notice:
+
+Always prefix subconscious thoughts with 'REM' (without the quotes)
+Do not use any prefix in front of your thoughts.
+Always separate thoughts and subconscious thoughts with new line.
+Strictly stick to the format of examples given above.
+
 You will be given initial thought and produce following thoughts ans subconscious thoughts.
 """
+
 
 def subconscious_remover(list_of_thoughts):
     ret = []
     for it in list_of_thoughts:
-        if it.startswith('REM '):
+        if it.startswith("REM "):
             continue
         ret.append(it)
     return ret
+
+
+def conscious_remover(list_of_thoughts):
+    ret = []
+    for it in list_of_thoughts:
+        if it.startswith("REM "):
+            ret.append(it[4:])
+        else:
+            continue
+    return ret
+
 
 def build_prompt(query):
     prompt = f"""Thoughts from the high level layer:
 
 {query}
 
-Continuation:
+Thoughts and subconscious thoughts (interleaving):
 """
     return prompt
+
+
+if __name__ == "__main__":
+    # test this tool
+    from llm import llm_context
+
+    query = """How to create a video from a bank of video snippets, while sticking to the music beats? (not strictly but creatively)"""
+
+    thought_level = 0
+
+    while query != "":
+        print("Thought level:", thought_level)
+        with llm_context(init_prompt) as model:
+            ret = model.run_once(build_prompt(query))
+            lines = ret.split("\n")
+            print("CONTENT FOR NEXT LAYER".center(70, "="))
+            subconscious_thoughts = conscious_remover(lines)
+            for it in subconscious_thoughts:
+                print(it)
+            query = "\n".join(subconscious_thoughts)
+            thought_level += 1
