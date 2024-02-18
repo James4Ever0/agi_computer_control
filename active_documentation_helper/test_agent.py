@@ -320,7 +320,7 @@ SPECIAL_CODES.update(FN_CODES)
 SPECIAL_CODES.update(CTRL_CODES)
 
 COMMANDS = ["TYPE", "VIEW", "WAIT", "REM"]
-
+# breakpoint()
 
 @beartype.beartype
 def translate_special_codes(cmd: str):
