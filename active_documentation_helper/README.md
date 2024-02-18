@@ -39,6 +39,10 @@ RELEASE mouse_button
 SCROLL dx dy
 ```
 
+you may extend the move command, with additional time parameter as delayed execution
+
+you may use the command with named argument
+
 ---
 
 touchpad controls:
@@ -71,7 +75,7 @@ RELEASE stylus_button
 
 ---
 
-midi controls: (introducing async controls for music notes, which we can also apply to keyboard and mouse)
+midi controls: (introducing async controls for music notes, which we can also apply to keyboard and mouse, touchpad and stylus)
 
 ```
 HOLD_NOTES note ...
@@ -81,3 +85,18 @@ TAP_NOTE_ASYNC note tap_duration
 WAIT wait_time
 ```
 
+---
+
+you can also check the robot transformer control language, similar HID scripting language like ducky script
+
+android special keys like power button, volume buttons, physical switches
+
+maybe the ultimate solution would be arms and legs. but a dedicated hardened environment would be required for training.
+
+---
+
+some similar macro language might be created for the video editing project.
+
+---
+
+is there any 'reverse' thing we can do here? just like the video generation and video editing language?
