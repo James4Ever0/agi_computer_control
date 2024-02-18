@@ -4,7 +4,7 @@ special_command_list = [
     "SPACE",
     "BACKSPACE",
     "TAB",
-    "ENTER",
+    "ENTER",  # NEWLINE
     "ESC",
     "PGUP",
     "PGDN",
@@ -70,11 +70,36 @@ special_command_list = [
 
 import string
 
-invisible_chars = [it for it in string.whitespace if it != "\n"]  # Invisible characters, including '\r'
+additional_special_command_list = [
+    "NEWLINE",  # '\n'
+    "CARRIAGE_RETURN",
+    "CR",
+    "CRETURN",
+    "VERTICAL_TAB",
+    "VTAB",
+    "FORM_FEED",
+    "FF",
+]
+
+# TODO: should you put these into special command list
+invisible_chars = [
+    it for it in string.whitespace if it != "\n"
+]  # Invisible characters, including '\r'
+
 char_list = list(string.printable) + invisible_chars
 
 
-class CommandGenerator:
+class BaseCommandGenerator:
+    @classmethod
+    def call_single_random_command(cls):
+        command_generator_method_name = random.choice(
+            [it for it in dir(cls) if it.startswith("get_")]
+        )
+        command: str = getattr(cls, command_generator_method_name)()
+        return command
+
+
+class CommandGenerator(BaseCommandGenerator):
     @staticmethod
     def get_random_chars():
         random_chars = "".join(random.sample(char_list, k=random.randint(1, 20)))
@@ -104,17 +129,7 @@ class CommandGenerator:
         return f"REM {reminder}"
 
 
-command_generator_list = []
-
-
-def get_single_random_command():
-    command_generator_method_name = random.choice(
-        [it for it in dir(CommandGenerator) if it.startswith("get_")]
-    )
-    command: str = getattr(CommandGenerator,command_generator_method_name)()
-    return command
-
 if __name__ == "__main__":
     for _ in range(100):
-        command = get_single_random_command()
+        command = CommandGenerator.call_single_random_command()
         print(command)
