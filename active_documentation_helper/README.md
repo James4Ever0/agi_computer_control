@@ -12,6 +12,10 @@ godlang is just a name. we choose it because this is cybergod we are working wit
 
 duckyscript is keyboard only, and introduces a lot of new syntax
 
+the wait time is integer, in miliseconds.
+
+you may need to implement full-size keyboard keycodes, to operate software like blender and autocad.
+
 ```
 STRING STRINGLN END_STRING END_STRINGLN HOLD RELEASE RESET
 ```
@@ -64,3 +68,16 @@ CLICK stylus_button
 HOLD stylus_button
 RELEASE stylus_button
 ```
+
+---
+
+midi controls: (introducing async controls for music notes, which we can also apply to keyboard and mouse)
+
+```
+HOLD_NOTES note ...
+RELEASE_NOTES note ...
+TAP_NOTE note tap_duration
+TAP_NOTE_ASYNC note tap_duration
+WAIT wait_time
+```
+
