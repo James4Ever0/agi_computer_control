@@ -5,7 +5,7 @@
 
 # the language used here is called "godlang", an agent language designed for console, GUI and robot manipulations.
 
-from typing import Optional
+from typing import Callable, Optional
 import websockets
 import asyncio
 import json
@@ -322,6 +322,7 @@ SPECIAL_CODES.update(CTRL_CODES)
 COMMANDS = ["TYPE", "VIEW", "WAIT", "REM"]
 # breakpoint()
 
+
 @beartype.beartype
 def translate_special_codes(cmd: str):
     return SPECIAL_CODES.get(cmd, cmd)
@@ -378,7 +379,7 @@ def get_command_list(response: str) -> list[str]:
 async def execute_command_list(
     command_list: list[str],
     ws: websockets.WebSocketClientProtocol,
-    regular_sleep_time: int,
+    regular_sleep_time: float,
 ):
     for cmd in command_list:
         command_content = handle_command(cmd)
@@ -400,7 +401,9 @@ async def execute_command_list(
         else:
             translated_cmd = translate_special_codes(cmd)  # special code for sure.
             await ws.send(
-                json.dumps(dict(action=cmd, timestamp=get_timestamp(), message="")).encode()
+                json.dumps(
+                    dict(action=cmd, timestamp=get_timestamp(), message="")
+                ).encode()
             )
         print("Regular sleep for %f seconds" % regular_sleep_time)
         await asyncio.sleep(regular_sleep_time)
@@ -412,7 +415,35 @@ async def execute_command_list(
 
 
 @beartype.beartype
-async def main(port: int = 8028, regular_sleep_time: int = 1, init_sleep_time: int = 1):
+async def main_template(
+    command_list_generator: Callable,
+    port: int = 8028,
+    regular_sleep_time: float = 1,
+    init_sleep_time: float = 1,
+    total_batches: int = 10,
+):
+    async with websockets.connect(
+        f"ws://localhost:{port}/ws"
+    ) as ws:  # can also be `async for`, retry on `websockets.ConnectionClosed`
+        recv_task = asyncio.create_task(recv(ws))
+        await asyncio.sleep(init_sleep_time)
+        try:
+            for _ in range(
+                total_batches
+            ):  # do not try infinite loop. please. the webterm is logging data.
+                # while True:
+                command_list = command_list_generator()
+                print("Command list:", command_list)
+                await execute_command_list(command_list, ws, regular_sleep_time)
+        except KeyboardInterrupt:
+            print("Interrupted shell connection")
+        finally:
+            await ws.close()
+            await recv_task
+
+
+@beartype.beartype
+async def main():
     # global action_view
     # command_list = ["i", "Hello world!", "\u001b", ":q!"]
     # command_list = ["i", "Hello world!", "ESC", ":q!"]
@@ -427,26 +458,14 @@ async def main(port: int = 8028, regular_sleep_time: int = 1, init_sleep_time: i
     #     "ENTER",
     # ]
     model = llm.LLM(prompt=INIT_PROMPT)
-    async with websockets.connect(
-        f"ws://localhost:{port}/ws"
-    ) as ws:  # can also be `async for`, retry on `websockets.ConnectionClosed`
-        recv_task = asyncio.create_task(recv(ws))
-        await asyncio.sleep(init_sleep_time)
-        try:
-            for _ in range(
-                10
-            ):  # do not try infinite loop. please. the webterm is logging data.
-                # while True:
-                query = build_prompt()
-                response = model.run_once(query)
-                command_list = get_command_list(response)
-                print("Command list:", command_list)
-                await execute_command_list(command_list, ws, regular_sleep_time)
-        except KeyboardInterrupt:
-            print("Interrupted shell connection")
-        finally:
-            await ws.close()
-            await recv_task
+
+    def command_list_generator():
+        query = build_prompt()
+        response = model.run_once(query)
+        command_list = get_command_list(response)
+        return command_list
+
+    await main_template(command_list_generator)
 
 
 if __name__ == "__main__":
