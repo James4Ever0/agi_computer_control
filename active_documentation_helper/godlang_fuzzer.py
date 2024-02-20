@@ -121,7 +121,7 @@ class CommandGenerator(BaseCommandGenerator):
 
     @staticmethod
     def get_wait_command():
-        wait_time = random.uniform(0.1, 10)
+        wait_time = random.uniform(0.1, 1)
         return f"WAIT {wait_time:.3f}"
 
     @staticmethod
