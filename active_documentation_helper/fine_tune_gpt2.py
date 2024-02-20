@@ -46,19 +46,21 @@ tokenizer: GPT2TokenizerFast = AutoTokenizer.from_pretrained(
     model_checkpoint, use_fast=True
 )
 
-model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2")
+model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2-godlang") # right from the model checkpoint save directory.
+# model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2")
 
 tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 
-PAD_ID = tokenizer("[PAD]")["input_ids"][0]
+PAD_ID = tokenizer("[PAD]")["input_ids"][0]  # type: ignore
 
-datadict = {"input_ids": [], "labels": [], 'attention_mask': []}
+datadict = {"input_ids": [], "labels": [], "attention_mask": []}
 
 datadir = "godlang_dataset"
 split_size = 128
 import progressbar
 
-for filename in progressbar.progressbar(os.listdir(datadir)):
+for filename in progressbar.progressbar(os.listdir(datadir)[:10]):
+# for filename in progressbar.progressbar(os.listdir(datadir)):
     with open(
         os.path.join(datadir, filename), "r"
     ) as f:  # maybe it is impossible to decode some file.
@@ -72,13 +74,40 @@ for filename in progressbar.progressbar(os.listdir(datadir)):
             k: [v[i : i + split_size] for i in range(0, len(v), split_size)]
             for k, v in ret.items()
         }
-        ret['labels'] = ret['input_ids'].copy()
+        ret["labels"] = ret["input_ids"].copy()
         for k, v in ret.items():
             datadict[k].extend(v)
 
 
 dataset = Dataset.from_dict(datadict)
 
+train_dataset = dataset.shuffle().select(range(1000))
+# train_dataset = dataset.shuffle().select(range(100))
+eval_dataset = dataset.shuffle().select(range(100))
 
-print(dataset[0])  # it is been truncated.
-breakpoint()
+training_args = TrainingArguments(
+    f"./{model_checkpoint}-godlang",
+    evaluation_strategy="epoch",
+    learning_rate=2e-5,
+    weight_decay=0.01,
+    push_to_hub=False,  # Change to True to push the model to the Hub
+    save_total_limit =  1
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset,
+    tokenizer=tokenizer,
+)
+
+import math
+
+try:
+    trainer.train(resume_from_checkpoint=True)
+    breakpoint()
+except:
+    trainer.train()
+eval_results = trainer.evaluate()
+print(f'Perplexity: {math.exp(eval_results["eval_loss"]):.2f}')
