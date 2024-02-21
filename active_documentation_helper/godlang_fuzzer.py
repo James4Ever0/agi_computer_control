@@ -109,12 +109,15 @@ class CommandGenerator(BaseCommandGenerator):
     @staticmethod
     def get_special_command():
         special_command = random.choice(special_command_list)
-        return special_command
+        return f"SPECIAL {special_command}"
+        # return special_command
 
-    @staticmethod
-    def get_type_command():
-        special_command = CommandGenerator.get_special_command()
-        return f"TYPE {special_command}"
+    # no special command escaping.
+    
+    # @staticmethod
+    # def get_type_command():
+    #     special_command = CommandGenerator.get_special_command()
+    #     return f"TYPE {special_command}"
 
     @staticmethod
     def get_view_command():

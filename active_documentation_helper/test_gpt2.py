@@ -34,6 +34,9 @@ response_list = generator(f"{random_command}\n", max_length=100, num_return_sequ
 # would you like to change the godlang syntax?
 
 # these are a few possibilities that the model can do. you would like to choose the most useful response as our dataset candidate, but how?
+
+# TODO: use prefix 'SPECIAL' to completely standardize the language syntax, so that we can get those chat statements out
+
 for response in response_list:
     for line in response["generated_text"].split("\n"):
         print(line)
