@@ -103,7 +103,8 @@ class CommandGenerator(BaseCommandGenerator):
     @staticmethod
     def get_random_chars():
         random_chars = "".join(random.sample(char_list, k=random.randint(1, 20)))
-        return random_chars
+        return f'TYPE {random_chars}'
+        # return random_chars
 
     @staticmethod
     def get_special_command():
