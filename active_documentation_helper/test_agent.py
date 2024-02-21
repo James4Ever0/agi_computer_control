@@ -40,11 +40,13 @@ Besides for the built-in special codes, you can also directly write VT100 comman
 
 Avaliable commands:
 
-TYPE VIEW WAIT REM
+TYPE VIEW WAIT REM SPECIAL
 
 Syntax: 
 
-Each line you generate will be either treated as a single action or normal chat text. The only way to write a newline is to use "ENTER" special code.
+Each line you generate will be either treated as a single action or normal chat text. The only way to write a newline is to use "ENTER" special code, with the special prefix "SPECIAL".
+
+You use "SPECIAL <special_code>" to use special codes.
 
 You can use a special command "TYPE", to type string into terminal. Use it like this: `TYPE <string>`. The string can be normal text, including special code.
 
@@ -57,18 +59,18 @@ If you do not want to take actions, use "REM" command like: `REM <comments>`
 Example 1: Hello world
 
 TYPE echo "Hello world!"
-ENTER
+SPECIAL ENTER
 
 Example 2: Special prefix usage, will print "ENTER"
 
 TYPE echo 
 TYPE ENTER
-ENTER
+SPECIAL ENTER
 
 Example 3: View the full screen, instead of only showing the changed lines
 
 TYPE echo "View the screen"
-ENTER
+SPECIAL ENTER
 VIEW
 
 Example 4: Wait for 3 seconds
@@ -325,7 +327,7 @@ COMMANDS = ["TYPE", "VIEW", "WAIT", "REM"]
 
 @beartype.beartype
 def translate_special_codes(cmd: str):
-    return SPECIAL_CODES.get(cmd, cmd)
+    return SPECIAL_CODES.get(cmd, None) # do not handle non-special code
 
 
 def handle_command(cmd: str):
@@ -400,11 +402,14 @@ async def execute_command_list(
                 )
         else:
             translated_cmd = translate_special_codes(cmd)  # special code for sure.
-            await ws.send(
-                json.dumps(
-                    dict(action=cmd, timestamp=get_timestamp(), message="")
-                ).encode()
-            )
+            if translated_cmd:
+                await ws.send(
+                    json.dumps(
+                        dict(action=cmd, timestamp=get_timestamp(), message="")
+                    ).encode()
+                )
+            else:
+                print("Chat:", cmd)
         print("Regular sleep for %f seconds" % regular_sleep_time)
         await asyncio.sleep(regular_sleep_time)
         if break_exec:

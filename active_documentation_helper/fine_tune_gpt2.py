@@ -46,8 +46,10 @@ tokenizer: GPT2TokenizerFast = AutoTokenizer.from_pretrained(
     model_checkpoint, use_fast=True
 )
 
-model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2-godlang") # right from the model checkpoint save directory.
-# model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2")
+try:
+    model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2-godlang") # right from the model checkpoint save directory.
+except:
+    model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2")
 
 tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 
@@ -104,10 +106,8 @@ trainer = Trainer(
 
 import math
 
-try:
-    trainer.train(resume_from_checkpoint=True)
-    breakpoint()
-except:
-    trainer.train()
+trainer.train()
+trainer.save_model()
+
 eval_results = trainer.evaluate()
 print(f'Perplexity: {math.exp(eval_results["eval_loss"]):.2f}')
