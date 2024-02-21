@@ -44,9 +44,9 @@ TYPE VIEW WAIT REM
 
 Syntax: 
 
-Each line you generate will be either treated as a single special code or normal string input. The only way to write a newline is to use "ENTER" special code.
+Each line you generate will be either treated as a single action or normal chat text. The only way to write a newline is to use "ENTER" special code.
 
-Only if you want to write special code as literal strings instead of taking effects, you can use a special command "TYPE", use it like this: `TYPE <special code>`. When you want to write normal string input, you always ignore the `TYPE` prefix.
+You can use a special command "TYPE", to type string into terminal. Use it like this: `TYPE <string>`. The string can be normal text, including special code.
 
 By default you can only receive the changed lines each turn. If you want to view the whole screen, you can use "VIEW" command. Anything after "VIEW" command will be discarded. Next turn will show you the full screen.
 
@@ -56,18 +56,18 @@ If you do not want to take actions, use "REM" command like: `REM <comments>`
 
 Example 1: Hello world
 
-echo "Hello world!"
+TYPE echo "Hello world!"
 ENTER
 
 Example 2: Special prefix usage, will print "ENTER"
 
-echo 
+TYPE echo 
 TYPE ENTER
 ENTER
 
 Example 3: View the full screen, instead of only showing the changed lines
 
-echo "View the screen"
+TYPE echo "View the screen"
 ENTER
 VIEW
 
