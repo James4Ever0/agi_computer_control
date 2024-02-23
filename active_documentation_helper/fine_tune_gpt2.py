@@ -47,7 +47,9 @@ tokenizer: GPT2TokenizerFast = AutoTokenizer.from_pretrained(
 )
 
 try:
-    model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2-godlang") # right from the model checkpoint save directory.
+    model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained(
+        "distilgpt2-godlang"
+    )  # right from the model checkpoint save directory.
 except:
     model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2")
 
@@ -68,8 +70,11 @@ datadir = "gpt2_godlang_dataset"
 split_size = 128
 import progressbar
 
+# TODO: inverse embedding
+INVERSE_TOKENIZER=True
+
 for filename in progressbar.progressbar(os.listdir(datadir)[:10]):
-# for filename in progressbar.progressbar(os.listdir(datadir)):
+    # for filename in progressbar.progressbar(os.listdir(datadir)):
     with open(
         os.path.join(datadir, filename), "r"
     ) as f:  # maybe it is impossible to decode some file.
@@ -97,10 +102,11 @@ eval_dataset = dataset.shuffle().select(range(100))
 training_args = TrainingArguments(
     f"./{model_checkpoint}-godlang",
     evaluation_strategy="epoch",
+    # learning_rate=-2e-5,  # negative learning rate
     learning_rate=2e-5,
     weight_decay=0.01,
     push_to_hub=False,  # Change to True to push the model to the Hub
-    save_total_limit =  1
+    save_total_limit=1,
 )
 
 trainer = Trainer(

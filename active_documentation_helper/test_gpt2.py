@@ -10,7 +10,9 @@ model_dir = "distilgpt2-godlang"
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-tokenizer = AutoTokenizer.from_pretrained(model_dir)
+tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
+tokenizer.add_special_tokens({"pad_token": "<|endoftext|>"})
+
 model = AutoModelForCausalLM.from_pretrained(model_dir)
 
 from transformers import pipeline  # set_seed
@@ -84,4 +86,8 @@ def gpt2_command_generator(command_batch_size: int) -> list[str]:
 from create_godlang_dataset import create_dataset
 
 if __name__ == "__main__":
-    create_dataset(gpt2_command_generator)
+    if os.environ.get("TEST", None) is not None:
+        print("Testing")
+        gpt2_command_generator(5)
+    else:
+        create_dataset(gpt2_command_generator)
