@@ -57,7 +57,9 @@ PAD_ID = tokenizer("[PAD]")["input_ids"][0]  # type: ignore
 
 datadict = {"input_ids": [], "labels": [], "attention_mask": []}
 
-datadir = "godlang_dataset"
+datadir = "gpt2_godlang_dataset"
+
+# datadir = "godlang_dataset"
 split_size = 128
 import progressbar
 

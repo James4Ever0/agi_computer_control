@@ -17,6 +17,16 @@ from transformers import pipeline  # set_seed
 
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
+command_prefix_list = ["TYPE", "VIEW", "WAIT", "REM", "SPECIAL"]
+
+
+def has_command_prefix(cmd: str):
+    for command_prefix in command_prefix_list:
+        if cmd.startswith(command_prefix):
+            return True
+    return False
+
+
 # no need to set seed.
 # set_seed(42)
 
@@ -24,9 +34,9 @@ generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
 from godlang_fuzzer import CommandGenerator
 
-random_command = CommandGenerator.call_single_random_command()
-print("init command:", repr(random_command))
-response_list = generator(f"{random_command}\n", max_length=100, num_return_sequences=5)
+
+# response_list = generator(f"{random_command}\n", max_length=100, num_return_sequences=5)
+
 # response_list = generator("VIEW\n", max_length=100, num_return_sequences=5)
 # response_list = generator("Hello, I’m a language model", max_length=20, num_return_sequences=5)
 
@@ -37,9 +47,41 @@ response_list = generator(f"{random_command}\n", max_length=100, num_return_sequ
 
 # TODO: use prefix 'SPECIAL' to completely standardize the language syntax, so that we can get those chat statements out
 
-for response in response_list:
-    for line in response["generated_text"].split("\n"):
-        print(line)
-    print("-" * 60)
+# you would like to create dataset from it.
+
+
+def gpt2_command_generator(command_batch_size: int) -> list[str]:
+    random_command = CommandGenerator.call_single_random_command()
+
+    print("init command:", repr(random_command))
+    response_list:list = generator(
+        f"{random_command}\n", max_length=100, num_return_sequences=5
+    ) # type:ignore
+    response_list.sort(key=lambda x: -len(x["generated_text"]))
+
+    # for response in response_list:
+    response = response_list[0]
+    # response = random.choice(response_list)
+
+    gpt2_commands = response["generated_text"].split("\n")
+    # you need to filter out those lines that are not commands
+    selected_commands = []
+
+    for cmd in gpt2_commands:
+        if has_command_prefix(cmd):
+            selected_commands.append(cmd)
+
+    selected_commands = selected_commands[command_batch_size:]
+    print("\n".join(selected_commands))
+    return selected_commands
+
+
+# print("-" * 60)
+# so we would only have 5 commands each, sampled from the model.
 
 # you would extract effective commands from response.
+
+from create_godlang_dataset import create_dataset
+
+if __name__ == "__main__":
+    create_dataset(gpt2_command_generator)
