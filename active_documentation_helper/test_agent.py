@@ -321,13 +321,16 @@ CTRL_CODES = {
 SPECIAL_CODES.update(FN_CODES)
 SPECIAL_CODES.update(CTRL_CODES)
 
-COMMANDS = ["TYPE", "VIEW", "WAIT", "REM"]
+COMMANDS = ["TYPE", "VIEW", "WAIT", "REM", 'SPECIAL']
 # breakpoint()
 
 
 @beartype.beartype
 def translate_special_codes(cmd: str):
-    return SPECIAL_CODES.get(cmd, None) # do not handle non-special code
+    prefix = "SPECIAL "
+    if cmd.startswith(prefix):
+        special_code = cmd[len(prefix) :].strip()
+        return SPECIAL_CODES.get(special_code, None)  # do not handle non-special code
 
 
 def handle_command(cmd: str):
