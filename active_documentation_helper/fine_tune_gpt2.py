@@ -51,9 +51,14 @@ try:
 except:
     model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2")
 
-tokenizer.add_special_tokens({"pad_token": "[PAD]"})
+# TODO: change model embedding size
 
-PAD_ID = tokenizer("[PAD]")["input_ids"][0]  # type: ignore
+tokenizer.add_special_tokens({"pad_token": "<|endoftext|>"})
+# tokenizer.add_special_tokens({"pad_token": "[PAD]"})
+
+PAD_ID = tokenizer("<|endoftext|>")["input_ids"][0]  # type: ignore
+
+# breakpoint()
 
 datadict = {"input_ids": [], "labels": [], "attention_mask": []}
 
