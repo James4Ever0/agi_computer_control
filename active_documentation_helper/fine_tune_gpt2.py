@@ -101,15 +101,16 @@ for filename in progressbar.progressbar(os.listdir(datadir)[:10]):
 
 dataset = Dataset.from_dict(datadict)
 
-train_dataset = dataset.shuffle().select(range(1000))
+train_dataset = dataset.shuffle().select(range(100))
 # train_dataset = dataset.shuffle().select(range(100))
-eval_dataset = dataset.shuffle().select(range(100))
+eval_dataset = dataset.shuffle().select(range(10))
+# eval_dataset = dataset.shuffle().select(range(100))
 
 training_args = TrainingArguments(
     f"./{model_checkpoint}-godlang",
     evaluation_strategy="epoch",
-    learning_rate=2e-5,  # negative learning rate
-    # learning_rate=2e-10,
+    # learning_rate=2e-5,  # negative learning rate
+    learning_rate=2e-10,
     weight_decay=0.01,
     push_to_hub=False,  # Change to True to push the model to the Hub
     save_total_limit=1,
