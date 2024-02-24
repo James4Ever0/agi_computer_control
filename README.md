@@ -18,6 +18,8 @@ Notice not only human can publish smart contracts, agents can also publish smart
 
 Trained on [The Frozen Forest](https://huggingface.co/datasets/James4Ever0/the_frozen_forest), a [dataset](https://modelscope.cn/datasets/james4ever0/the_frozen_forest/summary) containing random keystrokes, mouse clicks and screen recordings.
 
+You can also get the dataset (terminal version) at [here](https://huggingface.co/datasets/James4Ever0/FrozenForest)
+
 the openai [universe](https://github.com/openai/universe) is using VNC, almost doing the same thing.
 
 you can find some demo models from [there](https://github.com/openai/universe-starter-agent).

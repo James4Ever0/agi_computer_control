@@ -69,7 +69,9 @@ PAD_ID = tokenizer("<|endoftext|>")["input_ids"][0]  # type: ignore
 
 datadict = {"input_ids": [], "labels": [], "attention_mask": []}
 
-datadir = "gpt2_godlang_dataset"
+# datadir = "monotonic_dataset"
+datadir = "random_dataset"
+# datadir = "gpt2_godlang_dataset"
 
 # datadir = "godlang_dataset"
 
@@ -101,8 +103,8 @@ for filename in progressbar.progressbar(os.listdir(datadir)[:10]):
 
 dataset = Dataset.from_dict(datadict)
 
+# train_dataset = dataset.shuffle().select(range(1000))
 train_dataset = dataset.shuffle().select(range(100))
-# train_dataset = dataset.shuffle().select(range(100))
 eval_dataset = dataset.shuffle().select(range(10))
 # eval_dataset = dataset.shuffle().select(range(100))
 
@@ -116,7 +118,6 @@ training_args = TrainingArguments(
     save_total_limit=1,
 )
 from transformers import TrainerCallback
-
 
 import math
 
@@ -145,7 +146,6 @@ trainer = Trainer(
 def check_nan(val):
     is_nan = math.isnan(val)
     return is_nan
-
 
 trainer.train()
 

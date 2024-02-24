@@ -14,6 +14,7 @@ tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
 tokenizer.add_special_tokens({"pad_token": "<|endoftext|>"})
 
 model = AutoModelForCausalLM.from_pretrained(model_dir)
+model.eval()
 
 from transformers import pipeline  # set_seed
 
@@ -75,7 +76,9 @@ def gpt2_command_generator(command_batch_size: int) -> list[str]:
         if has_command_prefix(cmd):
             selected_commands.append(cmd)
 
-    selected_commands = selected_commands[command_batch_size:]
+    selected_commands = selected_commands[:command_batch_size]
+    print("Commands from model:", selected_commands)
+    
     selected_commands += [
         CommandGenerator.call_single_random_command() for _ in range(command_batch_size)
     ]
