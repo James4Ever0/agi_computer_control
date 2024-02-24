@@ -21,6 +21,8 @@ generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
 command_prefix_list = ["TYPE", "VIEW", "WAIT", "REM", "SPECIAL"]
 
+import random
+
 
 def has_command_prefix(cmd: str):
     for command_prefix in command_prefix_list:
@@ -56,9 +58,9 @@ def gpt2_command_generator(command_batch_size: int) -> list[str]:
     random_command = CommandGenerator.call_single_random_command()
 
     print("init command:", repr(random_command))
-    response_list:list = generator(
+    response_list: list = generator(
         f"{random_command}\n", max_length=100, num_return_sequences=5
-    ) # type:ignore
+    )  # type:ignore
     response_list.sort(key=lambda x: -len(x["generated_text"]))
 
     # for response in response_list:
@@ -74,6 +76,10 @@ def gpt2_command_generator(command_batch_size: int) -> list[str]:
             selected_commands.append(cmd)
 
     selected_commands = selected_commands[command_batch_size:]
+    selected_commands += [
+        CommandGenerator.call_single_random_command() for _ in range(command_batch_size)
+    ]
+    selected_commands = random.sample(selected_commands, k=command_batch_size)
     print("\n".join(selected_commands))
     return selected_commands
 
