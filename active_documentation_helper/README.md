@@ -100,3 +100,7 @@ some similar macro language might be created for the video editing project.
 ---
 
 is there any 'reverse' thing we can do here? just like the video generation and video editing language?
+
+---
+
+to overcome the overfitting problem (loss go to NaN), random dataset can be created and learned.
