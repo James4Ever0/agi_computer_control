@@ -104,3 +104,7 @@ is there any 'reverse' thing we can do here? just like the video generation and 
 ---
 
 to overcome the overfitting problem (loss go to NaN), random dataset can be created and learned.
+
+---
+
+create and run automated benchmark with model for multiple tasks. since loss is not representative at all.

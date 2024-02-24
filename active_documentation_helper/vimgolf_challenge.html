@@ -1,0 +1,673 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+  <meta http-equiv="Cache-control" content="no-cache" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <title>VimGolf - real Vim ninjas count every keystroke!</title>
+  <link rel="stylesheet" media="screen"
+    href="/assets/application-184d466783787ffec00599fa72eb1ffe7c420c86624c38d337701d118124e30a.css" />
+  <script src="/assets/application-7941238973273d25b4187dcef435ea60c803cc1a3a1c475bbfa0615de205ce1e.js"></script>
+  <link rel="alternate" type="application/rss+xml" title="Latest VimGolf challenges"
+    href="https://feeds.vimgolf.com/latest-challenges" />
+  <meta name="csrf-param" content="authenticity_token" />
+  <meta name="csrf-token"
+    content="5yfwUqw7QFAQHHxkW3aHlo8Uuv578jnFfUJ+PzPOAISWLSNhnwPHlaESi8FMNFu5ayyJ9OBOR3MOYiyi1zqf+g==" />
+</head>
+
+<body onload="prettyPrint()">
+  <div id="header" class="container_12 clearfix">
+    <div id="logo">
+      <div><a href="/"><img
+            src="/assets/vim_golf_logo-b6604c97f67ed10c1cc5fd8badf7d8fd4fccdd906537c9b898ea528ce48adf88.png" />
+          VimGolf</a></div>
+    </div>
+    <div id="navigation">
+      <ul id="nav">
+        <li><a href="/login">Sign in</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="about" class="container_12 clearfix">
+    <div id="about" class="grid_7">
+      <h3 style="margin:0.5em 0 0.5em 0">Real Vim ninjas count <b>every</b> keystroke - do you?</h3>
+      <h6>Pick a challenge, fire up Vim, and show us what you got.</h6>
+      <p><a href="/about">Changelog, Rules &amp; FAQ</a>, updates: <a href="https://twitter.com/vimgolf">@vimgolf</a>,
+        <a href="http://feeds.vimgolf.com/latest-challenges">RSS</a>.</p>
+    </div>
+    <div id="instructions" class="grid_5">
+      <pre class="terminal">
+<span class="shell">Your VimGolf key: <a href="/login">please sign in</a></span>
+
+<span class="shell">$</span> gem install vimgolf
+<span class="shell">$</span> vimgolf setup
+<span class="shell">$</span> vimgolf put 6010dc493e0f8d0009eddcf9
+</pre>
+    </div>
+  </div>
+  <div id="content" class="container_12 clearfix">
+    <div class="grid_7">
+      <h3><b>Count to 100 in word form</b></h3>
+      <p>Write all the numbers from 1 to 100, using their word forms rather than the digit form. Most of the parts you
+        will need are included in the input file. Use hyphens when appropriate.</p>
+      <h5>Start file</h5>
+      <pre class="prettyprint">one two three four five six seven eight nine ten eleven twelve thirteen
+twenty thirty forty fifty sixty seventy eighty ninety
+hundred
+</pre>
+      <h5>End file</h5>
+      <pre class="prettyprint">one
+two
+three
+four
+five
+six
+seven
+eight
+nine
+ten
+eleven
+twelve
+thirteen
+fourteen
+fifteen
+sixteen
+seventeen
+eighteen
+nineteen
+twenty
+twenty-one
+twenty-two
+twenty-three
+twenty-four
+twenty-five
+twenty-six
+twenty-seven
+twenty-eight
+twenty-nine
+thirty
+thirty-one
+thirty-two
+thirty-three
+thirty-four
+thirty-five
+thirty-six
+thirty-seven
+thirty-eight
+thirty-nine
+forty
+forty-one
+forty-two
+forty-three
+forty-four
+forty-five
+forty-six
+forty-seven
+forty-eight
+forty-nine
+fifty
+fifty-one
+fifty-two
+fifty-three
+fifty-four
+fifty-five
+fifty-six
+fifty-seven
+fifty-eight
+fifty-nine
+sixty
+sixty-one
+sixty-two
+sixty-three
+sixty-four
+sixty-five
+sixty-six
+sixty-seven
+sixty-eight
+sixty-nine
+seventy
+seventy-one
+seventy-two
+seventy-three
+seventy-four
+seventy-five
+seventy-six
+seventy-seven
+seventy-eight
+seventy-nine
+eighty
+eighty-one
+eighty-two
+eighty-three
+eighty-four
+eighty-five
+eighty-six
+eighty-seven
+eighty-eight
+eighty-nine
+ninety
+ninety-one
+ninety-two
+ninety-three
+ninety-four
+ninety-five
+ninety-six
+ninety-seven
+ninety-eight
+ninety-nine
+one hundred
+</pre>
+      <h4><a href="#" onclick="toggle('diff'); return false;">View Diff</a></h4>
+      <pre class="prettyprint" id="diff">1,3c1,100
+&lt; one two three four five six seven eight nine ten eleven twelve thirteen
+&lt; twenty thirty forty fifty sixty seventy eighty ninety
+&lt; hundred
+---
+&gt; one
+&gt; two
+&gt; three
+&gt; four
+&gt; five
+&gt; six
+&gt; seven
+&gt; eight
+&gt; nine
+&gt; ten
+&gt; eleven
+&gt; twelve
+&gt; thirteen
+&gt; fourteen
+&gt; fifteen
+&gt; sixteen
+&gt; seventeen
+&gt; eighteen
+&gt; nineteen
+&gt; twenty
+&gt; twenty-one
+&gt; twenty-two
+&gt; twenty-three
+&gt; twenty-four
+&gt; twenty-five
+&gt; twenty-six
+&gt; twenty-seven
+&gt; twenty-eight
+&gt; twenty-nine
+&gt; thirty
+&gt; thirty-one
+&gt; thirty-two
+&gt; thirty-three
+&gt; thirty-four
+&gt; thirty-five
+&gt; thirty-six
+&gt; thirty-seven
+&gt; thirty-eight
+&gt; thirty-nine
+&gt; forty
+&gt; forty-one
+&gt; forty-two
+&gt; forty-three
+&gt; forty-four
+&gt; forty-five
+&gt; forty-six
+&gt; forty-seven
+&gt; forty-eight
+&gt; forty-nine
+&gt; fifty
+&gt; fifty-one
+&gt; fifty-two
+&gt; fifty-three
+&gt; fifty-four
+&gt; fifty-five
+&gt; fifty-six
+&gt; fifty-seven
+&gt; fifty-eight
+&gt; fifty-nine
+&gt; sixty
+&gt; sixty-one
+&gt; sixty-two
+&gt; sixty-three
+&gt; sixty-four
+&gt; sixty-five
+&gt; sixty-six
+&gt; sixty-seven
+&gt; sixty-eight
+&gt; sixty-nine
+&gt; seventy
+&gt; seventy-one
+&gt; seventy-two
+&gt; seventy-three
+&gt; seventy-four
+&gt; seventy-five
+&gt; seventy-six
+&gt; seventy-seven
+&gt; seventy-eight
+&gt; seventy-nine
+&gt; eighty
+&gt; eighty-one
+&gt; eighty-two
+&gt; eighty-three
+&gt; eighty-four
+&gt; eighty-five
+&gt; eighty-six
+&gt; eighty-seven
+&gt; eighty-eight
+&gt; eighty-nine
+&gt; ninety
+&gt; ninety-one
+&gt; ninety-two
+&gt; ninety-three
+&gt; ninety-four
+&gt; ninety-five
+&gt; ninety-six
+&gt; ninety-seven
+&gt; ninety-eight
+&gt; ninety-nine
+&gt; one hundred
+</pre>
+      <h3>Solutions</h3>
+      <p><b>The best way to learn is to practice</b>. Below, you will find some of the solutions other golfers have
+        entered. To unlock higher ranked solutions, submit your own entry which does as well or better than the
+        solutions you can currently see - climb the ladder!</p>
+      <p>Check out <a href="/about#resources"> these helpful resources</a> to improve your Vim skills... <em>Game
+          on.</em></p>
+      <div class="note clearfix">Unlock <b>24</b> remaining solutions by <b><a
+            href="/auth/twitter?x_auth_access_type=read&amp;use_authorize=true">signing in</a></b> and submitting your
+        own entry</div>
+      <div class="success clearfix">
+        <h6 style="margin-bottom:0.5em">
+          <a class="anchor" href="#428746" name="428746"><b>#25</b></a>
+          李建宏 / <a href="/36181/xx19971016">@xx19971016</a> -
+          <b>Score: 245</b> -
+          <span style="font-size:0.9em">09/04/23 @ 01:41</span>
+        </h6>
+        <pre style="margin-bottom:0">
+:%s/ /&quot;,&quot;/g<span class="entry-script">&lt;CR&gt;</span>y$:let b=[&quot;<span class="entry-script">&lt;C-R&gt;</span>0&quot;]<span class="entry-script">&lt;CR&gt;</span>:s/y/een/g<span class="entry-script">&lt;CR&gt;</span>dtflau<span class="entry-script">&lt;Esc&gt;</span>0y$:let c=[&quot;<span class="entry-script">&lt;C-R&gt;</span>0&quot;]<span class="entry-script">&lt;CR&gt;</span>ddkd$:let a=[&quot;<span class="entry-script">&lt;C-R&gt;</span>&quot;&quot;]<span class="entry-script">&lt;CR&gt;</span>:for @a in a<span class="entry-script">&lt;CR&gt;</span>normal &quot;apo<span class="entry-script">&lt;CR&gt;</span>endfor<span class="entry-script">&lt;CR&gt;</span>:<span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;BS&gt;</span>c<span class="entry-script">&lt;CR&gt;</span><span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;CR&gt;</span><span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;Up&gt;</span><span class="entry-script">&lt;CR&gt;</span>:let a=a[0:8]<span class="entry-script">&lt;CR&gt;</span>for:<span class="entry-script">&lt;Esc&gt;</span>:for<span class="entry-script">&lt;Esc&gt;</span>:for @a<span class="entry-script">&lt;BS&gt;</span>b in b<span class="entry-script">&lt;CR&gt;</span>normal &quot;bpo<span class="entry-script">&lt;CR&gt;</span>for !<span class="entry-script">&lt;BS&gt;</span>@a in a<span class="entry-script">&lt;CR&gt;</span>normal &quot;bpA-<span class="entry-script">&lt;C-V&gt;</span><span class="entry-script">&lt;Esc&gt;</span>&quot;apo<span class="entry-script">&lt;BS&gt;</span><span class="entry-script">&lt;BS&gt;</span><span class="entry-script">&lt;BS&gt;</span>a&#39;<span class="entry-script">&lt;BS&gt;</span>po<span class="entry-script">&lt;CR&gt;</span>endfor<span class="entry-script">&lt;CR&gt;</span>endfor<span class="entry-script">&lt;CR&gt;</span>ddIone <span class="entry-script">&lt;Esc&gt;</span>ZZ
+</pre>
+        <p style="padding:0.5em 0 0 0; margin:0">
+          <b>0 comments</b>
+        </p>
+        <div id="comments-428746" class="comments">
+          <form action="/entry/6010dc493e0f8d0009eddcf9/comment/428746" accept-charset="UTF-8" method="post"><input
+              name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token"
+              value="bSu//CTOEGG8OT6t4cRvlTzMfKwbfe3gVrZ0f7LTTzIJOXPfTnmfHp9VlwxuEiWj0TvtpdoejZetf1ppreWJIQ==" />
+            <textarea rows="2" class="text" style="width:98%" name="comment[text]" id="comment_text">
+</textarea><br />
+            <input type="submit" name="commit" value="Comment" class="action comment-button"
+              data-disable-with="Comment" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="grid_5">
+      <h5>Created by: <a href="/30169/BiddulphCaleb">@BiddulphCaleb</a>
+        <span style="float:right">
+          <script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script><a
+            data-url="https://www.vimgolf.com/challenges/6010dc493e0f8d0009eddcf9" data-via
+            data-text="awesome VimGolf challenge: Count to 100 in word form @" data-related="vim learnvim"
+            data-count="horizontal" data-lang="en" class="twitter-share-button"
+            href="https://twitter.com/share">Tweet</a>
+        </span>
+      </h5>
+      <h2 style="padding-bottom:1em; border-bottom: 1px dotted;">
+        <b class="stat">25</b> active golfers, <b class="stat">92</b> entries
+      </h2>
+      <h5>Leaderboard <em>(lowest score wins):</em></h5>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAADv
+MnMjpVqlAAAAAnRSTlMA/1uRIrUAAABISURBVHicY/oPBkwMYICf+ujwV4CA
+Egj1V76R/aEDMSqZH9b/lD9AjEoWhoNARJTtAgxApxKj8g//AeYP9sSoBHoH
+6CkiVAIASB8YI3hKry4AAAAASUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/MonkieeBoi">53</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#1</b></a> - MonkieeBoi / <a href="/36783/MonkieeBoi">@MonkieeBoi</a>
+        </h6>
+        <p style="margin-bottom:0"><em>11/21/2023 at 03:23PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAACo
+jQ4bmX4WAAAAAnRSTlMA/1uRIrUAAABBSURBVHicY/r//wDz//9MDGCAl/rL
+6ABExKhkYbD/w3CQGJXMHxgY+A8Qo/IPiLQnRiXx1F/5RvaHRPoICIjxEQBh
+QhAjYdb5FgAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/tien40766111">53</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#2</b></a> - tien / <a href="/36458/tien40766111">@tien40766111</a>
+        </h6>
+        <p style="margin-bottom:0"><em>12/24/2023 at 08:17AM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAU
+0e340Nj4AAAAAnRSTlMA/1uRIrUAAABQSURBVHicY2L+YP+H/wATAxjgpf4w
+HGRhsCdG5V/5A8wPHYhRyfDR4a8AASUQiv0DAwN/IzEqf8r///+wnhiVQEcC
+nUqMShb+A8wfDhKhEgCRyhYgemhRSQAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/braxler">55</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#3</b></a> - John Braxler / <a href="/8533/braxler">@braxler</a>
+        </h6>
+        <p style="margin-bottom:0"><em>09/03/2021 at 05:47PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAD5
+mYxb/w/IAAAAAnRSTlMA/1uRIrUAAABCSURBVHicY/rD////B3smBjCgEsX+
+0OGvfCMxKv8KHGT56ECMSuYP9n/4DxBlpvwB5odEmcnAcJCFOB8xg3xEjO0A
+6FIUI3pTqj4AAAAASUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/topvimgolfscore">55</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#4</b></a> - Topvimgolf Score / <a
+            href="/34249/topvimgolfscore">@topvimgolfscore</a>
+        </h6>
+        <p style="margin-bottom:0"><em>10/02/2023 at 06:53AM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAABK
+BkYRj/L6AAAAAnRSTlMA/1uRIrUAAABHSURBVHicY2IAAyYiqP8fGBj4/xOj
+klGAgeEjIzEq//AfYP5gT4xK9g/2f/gbiTKT4SALA1FmMjLW/2Qkyp3//x9g
+/k+M3wH2rRJbMZrqfwAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/bornintheflames">55</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#5</b></a> - Remus Dalrymple / <a
+            href="/17720/bornintheflames">@bornintheflames</a>
+        </h6>
+        <p style="margin-bottom:0"><em>01/02/2024 at 10:57PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAADp
+VmZLZGxfAAAAAnRSTlMA/1uRIrUAAABFSURBVHicY/r/gYGB/z8TAxjgpVj4
+DzB/OEiMyp8CDAwf64lRyfzB/g//AWJU/mUEAgfqmskocJDlIyMxKv8w2AMR
+ESoB+zkT17Vq6IQAAAAASUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/BokmanGeorg">62</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#6</b></a> - Georg Bökman / <a href="/31177/BokmanGeorg">@BokmanGeorg</a>
+        </h6>
+        <p style="margin-bottom:0"><em>07/03/2021 at 02:56PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAS
+Zel7mQvvAAAAAnRSTlMA/1uRIrUAAABHSURBVHicY/r/wf4P/38mBjDAS/2V
+P8D80IEYlewPGRnlG4kz8/9/4sz8DzKTKHcyMNj/IagETLGAyIPEqPwpwMDw
+sZ4IlQAvwhTXbeFpSAAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/A1OBJTxN5fTg5EJ">62</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#7</b></a> - 悟史 / <a href="/31242/A1OBJTxN5fTg5EJ">@A1OBJTxN5fTg5EJ</a>
+        </h6>
+        <p style="margin-bottom:0"><em>07/13/2021 at 02:53PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAABL
+/nwKJCrKAAAAAnRSTlMA/1uRIrUAAABKSURBVHicY/r/gYGB/z8TAxjgpf4K
+2P/56ECMSgaGgywElYApFv7//z8cJEYlM8idB4hyJ6MDEBHlTv5G9g9EuZP5
+ocNfeWJsBwAZjRQjPqddTQAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/foobar01123">65</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#8</b></a> - Miłosz Łakomy / <a href="/16038/foobar01123">@foobar01123</a>
+        </h6>
+        <p style="margin-bottom:0"><em>07/08/2021 at 08:29AM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAABZ
+mWQsVjjiAAAAAnRSTlMA/1uRIrUAAABASURBVHicY2L+YP+H/wATAxjgpf6A
+SHtiVDLwH2D+QEAJlPrIyChAnEqiqb/y//8/dCBOw0EW4sxkB4VSIxEqAb+D
+DyCobAJlAAAAAElFTkSuQmCC
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/Luoyb">65</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#9</b></a> - Luoyb / <a href="/35951/Luoyb">@Luoyb</a>
+        </h6>
+        <p style="margin-bottom:0"><em>10/24/2023 at 08:12AM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAA4
+gtOZcHRAAAAAAnRSTlMA/1uRIrUAAABKSURBVHicY2L+YP+H/wATAxjgpX7K
+N7I/rCdGJQuD/R+Gg8So/P/Q4a/8f6LM5G9k/0CUmT8F7P98JMqdzCDbifI7
+A8h2AkrAAABKdRcg05l+pwAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/quemeraisc">68</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#10</b></a> - quemeraisc / <a href="/29501/quemeraisc">@quemeraisc</a>
+        </h6>
+        <p style="margin-bottom:0"><em>05/09/2022 at 12:55PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAADd
+SJt/S5BtAAAAAnRSTlMA/1uRIrUAAABESURBVHicY/rDf4D5gz0TAxjgpdg/
+2P/hbyRGJQPDQRaCSkik/jLW/2R0IEbl/w8HWfj/E6OSBUQeJEblH/7//4kK
+JQBymRJbAGQEbQAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/vimgolfuser1234">72</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#11</b></a> - vimgolfuser123 / <a
+            href="/34448/vimgolfuser1234">@vimgolfuser1234</a>
+        </h6>
+        <p style="margin-bottom:0"><em>11/06/2022 at 12:54AM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAf
+8ovu/YQVAAAAAnRSTlMA/1uRIrUAAAA/SURBVHicY2L+YP+H/wATAxjgpX7K
+H2B+WE+MSoaPDn8FCCiBUvwHmD8Qp5JoivnDQRbifMTCYP+H4SBVfQQAkaQR
+XuPC/fUAAAAASUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/pilotInPyjamas">72</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#12</b></a> - Andrew Pritchard / <a
+            href="/36217/pilotInPyjamas">@pilotInPyjamas</a>
+        </h6>
+        <p style="margin-bottom:0"><em>09/05/2023 at 11:24PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAC8
+mt/04RNuAAAAAnRSTlMA/1uRIrUAAABBSURBVHicY2L+wMDAf4CJAQzwU/wH
+gIqJUfkHRNoTo/IvowMQEWU70RQLyJ0HiVH5/2H9T/n/RLlT/gDzQ2LcCQDN
+WxGZFpNHMAAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/treb03683130">75</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#13</b></a> - treb / <a href="/30463/treb03683130">@treb03683130</a>
+        </h6>
+        <p style="margin-bottom:0"><em>03/18/2021 at 12:42PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAABU
+RCURw2HlAAAAAnRSTlMA/1uRIrUAAABGSURBVHicY/oPBkwMYICX+svoAETE
+qGTgb2T/QEAJhGL+YP+H/wBRtgswMHwkynYWEHmQGJV/GA6yMNgT5aOP9T8F
+iPERAIzyFNdC+p5iAAAAAElFTkSuQmCC
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/Smylers2">77</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#14</b></a> - Smylers / <a href="/9050/Smylers2">@Smylers2</a>
+        </h6>
+        <p style="margin-bottom:0"><em>02/01/2021 at 09:41PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAD2
+awJ8KWXtAAAAAnRSTlMA/1uRIrUAAABKSURBVHicY/r//wDz//9MDGCAl2L5
+6PBX4CAxKn/K////sJ4oM0EkUWb++cjIKGBPjEr2/0DQSJQ7BRgYPhLlTuaH
+Dn/lDxChEgCeLBmZSD/iMwAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/HRDCEN">77</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#15</b></a> - HRD 센터 / <a href="/36504/HRDCEN">@HRDCEN</a>
+        </h6>
+        <p style="margin-bottom:0"><em>10/17/2023 at 04:35PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAM
+rZhJAJl5AAAAAnRSTlMA/1uRIrUAAABGSURBVHicY2Lg////AwMTAxjgpf4/
+dPgr/58YlSz8jewfDhKj8i9j/U9GB2JUMoDMJM6dH+z/8BPnThBJlDuBjgQ6
+lQiVAAAOFdebHecMAAAAAElFTkSuQmCC
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/zornificator">78</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#16</b></a> - models / <a href="/31143/zornificator">@zornificator</a>
+        </h6>
+        <p style="margin-bottom:0"><em>06/23/2021 at 12:51PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAACN
+3Q/oo5ffAAAAAnRSTlMA/1uRIrUAAABCSURBVHicY2LgP8D8gYGJAQzwUx/r
+fwoQpfL/h4Ms/P+JUckCsv0gMSr/gEh7YlQyMjr8ZWQkykdEU/8/2P8hykcA
+EMQRmcK+TyQAAAAASUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/sap38838304">78</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#17</b></a> - sap / <a href="/31164/sap38838304">@sap38838304</a>
+        </h6>
+        <p style="margin-bottom:0"><em>07/03/2021 at 06:40PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAI
+UxbONlOxAAAAAnRSTlMA/1uRIrUAAAA/SURBVHicY/r//wDz//9MDGCAl2IU
+sP/zkZEYlX8YDrIw2BOjkgVEHiRGJcNHh78CBJRAKOJ99BfkIwequhMAcf8V
+XpmufVYAAAAASUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/czheo">81</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#18</b></a> - czheo / <a href="/3927/czheo">@czheo</a>
+        </h6>
+        <p style="margin-bottom:0"><em>06/08/2021 at 01:31PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAAl
+HY8Zis9pAAAAAnRSTlMA/1uRIrUAAABHSURBVHicY2L+wMDAf4CJAQzwUn/4
+////YE+MSkYBBoaPjESZ+ZGRUYAoM4GOBDqVKJUM9n8IKgFTzB8OshDnd6Aj
+/xDlIwD3HxFeTkqD1wAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/simplelife20101">82</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#19</b></a> - simplelife2010 / <a
+            href="/30933/simplelife20101">@simplelife20101</a>
+        </h6>
+        <p style="margin-bottom:0"><em>05/13/2021 at 02:37PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAABb
+FmnteBS1AAAAAnRSTlMA/1uRIrUAAABJSURBVHicY/rDAAT2TAxggJ/iP8D8
+gYASCMX+gYGBv5EYlT8F7P98rCfK9o8OfwWIsp35w0EW/gPEqPwLst2BKDP/
+N7L/J8ZMAI6uFCAm1OacAAAAAElFTkSuQmCC
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/KoivSven">83</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#20</b></a> - Sven Kõiv / <a href="/27953/KoivSven">@KoivSven</a>
+        </h6>
+        <p style="margin-bottom:0"><em>05/09/2021 at 04:13PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAADl
+GEtpW6vFAAAAAnRSTlMA/1uRIrUAAAA/SURBVHicY2L+YP+H/wATAxjgpf6A
+SHtiVDIKHGT5yEiMSqCBfwgqAVPM/w8AETEq/4Jsd6Cuj9hBodRIhEoAw0ES
+IKDBumkAAAAASUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/chrstphrsnw">89</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#21</b></a> - Christopher Williams / <a
+            href="/32071/chrstphrsnw">@chrstphrsnw</a>
+        </h6>
+        <p style="margin-bottom:0"><em>12/09/2021 at 10:56PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAAC1
+BLYgnFaJAAAAAnRSTlMA/1uRIrUAAAA2SURBVHicY2JgsP/DwMDEAAaDmPr/
+v5H9/39iVDIy1v9kZCRG5R+GgywM9kQ5gv///w/EuBMAjFcMmXp0hikAAAAA
+SUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/tuure_p">97</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#22</b></a> - Tuure / <a href="/30494/tuure_p">@tuure_p</a>
+        </h6>
+        <p style="margin-bottom:0"><em>05/17/2021 at 06:49PM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAACO
+3c4GhtugAAAAAnRSTlMA/1uRIrUAAABCSURBVHicY2L+wMDAf4CJAQzwUn/4
+DzB/sCdG5V9GByAiRiXxFNDqP8S5k4W/kf3DQWJU/gS5s54Ylewg2xuJUAkA
+oIcSXlqTW9wAAAAASUVORK5CYII=
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/yondonjamts_g">97</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#23</b></a> - Yondonjamts Ganzorig / <a
+            href="/29591/yondonjamts_g">@yondonjamts_g</a>
+        </h6>
+        <p style="margin-bottom:0"><em>07/24/2021 at 08:57AM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAACb
+Qb/mnT6HAAAAAnRSTlMA/1uRIrUAAABASURBVHicY/rDAAT2TAxggJdiAZEH
+iVHJwH+A+QMBJRDqD4P9H+JsBxoINJYYlX8FDrJ8dKCuj/58rP8pQIw7Acxs
+D9eeOlpIAAAAAElFTkSuQmCC
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/LG41bT7ZvqOdFl3">98</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#24</b></a> - 马海洋 / <a href="/34925/LG41bT7ZvqOdFl3">@LG41bT7ZvqOdFl3</a>
+        </h6>
+        <p style="margin-bottom:0"><em>02/08/2023 at 02:21AM</em></p>
+      </div>
+      <div class="notice clearfix">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAABlBMVEUAAACX
+qa2Kmc9PAAAAAnRSTlMA/1uRIrUAAABESURBVHicY/r//wDz//9MDGCAn/ro
+8FeAgBII9VfA/s9HB6LMJJpi4T/A/OEgMSqByoCKiVH5k7EeiIhRyQ4ys5EI
+lQBxzBUjPWOEdAAAAABJRU5ErkJggg==
+" class="user">
+        <div style="float:right; text-align:center;font-size:2.4em"><b><a
+              href="/challenges/6010dc493e0f8d0009eddcf9/user/xx19971016">245</a></b></div>
+        <h6 style="margin-bottom:0">
+          <a class="anchor" href="#"><b>#25</b></a> - 李建宏 / <a href="/36181/xx19971016">@xx19971016</a>
+        </h6>
+        <p style="margin-bottom:0"><em>09/04/2023 at 01:41AM</em></p>
+      </div>
+    </div>
+  </div>
+  <div id="footer" class="container_12 clearfix">
+    <div id="copy">
+      <a href="/about">Changelog, Rules &amp; FAQ</a>, &nbsp;&nbsp;
+      CLI Version: <b><a href="https://github.com/igrigorik/vimgolf">0.5.0</a></b>, &nbsp;&nbsp;
+      <a href="https://github.com/igrigorik/vimgolf/">Contribute on GitHub</a>
+    </div>
+  </div>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-71196-5']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
+
+</html>
