@@ -42,20 +42,25 @@ from transformers.models.gpt2.tokenization_gpt2_fast import GPT2TokenizerFast
 from transformers.models.gpt2.modeling_gpt2 import GPT2LMHeadModel
 
 model_checkpoint = "distilgpt2"
-tokenizer: GPT2TokenizerFast = AutoTokenizer.from_pretrained(
-    model_checkpoint, use_fast=True
-)
+
 
 try:
     model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained(
         "distilgpt2-godlang"
     )  # right from the model checkpoint save directory.
+
+    tokenizer: GPT2TokenizerFast = AutoTokenizer.from_pretrained(
+        "distilgpt2-godlang", use_fast=True
+    )
 except:
     model: GPT2LMHeadModel = AutoModelForCausalLM.from_pretrained("distilgpt2")
+    tokenizer: GPT2TokenizerFast = AutoTokenizer.from_pretrained(
+        model_checkpoint, use_fast=True
+    )
 
-# TODO: change model embedding size
+    # TODO: change model embedding size
 
-tokenizer.add_special_tokens({"pad_token": "<|endoftext|>"})
+    tokenizer.add_special_tokens({"pad_token": "<|endoftext|>"})
 # tokenizer.add_special_tokens({"pad_token": "[PAD]"})
 
 PAD_ID = tokenizer("<|endoftext|>")["input_ids"][0]  # type: ignore
@@ -67,11 +72,12 @@ datadict = {"input_ids": [], "labels": [], "attention_mask": []}
 datadir = "gpt2_godlang_dataset"
 
 # datadir = "godlang_dataset"
+
 split_size = 128
 import progressbar
 
 # TODO: inverse embedding
-INVERSE_TOKENIZER=True
+INVERSE_TOKENIZER = True
 
 for filename in progressbar.progressbar(os.listdir(datadir)[:10]):
     # for filename in progressbar.progressbar(os.listdir(datadir)):
@@ -102,12 +108,28 @@ eval_dataset = dataset.shuffle().select(range(100))
 training_args = TrainingArguments(
     f"./{model_checkpoint}-godlang",
     evaluation_strategy="epoch",
-    # learning_rate=-2e-5,  # negative learning rate
-    learning_rate=2e-5,
+    learning_rate=2e-5,  # negative learning rate
+    # learning_rate=2e-10,
     weight_decay=0.01,
     push_to_hub=False,  # Change to True to push the model to the Hub
     save_total_limit=1,
 )
+from transformers import TrainerCallback
+
+
+import math
+
+class StopTrainingOnNaNCallback(TrainerCallback):
+    def on_evaluate(self, args, state, control, **kwargs):
+        for it in state.log_history:
+            eval_loss = it.get("eval_loss")
+            # if math.isnan(eval_loss):
+            print("EVAL LOSS:", eval_loss)
+            if eval_loss is not None and math.isnan(eval_loss):
+                print("STOPPING TRAINING")
+                control.should_training_stop = True
+                break
+
 
 trainer = Trainer(
     model=model,
@@ -115,12 +137,24 @@ trainer = Trainer(
     train_dataset=train_dataset,
     eval_dataset=eval_dataset,
     tokenizer=tokenizer,
+    callbacks=[StopTrainingOnNaNCallback()],
 )
 
-import math
+
+def check_nan(val):
+    is_nan = math.isnan(val)
+    return is_nan
+
 
 trainer.train()
-trainer.save_model()
 
 eval_results = trainer.evaluate()
+
 print(f'Perplexity: {math.exp(eval_results["eval_loss"]):.2f}')
+is_nan = check_nan(eval_results["eval_loss"])
+print("loss nan?", is_nan)
+
+if is_nan:
+    print("model not saved")
+else:
+    trainer.save_model()
