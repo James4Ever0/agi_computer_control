@@ -1,0 +1,1 @@
+translate_table = {"<CR>": "RETURN", '<C-R>': 'CTRL+R', '<BS>': 'BACKSPACE', '<Esc>': 'ESC', '<Up>': 'UP', '<Down>': 'DOWN', '<Left>': 'LEFT', '<Right>': 'RIGHT'}
