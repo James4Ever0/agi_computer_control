@@ -73,8 +73,8 @@ PAD_ID = tokenizer("<|endoftext|>")["input_ids"][0]  # type: ignore
 datadict = {"input_ids": [], "labels": [], "attention_mask": []}
 
 # datadir = "monotonic_dataset"
-datadir = "random_dataset"
-# datadir = "mixed_dataset"
+# datadir = "random_dataset"
+datadir = "mixed_dataset"
 # datadir = "gpt2_godlang_dataset"
 
 # datadir = "godlang_dataset"
