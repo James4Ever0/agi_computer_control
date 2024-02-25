@@ -93,7 +93,14 @@ for filename in progressbar.progressbar(os.listdir(datadir)[:10]):
         content = f.read()
         ret = tokenizer(content)
         ret = {
-            k: v + ([PAD_ID] * ((split_size - len(v) % split_size) % split_size))
+            # k: ([PAD_ID] * ((split_size - len(v) % split_size) % split_size))
+            # + v  # left padding
+            k: v
+            + (
+                [PAD_ID if k != "attention_mask" else 0]
+                # [PAD_ID if k != "attention_mask" else 1]
+                * ((split_size - len(v) % split_size) % split_size)
+            )
             for k, v in ret.items()
         }
         ret = {
@@ -107,8 +114,8 @@ for filename in progressbar.progressbar(os.listdir(datadir)[:10]):
 
 dataset = Dataset.from_dict(datadict)
 
-# train_dataset = dataset.shuffle().select(range(1000))
-train_dataset = dataset.shuffle().select(range(300))
+train_dataset = dataset.shuffle().select(range(1000))
+# train_dataset = dataset.shuffle().select(range(300))
 # train_dataset = dataset.shuffle().select(range(100))
 # eval_dataset = dataset.shuffle().select(range(10))
 eval_dataset = dataset.shuffle().select(range(100))
@@ -121,6 +128,7 @@ training_args = TrainingArguments(
     weight_decay=0.01,
     push_to_hub=False,  # Change to True to push the model to the Hub
     save_total_limit=1,
+    # max_grad_norm = 0.2,
 )
 from transformers import TrainerCallback
 
@@ -142,7 +150,7 @@ class StopTrainingOnNaNCallback(TrainerCallback):
 # import torch
 
 
-def custom_loss_function(outputs, model, reg_lambda=1e-2, logits_reg_lambda = 1e-3):
+def custom_loss_function(outputs, model, reg_lambda=1e-2, logits_reg_lambda=1e-3):
     # def custom_loss_function(outputs, model, reg_lambda=1e-5):
     loss = outputs.loss
     print("OUTPUT LOSS:", loss)
@@ -171,9 +179,9 @@ class CustomTrainer(Trainer):
         loss = outputs.loss
         # print("COMPUTING CUSTOM LOSS:", loss)
         if math.isnan(loss):
-            if not self.control.should_training_stop: # in training.
+            if not self.control.should_training_stop:  # in training.
                 print("LOSS NAN DETECTED")
-                # breakpoint()
+                breakpoint()
                 self.control.should_training_stop = True
                 self.control.should_epoch_stop = True
 
@@ -200,7 +208,7 @@ trainer.train()
 
 eval_results = trainer.evaluate()
 
-print(f'Eval Loss (with regulization): {eval_results["eval_loss"]:.2f}')
+print(f'Eval Loss: {eval_results["eval_loss"]:.2f}')
 is_nan = check_nan(eval_results["eval_loss"])
 print("loss nan?", is_nan)  # usually means model weights are full of nan.
 
