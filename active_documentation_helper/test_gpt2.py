@@ -76,8 +76,8 @@ def gpt2_command_generator(command_batch_size: int) -> list[str]:
         if has_command_prefix(cmd):
             selected_commands.append(cmd)
 
-    selected_commands = selected_commands[:command_batch_size]
     print("Commands from model:", selected_commands)
+    selected_commands = selected_commands[:command_batch_size]
     
     selected_commands += [
         CommandGenerator.call_single_random_command() for _ in range(command_batch_size)
