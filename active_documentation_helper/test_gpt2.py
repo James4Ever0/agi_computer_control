@@ -66,6 +66,8 @@ def gpt2_command_generator(command_batch_size: int) -> list[str]:
 
     # for response in response_list:
     response = response_list[0]
+    print("Response:")
+    print(response['generated_text'])
     # response = random.choice(response_list)
 
     gpt2_commands = response["generated_text"].split("\n")
