@@ -2,6 +2,11 @@
 # from langchain.chains import LLMChain
 from contextlib import contextmanager
 from langchain.llms import OpenAI
+
+import os
+
+model_name = os.environ.get("MODEL_NAME", None)
+
 import tiktoken
 
 
@@ -28,8 +33,14 @@ class LLM:
         self.prompt_size = self.number_of_tokens(prompt)
         self.temperature = temperature
         self.gpt_4 = gpt_4
-        self.model_name = "gpt-4" if self.gpt_4 else "text-davinci-003"
-        self.max_tokens = 4097 * 2 if self.gpt_4 else 4097
+        
+        if model_name:
+            self.model_name = model_name
+        else:
+            self.model_name = "gpt-4" if self.gpt_4 else "text-davinci-003"
+        
+        # self.max_tokens = 4097 * 2 if self.gpt_4 else 4097
+        self.max_tokens = 200
         self.show_init_config()
         self.clear_llm()
 
@@ -45,10 +56,15 @@ class LLM:
     def create_llm(self):
         self.llm = OpenAI(
             temperature=self.temperature,
-            max_tokens=-1,
+            max_tokens=self.max_tokens,
             model_name=self.model_name,
             disallowed_special=(),  # to suppress error when special tokens within the input text (encode special tokens as normal text)
         )
+        
+        if model_name:
+            self.llm.__dict__['modelname_to_contextsize'] = lambda x: self.max_tokens
+        #     setattr(self.llm, 'max_context_size', self.max_tokens)
+        # breakpoint()
 
     def clear_llm(self):
         self.llm = None

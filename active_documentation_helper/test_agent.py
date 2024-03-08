@@ -6,6 +6,7 @@
 # the language used here is called "godlang", an agent language designed for console, GUI and robot manipulations.
 
 from typing import Callable, Optional
+from numbers import Number
 import websockets
 import asyncio
 import json
@@ -352,6 +353,10 @@ def handle_command(cmd: str):
         data = cmd[4:].strip()
         command_content["action"] = "rem"
         command_content["data"] = data
+    elif cmd.startswith("CURSOR "):
+        data = cmd[7:].strip()
+        command_content["action"] = "cursor"
+        command_content["data"] = data
     # did not handle special?
     return command_content
 
@@ -372,6 +377,17 @@ async def execute_command(command_content: dict):
         print("Reminder:", data)
     elif action == "type":
         ret = command_content["data"]
+    elif action == "cursor":
+        ret = command_content['data']
+        ret = ret.strip().split()
+        elems = []
+        for elem in ret:
+            try:
+                elem = int(elem)
+                elems.append(elem)
+            except:
+                pass
+        ret = elems
     return ret
 
 
@@ -384,7 +400,7 @@ def get_command_list(response: str) -> list[str]:
 async def execute_command_list(
     command_list: list[str],
     ws: websockets.WebSocketClientProtocol,
-    regular_sleep_time: float,
+    regular_sleep_time: Number,
 ):
     for cmd in command_list:
         command_content = handle_command(cmd)
@@ -419,15 +435,21 @@ async def execute_command_list(
             print("Exiting reading action list because of 'VIEW' command")
             break
         if translated_cmd:
-            await ws.send(translated_cmd)
+            if type(translated_cmd) == list:
+                # send as cursor move.
+                await ws.send(json.dumps(dict('CURSOR', args = translated_cmd[:2])).encode())
+            elif type(translated_cmd) == str:
+                await ws.send(translated_cmd) # executing command
+            else:
+                raise Exception(f"Unknown translated cmd type: <{type(translated_cmd)}>")
 
 
 @beartype.beartype
 async def main_template(
     command_list_generator: Callable,
     port: int = 8028,
-    regular_sleep_time: float = 1,
-    init_sleep_time: float = 1,
+    regular_sleep_time: Number = 1,
+    init_sleep_time: Number = 1,
     total_batches: int = 10,
 ):
     async with websockets.connect(

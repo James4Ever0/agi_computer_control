@@ -1,0 +1,5 @@
+websockets
+langchain
+beartype
+tiktoken
+openai

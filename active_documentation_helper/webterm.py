@@ -175,6 +175,13 @@ def prepare_full_screen_statement(full_display: str):
 # TODO: link log, print data & exception along with terminal_identifier
 # TODO: send the client terminal identifier and show as webpage title
 
+class TerminalClientAction(pydantic.BaseModel):
+    name: str # required
+    args: list = []
+    kwargs: dict = {}
+    
+
+
 
 class GodStatement(pydantic.BaseModel):
     type: Literal["client", "terminal"]
@@ -193,6 +200,7 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
     """
     view_interval: miliseconds
     """
+    
     ws = web.WebSocketResponse()
     # datalist: list[TerminalEvent] = []
     godscript: list[GodStatement] = []
@@ -219,6 +227,76 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
     #     )
     # )
     await ws.send_str(terminal.dumps())  # initial screen.
+    
+    def move_cursor(x:int, y:int):
+        nonlocal terminal
+        terminal.screen.cursor_position(x, y)
+
+
+    def parseAsTerminalClientEvent():
+        nonlocal init_time, last_time
+        data = TerminalClientEvent.parse_raw(msg.data)
+
+        current_time = data.timestamp
+
+        if init_time is None:
+            init_time = current_time
+            last_time = init_time
+        else:
+            wait_time = current_time - last_time
+            if wait_time != 0:
+                godscript.append(
+                    GodStatement.from_client(f"WAIT {wait_time/1000}")
+                )
+            if (current_time - init_time) > view_interval:
+                godscript.append(GodStatement.from_client("VIEW"))
+
+                godscript.append(
+                    GodStatement.from_terminal(
+                        prepare_full_screen_statement(
+                            terminal.join_display()
+                        )
+                    )
+                )
+                init_time = current_time
+
+        # get the godcommand.
+
+        if data.action == "TYPE":
+            if data.message != " ":
+                godcommand = f"TYPE {data.message}"
+            else:
+                godcommand = "SPACE"
+            # can we use special token for space?
+        else:  # special
+            godcommand = data.action
+        godscript.append(GodStatement.from_client(godcommand))
+
+        last_time = current_time
+
+        print(f"Client <{terminal_identifier}> event:", data)
+        # datalist.append(TerminalEvent.from_client_event(data))
+
+
+    def parseAsTerminalClientAction():
+
+        action_repository = {'CURSOR': move_cursor}
+        
+        data = TerminalClientAction.parse_raw(msg.data)
+        
+        # then, let's process the action.
+        
+        func = action_repository.get(data.name, None)
+        
+        if func:
+            try:
+                func(*data.args, **data.kwargs)
+                print(f"Client <{terminal_identifier}> action executed:", data)
+            except:
+                print(f"Error in client action <{data.name}> called with args={data.args}, kwargs={data.kwargs}")
+        else:
+            print(f"Client action <{data.name}> not found")
+
 
     async def dump_terminal_and_send_str():
         predump = terminal.predump()
@@ -250,6 +328,7 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
 
     loop = asyncio.get_event_loop()
     loop.add_reader(p_out, on_master_output)
+    
     try:
         async for msg in ws:
             if msg.type == aiohttp.WSMsgType.TEXT:
@@ -267,48 +346,12 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
                 # try parsing as JSON
                 try:
                     # get the timestamp
-                    data = TerminalClientEvent.parse_raw(msg.data)
-
-                    current_time = data.timestamp
-
-                    if init_time is None:
-                        init_time = current_time
-                        last_time = init_time
-                    else:
-                        wait_time = current_time - last_time
-                        if wait_time != 0:
-                            godscript.append(
-                                GodStatement.from_client(f"WAIT {wait_time/1000}")
-                            )
-                        if (current_time - init_time) > view_interval:
-                            godscript.append(GodStatement.from_client("VIEW"))
-
-                            godscript.append(
-                                GodStatement.from_terminal(
-                                    prepare_full_screen_statement(
-                                        terminal.join_display()
-                                    )
-                                )
-                            )
-                            init_time = current_time
-
-                    # get the godcommand.
-
-                    if data.action == "TYPE":
-                        if data.message != " ":
-                            godcommand = f"TYPE {data.message}"
-                        else:
-                            godcommand = "SPACE"
-                        # can we use special token for space?
-                    else:  # special
-                        godcommand = data.action
-                    godscript.append(GodStatement.from_client(godcommand))
-
-                    last_time = current_time
-
-                    print(f"Client <{terminal_identifier}> event:", data)
-                    # datalist.append(TerminalEvent.from_client_event(data))
-                except:
+                    try:
+                        parseAsTerminalClientAction()
+                    except:
+                        parseAsTerminalClientEvent()
+                except Exception as e:
+                    print(e)
                     print(
                         f"Unable to parse client <{terminal_identifier}> event:",
                         msg.data,
@@ -323,31 +366,6 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
         # TODO: differentiate agent actions from terminal observations
         # TODO: figure out how to handle the WAIT command and the time alignment
 
-        # if (
-        #     len(datalist) > 0
-        # ):  # you should put more things than just agent actions into this list, but also environment actions (feedback)
-        #     init_time = datalist[0].timestamp
-        #     last_time = init_time
-        #     datalist.sort(key=lambda x: x.timestamp)
-        #     for data in datalist:
-        #         if data.type == "terminal":
-        #             continue
-        #         current_time = data.timestamp
-        #         wait_time = current_time - last_time
-        #         if wait_time != 0:
-        #             godscript.append(GodStatement.from_client(f"WAIT {wait_time/1000}"))
-        #         last_time = current_time
-        #         if (current_time - init_time) > view_interval:
-        #             godscript.append(GodStatement.from_client("VIEW"))
-        #             init_time = current_time
-        #         if data.action == "TYPE":
-        #             godcommand = f"TYPE {data.message}"
-        #             # can we use special token for space?
-        #         else:  # special
-        #             godcommand = data.action
-        #         godscript.append(GodStatement.from_client(godcommand))
-        #     if godscript[-1] != "VIEW":
-        #         godscript.append(GodStatement.from_client("VIEW"))
         print("GODSCRIPT DUMP".center(60, "="))
         for it in godscript:
             preview_godstatement = str(it)
@@ -363,6 +381,7 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
     print(f"Client <{terminal_identifier}> exiting.")
     await ws.close()
     return ws
+
 
 
 is_shutting_down = False
