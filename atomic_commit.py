@@ -98,9 +98,13 @@ def detect_upstream_branch_and_add_safe_directory():
     if success:
         # backup
         logger_print("backing up .gitconfig")
-        backedUp = backup_gitconfig()
-        if backedUp:
-            detect_upstream_branch()
+        
+        # working around permission issues.
+        detect_upstream_branch()
+        
+        # backedUp = backup_gitconfig()
+        # if backedUp:
+        #     detect_upstream_branch()
     return success
 
 # class BackupMode(StrEnum):
