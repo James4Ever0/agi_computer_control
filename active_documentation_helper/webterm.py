@@ -40,10 +40,10 @@ from aiohttp import web
 import pyte
 import functools
 import time
-from typing import Literal
+from typing import Literal, Union
+import rich
 
 # TODO: only send actions from client side, do not send message, to reduce complexity
-
 
 class TerminalClientEvent(pydantic.BaseModel):
     action: str
@@ -79,7 +79,10 @@ class Cursor(pydantic.BaseModel):
 
 class TerminalUpdateData(pydantic.BaseModel):
     cursor: Cursor
-    lines: list[tuple[str, list[tuple[str, str, str, str]]]]
+    lines: list
+    #lines: list[tuple[Union[bool, str], list]]
+    #lines: list[tuple[Union[bool, str], list[Union[tuple[str, bool, str, str],tuple[str, str, str, str]]]]]
+
 
 
 class Terminal:
@@ -108,6 +111,9 @@ class Terminal:
             lines.append((y, data))
 
         self.screen.dirty.clear()
+        # saying lines is not of the right format. let's check.
+        # rich.print(lines)
+        # breakpoint()
         ret = TerminalUpdateData(cursor=Cursor(x=cursor.x, y=cursor.y), lines=lines)
         return ret
 
