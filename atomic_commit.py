@@ -10,6 +10,8 @@ import subprocess
 # TODO: recursively backup all .git folders in submodules
 # TODO: repair corrupted index by renaming index file and `git reset`
 
+SKIPPING_BACKING_UP_GITCONFIG:bool = True
+
 from enum import auto
 from strenum import StrEnum
 REQUIRED_BINARIES = [RCLONE := "rclone", GIT := "git"]
@@ -99,12 +101,13 @@ def detect_upstream_branch_and_add_safe_directory():
         # backup
         logger_print("backing up .gitconfig")
         
-        # working around permission issues.
-        detect_upstream_branch()
-        
-        # backedUp = backup_gitconfig()
-        # if backedUp:
-        #     detect_upstream_branch()
+        # working around permission issues, by skipping backing up gitconfig.
+        if SKIPPING_BACKING_UP_GITCONFIG:
+            backedUp = True
+        else:
+            backedUp = backup_gitconfig()
+        if backedUp:
+            detect_upstream_branch()
     return success
 
 # class BackupMode(StrEnum):
