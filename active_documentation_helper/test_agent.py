@@ -41,7 +41,7 @@ Besides for the built-in special codes, you can also directly write VT100 comman
 
 Avaliable commands:
 
-TYPE VIEW WAIT REM SPECIAL
+TYPE VIEW WAIT REM SPECIAL CURSOR
 
 Syntax: 
 
@@ -50,6 +50,10 @@ Each line you generate will be either treated as a single action or normal chat 
 You use "SPECIAL <special_code>" to use special codes.
 
 You can use a special command "TYPE", to type string into terminal. Use it like this: `TYPE <string>`. The string can be normal text, including special code.
+
+By typing CURSOR <x> <y> you can move the cursor around the terminal. Remeber to put the cursor with in the terminal, otherwise it would not be a valid position.
+
+If you want to move the cursor relatively better use special keys and hot keys.
 
 By default you can only receive the changed lines each turn. If you want to view the whole screen, you can use "VIEW" command. Anything after "VIEW" command will be discarded. Next turn will show you the full screen.
 
@@ -322,7 +326,7 @@ CTRL_CODES = {
 SPECIAL_CODES.update(FN_CODES)
 SPECIAL_CODES.update(CTRL_CODES)
 
-COMMANDS = ["TYPE", "VIEW", "WAIT", "REM", 'SPECIAL']
+COMMANDS = ["TYPE", "VIEW", "WAIT", "REM", "SPECIAL", "CURSOR"]
 # breakpoint()
 
 
@@ -378,7 +382,7 @@ async def execute_command(command_content: dict):
     elif action == "type":
         ret = command_content["data"]
     elif action == "cursor":
-        ret = command_content['data']
+        ret = command_content["data"]
         ret = ret.strip().split()
         elems = []
         for elem in ret:
@@ -430,18 +434,23 @@ async def execute_command_list(
             else:
                 print("Chat:", cmd)
         print("Regular sleep for %f seconds" % regular_sleep_time)
-        await asyncio.sleep(regular_sleep_time)
+        await asyncio.sleep(regular_sleep_time) # type: ignore
         if break_exec:
             print("Exiting reading action list because of 'VIEW' command")
             break
         if translated_cmd:
             if type(translated_cmd) == list:
                 # send as cursor move.
-                await ws.send(json.dumps(dict('CURSOR', args = translated_cmd[:2])).encode())
+                # TerminalClientAction
+                await ws.send(
+                    json.dumps(dict(name="CURSOR", args=translated_cmd[:2])).encode()
+                )
             elif type(translated_cmd) == str:
-                await ws.send(translated_cmd) # executing command
+                await ws.send(translated_cmd)  # executing command
             else:
-                raise Exception(f"Unknown translated cmd type: <{type(translated_cmd)}>")
+                raise Exception(
+                    f"Unknown translated cmd type: <{type(translated_cmd)}>"
+                )
 
 
 @beartype.beartype

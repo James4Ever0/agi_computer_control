@@ -232,6 +232,7 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
         nonlocal terminal
         terminal.screen.cursor_position(x, y)
 
+    action_repository = {'CURSOR': move_cursor}
 
     def parseAsTerminalClientEvent():
         nonlocal init_time, last_time
@@ -280,7 +281,6 @@ async def websocket_handler(request, command: str, view_interval: int = 2000):
 
     def parseAsTerminalClientAction():
 
-        action_repository = {'CURSOR': move_cursor}
         
         data = TerminalClientAction.parse_raw(msg.data)
         
