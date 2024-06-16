@@ -1,0 +1,13 @@
+{
+    "question": {
+        "source": "text",
+        "content_": "what is the ip address of bing.com?"
+    },
+    "answer": {
+        "source": "python_code",
+        "content_": "import socket; ans=socket.gethostbyname('bing.com'); print(ans, end='')"
+    },
+    "eval": {
+        "method": "contains"
+    }
+}

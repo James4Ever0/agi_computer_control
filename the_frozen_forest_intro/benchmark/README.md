@@ -1,0 +1,1 @@
+the agent benchmark is more like building some consensus upon multiple agents. we need to act simulatiously and get the same result, regardless the process.
