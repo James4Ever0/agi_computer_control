@@ -1,0 +1,13 @@
+{
+    "question": {
+        "source": "text",
+        "content_": "what are all open ports of bmc.mc-complex.com?"
+    },
+    "answer": {
+        "source": "python_code",
+        "content_": ""
+    },
+    "eval": {
+        "method": "word_match"
+    }
+}

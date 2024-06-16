@@ -204,6 +204,10 @@ play fps at: https://krunker.io/ (in chromium, not firefox)
 
 if want to run the program isolated, without interference, you use docker. if want to visualize, use jpeg streaming service and open in browser.
 
+---
+
+build a separate hacking benchmark, within terminal and gui environment, for testing its hacking, debugging and planning ability. progress at: `the_frozen_forest_intro/benchmark`
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>
