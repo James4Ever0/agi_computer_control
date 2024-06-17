@@ -1,0 +1,5 @@
+a gui task does not mandate gui usage. it simply because there exists one gui trajectory to the answer.
+
+we can make one human trajectory, one bot trajectory, screenshot the final result and evaluate the similarity of the two trajectories.
+
+download one dog picture from web, name it to dog.jpg and view it locally.
