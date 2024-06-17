@@ -1,0 +1,13 @@
+{
+    "question": {
+        "source": "text",
+        "content_": "download one dog picture from web, name it to dog.jpg and view it locally."
+    },
+    "answer": {
+        "source": "image_path",
+        "content_": ""
+    },
+    "eval": {
+        "method": "semantic_similarity"
+    }
+}
