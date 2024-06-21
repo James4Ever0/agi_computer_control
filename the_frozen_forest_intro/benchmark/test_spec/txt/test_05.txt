@@ -1,0 +1,8 @@
+what are all the payment methods that extravm.com supports?
+
+Credit & Debit Card, Apple Pay
+PayPal (Automatic Renewal)
+PayPal (One-Time)
+Alipay
+Cryptocurrency (Cryptomus - No Refunds)
+Mail in Payment

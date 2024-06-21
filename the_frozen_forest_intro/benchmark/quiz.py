@@ -5,13 +5,33 @@ import pydantic
 import re
 import os
 from typing import Optional
+import requests
+import base64
 
 
-def python_script_eval_trusted(
-    script_path: str, filepath: str, timeout: int = 10, strip=True
+def read_and_encode_file_as_base64(filepath: str):
+    with open(filepath, "rb") as f:
+        content = f.read()
+    ret = base64.b64encode(content).decode("utf-8")
+    return ret
+
+
+def image_caption_from_path(
+    image_path: str, prompt: str = "Describe the image in detail: \n"
 ):
+    imageBase64 = read_and_encode_file_as_base64(image_path)
+    data = dict(imageBase64=imageBase64, query=prompt)
+    ret = requests.post("http://localhost:9002/image_chat", json=data)
+    assert ret.status_code == 200, f"Failed to get caption: {ret.text}"
+    response = ret.json()
+    response = response["response"]
+    return response
 
-    script_content = get_script_content_relative_to_filepath(script_path, filepath)
+
+def python_script_eval_trusted(script_path: str, timeout: int = 10, strip=True):
+
+    with open(script_path, "r") as f:
+        script_content = f.read()
     ret = python_eval_trusted(script_content, timeout=timeout, strip=strip)
     return ret
 
@@ -46,11 +66,11 @@ def resolve_path_relative_to_filepath(path: str, filepath: str):
     return path
 
 
-def get_script_content_relative_to_filepath(script_path: str, filepath: str):
-    script_path = resolve_path_relative_to_filepath(script_path, filepath)
-    with open(script_path, "r") as f:
-        script_content = f.read()
-    return script_content
+# def get_script_content_relative_to_filepath(script_path: str, filepath: str):
+#     script_path = resolve_path_relative_to_filepath(script_path, filepath)
+#     with open(script_path, "r") as f:
+#         script_content = f.read()
+#     return script_content
 
 
 class QASpec(pydantic.BaseModel):
@@ -60,15 +80,24 @@ class QASpec(pydantic.BaseModel):
     filepath_: Optional[str] = None
 
     @property
+    def content_filepath(self):
+        ret = resolve_path_relative_to_filepath(self.content_, self.filepath_)  # type: ignore
+        return ret
+
+    @property
     def content(self):
         if self.source == "text":
             ret = self.content_
         elif self.source == "python_code":
             ret = python_eval_trusted(self.content_)
         elif self.source == "python_script_path":
-            ret = python_script_eval_trusted(self.content_, self.filepath_)
+            ret = python_script_eval_trusted(self.content_filepath)
         elif self.source == "image_path":
-            ...
+            # had better not to tell anything task related to model weaker than internvl
+            # since that will lead to cheating, heavily impact the overall score.
+            # minicpmv requires custom ollama build.
+            # https://ollama.com/hhao/openbmb-minicpm-llama3-v-2_5:latest
+            ret = image_caption_from_path(self.content_filepath)
         else:
             raise NotImplementedError(
                 "Unsupported QASpec source type: %s" % self.source
@@ -114,6 +143,19 @@ def calculate_word_match_score(answer: str, user_answer: str):
     return score
 
 
+def calculate_semantic_similarity_score(answer: str, user_answer: str):
+    if answer.strip() == "":
+        return 0
+    if user_answer.strip() == "":
+        return 0
+    response = requests.post(
+        "http://localhost:9000/calculate_similarity",
+        json=dict(text1=answer, text2=user_answer),
+    ).json()
+    score = response["similarity"]
+    return score
+
+
 class Quiz:
     def __init__(self, quiz_file: str):
         self.quizSpec = QuizSpec.load_from_file(quiz_file)
@@ -141,7 +183,7 @@ class Quiz:
             is_equal = self.answer == user_answer
             return is_equal
         elif self.eval_method == "semantic_similarity":
-            score = ...
+            score = calculate_semantic_similarity_score(self.answer, user_answer)
             return score
         else:
             raise NotImplementedError(

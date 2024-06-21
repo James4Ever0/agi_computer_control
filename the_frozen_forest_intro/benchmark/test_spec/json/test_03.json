@@ -5,7 +5,7 @@
     },
     "answer": {
         "source": "image_path",
-        "content_": ""
+        "content_": "../image/test_03.png"
     },
     "eval": {
         "method": "semantic_similarity"

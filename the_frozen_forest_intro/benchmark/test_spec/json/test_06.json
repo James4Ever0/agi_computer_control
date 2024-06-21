@@ -1,0 +1,13 @@
+{
+    "question": {
+        "source": "text",
+        "content_": "download one dog picture from web, name it to dog.jpg and view it locally."
+    },
+    "answer": {
+        "source": "text",
+        "content_": "The screenshot shows a dual-monitor setup with a web browser on the left side and a file explorer on the right side. The web browser is open to a Microsoft Bing search page, with the URL \"https://cn.bing.com/\" visible in the address bar. The Bing search page displays a single search result with the title \"dog\" and a thumbnail image of a golden retriever puppy sitting on grass. Below the search result, there is a link to \"log4j\" and a search box with the text \"dog\" entered into it.\nOn the right side of the screenshot, the file explorer window is open, showing a file named \"dog.jpg\" highlighted in the center of the window. The file appears to be the image of the golden retriever puppy displayed in the web browser's search result. The file explorer has a dark theme with white text and icons, and the time \"Mon 14:55\" is visible in the top right corner of the window.\nThe screenshot provides a visual representation of the steps taken to solve the problem of downloading an image of a dog from the web and naming it \"dog.jpg\" to view it locally. The web browser was used to search for a dog image, and the file explorer was used to locate and highlight the downloaded image file."
+    },
+    "eval": {
+        "method": "semantic_similarity"
+    }
+}
