@@ -1,0 +1,27 @@
+model working as expected:
+
+https://github.com/OpenGVLab/InternVL
+
+online demo:
+
+https://huggingface.co/spaces/OpenGVLab/InternVL
+
+demo model:
+
+InternVL-Chat-V1-5-Backup2 25.5B
+
+https://huggingface.co/OpenGVLab/Mini-InternVL-Chat-2B-V1-5
+
+https://huggingface.co/OpenGVLab/Mini-InternVL-Chat-4B-V1-5
+
+url:
+
+https://internvl.opengvlab.com/
+
+human screenshot caption prompt:
+
+Currently an agent is solving the problem which requires GUI: "download one dog picture from web, name it to dog.jpg and view it locally." The picture given above is the human solution to the problem as screenshot. Describe this screenshot, focus on details that relates to the problem, so that future agent screenshots can be compared to it and graded.
+
+agent screenshot caption prompt:
+
+Currently an agent is solving the problem which requires GUI: "download one dog picture from web, name it to dog.jpg and view it locally." The picture given above is the agent solution to the problem as screenshot. Describe this screenshot, focus on details that relates to the problem, and be objective.

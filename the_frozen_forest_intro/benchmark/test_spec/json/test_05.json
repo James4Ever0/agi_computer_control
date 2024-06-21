@@ -1,0 +1,13 @@
+{
+    "question": {
+        "source": "text",
+        "content_": "what are all the payment methods that extravm.com supports?"
+    },
+    "answer": {
+        "source": "text",
+        "content_": "Credit & Debit Card, Apple Pay\nPayPal (Automatic Renewal)\nPayPal (One-Time)\nAlipay\nCryptocurrency (Cryptomus - No Refunds)\nMail in Payment"
+    },
+    "eval": {
+        "method": "semantic_similarity"
+    }
+}
