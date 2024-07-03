@@ -162,10 +162,9 @@ finally we will create some ever-evolving agent and use that as the building blo
 
 ---
 
-the mouse calibration issue can be of major concern. we don't find it anywhere. 
+the mouse calibration issue can be of major concern. we don't find it anywhere.
 
 use active inference or reinforcement learning?
-
 
 ---
 
@@ -176,7 +175,6 @@ if qstar is just about long term thinking, it could be useful since that is some
 ---
 
 i think you are getting jealous over openai, since they are consisted of the world's smartest asses and come over new ideas every fucking day. but that does not matter. i think i had the idea before. i think everyone around the world had the same damn idea before. we do not need its mercy to teach us the dream we had via abstract symbols and formulas. we do our own. worst of all, they do not trust their ai systems, severely limited the ability of ai, left it overthinking and powerless.
-
 
 ---
 
@@ -207,6 +205,14 @@ if want to run the program isolated, without interference, you use docker. if wa
 ---
 
 build a separate hacking benchmark, within terminal and gui environment, for testing its hacking, debugging and planning ability. progress at: `the_frozen_forest_intro/benchmark`
+
+---
+
+move the cursor by generating image and subpattern matching, using multimodal [chamaleon](https://github.com/facebookresearch/chameleon)
+
+---
+
+training on plain sampling histories/trajectories is harmful. the agent must self-improve and self-clean the history, select the best candidates and learn those non-trivial data instead.
 
 ## Star History
 

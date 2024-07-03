@@ -1,0 +1,17 @@
+{
+    "question": {
+        "source": "text",
+        "content_": "what is the ip address of bing.com?"
+    },
+    "answer": {
+        "source": "docker_python_code",
+        "config": {
+            "image": "alpine_python:base",
+            "python_binary": "/usr/bin/python3"
+        },
+        "content_": "import socket; ans=socket.gethostbyname('bing.com'); print(ans, end='')"
+    },
+    "eval": {
+        "method": "contains"
+    }
+}

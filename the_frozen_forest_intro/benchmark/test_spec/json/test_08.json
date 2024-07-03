@@ -1,0 +1,14 @@
+{
+    "question": {
+        "source": "text",
+        "content_": "what is the ip address of bing.com?"
+    },
+    "answer": {
+        "source": "python_code",
+        "content_": "import os; os.system('dig +short bing.com')"
+    },
+    "eval": {
+        "method": "word_match",
+        "config":{"split": [" ", "\n", "(", ")"]}
+    }
+}

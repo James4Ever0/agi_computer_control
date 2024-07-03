@@ -3,7 +3,7 @@ wexpect==4.0.0; os_name == 'nt'
 py-applescript; platform_system == 'Darwin'
 pygetwindow; platform_system == 'Windows'
 pygetwindow; platform_system == 'Darwin'
-docker
+# docker
 func-timeout
 progressbar2
 better-exceptions
@@ -11,3 +11,9 @@ easyprocess
 elevate
 requests
 # frozendict
+schedule
+pytz
+fastapi
+pydantic
+numpy
+scipy
