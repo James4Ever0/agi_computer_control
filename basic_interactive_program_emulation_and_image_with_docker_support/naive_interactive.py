@@ -5,8 +5,10 @@ from vocabulary import NaiveVocab
 
 
 class NaiveInteractive:
-    def __init__(self):
+    def __init__(self, intro:str = "Input something and this program will reply:"):
         self.sleep = 1
+        self.intro = intro
+        print(self.intro)
 
     def loop(self):
         input()

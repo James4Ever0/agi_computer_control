@@ -1,4 +1,6 @@
 # TODO: eliminate stale containers by restarting docker every 10 sessions.
+from config import DOCKER_BIN, IS_DOCKER
+
 MACOS_DOCKER_APP_BINARY = "/Applications/Docker.app/Contents/MacOS/Docker"
 # killall Docker && open -j -a Docker
 # ps aux | grep Docker.app | grep -v grep | awk '{print $2}' | xargs -Iabc kill abc
@@ -13,7 +15,7 @@ WINDOW_TITLE_KW = "Docker Desktop"
 MACOS_KILL_DOCKER_APP = """ bash -c 'ps aux | grep Docker.app | grep -v grep | awk "{print \\$2}" | xargs -I abc kill -s KILL abc' """
 import subprocess
 
-LINUX_CONTROL_DOCKER_SERVICE_CMDGEN = lambda action: f"sudo systemctl {action} docker"
+LINUX_CONTROL_DOCKER_SERVICE_CMDGEN = lambda action: f"sudo systemctl {action} {DOCKER_BIN}"
 LINUX_RESTART_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("restart")
 LINUX_STOP_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("stop")
 LINUX_START_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("start")
@@ -37,7 +39,7 @@ kill_safe_codes = [0]
 start_safe_codes = [0]
 sysname = platform.system()
 
-REQUIRED_BINARIES = ["docker"]
+REQUIRED_BINARIES = [DOCKER_BIN]
 elevate_needed = False
 
 DOCKER_DESKTOP_EXE = "Docker Desktop.exe"
@@ -56,6 +58,8 @@ kill_docker_cmds = []
 start_docker_cmds = []
 
 if sysname in ["Windows", "Darwin"]:
+    if not IS_DOCKER:
+        raise Exception(f"Non-docker containers not supported for platform '{sysname}'")
     import pygetwindow
 else:
 
@@ -66,7 +70,7 @@ else:
 if sysname == "Windows":
     REQUIRED_BINARIES.append("taskkill")
 
-    docker_path = shutil.which("docker")
+    docker_path = shutil.which(DOCKER_BIN)
     docker_bin_path = os.path.dirname(docker_path)
     docker_desktop_dir_path = os.path.split(os.path.split(docker_bin_path)[0])[0]
     docker_desktop_exe_path = os.path.join(docker_desktop_dir_path, DOCKER_DESKTOP_EXE)
@@ -96,8 +100,7 @@ elif sysname == "Linux":
     kill_docker_cmds.append(LINUX_STOP_DOCKER_COMMAND)
     start_docker_cmds.append(LINUX_START_DOCKER_COMMAND)
 
-    def hide_docker():
-        ...
+    def hide_docker(): ...
 
 elif sysname == "Darwin":
     import applescript
@@ -115,7 +118,7 @@ elif sysname == "Darwin":
         ]
     )
     # start_docker_cmds.append(MACOS_DOCKER_APP_BINARY)
-    
+
     start_docker_cmds.append("open -j -a Docker")
     start_docker_cmds.append(f"open -j -a {MACOS_DOCKER_APP_BINARY}")
     start_docker_cmds.append("open -a Docker")
@@ -152,7 +155,7 @@ DOCKER_KILLED_KWS = [
 def verify_docker_killed(timeout=5, encoding="utf-8", inverse: bool = False):
     output = (
         subprocess.Popen(
-            ["docker", "ps"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            [DOCKER_BIN, "ps"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         .communicate(timeout=timeout)[1]
         .decode(encoding)
@@ -161,12 +164,12 @@ def verify_docker_killed(timeout=5, encoding="utf-8", inverse: bool = False):
     if not inverse:
         if not killed:
             raise Exception(
-                f"Docker not killed.\nCaptured output from command `docker ps`:\n{output}"
+                f"{DOCKER_BIN.title()} not killed.\nCaptured output from command `{DOCKER_BIN} ps`:\n{output}"
             )
     else:
         if killed:
             raise Exception(
-                f"Docker not started.\nCaptured output from command `docker ps`:\n{output}"
+                f"{DOCKER_BIN.title()} not started.\nCaptured output from command `{DOCKER_BIN} ps`:\n{output}"
             )
 
 
@@ -199,11 +202,11 @@ def restart_docker():
     check_required_binaries()
     print("prerequisites checked")
     kill_docker()
-    print("docker killed")
+    print(f"{DOCKER_BIN} killed")
     verify_docker_killed()
     print("kill has been verified")
     start_docker()
-    print("docker restarted")
+    print(f"{DOCKER_BIN} restarted")
 
 
 import shutil
@@ -225,11 +228,11 @@ def restart_and_verify():
     restart_docker()
     if sysname in ["Windows", "Darwin"]:
         verify_docker_launched()
-        print("docker restart verified")
+        print(f"{DOCKER_BIN} restart verified")
         hide_docker()
-        print("docker window minimized")
+        print(f"{DOCKER_BIN} window minimized")
     verify_docker_launched(daemon=True)
-    print("docker daemon restart verified")
+    print(f"{DOCKER_BIN} daemon restart verified")
 
 
 if elevate_needed:

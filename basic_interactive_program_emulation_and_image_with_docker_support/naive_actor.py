@@ -13,11 +13,15 @@ import traceback
 from cmath import nan
 from log_common import *
 import uuid
+
 current_pid = os.getpid()
 print("current_pid:", current_pid)
 actor_uuid = str(uuid.uuid4())
-strtime = heartbeat_base(uuid=actor_uuid, action = 'hello', pid=current_pid, role='client')
-print('beat server hello: %s' % strtime)
+strtime = heartbeat_base(
+    uuid=actor_uuid, action="hello", pid=current_pid, role="client"
+)
+print("beat server hello: %s" % strtime)
+
 
 class InteractiveChallengeFailed(Exception):
     """
@@ -330,12 +334,14 @@ class NaiveActor:
         self.process = self.spawn(cmd)
         self.encoding = encoding
 
-        if os.name == 'nt':
-            NT_CONTEXT['NT_ENCODING'] = encoding
+        if os.name == "nt":
+            NT_CONTEXT["NT_ENCODING"] = encoding
             win_expect_old = copy.copy(self.process.expect)
+
             def win_expect_new(*args, **kwargs):
                 with nt_read_nonblocking_decode_context():
                     return win_expect_old(*args, **kwargs)
+
             self.process.expect = win_expect_new
         self.timeout = SOCKET_TIMEOUT
         self.max_loop_time = 3
@@ -412,8 +418,7 @@ class NaiveActor:
         self.read_bytes += read_byte_len
         return content
 
-    def __del__(self):
-        # TODO: separate calculation logic from here, to be used in metaheuristics
+    def print_stats(self):
         stats = self.stats
         print("summary".center(50, "="))
         print("start time:", formatTimeAtShanghai(stats.start_time), sep="\t")
@@ -428,6 +433,13 @@ class NaiveActor:
         print("write bytes entropy:", stats.write_ent)
         print("r/w entropy ratio:", stats.rw_ent_ratio)
         print("w/r entropy ratio:", stats.wr_ent_ratio)
+
+    def __del__(self):
+        # TODO: separate calculation logic from here, to be used in metaheuristics
+        try:
+            self.print_stats()
+        except ImportError:
+            print("[-] System shutdown. Actor stats not available.")
 
     def getStatsDict(self):
         start_time = self.start_time
@@ -488,10 +500,11 @@ class NaiveActor:
     def heartbeat(self):
         # to prove the program as if still running.
         # do not override this method, unless you know what you are doing.
-        access_time = heartbeat_base(uuid = actor_uuid, action = 'heartbeat', pid=current_pid, role='client')
-        print('beat at:', access_time)
+        access_time = heartbeat_base(
+            uuid=actor_uuid, action="heartbeat", pid=current_pid, role="client"
+        )
+        print("beat at:", access_time)
         return True
-
 
     def run(self):
         loop = True

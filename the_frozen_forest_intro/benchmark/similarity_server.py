@@ -8,7 +8,6 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 app = fastapi.FastAPI(docs_url=None, redoc_url=None)
 
-
 class SimilarityQuery(pydantic.BaseModel):
     text1: str
     text2: str

@@ -6,6 +6,8 @@
 # check if the system is performing as quick as it should.
 
 import gc
+from config import DOCKER_BIN
+from pull_alpine_with_different_arch import target_image
 
 # import getpass
 
@@ -29,7 +31,7 @@ from naive_actor import NaiveActor
 from vocabulary import AsciiVocab
 
 
-REQUIRED_BINARIES = ["docker"]
+REQUIRED_BINARIES = [DOCKER_BIN]
 
 for name in REQUIRED_BINARIES:
     assert shutil.which(
@@ -39,7 +41,7 @@ for name in REQUIRED_BINARIES:
 LEGACY_DOCKER = False
 if sys.maxsize < 2**32:
     print("Your system is 32bit or lower.")
-    print("Assume using legacy docker.")
+    print(f"Assume using legacy {DOCKER_BIN}.")
     LEGACY_DOCKER = True
     if os.name == "posix":
         # check if is sudo
@@ -91,7 +93,7 @@ from log_common import *
 
 
 def docker_cmd(*args):
-    return " ".join(["docker", *args])
+    return " ".join([DOCKER_BIN, *args])
 
 
 def docker_container_cmd(*args):
@@ -124,16 +126,16 @@ from rerun_docker_daemon import restart_and_verify
 def killAndPruneAllContainers(trial_count=2):
     fail_counter = 0
     for i in range(trial_count):
-        print(f"try to kill docker containers ({i+1} time(s))")
+        print(f"try to kill {DOCKER_BIN} containers ({i+1} time(s))")
         try:
             success = _killAndPruneAllContainers()
-            assert success, "Failed to execute docker kill and prune"
+            assert success, f"Failed to execute {DOCKER_BIN} kill and prune"
             print("successfully killed all containers")
             return success
         except:
             fail_counter += 1
     if fail_counter >= trial_count:  # in fact, it can only equal to the count.
-        print("relaunching docker")
+        print(f"relaunching {DOCKER_BIN}")
         restart_and_verify()
         return killAndPruneAllContainers(trial_count)
 
@@ -144,7 +146,6 @@ def _killAndPruneAllContainers():  # not working for legacy docker.
     proc = easyprocess.EasyProcess(LIST_CONTAINER).call(timeout=4)
     if proc.return_code == 0:
         success = True  # usually this is the challange.
-    # proc = easyprocess.EasyProcess("docker container ls -a").call()
     if proc.stdout:
         lines = proc.stdout.split("\n")[1:]
         container_ids = [line.split(" ")[0] for line in lines]
@@ -156,9 +157,8 @@ def _killAndPruneAllContainers():  # not working for legacy docker.
                 print(
                     f'timeout while killing container "{cid}".\nmaybe the container is not running.'
                 )
-            # os.system(f"docker container kill -s SIGKILL {cid}")
         if not LEGACY_DOCKER:
-            os.system("docker container prune -f")
+            os.system(f"{DOCKER_BIN} container prune -f")
     return success
 
 
@@ -184,7 +184,7 @@ def _killAndPruneAllContainers():  # not working for legacy docker.
 class AlpineActor(NaiveActor):
     def __init__(self):
         killAndPruneAllContainers()
-        super().__init__("docker run --rm -it alpine:3.7")
+        super().__init__(f"{DOCKER_BIN} run --rm -it {target_image}")
         # TODO: detect if the container is down by heartbeat-like mechanism
         # TODO: retrieve created container id
         # TODO: detect if we have the real container instead of fake container (do we have a real container session? or just dummy session with no docker behind), using pexpect's default capability.
