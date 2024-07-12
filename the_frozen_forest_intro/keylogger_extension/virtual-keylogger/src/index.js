@@ -1,36 +1,36 @@
 console.log('Starting keylogger for browser');
-const serverPort = 4471
-const baseUrl = `http://localhost:${serverPort}`
-const backendUrl = `${baseUrl}/browserInputEvent`;
-const screenshotSubmitUrl = `${baseUrl}/submitScreenshot`;
+const serverPort=4471
+const baseUrl=`http://localhost:${serverPort}`
+const backendUrl=`${baseUrl}/browserInputEvent`;
+const screenshotSubmitUrl=`${baseUrl}/submitScreenshot`;
 // const identifierUrl = `${baseUrl}/getIdentifier`;
 
 function getPythonStyleTimestamp() {
-  return new Date().getTime() / 1000
+  return new Date().getTime()/1000
 }
 
 function getScreenshotDataUrl() {
-  const canvas = document.createElement('canvas');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const ctx = canvas.getContext('2d');
+  const canvas=document.createElement('canvas');
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
 
   // Draw the screenshot of the viewport onto the canvas
-  ctx.drawImage(window, 0, 0, window.innerWidth, window.innerHeight);
+  ctx.drawImage(window,0,0,window.innerWidth,window.innerHeight);
   // Convert the canvas content to a data URL representing the screenshot
-  const screenshotDataUrl = canvas.toDataURL('image/png');
+  const screenshotDataUrl=canvas.toDataURL('image/png');
   // canvas.remove()
   return screenshotDataUrl
 }
 
 function submitScreenshot(pageIdentifier) {
   try {
-    let dataUrl = getScreenshotDataUrl()
-    fetch(screenshotSubmitUrl, { method: 'POST', data: JSON.stringify({ client_id: pageIdentifier, timestamp: getPythonStyleTimestamp(), screenshot_data: dataUrl }) }).catch(e => {
-      console.log('error posting screenshot:', e.message);
+    let dataUrl=getScreenshotDataUrl()
+    fetch(screenshotSubmitUrl,{method: 'POST',data: JSON.stringify({client_id: pageIdentifier,timestamp: getPythonStyleTimestamp(),screenshot_data: dataUrl})}).catch(e => {
+      console.log('error posting screenshot:',e.message);
     })
-  } catch (e) {
-    console.log('error while submitting screenshot:', e.message)
+  } catch(e) {
+    console.log('error while submitting screenshot:',e.message)
   }
 }
 
@@ -70,20 +70,20 @@ function submitScreenshot(pageIdentifier) {
 // https://developer.mozilla.org/en-US/docs/Web/Events
 // noe we have click/dblclick, keypress events
 // how to handle them?
-const eventTypes = ['keydown', 'keyup', 'mousedown', 'mouseup', 'mousemove'];
+const eventTypes=['keydown','keyup','mousedown','mouseup','mousemove'];
 // const eventTypes = ['keydown', 'keyup', 'mousedown', 'mouseup', 'mousemove', 'resize'];
-var keylogger_timestamp_private = null; // you can check if this thing still works.
+var keylogger_timestamp_private=null; // you can check if this thing still works.
 // var pageIdentifier = null;
 
-function sendHIDEvent(event, e) {
-  let event_keys = Object.keys(e.__proto__);
-  let event_data = {}
-  for (let k of event_keys) {
-    event_data[k] = e[k];
+function sendHIDEvent(event,e) {
+  let event_keys=Object.keys(e.__proto__);
+  let event_data={}
+  for(let k of event_keys) {
+    event_data[k]=e[k];
   }
   // debugger
-  keylogger_timestamp_private = getPythonStyleTimestamp();
-  const inputEvent = {
+  keylogger_timestamp_private=getPythonStyleTimestamp();
+  const inputEvent={
     // eventType: event,
     // timestamp: keylogger_timestamp_private,
     // data: JSON.stringify(event_data),
@@ -91,7 +91,7 @@ function sendHIDEvent(event, e) {
     // "eventType": event,
     "timestamp": keylogger_timestamp_private,
     "client_id": pageIdentifier,
-    "payload": { 'eventType': event, 'data': event_data },
+    "payload": {'eventType': event,'data': event_data},
     // "data": JSON.stringify(event_data),
 
     // data: JSON.stringify(e),
@@ -100,12 +100,12 @@ function sendHIDEvent(event, e) {
   // console.log(inputEvent);
   // debugger;
   // console.log('payload:', JSON.stringify(inputEvent))
-  fetch(backendUrl, {
+  fetch(backendUrl,{
     method: "POST",
     // or you could remove the 'mode' parameter
     mode: "cors", // you must use cors or the content will be unprocessable.
     // mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
+    headers: {"Content-Type": "application/json"},
     // json: {browserEvent: inputEvent}
     // body: inputEvent,
     // body: "hello world",
@@ -115,36 +115,36 @@ function sendHIDEvent(event, e) {
     // console.log(`posted ${event} event`, res);
     // console.log(`posted ${event} event`, res.json());
   }).catch((err) => {
-    console.log(`error posting ${event} event`, err);
+    console.log(`error posting ${event} event`,err);
   });
 }
-const pageIdentifierPrefix = "pageIdentifier_";
+const pageIdentifierPrefix="pageIdentifier_";
 function getPageIdentifierFromExposedFunctionName() {
-  let wk = Object.keys(window)
-  let candidate_keys = [];
-  for (let k of wk) {
-    if (k.startsWith(pageIdentifierPrefix)) {
-      let myIdentifier = k.replace(pageIdentifierPrefix, "").replace(/\_/g, "-");
+  let wk=Object.keys(window)
+  let candidate_keys=[];
+  for(let k of wk) {
+    if(k.startsWith(pageIdentifierPrefix)) {
+      let myIdentifier=k.replace(pageIdentifierPrefix,"").replace(/\_/g,"-");
       candidate_keys.push(myIdentifier);
     }
   }
-  if (candidate_keys.length == 1) {
+  if(candidate_keys.length==1) {
     return candidate_keys[0];
   } else {
-    console.error('Invalid page identifier candidates:', candidate_keys)
+    console.error('Invalid page identifier candidates:',candidate_keys)
   }
   return 'unknown'
 }
-const pageIdentifier = getPageIdentifierFromExposedFunctionName();
+const pageIdentifier=getPageIdentifierFromExposedFunctionName();
 console.log(`pageIdentifier: ${pageIdentifier}`)
-const screenshotInterval = 2 * 1000;
+const screenshotInterval=2*1000;
 // usually we take screenshot on demand, not like this.
 
 // setInterval(() => submitScreenshot(pageIdentifier), screenshotInterval)
 // console.log(`taking screenshot every ${screenshotInterval} ms`)
 
 function addSpecificEventListener(event) {
-  document.addEventListener(event, (e) => {
+  document.addEventListener(event,(e) => {
     // console.log('event', event, e);
     // debugger
     // if (isVariableEmpty(pageIdentifier)) {
@@ -163,22 +163,22 @@ function addSpecificEventListener(event) {
     // });
     // } 
     // else {
-    sendHIDEvent(event, e);
+    sendHIDEvent(event,e);
     // }
   });
 }
 
 // window.generateUUID().then(pageIdentifier => {
-for (const event of eventTypes) {
-  addSpecificEventListener(event, pageIdentifier);
+for(const event of eventTypes) {
+  addSpecificEventListener(event,pageIdentifier);
 }
 // }); // this can be expected from playwright.
 
 
-function setElementAttributeAsCursorReady(element, elementId) {
-  element.style.position = "absolute";
-  element.style.pointerEvents = "none";
-  element.id = elementId;
+function setElementAttributeAsCursorReady(element,elementId) {
+  element.style.position="absolute";
+  element.style.pointerEvents="none";
+  element.id=elementId;
 }
 
 
@@ -193,10 +193,10 @@ function createOmniscentPointerElement(elementId) {
   // setElementAttributeAsCursorReady(divElement, elementId)
 
   // Create the img element
-  var imgElement = document.createElement("img");
-  imgElement.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAUCAQAAAD8O3+kAAAA+ElEQVR4nHXOsSsEcBjG8S/nkOIGk+EyXHGuDIazyMRikbKgLC4ZZGAysPEnmC9lvOnKZjJcWQyUOqWQYpS7zrnjvpa7Y/jdO71Pn3qfFw7oOD/sd5C407IXpEmfnWmwE6CkNd9M/7AVoLL64lSdjSDpk5M11oOkD6aqrARJ7x2rsBwkvTNRZjFIeuPoBwtB0qLj78xBz19riSM+gSgjsWKetSZ9cck811ycUKALiABJKzbcdNiS53L27/mUVXclS/bUuskSiTZNuC05oqRnv/VYDtvULXkGgEi0cOurg4/EWpZjqLlllly1t0C8Rf3tAyNckaGvFX8Bxhaqb4UTp4MAAAAASUVORK5CYII=";
+  var imgElement=document.createElement("img");
+  imgElement.src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAUCAQAAAD8O3+kAAAA+ElEQVR4nHXOsSsEcBjG8S/nkOIGk+EyXHGuDIazyMRikbKgLC4ZZGAysPEnmC9lvOnKZjJcWQyUOqWQYpS7zrnjvpa7Y/jdO71Pn3qfFw7oOD/sd5C407IXpEmfnWmwE6CkNd9M/7AVoLL64lSdjSDpk5M11oOkD6aqrARJ7x2rsBwkvTNRZjFIeuPoBwtB0qLj78xBz19riSM+gSgjsWKetSZ9cck811ycUKALiABJKzbcdNiS53L27/mUVXclS/bUuskSiTZNuC05oqRnv/VYDtvULXkGgEi0cOurg4/EWpZjqLlllly1t0C8Rf3tAyNckaGvFX8Bxhaqb4UTp4MAAAAASUVORK5CYII=";
 
-  setElementAttributeAsCursorReady(imgElement, elementId);
+  setElementAttributeAsCursorReady(imgElement,elementId);
   // Append the img element to the div element
   // divElement.appendChild(imgElement);
 
@@ -206,17 +206,17 @@ function createOmniscentPointerElement(elementId) {
   return imgElement;
   // return divElement;
 }
-const pointerElementId = 'omniscent_pointer';
+const pointerElementId='omniscent_pointer';
 function isVariableEmpty(v) {
-  return v === undefined | v == null
+  return v===undefined|v==null
 }
 function getOmniscentPointer() {
   // while (isVariableEmpty(vpointer)) {
-  var pointer = document.getElementById(pointerElementId);
-  if (isVariableEmpty(pointer)) {
+  var pointer=document.getElementById(pointerElementId);
+  if(isVariableEmpty(pointer)) {
     console.log('pointer is undefined');
     console.log('creating pointer element');
-    pointer = createOmniscentPointerElement(pointerElementId);
+    pointer=createOmniscentPointerElement(pointerElementId);
     // pointer = createOmniscentPointerElement(pointerElementId);
   }
   // }
@@ -225,20 +225,20 @@ function getOmniscentPointer() {
 
 // sometimes this pointer is misaligned.
 function addMouseEventTracer(eventName) {
-  document.addEventListener(eventName, function (event) {
-    const x = event.clientX;
-    const y = event.clientY;
+  document.addEventListener(eventName,function(event) {
+    const x=event.clientX;
+    const y=event.clientY;
     // const x = event.layerX;
     // const y = event.layerY;
     // const x = event.x;
     // const y = event.y;
     // var pointer = getOmniscentPointer();
-    const pointer = getOmniscentPointer();
+    const pointer=getOmniscentPointer();
     // debugger;
 
     // Set the position of the pointer element
-    pointer.style.left = x + 'px';
-    pointer.style.top = y + 'px';
+    pointer.style.left=x+'px';
+    pointer.style.top=y+'px';
 
     // pointer.style.marginLeft = x + 'px';
     // pointer.style.marginTop = y + 'px';

@@ -9,6 +9,6 @@
     },
     "eval": {
         "method": "word_match",
-        "config":{"pattern": "[0-9.]+"}
+        "config": {"pattern": "[0-9.]+"}
     }
 }
