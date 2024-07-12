@@ -1,0 +1,1 @@
+conda run -n cybergod --no-capture-output python llm_actor_tested.py

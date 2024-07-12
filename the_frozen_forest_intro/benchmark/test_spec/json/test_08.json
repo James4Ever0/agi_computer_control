@@ -9,6 +9,13 @@
     },
     "eval": {
         "method": "word_match",
-        "config":{"split": [" ", "\n", "(", ")"]}
+        "config": {
+            "split": [
+                " ",
+                "\n",
+                "(",
+                ")"
+            ]
+        }
     }
 }

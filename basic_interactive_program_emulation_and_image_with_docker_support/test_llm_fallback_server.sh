@@ -1,0 +1,1 @@
+curl 'http://localhost:8540/llm_chat?query=hello'
