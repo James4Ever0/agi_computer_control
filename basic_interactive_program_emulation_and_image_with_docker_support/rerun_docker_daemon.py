@@ -15,7 +15,9 @@ WINDOW_TITLE_KW = "Docker Desktop"
 MACOS_KILL_DOCKER_APP = """ bash -c 'ps aux | grep Docker.app | grep -v grep | awk "{print \\$2}" | xargs -I abc kill -s KILL abc' """
 import subprocess
 
-LINUX_CONTROL_DOCKER_SERVICE_CMDGEN = lambda action: f"sudo systemctl {action} {DOCKER_BIN}"
+LINUX_CONTROL_DOCKER_SERVICE_CMDGEN = (
+    lambda action: f"sudo systemctl {action} {DOCKER_BIN}"
+)
 LINUX_RESTART_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("restart")
 LINUX_STOP_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("stop")
 LINUX_START_DOCKER_COMMAND = LINUX_CONTROL_DOCKER_SERVICE_CMDGEN("start")

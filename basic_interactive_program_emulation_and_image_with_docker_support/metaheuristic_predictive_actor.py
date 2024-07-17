@@ -21,8 +21,7 @@ ACTIVATION_FUNCMAP = {
 }  # input: -oo, oo; output: -1, 1
 
 
-class MetaheuristicActorStats(ActorStats):
-    ...
+class MetaheuristicActorStats(ActorStats): ...
 
 
 import copy

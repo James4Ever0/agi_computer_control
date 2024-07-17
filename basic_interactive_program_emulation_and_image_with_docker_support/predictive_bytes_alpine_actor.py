@@ -2,8 +2,7 @@ from bytes_actor import BytesActor
 from predictive_alpine_actor import PredictiveAlpineActor, run_actor_forever
 
 
-class PredictiveAlpineBytesActor(BytesActor, PredictiveAlpineActor):
-    ...
+class PredictiveAlpineBytesActor(BytesActor, PredictiveAlpineActor): ...
 
 
 if __name__ == "__main__":

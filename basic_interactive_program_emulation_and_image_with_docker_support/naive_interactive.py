@@ -5,7 +5,7 @@ from vocabulary import NaiveVocab
 
 
 class NaiveInteractive:
-    def __init__(self, intro:str = "Input something and this program will reply:"):
+    def __init__(self, intro: str = "Input something and this program will reply:"):
         self.sleep = 1
         self.intro = intro
         print(self.intro)
