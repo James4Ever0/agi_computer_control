@@ -16,6 +16,7 @@ beat_client_data = dict(
 from functools import lru_cache, wraps
 from time import monotonic_ns
 
+
 # use cacheout instead.
 # ref: https://github.com/dgilland/cacheout
 def timed_lru_cache(
@@ -77,10 +78,13 @@ def heartbeat_base_nocache(uuid: str, action: str, pid: int, role: str):
 def query_info():
     return request_with_timeout_and_get_json_data(dict(), beat_client_data["info_url"])
 
+
 from log_common import log_and_print_unknown_exception
 import os
 import signal
 import func_timeout
+
+
 def request_with_timeout_and_get_json_data(params: dict, url: str, success_code=200):
     try:
         r = session.get(url, params=params, timeout=beat_client_data["timeout"])
@@ -93,10 +97,11 @@ def request_with_timeout_and_get_json_data(params: dict, url: str, success_code=
         log_and_print_unknown_exception()
         print("fatal error. cannot beat.")
         self_pid = os.getpid()
-        print(f'suicide now. (pid: {self_pid})')
+        print(f"suicide now. (pid: {self_pid})")
         kill_by_pid(self_pid)
     return data
 
+
 def kill_by_pid(pid):
-    kill_signal = getattr(signal, 'SIGKILL', signal.SIGTERM) # adaption for windows
+    kill_signal = getattr(signal, "SIGKILL", signal.SIGTERM)  # adaption for windows
     os.kill(pid, kill_signal)

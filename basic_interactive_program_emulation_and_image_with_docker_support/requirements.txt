@@ -17,3 +17,10 @@ fastapi
 pydantic
 numpy
 scipy
+markdown
+bs4
+lxml
+
+# require specific version settings
+litellm==1.35.32
+open-interpreter==0.3.4

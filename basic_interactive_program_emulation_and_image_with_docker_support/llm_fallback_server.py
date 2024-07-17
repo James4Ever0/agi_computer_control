@@ -9,12 +9,15 @@ import time
 
 CHECK_ALIVE_INTERVAL = 5
 
+
 class ServerList:
     def __init__(self):
-        self.items:list["LLMChat"] = []
-        self.check_alive_thread = threading.Thread(target=self.check_alive_thread_task, daemon=True)
+        self.items: list["LLMChat"] = []
+        self.check_alive_thread = threading.Thread(
+            target=self.check_alive_thread_task, daemon=True
+        )
         self.check_alive_thread.start()
-    
+
     def check_alive_once(self):
         for it in self.items:
             try:
@@ -22,18 +25,19 @@ class ServerList:
             except:
                 traceback.print_exc()
                 print("[-] Error checking alive:", it.__class__.__name__, it.config)
-    
+
     def check_alive_thread_task(self):
         while True:
             self.check_alive_once()
             time.sleep(CHECK_ALIVE_INTERVAL)
 
-    def append(self, it:"LLMChat"):
+    def append(self, it: "LLMChat"):
         self.items.append(it)
 
     def __iter__(self):
         for it in self.items:
             yield it
+
 
 LOCAL_FALLBACK_OLLAMA_MODEL = "qwen2:0.5b"
 LOCAL_OLLAMA_PORT = 11434
@@ -45,6 +49,7 @@ VLLM_OPENAI_ENDPOINT = f"http://localhost:{VLLM_PORT}"
 app = fastapi.FastAPI()
 
 ONLINE_LLM_SERVICES: ServerList = ServerList()
+
 
 class LLMChat(ABC):
     def __init__(self, config: dict = {}):
@@ -100,7 +105,11 @@ class VllmOpenAIChat(LLMChat):
     def init_attributes(self):
         self.api_endpoint = self.config["api_endpoint"]
         self.model_name = self.config["model_name"]
-        self.system_prompt = self.config.get('system_prompt', "You are a helpful assistant.")
+        self.temperature = self.config["temperature"]
+        self.top_p = self.config["top_p"]
+        self.system_prompt = self.config.get(
+            "system_prompt", "You are a helpful assistant."
+        )
 
     def test_method(self):
         response = requests.get(f"{VLLM_OPENAI_ENDPOINT}/")
@@ -115,20 +124,28 @@ class VllmOpenAIChat(LLMChat):
                     {"role": "system", "content": self.system_prompt},
                     {"role": "user", "content": query},
                 ],
-                "stream": False
+                "temperature": self.temperature,
+                "stream": False,
+                "top_p": self.top_p,
             },
         )
-        ret = response.json()['message']['content']
+        ret = response.json()["message"]["content"]
         return ret
 
 
 localOllamaChat = LocalOllamaChat(config=dict(api_endpoint=LOCAL_OLLAMA_ENDPOINT))
 
 vllmOpenAIChat = VllmOpenAIChat(
-    config=dict(api_endpoint=VLLM_OPENAI_ENDPOINT, model_name="mixtral-local")
+    config=dict(
+        api_endpoint=VLLM_OPENAI_ENDPOINT,
+        model_name="mixtral-local",
+        temperature=0.05,
+        top_p=0.1,
+    )
 )
 
 ONLINE_LLM_SERVICES.append(vllmOpenAIChat)
+
 
 def processQueryWithOnlineLLMServices(query: str):
     try:
@@ -162,4 +179,4 @@ def llm_chat_with_fallback(query: str):
     assert (
         type(llm_response) == str
     ), f"LLM response is not string, but {llm_response_type}"
-    return PlainTextResponse(content = llm_response)
+    return PlainTextResponse(content=llm_response)
