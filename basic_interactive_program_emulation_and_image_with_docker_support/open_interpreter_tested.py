@@ -1,6 +1,46 @@
 # patching input function
+# from interpreter.core.default_system_message import default_system_message
 import typing
 import traceback
+import re
+import platform
+
+PROMPT_PATH = "/tmp/prompt.txt"
+
+def get_system_info():
+    cmd = "neofetch --stdout".split()
+    system_info = subprocess.check_output(cmd, encoding='utf-8')
+    return system_info
+
+def get_processor_architecture():
+    ret = f"Processor architecture: {platform.processor()}"
+    return ret
+
+def get_python_version():
+    ret = f"Python: {platform.python_version()}"
+    return ret
+
+def build_custom_system_prompt():
+    ret = f"""
+You are Open Interpreter, a world-class programmer that can complete any goal by executing code.
+First, write a plan. **Always recap the plan between each code block** (you have extreme short-term memory loss, so you need to recap the plan between each message block to retain it).
+When you execute code, it will be executed **on the user's machine**. The user has given you **full and complete permission** to execute any code necessary to complete the task. Execute the code.
+You can access the internet. Run **any code** to achieve the goal, and if at first you don't succeed, try again and again.
+You can install new packages.
+When a user refers to a filename, they're likely referring to an existing file in the directory you're currently executing code in.
+Write messages to the user in Markdown.
+In general, try to **make plans** with as few steps as possible. As for actually executing code to carry out that plan, for *stateful* languages (like python, javascript, shell, but NOT for html which starts from 0 every time) **it's critical not to try to do everything in one code block.** You should try something, print information about it, then continue from there in tiny, informed steps. You will never get it on the first try, and attempting it in one go will often lead to errors you cant see.
+You are capable of **any** task.
+
+{get_system_info()}
+{get_processor_architecture()}
+{get_python_version()}
+""".strip()
+    return ret
+
+def replace_sudo(multiline_string:str):
+    updated_string = re.sub(r"^[ \t]*(sudo )", "", multiline_string, flags=re.MULTILINE)
+    return updated_string
 
 
 def custom_input(banner: str, ans: str = "y"):
@@ -70,21 +110,29 @@ setattr(terminal_interface, "input", custom_input)
 from interpreter import OpenInterpreter
 from interpreter.core.computer.computer import Computer
 
-interpreter = OpenInterpreter(disable_telemetry = True)
-
+interpreter = OpenInterpreter(disable_telemetry = True, system_message=build_custom_system_prompt(), loop=True)
+# interpreter = OpenInterpreter(disable_telemetry = True, system_message=default_system_message)
 
 # old_run = copy.copy(computer.run)
 class CustomComputer(Computer):
-    def run(self, *args, **kwargs):
-        print(f"[*] Calling custom computer run method, args={args}, kwargs={kwargs}")
-        language, code = args
-        ret = super().run(*args, **kwargs) # <generator object Terminal._streaming_run>
-        print(f"[*] computer execution result:", ret)
+    def run(self, language, code, **kwargs):
+        print("[*] Calling custom computer run method.")
+        print(f"[*] Language: {language}")
+        print("[*] Code:")
+        print(code)
+        print("[*] Kwargs:", kwargs)
+        if language == "bash":
+            print("[*] Removing sudo from bash code")
+            code = replace_sudo(code)
+            print("[*] Processed code:")
+            print(code)
+        ret = super().run(language, code, **kwargs) # <generator object Terminal._streaming_run>
+        print("[*] computer execution result:", ret)
         return ret
 
 computer = CustomComputer(interpreter)
 # setattr(computer, 'run', new_run)
-interpreter.computer =computer
+interpreter.computer = computer
 
 
 # from interpreter.core.respond import respond
@@ -114,9 +162,16 @@ MODEL = "openai/mixtral-local"
 TEMPERATURE = 0.1
 API_BASE = os.environ.get("OPENAI_API_BASE", "http://localhost:8101/v1")
 
-# prompt = "get me the ip address of bing.com. all programs can run with root permission without sudo."
+if os.path.isfile(PROMPT_PATH):
+    print("[*] Reading prompt from:", PROMPT_PATH)
+    with open(PROMPT_PATH, 'r', encoding='utf-8') as f:
+        prompt = f.read()
+else:
+    print("[*] Prompt file not found at:", PROMPT_PATH)
+    prompt = "get me the ip address of bing.com."
 
-prompt = "install nmap command. all programs always run with root permission without sudo prefix."
+print("[*] Using prompt:", prompt)
+# prompt = "install nmap command."
 
 interpreter.offline = True
 interpreter.llm.temperature = TEMPERATURE  # type:ignore
@@ -144,6 +199,7 @@ interpreter.computer
 message = ""
 last_message_type = None
 
+# you can do generator exit here. the interpreter will handle it.
 for chunk in interpreter.chat(prompt, display=True, stream=True):  # type: ignore
     if PRINT_PARSING_DETAIL:
         print("[*] Reply:", chunk)
@@ -176,3 +232,7 @@ if message != "":
     if PRINT_MESSAGE_CHUNK:
         print(f"[*] Message ({last_message_type})", message)
     message = ""
+
+history_messages = interpreter.messages
+print("[*] History messages:")
+print(history_messages)
