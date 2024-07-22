@@ -16,3 +16,11 @@ docker cp $PROMPT_PATH $CONTAINER_NAME:$PROMPT_PATH
 docker exec -it $CONTAINER_NAME python3 /root/$SCRIPT_NAME
 
 # the bloody agent will get stuck into "which sudo"
+
+# a proper terminal execution cycle would be:
+# 1. generate a long sequence beforehand 
+# 2. constantly monitor changes and track execution progress
+# 3. ask the agent to continue execution or not
+# 4. allow the agent to change the execution sequence on the fly
+
+# things can either be right or wrong, but can you always make it both right and wrong the same time?

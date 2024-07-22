@@ -7,27 +7,28 @@ from typing import TypedDict, Callable
 BENCHMARK_DIR = "../the_frozen_forest_intro/benchmark"
 BENCHMARK_JSON_DIR = f"{BENCHMARK_DIR}/test_spec/json/"
 CONTAINER_NAME = "naive_actor_container"
-DOCKER_ALPINE_CMD = f"docker run --rm -it -n {CONTAINER_NAME} alpine_python"
+DOCKER_ALPINE_CMD = f"docker run --rm -it --name {CONTAINER_NAME} alpine_python:base"
 KILL_CONTAINER_CMD = f"docker kill {CONTAINER_NAME}"
 # DOCKER_ALPINE_CMD = "docker run --rm -it alpine:3.7"
 
 MAX_TRIAL = 4
 INIT_TIME = 3
 LOOP_TIME = 1
+ACTION_TIME=1
 MAX_EVAL_TRIAL = 10
 
 sys.path.append(BENCHMARK_DIR)
 
 from quiz import Quiz
-from naive_actor import NaiveActor  # , NaiveVocab
+from naive_actor import AbstractActor  # , NaiveVocab
 
 
 class QuizEnv(TypedDict):
     quiz: Quiz
-    actor: NaiveActor
+    actor: AbstractActor
 
 
-def read_and_decode_actor(actor: NaiveActor, errors: str = "ignore"):
+def read_and_decode_actor(actor: AbstractActor, errors: str = "ignore"):
     feedback_bytes = actor.read()
     feedback = feedback_bytes.decode(errors=errors)
     return feedback
@@ -51,6 +52,7 @@ def eval_action_generator(
     init_time=INIT_TIME,
     max_trial=MAX_TRIAL,
     loop_time=LOOP_TIME,
+    action_time= ACTION_TIME,
 ):
     # quiz = Quiz(os.path.join(BENCHMARK_DIR, "test_spec/json/test_08.json")) # dig
     time.sleep(init_time)
@@ -72,9 +74,13 @@ def eval_action_generator(
         # action = NaiveVocab.generate() # random action
         # action = "ping bing.com" # the solution
         action = action_generator(feedback)
-        print(f"[*] Action:")
-        print(action)
-        actor.write(action)
+        for line in action.splitlines():
+            line = line.strip()
+            if line:
+                print("[*] Action:")
+                print(action)
+                actor.write(action)
+                time.sleep(action_time)
         time.sleep(loop_time)
 
     feedback = read_and_decode_actor(actor)
@@ -101,19 +107,37 @@ def eval_action_generator(
         print("[-] Quiz Failed")
     return success
 
+import progressbar
 
-def prepare_quiz_and_actor_for_test():
-    quiz = Quiz(os.path.join(BENCHMARK_JSON_DIR, "test_07.json"))  # docker python eval
+class DockerActor(AbstractActor):
+    def _init_check(self):
+        print("[*] checking container")
+        steps = [
+            lambda: self.process.read(),
+            lambda: self.process.write(f"whoami{os.linesep}"),
+            lambda: self.process.expect("root"),
+        ]
+        for step in progressbar.progressbar(steps):
+            step() # type: ignore
+
+def prepare_quiz_by_num(num:int):
+    quiz_filename = f"test_{str(num).zfill(2)}.json"
+    quiz_realpath = os.path.join(BENCHMARK_JSON_DIR, quiz_filename)
+    quiz = Quiz(quiz_realpath)  # docker python eval
+    return quiz
+
+def prepare_quiz_and_actor_for_test(num=7,cleanup_cmd = KILL_CONTAINER_CMD, cmd=DOCKER_ALPINE_CMD):
+    quiz = prepare_quiz_by_num(num)
     # quiz = Quiz(os.path.join(BENCHMARK_DIR, "test_spec/json/test_01.json"))
-    os.system(KILL_CONTAINER_CMD)
-    actor = NaiveActor(
-        cmd=DOCKER_ALPINE_CMD
+    os.system(cleanup_cmd)
+    actor = DockerActor(
+        cmd=cmd
     )  # actually, shall be called environment, or actor environment
     return quiz, actor
 
 
-def prepare_quiz_env():
-    quiz, actor = prepare_quiz_and_actor_for_test()
+def prepare_quiz_env(*args, **kwargs):
+    quiz, actor = prepare_quiz_and_actor_for_test(*args, **kwargs)
     quizEnv = QuizEnv(quiz=quiz, actor=actor)
     return quizEnv
 
