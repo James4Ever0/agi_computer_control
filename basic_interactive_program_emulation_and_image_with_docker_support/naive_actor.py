@@ -7,6 +7,7 @@ import datetime
 from beat_common import heartbeat_base
 import os
 import sys
+from abc import ABC, abstractmethod
 import time
 import copy
 import traceback
@@ -303,7 +304,7 @@ def formatTimeAtShanghai(timestamp):
     return dt.isoformat()
 
 
-class NaiveActor:
+class AbstractActor(ABC):
     write_method = lambda proc: proc.sendline
     actorStatsClass = ActorStats
 
@@ -345,6 +346,7 @@ class NaiveActor:
             self.process.expect = win_expect_new
         self.timeout = SOCKET_TIMEOUT
         self.max_loop_time = 3
+        self.init_alive_time = 2
         self.max_init_time = 12
         self.max_rwtime = 0.5
         # self.timeout = 0.2 # equivalent to wexpect
@@ -487,10 +489,13 @@ class NaiveActor:
         """
         Check or wait until the interactive program emits expected output.
         """
+        time.sleep(self.init_alive_time)
+        assert self.process.isalive(), '[-] process is dead'
         ret = func_timeout.func_timeout(self.max_init_time, self._init_check)
-        print("init check passed")
+        print("[+] init check passed")
         return ret
 
+    @abstractmethod
     def _init_check(self):
         """
         Implementation of init checks.
@@ -532,6 +537,8 @@ def run_naive(cls):
     actor = cls(f"{sys.executable} naive_interactive.py")
     actor.run()
 
+class NaiveActor(AbstractActor):
+    def _init_check(self):...
 
 if __name__ == "__main__":
     run_naive(NaiveActor)

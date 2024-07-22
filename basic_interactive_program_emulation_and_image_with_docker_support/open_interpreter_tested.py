@@ -110,7 +110,9 @@ setattr(terminal_interface, "input", custom_input)
 from interpreter import OpenInterpreter
 from interpreter.core.computer.computer import Computer
 
-interpreter = OpenInterpreter(disable_telemetry = True, system_message=build_custom_system_prompt(), loop=True)
+SYSTEM_MESSAGE = build_custom_system_prompt()
+
+interpreter = OpenInterpreter(disable_telemetry = True, system_message=SYSTEM_MESSAGE, loop=True)
 # interpreter = OpenInterpreter(disable_telemetry = True, system_message=default_system_message)
 
 # old_run = copy.copy(computer.run)

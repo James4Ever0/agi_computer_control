@@ -129,7 +129,13 @@ class VllmOpenAIChat(LLMChat):
                 "top_p": self.top_p,
             },
         )
-        ret = response.json()["message"]["content"]
+        response_json = response.json()
+        print("[*] Response status code:", response.status_code)
+        print("[*] Response JSON:", response_json)
+        if 'choices' in response_json:
+            ret = response_json['choices'][0]['message']['content']
+        else:
+            ret = response_json["message"]["content"]
         return ret
 
 
