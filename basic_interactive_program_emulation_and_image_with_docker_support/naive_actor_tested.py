@@ -6,9 +6,10 @@ from typing import TypedDict, Callable
 # you have to run eval in the same environment as the agent, otherwise it will not success.
 BENCHMARK_DIR = "../the_frozen_forest_intro/benchmark"
 BENCHMARK_JSON_DIR = f"{BENCHMARK_DIR}/test_spec/json/"
-CONTAINER_NAME = "naive_actor_container"
-DOCKER_ALPINE_CMD = f"docker run --rm -it --name {CONTAINER_NAME} alpine_python:base"
-KILL_CONTAINER_CMD = f"docker kill {CONTAINER_NAME}"
+
+from container_config import CONTAINER_NAME, DOCKER_ALPINE_CMD, KILL_CONTAINER_CMD
+
+
 # DOCKER_ALPINE_CMD = "docker run --rm -it alpine:3.7"
 
 MAX_TRIAL = 4
