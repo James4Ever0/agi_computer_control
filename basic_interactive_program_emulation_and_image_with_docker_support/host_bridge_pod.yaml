@@ -1,0 +1,20 @@
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: host-bridge-pod
+  labels:
+    network: host-bridge
+spec:
+  containers:
+  - name: socat-host-port-forward
+    image: alpine/socat:latest
+    imagePullPolicy: IfNotPresent
+    command: ['sh', '-c']
+    env:
+    - name: HOST_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.hostIP
+    args:
+      - socat TCP-LISTEN:8101,reuseaddr,fork TCP:$HOST_IP:8202
