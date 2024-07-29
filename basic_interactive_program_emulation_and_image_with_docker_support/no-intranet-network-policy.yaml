@@ -10,8 +10,8 @@ spec:
     - Egress
   egress:
     - to:
-        - ipBlock:
-            cidr: 10.42.0.14/32 # the host-bridge pod.
+        # - ipBlock:
+            # cidr: 10.42.0.14/32 # the host-bridge pod.
             # cidr: 10.43.0.100/32 # the host-bridge service.
         - ipBlock:
             cidr: ::/0
