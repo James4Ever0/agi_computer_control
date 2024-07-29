@@ -13,13 +13,18 @@ $K8S_PREFIX delete pod $CONTAINER_NAME
 
 $K8S_PREFIX apply -f no-intranet-network-policy.yaml
 
-$K8S_PREFIX run $CONTAINER_NAME --env="OPENAI_API_BASE=http://10.42.0.14:8101/v1" --overrides='{"metadata": {"labels": {"network": "no-intranet"}}, "spec": {"dnsPolicy": "None", "dnsConfig": {"nameservers": ["8.8.8.8"]}}}' --image=openinterpreter:latest --image-pull-policy="Never" -- tail -f /dev/null
+$K8S_PREFIX run $CONTAINER_NAME --env="OPENAI_API_BASE=http://localhost:9101/v1" --overrides='{"metadata": {"labels": {"network": "no-intranet"}}, "spec": {"dnsPolicy": "None", "dnsConfig": {"nameservers": ["8.8.8.8"]}}}' --image=openinterpreter:latest --image-pull-policy="Never" -- /usr/sbin/sshd -D
+
+#$K8S_PREFIX run $CONTAINER_NAME --env="OPENAI_API_BASE=http://10.42.0.14:8101/v1" --overrides='{"metadata": {"labels": {"network": "no-intranet"}}, "spec": {"dnsPolicy": "None", "dnsConfig": {"nameservers": ["8.8.8.8"]}}}' --image=openinterpreter:latest --image-pull-policy="Never" -- tail -f /dev/null
 
 echo "waiting pod to be ready (timeout: $WAIT_TIMEOUT secs)"
 
 timeout $WAIT_TIMEOUT $K8S_PREFIX wait pod/$CONTAINER_NAME --for condition=Running
 
 # $K8S_PREFIX port-forward pod/$CONTAINER_NAME 8101
+
+$K8S_PREFIX cp /root/.ssh/id_ed25519.pub $CONTAINER_NAME:/root/.ssh/authorized_keys
+bash k8s_forward_llm_port_to_pod.sh
 
 $K8S_PREFIX cp $SCRIPT_NAME $CONTAINER_NAME:/root/$SCRIPT_NAME
 $K8S_PREFIX cp $PROMPT_PATH $CONTAINER_NAME:$PROMPT_PATH

@@ -1,5 +1,5 @@
 quizNum = 8
-
+# TODO: next time use ssh port reverse forward instead, over host machine.
 script_path = 'test_k8s_open_interpreter_local.sh'
 prompt_path = "/tmp/prompt.txt"
  
