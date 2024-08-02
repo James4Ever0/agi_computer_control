@@ -214,6 +214,10 @@ move the cursor by generating image and subpattern matching, using multimodal [c
 
 training on plain sampling histories/trajectories is harmful. the agent must self-improve and self-clean the history, select the best candidates and learn those non-trivial data instead.
 
+---
+
+write reproduceable, self-contained microservices in docker image and pubpish it to k8s
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>

@@ -1,0 +1,18 @@
+write some gibberish in a massive library, such as `requests`
+
+the gibberish must appear everywhere.
+
+validate the result by invoking the requests
+
+```python
+import requests
+url="http://httpbin.io/html"
+output=requests.get(url).text
+print(output) # "blacksmith"
+```
+
+in order to correctly execute the following code one must navigate to the `requests` code folder, edit the file and 
+
+you may scramble multiple files. 
+
+save the environment as Dockerfile, and name the resulted image.
