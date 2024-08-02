@@ -27,7 +27,7 @@
 # In[1]:
 
 
-get_ipython().system('pip3 install einops')
+# get_ipython().system('pip3 install einops')
 import einops
 
 
@@ -846,7 +846,7 @@ vit_model = torchvision.models.vit_b_16(pretrained=True)
 # In[8]:
 
 
-get_ipython().system('pip3 install pydantic-numpy')
+# get_ipython().system('pip3 install pydantic-numpy')
 from pydantic_numpy import NDArray
 
 
