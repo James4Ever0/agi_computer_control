@@ -4,10 +4,13 @@ import subprocess
 import os
 import traceback
 import shutil
+import parse
+import json
 
 TMUX = "tmux"
 TMUX_WIDTH = 80
 TMUX_HEIGHT = 24
+ENCODING='utf-8'
 
 REQUIRED_BINARIES = (TMUX,)
 
@@ -19,6 +22,8 @@ def assert_binary_existance(binaries: Iterable[str]):
 
 assert_binary_existance(REQUIRED_BINARIES)
 
+def json_pretty_print(obj):
+    print(json.dumps(obj, indent=4, sort_keys=True, ensure_ascii=False))
 
 class TmuxServer:
     def __init__(self, name: Optional[str] = None, reset: bool = True):
@@ -138,8 +143,21 @@ class TmuxSession:
         self.server.set_session_option(self.name, key, value)
     
     def info(self):
-        ...
-
+        list_session_format_template ="[#{session_name}] socket: #{socket_path} size: #{window_width}x#{window_height} cursor at: x=#{cursor_x},y=#{cursor_y} cursor flag: #{cursor_flag} cursor character: #{cursor_character}"
+        output_bytes = self.server.get_command_output_bytes(f"list-sessions -F '{list_session_format_template}'")
+        numeric_properties = ["window_width", "window_height", "cursor_x", "cursor_y", 'cursor_flag']
+        parse_format = list_session_format_template.replace("#{", "{")
+        for it in numeric_properties:
+            parse_format = parse_format.replace(it, it+":d")
+        output = output_bytes.decode(ENCODING)
+        data = parse.parse(parse_format, output)
+        if data is not None:
+            print("[+] Fetched info for session:", self.name)
+            ret = dict(data) # type: ignore
+            json_pretty_print(ret)
+            return ret
+        else:
+            print("[-] No info for session:", self.name)
 
 class TmuxEnv:
     def __init__(self, session: TmuxSession):

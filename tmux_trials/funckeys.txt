@@ -30,10 +30,13 @@
 	{ "Enter",	'\r' },
 	{ "Escape",	'\033' },
 
+	/* Arrow keys. */
 	{ "Up",		KEYC_UP|KEYC_CURSOR|KEYC_IMPLIED_META },
 	{ "Down",	KEYC_DOWN|KEYC_CURSOR|KEYC_IMPLIED_META },
 	{ "Left",	KEYC_LEFT|KEYC_CURSOR|KEYC_IMPLIED_META },
 	{ "Right",	KEYC_RIGHT|KEYC_CURSOR|KEYC_IMPLIED_META },
+
+
 
 
 assert_key 'C-Space' '^@'
@@ -69,7 +72,6 @@ assert_key 'C-]' '^]'	 -- 'M-C-]' '^[^]'
 assert_key 'C-^' '^^'	 -- 'M-C-^' '^[^^'
 assert_key 'C-_' '^_'	 -- 'M-C-_' '^[^_'
 assert_key 'Space' ' '	 -- 'M-Space' '^[ '
-
 assert_key '!' '!'	 -- 'M-!' '^[!'
 assert_key '"' '"'	 -- 'M-"' '^["'
 assert_key '#' '#'	 -- 'M-#' '^[#'
@@ -168,6 +170,9 @@ assert_key '~' '~'	 -- 'M-~' '^[~'
 assert_key 'Tab' '^I'    -- 'M-Tab' '^[^I'
 assert_key 'BSpace' '^?' -- 'M-BSpace' '^[^?'
 
+## These cannot be sent, is that intentional?
+## assert_key 'PasteStart' "^[[200~"
+## assert_key 'PasteEnd' "^[[201~"
 
 assert_key 'F1' "^[OP"
 assert_key 'F2' "^[OQ"
@@ -186,6 +191,7 @@ assert_key 'Insert' '^[[2~'
 assert_key 'DC' '^[[3~'
 assert_key 'Delete' '^[[3~'
 
+## Why do these differ from tty-keys?
 assert_key 'Home' '^[[1~'
 assert_key 'End' '^[[4~'
 
@@ -204,6 +210,7 @@ assert_key 'Down' '^[[B'
 assert_key 'Right' '^[[C'
 assert_key 'Left' '^[[D'
 
+# assert_key 'KPEnter'
 assert_key 'KP*' '*' -- 'M-KP*' '^[*'
 assert_key 'KP+' '+' -- 'M-KP+' '^[+'
 assert_key 'KP-' '-' -- 'M-KP-' '^[-'
@@ -220,7 +227,36 @@ assert_key 'KP7' '7' -- 'M-KP7' '^[7'
 assert_key 'KP8' '8' -- 'M-KP8' '^[8'
 assert_key 'KP9' '9' -- 'M-KP9' '^[9'
 
+# Extended keys
+$TMUX set -g extended-keys always
 
+assert_extended_key () {
+	extended_key=$1
+	expected_code_pattern=$2
+
+	expected_code=$(printf '%s' "$expected_code_pattern" | sed -e 's/;_/;2/')
+	assert_key "S-$extended_key" "$expected_code"
+
+	expected_code=$(printf '%s' "$expected_code_pattern" | sed -e 's/;_/;3/')
+	assert_key "M-$extended_key" "$expected_code"
+
+	expected_code=$(printf '%s' "$expected_code_pattern" | sed -e 's/;_/;4/')
+	assert_key "S-M-$extended_key" "$expected_code"
+
+	expected_code=$(printf '%s' "$expected_code_pattern" | sed -e 's/;_/;5/')
+	assert_key "C-$extended_key" "$expected_code"
+
+	expected_code=$(printf '%s' "$expected_code_pattern" | sed -e 's/;_/;6/')
+	assert_key "S-C-$extended_key" "$expected_code"
+
+	expected_code=$(printf '%s' "$expected_code_pattern" | sed -e 's/;_/;7/')
+	assert_key "C-M-$extended_key" "$expected_code"
+
+	expected_code=$(printf '%s' "$expected_code_pattern" | sed -e 's/;_/;8/')
+	assert_key "S-C-M-$extended_key" "$expected_code"
+}
+
+## Many of these pass without extended keys enabled -- are they extended keys?
 assert_extended_key 'F1' '^[[1;_P'
 assert_extended_key 'F2' "^[[1;_Q"
 assert_extended_key 'F3' "^[[1;_R"
@@ -255,3 +291,7 @@ assert_extended_key 'Delete' '^[[3;_~'
 
 assert_key 'C-Tab' "^[[9;5u"
 assert_key 'C-S-Tab' "^[[1;5Z"
+
+$TMUX kill-server 2>/dev/null
+
+exit $exit_status
