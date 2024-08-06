@@ -1,7 +1,7 @@
 SESSION_NAME=agent_terminal
 TERM_WIDTH=80
 TERM_HEIGHT=24
-TERMINAL_COMMAND="docker run --rm -it ubuntu:22.04"
+TERMINAL_COMMAND="docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 ubuntu:22.04"
 
 
 bash kill_tmux_session_isolated.sh
