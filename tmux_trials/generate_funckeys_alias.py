@@ -5,6 +5,7 @@ PREDEFINED_TEMPLATE = {
     "Delete": ["DC", "DeleteCharacter"],
 }
 
+# TODO: imitate `/usr/lib/command-not-found` and handle inaccurate keystrokes from agent
 
 def generate_case_alias(key: str):
     return [key.lower(), key.upper()]
