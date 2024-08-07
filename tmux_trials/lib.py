@@ -8,7 +8,7 @@ import parse
 import json
 from tempfile import NamedTemporaryFile
 
-ENV='env'
+ENV = "env"
 TMUX = "tmux"
 TMUXP = "tmuxp"
 TMUX_WIDTH = 80
@@ -26,7 +26,7 @@ CURSOR_BYTES = CURSOR.encode(ENCODING)
 REQUIRED_BINARIES = (ENV, TMUX, TMUXP)
 
 
-def decode_bytes(_bytes: bytes, errors='ignore'):
+def decode_bytes(_bytes: bytes, errors="ignore"):
     ret = _bytes.decode(ENCODING, errors=errors)
     return ret
 
@@ -34,7 +34,7 @@ def decode_bytes(_bytes: bytes, errors='ignore'):
 def insert_cursor(_bytes: bytes, x: int):
     ret = b""
     try:
-        line = decode_bytes(_bytes, errors='replace')
+        line = decode_bytes(_bytes, errors="replace")
         char_index = 0
         for index, it in enumerate(line):
             if char_index >= x:
@@ -86,6 +86,9 @@ class TmuxServer:
         if reset:
             self.reset()
 
+    def kill(self):
+        self.reset()
+
     def reset(self):
         exit_code = self.tmux_execute_command("kill-server")
         ret = exit_code == 0
@@ -116,7 +119,7 @@ class TmuxServer:
             ret = TmuxEnv(session)
             print("[+] Tmux env created")
             return ret
-        else: 
+        else:
             raise TmuxEnvCreationFailure("[-] Failed to create tmux env")
 
     def tmux_prepare_command(self, suffix: str):
@@ -135,9 +138,9 @@ class TmuxServer:
         ret = self.prefix_list + suffix_list
         return ret
 
-    def tmux_get_command_output_bytes(self, suffix: str):
-        cmd = self.tmux_prepare_command(suffix)
-        ret = subprocess.check_output(cmd)
+    def tmux_get_command_output_bytes(self, suffix_list: list[str]):
+        cmdlist = self.tmux_prepare_command_list(suffix_list)
+        ret = subprocess.check_output(cmdlist)
         return ret
 
     def tmux_execute_command(self, suffix: str):
@@ -183,7 +186,7 @@ class TmuxServer:
                 self.kill_session(session_name)
 
     def tmuxp_load_from_filepath(self, filepath: str, attach: bool):
-        cmd_list = [TMUXP, "load", "-L", self.name, '-y', filepath]
+        cmd_list = [TMUXP, "load", "-L", self.name, "-y", filepath]
         kwargs = {}
         if not attach:
             cmd_list.append("-d")
@@ -215,9 +218,7 @@ class TmuxSession:
             f"new-session -d -s {name} -x {width} -y {height} {command}"
         )
         if not success:
-            raise TmuxSessionCreationFailure(
-                f"Tmux session creation command failed"
-            )
+            raise TmuxSessionCreationFailure(f"Tmux session creation command failed")
         if isolate:
             print(f"[*] Performing isolation for tmux session '{name}'")
             self.isolate()
@@ -231,7 +232,7 @@ class TmuxSession:
 
     def preview_bytes(self):
         ret = self.server.tmux_get_command_output_bytes(
-            f"capture-pane -t {self.name} -p"
+            ["capture-pane", "-t", self.name, "-p"]
         )
         return ret
 
@@ -263,7 +264,7 @@ class TmuxSession:
     def get_info(self):
         list_session_format_template = "[#{session_name}] socket: #{socket_path} size: #{window_width}x#{window_height} cursor at: x=#{cursor_x},y=#{cursor_y} cursor flag: #{cursor_flag} cursor character: #{cursor_character}"
         output_bytes = self.server.tmux_get_command_output_bytes(
-            f"list-sessions -F '{list_session_format_template}'"
+            ["list-sessions", "-F", list_session_format_template]
         )
         numeric_properties = [
             "window_width",
@@ -275,7 +276,7 @@ class TmuxSession:
         parse_format = list_session_format_template.replace("#{", "{")
         for it in numeric_properties:
             parse_format = parse_format.replace(it, it + ":d")
-        output = decode_bytes(output_bytes, errors='strict')
+        output = decode_bytes(output_bytes, errors="strict")
         data = parse.parse(parse_format, output)
         if data is not None:
             print("[+] Fetched info for session:", self.name)
@@ -313,10 +314,12 @@ class TmuxEnv:
 
 
 class TmuxSessionViewer:
-    def __init__(self, session: TmuxSession):
+    def __init__(self, session: TmuxSession, layout="even-horizontal"):
         self.session = session
         self.server = session.server
         self.name = session.name + "_viewer"
+        self.window_name = "viewer_window"
+        self.layout = layout
         self.panes = []
 
     @property
@@ -324,9 +327,9 @@ class TmuxSessionViewer:
         ret = {
             "session_name": self.name,
             "windows": [
-                    dict(name="viewer_window", layout="even-vertical", panes=self.panes)
-                ],
-            }
+                dict(name=self.window_name, layout=self.layout, panes=self.panes)
+            ],
+        }
         return ret
 
     def add_viewer_pane(self, name: str, view_only=True):
@@ -342,4 +345,6 @@ class TmuxSessionViewer:
 
 
 class TmuxSessionCreationFailure(Exception): ...
+
+
 class TmuxEnvCreationFailure(Exception): ...
