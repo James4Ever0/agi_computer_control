@@ -6,8 +6,9 @@ import traceback
 import shutil
 import parse
 import json
-from tempfile import TemporaryFile
+from tempfile import NamedTemporaryFile
 
+ENV='env'
 TMUX = "tmux"
 TMUXP = "tmuxp"
 TMUX_WIDTH = 80
@@ -22,7 +23,7 @@ CMDLIST_EXECUTE_TIMEOUT = 10
 CURSOR = "<<<CURSOR>>>"
 CURSOR_BYTES = CURSOR.encode(ENCODING)
 
-REQUIRED_BINARIES = (TMUX, TMUXP)
+REQUIRED_BINARIES = (ENV, TMUX, TMUXP)
 
 
 def decode_bytes(_bytes: bytes, errors='ignore'):
@@ -104,12 +105,10 @@ class TmuxServer:
             print(f"[-] Failed to create tmux session named '{name}'")
 
     def set_session_option(self, name: str, key: str, value: str):
-        cmd = self.tmux_prepare_command(f"set-option -t {name} {key} {value}")
-        self.tmux_execute_command(cmd)
+        self.tmux_execute_command(f"set-option -t {name} {key} {value}")
 
     def kill_session(self, name: str):
-        cmd = self.tmux_prepare_command(f"kill-session -t {name}")
-        self.tmux_execute_command(cmd)
+        self.tmux_execute_command(f"kill-session -t {name}")
 
     def create_env(self, name: str, command: str):
         session = self.create_session(name, command)
@@ -117,8 +116,8 @@ class TmuxServer:
             ret = TmuxEnv(session)
             print("[+] Tmux env created")
             return ret
-        else:
-            print("[-] Failed to create tmux env")
+        else: 
+            raise TmuxEnvCreationFailure("[-] Failed to create tmux env")
 
     def tmux_prepare_command(self, suffix: str):
         ret = f"{self.prefix} {suffix}"
@@ -129,6 +128,7 @@ class TmuxServer:
         if view_only:
             suffix = f"{suffix} -r"
         ret = self.tmux_prepare_command(suffix)
+        ret = f"{ENV} TMUX= {ret}"
         return ret
 
     def tmux_prepare_command_list(self, suffix_list: list[str]):
@@ -169,23 +169,25 @@ class TmuxServer:
     def apply_manifest(self, manifest: dict, attach=False):
         session_name = manifest["session_name"]
         print("[*] Tmuxp session name:", session_name)
-        print("[*] Applying manifest")
-        with TemporaryFile("w+", suffix=".json") as f:
-            filepath = f.name
+        print("[*] Applying manifest:")
+        with NamedTemporaryFile("w+", suffix=".json") as f:
+            manifest_filepath = f.name
             content = json_pretty_print(manifest)
             f.write(content)
-            f.close()
+            f.flush()
             self.kill_session(session_name)
             try:
-                self.tmuxp_load_from_filepath(filepath, attach)
+                self.tmuxp_load_from_filepath(manifest_filepath, attach)
             finally:
+                print("[*] Removing session:", session_name)
                 self.kill_session(session_name)
 
     def tmuxp_load_from_filepath(self, filepath: str, attach: bool):
-        cmd_list = [TMUXP, "load", "-L", self.name, "-f", filepath]
+        cmd_list = [TMUXP, "load", "-L", self.name, '-y', filepath]
         kwargs = {}
         if not attach:
             cmd_list.append("-d")
+        else:
             kwargs["timeout"] = None
         ret = self.execute_command_list(cmd_list, **kwargs)
         if not ret:
@@ -204,21 +206,21 @@ class TmuxSession:
         isolate=True,
         kill_existing=True,
     ):
+        self.name = name
+        self.server = server
         if kill_existing:
             print(f"[*] Killing session '{name}' before creation")
             server.kill_session(name)
-        exit_code = server.execute_command(
+        success = server.tmux_execute_command(
             f"new-session -d -s {name} -x {width} -y {height} {command}"
         )
-        if exit_code != 0:
+        if not success:
             raise TmuxSessionCreationFailure(
-                f"Tmux session creation command exited with code {exit_code}"
+                f"Tmux session creation command failed"
             )
         if isolate:
-            print(f"[*] Performing isolation for tmux session '{name}")
+            print(f"[*] Performing isolation for tmux session '{name}'")
             self.isolate()
-        self.name = name
-        self.server = server
 
     def isolate(self):
         self.set_option("prefix", "None")
@@ -320,13 +322,11 @@ class TmuxSessionViewer:
     @property
     def manifest(self):
         ret = {
-            "session": {
-                "name": self.name,
-                "windows": [
+            "session_name": self.name,
+            "windows": [
                     dict(name="viewer_window", layout="even-vertical", panes=self.panes)
                 ],
             }
-        }
         return ret
 
     def add_viewer_pane(self, name: str, view_only=True):
@@ -342,3 +342,4 @@ class TmuxSessionViewer:
 
 
 class TmuxSessionCreationFailure(Exception): ...
+class TmuxEnvCreationFailure(Exception): ...
