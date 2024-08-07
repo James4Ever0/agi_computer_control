@@ -248,8 +248,8 @@ class TmuxSession:
                 x, y = info["cursor_x"], info["cursor_y"]
                 print("[*] Inserting cursor at: %d, %d" % (x, y))
                 content_byte_lines = content_bytes.splitlines()
-                cursor_line_bytes = content_byte_lines[y - 1]
-                content_byte_lines[y - 1] = insert_cursor(cursor_line_bytes, x - 1)
+                cursor_line_bytes = content_byte_lines[y]
+                content_byte_lines[y] = insert_cursor(cursor_line_bytes, x)
                 content_bytes = NEWLINE_BYTES.join(content_byte_lines)
         ret = decode_bytes(content_bytes)
         return ret
@@ -262,25 +262,40 @@ class TmuxSession:
         self.server.set_session_option(self.name, key, value)
 
     def get_info(self):
-        list_session_format_template = "[#{session_name}] socket: #{socket_path} size: #{window_width}x#{window_height} cursor at: x=#{cursor_x},y=#{cursor_y} cursor flag: #{cursor_flag} cursor character: #{cursor_character}"
+        list_session_format_template = "[#{session_name}] socket: #{socket_path} size: #{window_width}x#{window_height} cursor at: x=#{cursor_x},y=#{cursor_y} cursor flag: #{cursor_flag} cursor character: #{cursor_character} insert flag: #{insert_flag}, keypad cursor flag: #{keypad_cursor_flag}, keypad flag: #{keypad_flag}"
+        session_filter = "#{==:#{session_name}," + self.name + "}"
         output_bytes = self.server.tmux_get_command_output_bytes(
-            ["list-sessions", "-F", list_session_format_template]
+            ["list-sessions", "-F", list_session_format_template, "-f", session_filter]
         )
+        print("[*] Output bytes:")
+        print(output_bytes)
         numeric_properties = [
             "window_width",
             "window_height",
             "cursor_x",
             "cursor_y",
             "cursor_flag",
+            "insert_flag",
+            "keypad_cursor_flag",
+            "keypad_flag",
         ]
-        parse_format = list_session_format_template.replace("#{", "{")
-        for it in numeric_properties:
-            parse_format = parse_format.replace(it, it + ":d")
+        # nonword_properties = ['cursor_character', 'socket_path']
+        parse_format = list_session_format_template.replace(
+            "#{", "{"
+        )  # .replace("}",":w}")
+        # for it in nonword_properties:
+        #     parse_format = parse_format.replace("{"+it+":w}","{"+it+"}")
         output = decode_bytes(output_bytes, errors="strict")
+        output = output[:-1]  # strip trailing newline
+        print("[*] Parse format:")
+        print(parse_format)
         data = parse.parse(parse_format, output)
         if data is not None:
             print("[+] Fetched info for session:", self.name)
-            ret = dict(data)  # type: ignore
+            ret = data.named
+            print(ret)
+            for it in numeric_properties:
+                ret[it] = int(ret[it])  # type: ignore
             json_pretty_print(ret)
             return ret
         else:

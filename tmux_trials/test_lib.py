@@ -3,14 +3,26 @@ import threading
 import time
 import traceback
 import sys
+import os
+from io import TextIOWrapper
 
 SERVER_NAME = "test_server"
 SESSION_NAME = "test_session"
 SESSION_COMMAND = "docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 ubuntu:22.04"
 PREVIEW_FILEPATH = "/tmp/test_session_preview.log"
 PREVIEW_INTERVAL = 2
+FLUSH_INTERVAL=1
 
 STDOUT_FILEPATH="/tmp/test_tmux_stdout.log"
+
+if os.path.exists(STDOUT_FILEPATH):
+    print("[*] Removing old log file:",STDOUT_FILEPATH)
+    os.remove(STDOUT_FILEPATH)
+
+def flush_filehandle_periodically(f: TextIOWrapper):
+    while True:
+        f.flush()
+        time.sleep(FLUSH_INTERVAL)
 
 def write_session_preview_with_cursor_periodically(session: TmuxSession):
     while True:
@@ -47,13 +59,14 @@ original_stderr = sys.stderr
 
 try:
     # Open a file in write mode to redirect stdout
-    with open(STDOUT_FILEPATH, 'w+') as f:
+    with open(STDOUT_FILEPATH, 'a+') as f:
         sys.stdout = f  # Redirect stdout to the file object
         sys.stderr = f
+        threading.Thread(target=flush_filehandle_periodically, args=(f, ), daemon=True).start()
         viewer.view()
 finally:
     # Restore original stdout after writing is done
     sys.stdout = original_stdout
     sys.stderr = original_stderr
-    
+
     server.reset()

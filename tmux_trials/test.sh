@@ -1,1 +1,1 @@
-conda run -n cybergod --no-capture-output python test_lib.py
+env PYTHONBUFFERED=0 conda run -n cybergod --no-capture-output python test_lib.py
