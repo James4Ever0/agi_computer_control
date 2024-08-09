@@ -8,6 +8,7 @@ import parse
 import json
 from tempfile import NamedTemporaryFile
 import uuid
+from playwright.sync_api import sync_playwright
 
 # import difflib
 import html
@@ -37,6 +38,17 @@ CURSOR_HTML = "<cursor>"
 
 HTML_TAG_REGEX = re.compile(r"<[^>]+?>")
 Text = Union[str, bytes]
+TERMINAL_VIEWPORT={"width":645, "height":350}
+
+def html_to_png(html:str, viewport=TERMINAL_VIEWPORT):
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        context = browser.new_context(viewport=viewport) # type: ignore
+        page = context.new_page()
+        page.set_content(html)
+        ret = page.screenshot()
+        browser.close()
+    return ret
 
 
 def uuid_generator():
@@ -404,6 +416,14 @@ class TmuxSession:
         self.set_option("status", "off")
         self.set_option("aggressive-resize", "off")
         self.set_option("window-size", "manual")
+
+    def preview_png(self, show_cursor=False,filename:Optional[str]=None):
+        html=self.preview_html(show_cursor=show_cursor, wrap_html=True)
+        png_bytes = html_to_png(html)
+        if filename:
+            with open(filename, 'wb') as f:
+                f.write(png_bytes)
+        return png_bytes
 
     def preview_bytes(self, flags: list[str] = ["-p"]):
         ret = self.server.tmux_get_command_output_bytes(
