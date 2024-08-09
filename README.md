@@ -22,7 +22,7 @@ Terminal parsing (colorful):
 
 ![Cybergod demo](propaganda/tmux_show_1.gif)
 
-Terminal screenshot converted from HTML:
+Terminal screenshot converted from HTML (cursor in red):
 
 ![Vim screenshot](propaganda/vim_edit_tmux_screenshot.png)
 
