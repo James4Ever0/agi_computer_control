@@ -10,9 +10,21 @@
 
 ## Demo
 
-Built on top of tmux and many other libraries, Cybergod is capable of understanding terminal interface with only text.
+Built on top of [tmux](https://github.com/tmux/tmux) and many other libraries, Cybergod is capable of understanding and interacting terminal interface with text-only mode and multimodal mode. 
+
+Code can be found [here](tmux_trials/lib.py).
+
+Terminal parsing (colorless):
 
 ![Cybergod demo](propaganda/tmux_show_0.gif)
+
+Terminal parsing (colorful):
+
+![Cybergod demo](propaganda/tmux_show_1.gif)
+
+Terminal screenshot converted from HTML:
+
+![Vim screenshot](propaganda/vim_edit_tmux_screenshot.png)
 
 ## Intro
 
