@@ -417,8 +417,8 @@ class TmuxSession:
         self.set_option("aggressive-resize", "off")
         self.set_option("window-size", "manual")
 
-    def preview_png(self, show_cursor=False,filename:Optional[str]=None):
-        html=self.preview_html(show_cursor=show_cursor, wrap_html=True)
+    def preview_png(self, show_cursor=False,filename:Optional[str]=None, dark_mode=False):
+        html=self.preview_html(show_cursor=show_cursor, wrap_html=True, dark_mode=dark_mode)
         png_bytes = html_to_png(html)
         if filename:
             with open(filename, 'wb') as f:
@@ -431,13 +431,16 @@ class TmuxSession:
         )
         return ret
 
-    def preview_html_bytes(self):
-        ret = self.preview_bytes(flags=["-p", "-e"])
+    def preview_html_bytes(self, dark_mode: bool):
+        flags = ["-p", "-e"]
+        if dark_mode:
+            flags.append("--black")
+        ret = self.preview_bytes(flags=flags)
         ret = ansi_to_html(ret)
         return ret
 
-    def preview_html(self, show_cursor=False, wrap_html=False):
-        html_bytes = self.preview_html_bytes()
+    def preview_html(self, show_cursor=False, wrap_html=False, dark_mode=False):
+        html_bytes = self.preview_html_bytes(dark_mode)
         pre_lines = retrieve_pre_lines_from_html(html_bytes)
         if show_cursor:
             has_cursor, (x, y) = self.get_cursor_coordinates()
