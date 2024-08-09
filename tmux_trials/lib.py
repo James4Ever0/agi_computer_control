@@ -10,6 +10,7 @@ from tempfile import NamedTemporaryFile
 import uuid
 import difflib
 import html
+import re
 from typing import Union
 from bs4 import BeautifulSoup, Tag
 
@@ -44,7 +45,7 @@ def uuid_generator():
 
 
 def remove_html_tags(html: str):
-    ret = HTML_TAG_REGEX.replace(html, "")
+    ret = HTML_TAG_REGEX.sub(html, "")
     return ret
 
 
@@ -53,11 +54,15 @@ def html_escape(content: Content):
     ret = html.escape(content)
     return ret
 
+def ensure_bytes(content:Content) -> bytes:
+    if isinstance(content, str):
+        content = content.encode(ENCODING)
+    return content
 
-def ensure_str(content: Content):
+def ensure_str(content: Content) -> str:
     if isinstance(content, bytes):
         content = decode_bytes(content)
-    return content
+    return content # type: ignore
 
 
 def html_unescape(content: Content):
@@ -122,7 +127,7 @@ def wrap_to_html_pre_elem(html: Content, pre_inner_html: str):
     soup = html_to_soup(html)
     soup.find("pre").extract()  # type: ignore
     ret = str(soup)
-    ret = ret.replace(BODY, BODY + f"<pre>{pre_inner_html}</pre>", count=1)
+    ret = ret.replace(BODY, BODY + f"<pre>{pre_inner_html}</pre>", 1)
     return ret
 
 
@@ -131,7 +136,8 @@ def decode_bytes(_bytes: bytes, errors="ignore"):
     return ret
 
 
-def insert_cursor(_bytes: bytes, x: int, cursor=CURSOR):
+def insert_cursor(content: Content, x: int, cursor=CURSOR):
+    _bytes = ensure_bytes(content)
     ret = b""
     cursor_bytes = cursor.encode(ENCODING)
     try:
@@ -375,7 +381,7 @@ class TmuxSession:
     def get_cursor_coordinates(self):
         print("[*] Requesting cursor coordinates")
         has_cursor = False
-        coordinates = None
+        coordinates = (-1, -1)
         info = self.get_info()
         if info is None:
             print("[-] Failed to fetch corsor coordinates")
