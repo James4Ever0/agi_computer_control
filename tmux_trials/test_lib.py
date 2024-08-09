@@ -1,4 +1,4 @@
-from lib import TmuxServer, TmuxSession
+from lib import TmuxServer, TmuxSession, TmuxEnvironment
 import threading
 import time
 import traceback
@@ -8,21 +8,31 @@ from io import TextIOWrapper
 
 SERVER_NAME = "test_server"
 SESSION_NAME = "test_session"
-SESSION_COMMAND = "docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 ubuntu:22.04"
+# SESSION_COMMAND = "docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 ubuntu:22.04"
+SESSION_COMMAND = "docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 openinterpreter /bin/bash"
 PREVIEW_FILEPATH = "/tmp/test_session_preview.log"
 PREVIEW_INTERVAL = 2
-FLUSH_INTERVAL=1
+FLUSH_INTERVAL = 1
+SEND_KEY_INTERVAL = 1
 
-STDOUT_FILEPATH="/tmp/test_tmux_stdout.log"
+STDOUT_FILEPATH = "/tmp/test_tmux_stdout.log"
 
 if os.path.exists(STDOUT_FILEPATH):
-    print("[*] Removing old log file:",STDOUT_FILEPATH)
+    print("[*] Removing old log file:", STDOUT_FILEPATH)
     os.remove(STDOUT_FILEPATH)
+
 
 def flush_filehandle_periodically(f: TextIOWrapper):
     while True:
         f.flush()
         time.sleep(FLUSH_INTERVAL)
+
+
+def start_daemon_thread(target, *args, **kwargs):
+    t = threading.Thread(target=target, args=args, kwargs=kwargs)
+    t.daemon = True
+    t.start()
+
 
 def write_session_preview_with_cursor_periodically(session: TmuxSession):
     while True:
@@ -41,28 +51,35 @@ def write_session_preview_with_cursor_periodically(session: TmuxSession):
             time.sleep(PREVIEW_INTERVAL)
 
 
+def test_key_inputs(env: TmuxEnvironment):
+    while True:
+        print("[*] Sending test keys...")
+        env.send_key("date")
+        env.send_key("Enter")
+        time.sleep(SEND_KEY_INTERVAL)
+
+
 server = TmuxServer(SERVER_NAME)
 env = server.create_env(SESSION_NAME, SESSION_COMMAND)
 
-threading.Thread(
-    target=write_session_preview_with_cursor_periodically,
-    args=(env.session,),
-    daemon=True,
-).start()
-
+start_daemon_thread(write_session_preview_with_cursor_periodically, env.session)
 viewer = env.session.create_viewer()
-viewer.add_cmd_pane(f"watch -n {PREVIEW_INTERVAL} cat {PREVIEW_FILEPATH}", "PREVIEW_WITH_CURSOR")
+viewer.add_cmd_pane(
+    f"watch -n {PREVIEW_INTERVAL} cat {PREVIEW_FILEPATH}", "PREVIEW_WITH_CURSOR"
+)
 viewer.add_cmd_pane(f"watch -n {PREVIEW_INTERVAL} tac {STDOUT_FILEPATH}", "STDOUT")
 # Save the current stdout for later restoration
 original_stdout = sys.stdout
 original_stderr = sys.stderr
 
+# start_daemon_thread(test_key_inputs, env)
+
 try:
     # Open a file in write mode to redirect stdout
-    with open(STDOUT_FILEPATH, 'a+') as f:
+    with open(STDOUT_FILEPATH, "a+") as f:
         sys.stdout = f  # Redirect stdout to the file object
         sys.stderr = f
-        threading.Thread(target=flush_filehandle_periodically, args=(f, ), daemon=True).start()
+        start_daemon_thread(flush_filehandle_periodically, f)
         viewer.view()
 finally:
     # Restore original stdout after writing is done
