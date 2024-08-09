@@ -1,12 +1,18 @@
 ![Cybergod logo](propaganda/logos/cybergod_2.png)
 
-https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-4d2b-835d-0ffc9a5a458e
+<!-- https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-4d2b-835d-0ffc9a5a458e -->
 
 # Cybergod
 
 [join discord group](https://discord.gg/eM5vezJvEQ)
 
 [bilibili live streaming](http://live.bilibili.com/22228498)
+
+## Demo
+
+Built on top of tmux and many other libraries, Cybergod is capable of understanding terminal interface with only text.
+
+![Cybergod demo](propaganda/tmux_show_0.gif)
 
 ## Intro
 
