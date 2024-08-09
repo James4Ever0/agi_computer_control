@@ -8,7 +8,7 @@
 
 ## Demo
 
-Built on top of [tmux](https://github.com/tmux/tmux) and many other libraries, Cybergod is capable of understanding and interacting terminal interface with text-only mode and multimodal mode. 
+Built on top of [tmux](https://github.com/tmux/tmux) and many other libraries, Cybergod is capable of understanding and interacting terminal interface with both text-only and multimodal modes. 
 
 Code can be found [here](tmux_trials/lib.py).
 
