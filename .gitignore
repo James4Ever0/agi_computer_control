@@ -185,4 +185,4 @@ logs
 .atomic_commit_lock
 
 
-..bfg_report/*
+.bfg_report/*
