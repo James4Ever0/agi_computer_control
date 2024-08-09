@@ -7,10 +7,16 @@ import shutil
 import parse
 import json
 from tempfile import NamedTemporaryFile
+import uuid
+import difflib
+import html
+from typing import Union
+from bs4 import BeautifulSoup, Tag
 
 ENV = "env"
 TMUX = "tmux"
 TMUXP = "tmuxp"
+AHA = "aha"
 TMUX_WIDTH = 80
 TMUX_HEIGHT = 24
 ENCODING = "utf-8"
@@ -21,9 +27,103 @@ NEWLINE_BYTES = NEWLINE.encode(ENCODING)
 CMDLIST_EXECUTE_TIMEOUT = 10
 
 CURSOR = "<<<CURSOR>>>"
-CURSOR_BYTES = CURSOR.encode(ENCODING)
+BODY = "<body>"
 
-REQUIRED_BINARIES = (ENV, TMUX, TMUXP)
+REQUIRED_BINARIES = (ENV, TMUX, TMUXP, AHA)
+
+CURSOR_HTML = "<cursor>"
+
+HTML_TAG_REGEX = re.compile(r"<[^>]+>")
+Content = Union[str, bytes]
+
+
+def uuid_generator():
+    ret = str(uuid.uuid4())
+    ret = ret.replace("-", "")
+    return ret
+
+
+def remove_html_tags(html: str):
+    ret = HTML_TAG_REGEX.replace(html, "")
+    return ret
+
+
+def html_escape(content: Content):
+    content = ensure_str(content)
+    ret = html.escape(content)
+    return ret
+
+
+def ensure_str(content: Content):
+    if isinstance(content, bytes):
+        content = decode_bytes(content)
+    return content
+
+
+def html_unescape(content: Content):
+    content = ensure_str(content)
+    ret = html.unescape(content)
+    return ret
+
+
+def line_with_cursor_to_html(
+    line_with_cursor: Content, cursor: str, cursor_html=CURSOR_HTML
+):
+    escaped_line = html_escape(line_with_cursor)
+    ret = escaped_line.replace(cursor, cursor_html)
+    return ret
+
+
+def line_merger(source_line: str, line_with_cursor: str, line_with_span: str):
+    differ = difflib.Differ()
+    cursor_diff = list(differ.compare(source_line, line_with_cursor))
+    cursor_insert_index = cursor_diff.index("+ <")
+    cursor_end_index = cursor_diff.index("+ >")
+    cursor = line_with_cursor[cursor_insert_index : cursor_end_index + 1]
+    span_diff = list(differ.compare(source_line, line_with_span))
+    cursor_inserted = False
+    original_char_index = 0
+    ret = ""
+    for it in span_diff:
+        if original_char_index == cursor_insert_index:
+            cursor_inserted = True
+            ret += cursor
+        if it.startswith(" "):
+            original_char_index += 1
+        ret += it[-1]
+    if cursor_inserted == False:
+        ret += cursor
+    return ret
+
+
+def ansi_to_html(ansi: bytes):
+    with NamedTemporaryFile("wb") as f:
+        f.write(ansi)
+        f.flush()
+        html = subprocess.check_output([AHA, "-f", f.name])
+        return html
+
+
+def html_to_soup(html: Content):
+    soup = BeautifulSoup(html, "html.parser")
+    return soup
+
+
+def retrieve_pre_lines_from_html(html: Content):
+    soup = html_to_soup(html)
+    pre_elem = soup.find("pre")
+    assert isinstance(pre_elem, Tag)
+    ret = str(pre_elem)[5:-6]
+    ret = ret.splitlines()[1:]
+    return ret
+
+
+def wrap_to_html_pre_elem(html: Content, pre_inner_html: str):
+    soup = html_to_soup(html)
+    soup.find("pre").extract()  # type: ignore
+    ret = str(soup)
+    ret = ret.replace(BODY, BODY + f"<pre>{pre_inner_html}</pre>", count=1)
+    return ret
 
 
 def decode_bytes(_bytes: bytes, errors="ignore"):
@@ -31,24 +131,25 @@ def decode_bytes(_bytes: bytes, errors="ignore"):
     return ret
 
 
-def insert_cursor(_bytes: bytes, x: int):
+def insert_cursor(_bytes: bytes, x: int, cursor=CURSOR):
     ret = b""
+    cursor_bytes = cursor.encode(ENCODING)
     try:
         line = decode_bytes(_bytes, errors="replace")
         char_index = 0
         for index, it in enumerate(line):
             if char_index >= x:
-                ret = line[:index] + CURSOR + line[index:]
+                ret = line[:index] + cursor + line[index:]
                 ret = ret.encode(ENCODING)
                 break
             char_width = wcswidth(it)
             char_index += char_width
         if ret == b"":
-            ret = _bytes + CURSOR_BYTES
+            ret = _bytes + cursor_bytes
     except UnicodeDecodeError:
         print("[-] Failed to decode line while inserting cursor:", _bytes)
         print("[*] Falling back to bytes insert mode")
-        ret = _bytes[:x] + CURSOR_BYTES + _bytes[x:]
+        ret = _bytes[:x] + cursor_bytes + _bytes[x:]
     return ret
 
 
@@ -116,11 +217,11 @@ class TmuxServer:
     def create_env(self, name: str, command: str):
         session = self.create_session(name, command)
         if session:
-            ret = TmuxEnv(session)
+            ret = TmuxEnvironment(session)
             print("[+] Tmux env created")
             return ret
         else:
-            raise TmuxEnvCreationFailure("[-] Failed to create tmux env")
+            raise TmuxEnvironmentCreationFailure("[-] Failed to create tmux env")
 
     def tmux_prepare_command(self, suffix: str):
         ret = f"{self.prefix} {suffix}"
@@ -148,7 +249,8 @@ class TmuxServer:
         ret = self.execute_command(cmd)
         return ret
 
-    def execute_command(self, cmd: str):
+    @staticmethod
+    def execute_command(cmd: str):
         print("[*] Executing command:", cmd)
         exitcode = os.system(cmd)
         ret = warn_nonzero_exitcode(exitcode)
@@ -161,8 +263,9 @@ class TmuxServer:
             print("[-] Failed to exit command list in tmux")
         return ret
 
+    @staticmethod
     def execute_command_list(
-        self, cmd_list: list[str], timeout: Optional[float] = CMDLIST_EXECUTE_TIMEOUT
+        cmd_list: list[str], timeout: Optional[float] = CMDLIST_EXECUTE_TIMEOUT
     ):
         print("[*] Executing command list:", *cmd_list)
         exitcode = subprocess.Popen(cmd_list).wait(timeout=timeout)
@@ -230,23 +333,64 @@ class TmuxSession:
         self.set_option("aggressive-resize", "off")
         self.set_option("window-size", "manual")
 
-    def preview_bytes(self):
+    def preview_bytes(self, flags: list[str] = ["-p"]):
         ret = self.server.tmux_get_command_output_bytes(
-            ["capture-pane", "-t", self.name, "-p"]
+            ["capture-pane", "-t", self.name, *flags]
         )
         return ret
+
+    def preview_html_bytes(self):
+        ret = self.preview_bytes(flags=["-p", "-e"])
+        ret = ansi_to_html(ret)
+        return ret
+
+    def preview_html(self, show_cursor=False, wrap_html=False):
+        html_bytes = self.preview_html_bytes()
+        pre_lines = retrieve_pre_lines_from_html(html_bytes)
+        if show_cursor:
+            has_cursor, (x, y) = self.get_cursor_coordinates()
+            if has_cursor:
+                cursor_line_html = pre_lines[y]
+                cursor_line_html_without_tags = remove_html_tags(cursor_line_html)
+                cursor_line_bytes_without_tags = html_unescape(
+                    cursor_line_html_without_tags
+                )
+                uuid_cursor = uuid_generator()
+                cursor_line_bytes_with_uuid_cursor = insert_cursor(
+                    cursor_line_bytes_without_tags, x, uuid_cursor
+                )
+                cursor_line_html_with_cursor = line_with_cursor_to_html(
+                    cursor_line_bytes_with_uuid_cursor, uuid_cursor
+                )
+                pre_lines[y] = line_merger(
+                    cursor_line_html_without_tags,
+                    cursor_line_html_with_cursor,
+                    cursor_line_html,
+                )
+        ret = NEWLINE.join(pre_lines)
+        if wrap_html:
+            ret = wrap_to_html_pre_elem(html_bytes, ret)
+        return ret
+
+    def get_cursor_coordinates(self):
+        print("[*] Requesting cursor coordinates")
+        has_cursor = False
+        coordinates = None
+        info = self.get_info()
+        if info is None:
+            print("[-] Failed to fetch corsor coordinates")
+        else:
+            x, y = info["cursor_x"], info["cursor_y"]
+            print("[*] Cursor at: %d, %d" % (x, y))
+            coordinates = (x, y)
+            has_cursor = True
+        return has_cursor, coordinates
 
     def preview(self, show_cursor=False):
         content_bytes = self.preview_bytes()
         if show_cursor:
-            print("[*] Requested showing cursor")
-            info = self.get_info()
-            if info is None:
-                print("[-] Failed to fetch tmux session info")
-                return None
-            else:
-                x, y = info["cursor_x"], info["cursor_y"]
-                print("[*] Inserting cursor at: %d, %d" % (x, y))
+            has_cursor, (x, y) = self.get_cursor_coordinates()
+            if has_cursor:
                 content_byte_lines = content_bytes.splitlines()
                 cursor_line_bytes = content_byte_lines[y]
                 content_byte_lines[y] = insert_cursor(cursor_line_bytes, x)
@@ -267,8 +411,8 @@ class TmuxSession:
         output_bytes = self.server.tmux_get_command_output_bytes(
             ["list-sessions", "-F", list_session_format_template, "-f", session_filter]
         )
-        print("[*] Output bytes:")
-        print(output_bytes)
+        # print("[*] Output bytes:")
+        # print(output_bytes)
         numeric_properties = [
             "window_width",
             "window_height",
@@ -287,13 +431,13 @@ class TmuxSession:
         #     parse_format = parse_format.replace("{"+it+":w}","{"+it+"}")
         output = decode_bytes(output_bytes, errors="strict")
         output = output[:-1]  # strip trailing newline
-        print("[*] Parse format:")
-        print(parse_format)
+        # print("[*] Parse format:")
+        # print(parse_format)
         data = parse.parse(parse_format, output)
-        if data is not None:
+        if isinstance(data, parse.Result):
             print("[+] Fetched info for session:", self.name)
             ret = data.named
-            print(ret)
+            # print(ret)
             for it in numeric_properties:
                 ret[it] = int(ret[it])  # type: ignore
             json_pretty_print(ret)
@@ -310,14 +454,17 @@ class TmuxSession:
         viewer.view()
 
 
-class TmuxEnv:
+class TmuxEnvironment:
     def __init__(self, session: TmuxSession):
         self.session = session
         self.server = session.server
 
-    def send_keys(self, keys: list[str]):
-        command_list = ["send-keys", "-t", self.session.name, *keys]
+    def send_key_list(self, key_list: list[str]):
+        command_list = ["send-keys", "-t", self.session.name, *key_list]
         self.server.tmux_execute_command_list(command_list)
+
+    def send_key(self, key: str):
+        self.send_key_list([key])
 
     def get_info(self):
         ret = self.session.get_info()
@@ -362,4 +509,4 @@ class TmuxSessionViewer:
 class TmuxSessionCreationFailure(Exception): ...
 
 
-class TmuxEnvCreationFailure(Exception): ...
+class TmuxEnvironmentCreationFailure(Exception): ...

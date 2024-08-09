@@ -1,0 +1,1 @@
+tmux -S /tmp/tmux-1000/default capture-pane -t cybergod -pe | aha > terminal.html
