@@ -1,5 +1,6 @@
 # whitelist based gitignore
 
+
 *
 !*/
 
@@ -182,3 +183,6 @@ logs
 .atomic_commit_lock_nt
 .inprogress_gitignore
 .atomic_commit_lock
+
+
+..bfg_report/*
