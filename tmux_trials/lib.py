@@ -1,4 +1,4 @@
-from typing import Optional, Iterable
+from typing import Optional, Iterable, TypedDict
 from wcwidth import wcswidth
 import subprocess
 import os
@@ -181,7 +181,8 @@ def retrieve_pre_lines_from_html(html: Text):
 
 def render_html_cursor(html: str):
     ret = html.replace(
-        "<cursor>", '<span style="color: red !important; font-weight: bold !important;">|</span>'
+        "<cursor>",
+        '<span style="color: red !important; font-weight: bold !important;">|</span>',
     )
     return ret
 
@@ -553,34 +554,64 @@ class TmuxEnvironment:
         del self
 
 
+class TmuxWindow(TypedDict):
+    layout: str
+    panes: list[dict]
+
+
 class TmuxSessionViewer:
-    def __init__(self, session: TmuxSession, layout="even-horizontal"):
+    def __init__(
+        self,
+        session: TmuxSession,
+        default_layout="even-horizontal",
+        default_window_name="viewer_window",
+    ):
         self.session = session
         self.server = session.server
         self.name = session.name + "_viewer"
-        self.window_name = "viewer_window"
-        self.layout = layout
-        self.panes = []
+        self.default_window_name = default_window_name
+        self.windows: dict[str, TmuxWindow] = {}
+        self.default_layout = default_layout
+        self.add_new_window(self.default_window_name)
+
+    def add_new_window(self, window_name: str, layout: Optional[str] = None):
+        self.windows[window_name] = dict( # type:ignore
+            layout=self.default_layout, panes=[]
+        )  
+        if layout is not None:
+            self.modify_window_layout(window_name, layout)
+
+    def modify_window_layout(self, window_name: str, layout: str):
+        self.windows[window_name]["layout"] = layout
+
+    def get_or_create_window(self, window_name: Optional[str]):
+        if window_name is None:
+            window_name = self.default_window_name
+        if window_name not in self.windows:
+            self.add_new_window(window_name)
+        return self.windows[window_name]
 
     @property
     def manifest(self):
         ret = {
             "session_name": self.name,
-            "windows": [
-                dict(name=self.window_name, layout=self.layout, panes=self.panes)
-            ],
+            "windows": [dict(name=k, **v) for k, v in self.windows.items()],
         }
         return ret
 
-    def add_viewer_pane(self, name: str, view_only=True):
+    def add_viewer_pane(
+        self, pane_name: str, window_name: Optional[str] = None, view_only=True
+    ):
         cmd = self.server.tmux_prepare_attach_command(self.session.name, view_only)
-        self.add_cmd_pane(cmd, name)
+        self.add_cmd_pane(cmd, pane_name, window_name=window_name)
 
-    def add_cmd_pane(self, cmd: str, name: str):
-        self.panes.append(dict(shell_command=cmd, name=name))
+    def add_cmd_pane(self, cmd: str, pane_name: str, window_name: Optional[str] = None):
+        window = self.get_or_create_window(window_name)
+        window["panes"].append(dict(shell_command=cmd, name=pane_name))
 
     def view(self, view_only=False):
-        self.add_viewer_pane("EDIT" if not view_only else "VIEW_ONLY", view_only)
+        pane_name = "VIEW_EDIT" if not view_only else "VIEW_ONLY"
+        self.add_viewer_pane(pane_name, view_only=view_only)
         self.server.apply_manifest(self.manifest, attach=True)
 
 
