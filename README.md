@@ -14,6 +14,14 @@ Built on top of [tmux](https://github.com/tmux/tmux) and many other libraries, C
 
 Code can be found [here](tmux_trials/lib.py).
 
+To interact with the environment programmatically, check out [here](tmux_trials/test_lib.py)
+
+```python
+# env: TmuxEnvironment
+env.send_key("vim")
+env.send_key("Enter")
+```
+
 Terminal parsing (colorless):
 
 ![Cybergod demo](propaganda/tmux_show_0.gif)
