@@ -30,7 +30,7 @@ NEWLINE_BYTES = NEWLINE.encode(ENCODING)
 CMDLIST_EXECUTE_TIMEOUT = 10
 
 CURSOR = "<<<CURSOR>>>"
-BODY = "<body>"
+BODY_END = "</body>"
 
 REQUIRED_BINARIES = (ENV, TMUX, TMUXP, AHA)
 
@@ -169,11 +169,14 @@ def line_merger(line_with_cursor: str, line_with_span: str):
     return ret
 
 
-def ansi_to_html(ansi: bytes):
+def ansi_to_html(ansi: bytes, dark_mode:bool):
     with NamedTemporaryFile("wb") as f:
         f.write(ansi)
         f.flush()
-        html = subprocess.check_output([AHA, "-f", f.name])
+        cmdlist = [AHA, "-f", f.name]
+        if dark_mode:
+            cmdlist.append("--black")
+        html = subprocess.check_output(cmdlist)
         return html
 
 
@@ -203,7 +206,7 @@ def wrap_to_html_pre_elem(html: Text, pre_inner_html: str, cursor_render: bool =
     soup = html_to_soup(html)
     soup.find("pre").extract()  # type: ignore
     ret = str(soup)
-    ret = ret.replace(BODY, BODY + f"<pre>{pre_inner_html}</pre>", 1)
+    ret = ret.replace(BODY_END, f"<pre>{pre_inner_html}</pre>"+BODY_END)
     if cursor_render:
         ret = render_html_cursor(ret)
     return ret
@@ -432,11 +435,8 @@ class TmuxSession:
         return ret
 
     def preview_html_bytes(self, dark_mode: bool):
-        flags = ["-p", "-e"]
-        if dark_mode:
-            flags.append("--black")
-        ret = self.preview_bytes(flags=flags)
-        ret = ansi_to_html(ret)
+        ret = self.preview_bytes(flags=["-p", "-e"])
+        ret = ansi_to_html(ret, dark_mode)
         return ret
 
     def preview_html(self, show_cursor=False, wrap_html=False, dark_mode=False):
