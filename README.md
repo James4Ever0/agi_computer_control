@@ -32,6 +32,10 @@ Terminal screenshot converted from HTML (cursor in red):
 
 ![Vim screenshot](propaganda/vim_edit_tmux_screenshot.png)
 
+Terminal with dark theme and grayscale effects except of the cursor:
+
+![Cursor highlight](propaganda/grayscale_dark_tmux.png)
+
 ## Intro
 
 Agent powered by Godlang, the official agent language for cybergod.
