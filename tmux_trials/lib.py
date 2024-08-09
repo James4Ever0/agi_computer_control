@@ -8,7 +8,8 @@ import parse
 import json
 from tempfile import NamedTemporaryFile
 import uuid
-import difflib
+
+# import difflib
 import html
 import re
 from typing import Union
@@ -34,8 +35,8 @@ REQUIRED_BINARIES = (ENV, TMUX, TMUXP, AHA)
 
 CURSOR_HTML = "<cursor>"
 
-HTML_TAG_REGEX = re.compile(r"<[^>]+>")
-Content = Union[str, bytes]
+HTML_TAG_REGEX = re.compile(r"<[^>]+?>")
+Text = Union[str, bytes]
 
 
 def uuid_generator():
@@ -45,54 +46,109 @@ def uuid_generator():
 
 
 def remove_html_tags(html: str):
-    ret = HTML_TAG_REGEX.sub(html, "")
+    ret = HTML_TAG_REGEX.sub("", html)
     return ret
 
 
-def html_escape(content: Content):
+def html_escape(content: Text):
     content = ensure_str(content)
     ret = html.escape(content)
     return ret
 
-def ensure_bytes(content:Content) -> bytes:
+
+def ensure_bytes(content: Text) -> bytes:
     if isinstance(content, str):
         content = content.encode(ENCODING)
     return content
 
-def ensure_str(content: Content) -> str:
+
+def ensure_str(content: Text) -> str:
     if isinstance(content, bytes):
         content = decode_bytes(content)
-    return content # type: ignore
+    return content  # type: ignore
 
 
-def html_unescape(content: Content):
+def html_unescape(content: Text):
     content = ensure_str(content)
     ret = html.unescape(content)
     return ret
 
 
 def line_with_cursor_to_html(
-    line_with_cursor: Content, cursor: str, cursor_html=CURSOR_HTML
+    line_with_cursor: Text, cursor: str, cursor_html=CURSOR_HTML
 ):
     escaped_line = html_escape(line_with_cursor)
     ret = escaped_line.replace(cursor, cursor_html)
     return ret
 
 
-def line_merger(source_line: str, line_with_cursor: str, line_with_span: str):
-    differ = difflib.Differ()
-    cursor_diff = list(differ.compare(source_line, line_with_cursor))
+def diff_gen(it: str, prefix: str):
+    ret = [f"{prefix} {char}" for char in it]
+    return ret
+
+
+def split_html(input_text: str) -> list[str]:
+    # Find all matches of the regex pattern
+    matches = HTML_TAG_REGEX.finditer(input_text)
+
+    # Initialize the start index for slicing
+    start = 0
+    output = []
+
+    for match in matches:
+        # Get the start and end indices of the match
+        match_start = match.start()
+        match_end = match.end()
+
+        # Split the input text at the current match
+        output.append(input_text[start:match_start])
+        output.append(input_text[match_start:match_end])
+
+        # Update the start index for the next iteration
+        start = match_end
+
+    # Add the remaining text after the last match
+    output.append(input_text[start:])
+
+    # Filter empty text
+    output = [it for it in output if it]
+
+    return output
+
+
+def tag_diff(source_with_tag: str) -> list[str]:
+    # items = HTML_TAG_REGEX.split(source_with_tag)
+    items = split_html(source_with_tag)
+    print("[*] Items:", items)
+    ret = []
+    for it in items:
+        if it.startswith("<"):
+            ret.extend(diff_gen(it, "+"))
+        else:
+            ret.extend(diff_gen(it, " "))
+    return ret
+
+
+def line_merger(line_with_cursor: str, line_with_span: str):
+    # def line_merger(source_line: str, line_with_cursor: str, line_with_span: str):
+    # differ = difflib.Differ()
+    # cursor_diff = list(differ.compare(source_line, line_with_cursor))
+    cursor_diff = tag_diff(line_with_cursor)
+    print("[*] Cursor diff:", cursor_diff)
     cursor_insert_index = cursor_diff.index("+ <")
     cursor_end_index = cursor_diff.index("+ >")
     cursor = line_with_cursor[cursor_insert_index : cursor_end_index + 1]
-    span_diff = list(differ.compare(source_line, line_with_span))
+    # span_diff = list(differ.compare(source_line, line_with_span))
+    span_diff = tag_diff(line_with_span)
+    print("[*] Span diff:", span_diff)
     cursor_inserted = False
     original_char_index = 0
     ret = ""
     for it in span_diff:
         if original_char_index == cursor_insert_index:
-            cursor_inserted = True
-            ret += cursor
+            if not cursor_inserted:
+                cursor_inserted = True
+                ret += cursor
         if it.startswith(" "):
             original_char_index += 1
         ret += it[-1]
@@ -109,12 +165,12 @@ def ansi_to_html(ansi: bytes):
         return html
 
 
-def html_to_soup(html: Content):
+def html_to_soup(html: Text):
     soup = BeautifulSoup(html, "html.parser")
     return soup
 
 
-def retrieve_pre_lines_from_html(html: Content):
+def retrieve_pre_lines_from_html(html: Text):
     soup = html_to_soup(html)
     pre_elem = soup.find("pre")
     assert isinstance(pre_elem, Tag)
@@ -123,11 +179,20 @@ def retrieve_pre_lines_from_html(html: Content):
     return ret
 
 
-def wrap_to_html_pre_elem(html: Content, pre_inner_html: str):
+def render_html_cursor(html: str):
+    ret = html.replace(
+        "<cursor>", '<span style="color: red !important; font-weight: bold !important;">|</span>'
+    )
+    return ret
+
+
+def wrap_to_html_pre_elem(html: Text, pre_inner_html: str, cursor_render: bool = True):
     soup = html_to_soup(html)
     soup.find("pre").extract()  # type: ignore
     ret = str(soup)
     ret = ret.replace(BODY, BODY + f"<pre>{pre_inner_html}</pre>", 1)
+    if cursor_render:
+        ret = render_html_cursor(ret)
     return ret
 
 
@@ -136,7 +201,7 @@ def decode_bytes(_bytes: bytes, errors="ignore"):
     return ret
 
 
-def insert_cursor(content: Content, x: int, cursor=CURSOR):
+def insert_cursor(content: Text, x: int, cursor=CURSOR):
     _bytes = ensure_bytes(content)
     ret = b""
     cursor_bytes = cursor.encode(ENCODING)
@@ -357,22 +422,29 @@ class TmuxSession:
             has_cursor, (x, y) = self.get_cursor_coordinates()
             if has_cursor:
                 cursor_line_html = pre_lines[y]
+                print("[*] Cursor line html:", cursor_line_html)
                 cursor_line_html_without_tags = remove_html_tags(cursor_line_html)
-                cursor_line_bytes_without_tags = html_unescape(
-                    cursor_line_html_without_tags
+                print(
+                    "[*] Cursor line html without tags:", cursor_line_html_without_tags
                 )
+                cursor_line = html_unescape(cursor_line_html_without_tags)
+                print("[*] Cursor line:", cursor_line)
                 uuid_cursor = uuid_generator()
                 cursor_line_bytes_with_uuid_cursor = insert_cursor(
-                    cursor_line_bytes_without_tags, x, uuid_cursor
+                    cursor_line, x, uuid_cursor
                 )
+                print("[*] Inserting cursor:", cursor_line_bytes_with_uuid_cursor)
                 cursor_line_html_with_cursor = line_with_cursor_to_html(
                     cursor_line_bytes_with_uuid_cursor, uuid_cursor
                 )
-                pre_lines[y] = line_merger(
-                    cursor_line_html_without_tags,
+                print("[*] Replacing cursor:", cursor_line_html_with_cursor)
+                merged_line = line_merger(
+                    # cursor_line_html_without_tags,
                     cursor_line_html_with_cursor,
                     cursor_line_html,
                 )
+                print("[*] Merged line:", merged_line)
+                pre_lines[y] = merged_line
         ret = NEWLINE.join(pre_lines)
         if wrap_html:
             ret = wrap_to_html_pre_elem(html_bytes, ret)

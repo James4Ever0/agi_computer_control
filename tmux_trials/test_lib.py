@@ -10,7 +10,7 @@ SERVER_NAME = "test_server"
 SESSION_NAME = "test_session"
 # SESSION_COMMAND = "docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 ubuntu:22.04"
 SESSION_COMMAND = "docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 openinterpreter /bin/bash"
-PREVIEW_FILEPATH = "/tmp/test_session_preview.log"
+PREVIEW_FILEPATH = "/tmp/test_session_preview.html"
 PREVIEW_INTERVAL = 2
 FLUSH_INTERVAL = 1
 SEND_KEY_INTERVAL = 1
@@ -37,10 +37,10 @@ def start_daemon_thread(target, *args, **kwargs):
 def write_session_preview_with_cursor_periodically(session: TmuxSession):
     while True:
         try:
-            #preview = session.preview(show_cursor=True)
-            preview = session.preview_html(show_cursor=False)
-            #preview = session.preview_html(show_cursor=True)
-            #preview = session.preview_html(show_cursor=True,wrap_html=True)
+            # preview = session.preview(show_cursor=True)
+            # preview = session.preview_html(show_cursor=False)
+            # preview = session.preview_html(show_cursor=True)
+            preview = session.preview_html(show_cursor=True,wrap_html=True)
             if preview is None:
                 preview = "Empty preview for session: " + session.name
             with open(PREVIEW_FILEPATH, "w+") as f:

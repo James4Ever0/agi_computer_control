@@ -9,7 +9,8 @@ def test_line_merger():
     c = "(base) root@ubuntu:/media/<span>usb0/works/agi_computer_control/tmux_trials# &gt;&lt;whoami&lt;&gt;&gt;&lt;</span>"
     target = "(base) root@ubuntu:/media/<span>usb0/works/agi_computer_control/tmux_trials# <cursor>&gt;&lt;whoami&lt;&gt;&gt;&lt;</span>"
 
-    result = line_merger(a, b, c)
+    result = line_merger(b, c)
+    # result = line_merger(a, b, c)
     error_msg = f"""
     [-] Error merging lines:
     a: {a}
