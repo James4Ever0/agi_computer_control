@@ -8,7 +8,7 @@
 
 ## Demo
 
-Built on top of [tmux](https://github.com/tmux/tmux) and many other libraries, Cybergod is capable of understanding and interacting terminal interface with both text-only and multimodal modes. With the help of wcwidth, cursor is placed precisely at the right position even if there are multi-width unicode chars (CJK characters for example).
+Built on top of [`tmux`](https://github.com/tmux/tmux) and many other libraries, Cybergod is capable of understanding and interacting terminal interface with both text-only and multimodal modes. With the help of [`wcwidth`](https://github.com/jquast/wcwidth), cursor is placed precisely at the right position even if there are multi-width unicode chars (CJK characters for example).
 
 Code can be found [here](tmux_trials/lib.py).
 
