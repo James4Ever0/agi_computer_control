@@ -6,8 +6,6 @@
 
 [join discord group](https://discord.gg/eM5vezJvEQ)
 
-[bilibili live streaming](http://live.bilibili.com/22228498)
-
 ## Demo
 
 Built on top of [tmux](https://github.com/tmux/tmux) and many other libraries, Cybergod is capable of understanding and interacting terminal interface with text-only mode and multimodal mode. 
