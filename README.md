@@ -32,7 +32,7 @@ Terminal screenshot converted from HTML (cursor in red):
 
 ![Vim screenshot](propaganda/vim_edit_tmux_screenshot.png)
 
-Terminal with dark theme and grayscale effects except of the cursor:
+Terminal with dark theme and grayscale effects except for the cursor:
 
 ![Cursor highlight](propaganda/grayscale_dark_tmux.png)
 
