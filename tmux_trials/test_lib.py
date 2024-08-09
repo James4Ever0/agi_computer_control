@@ -37,7 +37,10 @@ def start_daemon_thread(target, *args, **kwargs):
 def write_session_preview_with_cursor_periodically(session: TmuxSession):
     while True:
         try:
-            preview = session.preview(show_cursor=True)
+            #preview = session.preview(show_cursor=True)
+            preview = session.preview_html(show_cursor=False)
+            #preview = session.preview_html(show_cursor=True)
+            #preview = session.preview_html(show_cursor=True,wrap_html=True)
             if preview is None:
                 preview = "Empty preview for session: " + session.name
             with open(PREVIEW_FILEPATH, "w+") as f:
