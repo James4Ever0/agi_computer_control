@@ -2,9 +2,13 @@
 
 <!-- https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-4d2b-835d-0ffc9a5a458e -->
 
-# Cybergod
+<h1 align="center">Cybergod</h1>
 
-[join discord group](https://discord.gg/eM5vezJvEQ)
+<p align="center">
+    <a href="https://discord.gg/eM5vezJvEQ">
+        <img alt="Discord" src="https://img.shields.io/discord/1146610656779440188?logo=discord&style=flat&logoColor=white"/>
+    </a>
+</p>
 
 ## Disclamer
 
