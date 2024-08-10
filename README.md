@@ -44,6 +44,14 @@ Terminal with dark theme and grayscale effects except for the cursor:
 
 ![Cursor highlight](propaganda/grayscale_dark_tmux.png)
 
+---
+
+For GUI, Cybergod can render cursor correctly on given position. Code can be found [here](the_frozen_forest_intro/render_cursor_on_image.py).
+
+It even has an augmented mode (red on grey), just like the terminal.
+
+![GUI Augmented](propaganda/gui_screenshot_augmented.png)
+
 ## Intro
 
 Agent powered by Godlang, the official agent language for cybergod.
