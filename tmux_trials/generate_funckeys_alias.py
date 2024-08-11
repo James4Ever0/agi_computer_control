@@ -54,7 +54,8 @@ EXTRA_KEYS_WITH_ARROW_KEYS = [
 ]
 
 CTRL_HOTKEYS = [
-    "C-Tab" "C-Space",
+    "C-Tab",
+    "C-Space",
     "C-a",
     "C-b",
     "C-c",
@@ -372,8 +373,8 @@ PREDEFINED_ALIASES_REVERSE_MAP = {
     it: k for k, v in PREDEFINED_ALIASES.items() for it in v
 }
 
-FUNCKEY_COMBOS = ("S-M", "S-C", "C-M", "S-C-M")
-FUNCKEY_LETTERS = {"C": "Ctrl", "S": "Shift", "M": "Meta"}
+MODIFIER_KEY_COMBOS = ("S-M", "S-C", "C-M", "S-C-M")
+MODIFIER_KEY_LETTER_TO_NAME = {"C": "Ctrl", "S": "Shift", "M": "Meta"}
 
 KEYPAD_SHORTHAND = "KP"
 KEYPAD_FULLNAME = "KeyPad"
@@ -393,9 +394,9 @@ def generate_case_aliases(key: str):
     return key.lower(), key.upper(), key.title()
 
 
-def generate_hotkey_with_different_connectors(hotkey: str):
+def generate_hotkey_with_plus_connector(hotkey: str):
     ret = hotkey
-    for it in FUNCKEY_LETTERS.keys():
+    for it in MODIFIER_KEY_LETTER_TO_NAME.keys():
         ret = ret.replace(f"{it}-", f"{it}+")
     return ret
 
@@ -442,23 +443,26 @@ def test():
 
 def generate_funckeys_aliases():
     ret = {}
-    for key in FUNC_KEYS:
+    for standard_key in FUNC_KEYS:
         aliases = set()
-        fullkey_list = [
-            key.replace("F", "FuncKey"),
-            key.replace("F", "FunctionKey"),
-            key.replace("F", "Function"),
-            key.replace("F", "Func"),
-            key.replace("F", "Fn"),
-        ]
-        for fullkey in fullkey_list:
-            baseform, camelform, kebaform = generate_multiforms(fullkey)
-            candidates = [key.lower(), fullkey, baseform, camelform, kebaform]
-            aliases.update(candidates)
-            for it in candidates:
-                case_aliases = generate_case_aliases(it)
-                aliases.update(case_aliases)
-        ret[key] = list(aliases)
+        derived_keys = [standard_key.replace('F', 'F-'), 
+        standard_key.replace('F', 'F_')]
+        for key in [standard_key, *derived_keys]:
+            fullkey_list = [
+                key.replace("F", "FuncKey"),
+                key.replace("F", "FunctionKey"),
+                key.replace("F", "Function"),
+                key.replace("F", "Func"),
+                key.replace("F", "Fn"),
+            ]
+            for fullkey in fullkey_list:
+                baseform, camelform, kebaform = generate_multiforms(fullkey)
+                candidates = [key.lower(), fullkey, baseform, camelform, kebaform]
+                aliases.update(candidates)
+                for it in candidates:
+                    case_aliases = generate_case_aliases(it)
+                    aliases.update(case_aliases)
+        ret[standard_key] = list(aliases)
     return ret
 
 
@@ -486,13 +490,68 @@ def generate_display_and_update_aliases(candidates: dict, name: str, ret: dict):
     json_pretty_print(candidates)
     ret.update(candidates)
 
+def generate_modifier_key_aliases(modifier_letter:str):
+    aliases = set()
+    modifier_name = MODIFIER_KEY_LETTER_TO_NAME[modifier_letter]
+    modifier_predefined_aliases = PREDEFINED_ALIASES.get(modifier_name, [])
+    fullnames = [modifier_name, *modifier_predefined_aliases]
+    aliases.update(fullnames)
+    for it in fullnames:
+        extended_alias = f"{it}Key"
+        aliases.add(extended_alias)
+    ret = list(aliases)
+    return ret
+
+def filter_invalid_modifier_keys(modkeys:list[str]):
+    ret = []
+    for it in modkeys:
+        prefix = it[:-1]
+        if '-' not in prefix and '+' not in prefix:
+            continue
+        else:
+            ret.append(it)
+    return ret
+
+def generate_ctrl_hotkey_aliases():
+    ret = {}
+    for standard_key in CTRL_HOTKEYS:
+        aliases = set()
+        suffix = standard_key.split("C-")[-1]
+        suffix_aliases = PREDEFINED_ALIASES.get(suffix, [])
+        derived_keys = [f"C-{it}" for it in suffix_aliases]
+        for key in [standard_key, *derived_keys]:
+
+            plus_connected_key = generate_hotkey_with_plus_connector(key)
+            ctrl_key_aliases = generate_modifier_key_aliases('C')
+            fullkey_list = [
+                (key, False),
+                (plus_connected_key, True)
+            ]
+
+            for it in ctrl_key_aliases:
+                fullkey_list.append((key.replace("C-", f"{it}-"), False))
+                fullkey_list.append((plus_connected_key.replace("C+", f"{it}+"),True))
+        
+            for fullkey, is_plus_connected in fullkey_list:
+                baseform, camelform, kebaform = generate_multiforms(fullkey)
+                candidates = [fullkey, baseform, camelform, kebaform]
+                aliases.update(candidates)
+                for it in candidates:
+                    case_aliases = generate_case_aliases(it)
+                    aliases.update(case_aliases)
+        
+        ret[standard_key] = filter_invalid_modifier_keys(list(aliases))
+
+    return ret
 
 def generate_all_aliases():
     ret = {}
-    generate_display_and_update_aliases(generate_funckeys_aliases(), "Funckey", ret)
+    generate_display_and_update_aliases(generate_funckeys_aliases(), "FuncKey", ret)
     generate_display_and_update_aliases(
-        generate_additionalkey_aliases(), "Additionalkey", ret
+        generate_additionalkey_aliases(), "AdditionalKey", ret
     )
+    generate_display_and_update_aliases(generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret)
+
 
     return ret
 
@@ -507,5 +566,5 @@ def main():
 
 if __name__ == "__main__":
     # test()
-    # main()
-    generate_all_aliases()
+    main()
+    # generate_all_aliases()
