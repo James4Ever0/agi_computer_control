@@ -432,7 +432,13 @@ def test():
             ],
         ),
     ]
-
+    aliases = generate_funckeys_aliases()
+    for key, value in test_cases:
+        key_aliases = aliases[key]
+        for it in value:
+            assert it in key_aliases, f"Alias '{it}' not found for key '{key}'"
+        remained_aliases = [it for it in key_aliases if it not in value]
+        assert remained_aliases == [], f"Containing unexpected aliases for key '{key}': {remained_aliases}"
 
 def generate_funckeys_aliases():
     ret = {}
