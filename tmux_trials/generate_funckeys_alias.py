@@ -1,6 +1,7 @@
 import humps
 from itertools import permutations
 from lib import json_pretty_print
+import json
 
 # libraries providing naming style conversion
 # dedicated: pip install pyhumps
@@ -29,27 +30,228 @@ FUNC_KEYS = [
 
 EXTRA_KEYS_WITH_ARROW_KEYS = [
     "IC",
-"Insert",
-"DC",
-"Delete",
-"Home",
-"End",
-"NPage",
-"PageDown",
-"PgDn",
-"PPage",
-"PageUp",
-"PgUp",
-"Tab",
-"BTab",
-"Space",
-"BSpace",
-"Enter",
-"Escape",
-"Up",
-"Down",
-"Left",
-"Right",
+    "Insert",
+    "DC",
+    "Delete",
+    "Home",
+    "End",
+    "NPage",
+    "PageDown",
+    "PgDn",
+    "PPage",
+    "PageUp",
+    "PgUp",
+    "Tab",
+    "BTab",
+    "Space",
+    "BSpace",
+    "Enter",
+    "Escape",
+    "Up",
+    "Down",
+    "Left",
+    "Right",
+]
+
+CTRL_HOTKEYS = [
+    "C-Space",
+    "C-a",
+    "C-b",
+    "C-c",
+    "C-d",
+    "C-e",
+    "C-f",
+    "C-g",
+    "C-h",
+    "C-i",
+    "C-j",
+    "C-k",
+    "C-l",
+    "C-m",
+    "C-n",
+    "C-o",
+    "C-p",
+    "C-q",
+    "C-r",
+    "C-s",
+    "C-t",
+    "C-u",
+    "C-v",
+    "C-w",
+    "C-x",
+    "C-y",
+    "C-z",
+    "C-\\",
+    "C-]",
+    "C-^",
+    "C-_",
+]
+
+META_HOTKEYS = [
+    "M-Escape",
+    "M-Space",
+    "M-!",
+    'M-"',
+    "M-#",
+    "M-$",
+    "M-%",
+    "M-&",
+    "M-'",
+    "M-(",
+    "M-)",
+    "M-*",
+    "M-+",
+    "M-,",
+    "M--",
+    "M-.",
+    "M-/",
+    "M-0",
+    "M-1",
+    "M-2",
+    "M-3",
+    "M-4",
+    "M-5",
+    "M-6",
+    "M-7",
+    "M-8",
+    "M-9",
+    "M-:",
+    "M-;",
+    "M-<",
+    "M-=",
+    "M->",
+    "M-?",
+    "M-@",
+    "M-A",
+    "M-B",
+    "M-C",
+    "M-D",
+    "M-E",
+    "M-F",
+    "M-G",
+    "M-H",
+    "M-I",
+    "M-J",
+    "M-K",
+    "M-L",
+    "M-M",
+    "M-N",
+    "M-O",
+    "M-P",
+    "M-Q",
+    "M-R",
+    "M-S",
+    "M-T",
+    "M-U",
+    "M-V",
+    "M-W",
+    "M-X",
+    "M-Y",
+    "M-Z",
+    "M-[",
+    "M-\\",
+    "M-]",
+    "M-^",
+    "M-_",
+    "M-`",
+    "M-a",
+    "M-b",
+    "M-c",
+    "M-d",
+    "M-e",
+    "M-f",
+    "M-g",
+    "M-h",
+    "M-i",
+    "M-j",
+    "M-k",
+    "M-l",
+    "M-m",
+    "M-n",
+    "M-o",
+    "M-p",
+    "M-q",
+    "M-r",
+    "M-s",
+    "M-t",
+    "M-u",
+    "M-v",
+    "M-w",
+    "M-x",
+    "M-y",
+    "M-z",
+    "M-{",
+    "M-|",
+    "M-}",
+    "M-~",
+    "M-Tab",
+    "M-BSpace",
+    "M-KP*",
+    "M-KP+",
+    "M-KP-",
+    "M-KP.",
+    "M-KP/",
+    "M-KP0",
+    "M-KP1",
+    "M-KP2",
+    "M-KP3",
+    "M-KP4",
+    "M-KP5",
+    "M-KP6",
+    "M-KP7",
+    "M-KP8",
+    "M-KP9",
+]
+
+KEYPAD_KEYS = [
+    "KP*",
+    "KP+",
+    "KP-",
+    "KP.",
+    "KP/",
+    "KP0",
+    "KP1",
+    "KP2",
+    "KP3",
+    "KP4",
+    "KP5",
+    "KP6",
+    "KP7",
+    "KP8",
+    "KP9",
+]
+
+META_CONTROL_HOTKEYS = [
+    "M-C-a",
+    "M-C-b",
+    "M-C-c",
+    "M-C-d",
+    "M-C-e",
+    "M-C-f",
+    "M-C-g",
+    "M-C-h",
+    "M-C-i",
+    "M-C-j",
+    "M-C-k",
+    "M-C-l",
+    "M-C-m",
+    "M-C-n",
+    "M-C-o",
+    "M-C-p",
+    "M-C-q",
+    "M-C-r",
+    "M-C-s",
+    "M-C-t",
+    "M-C-u",
+    "M-C-v",
+    "M-C-w",
+    "M-C-x",
+    "M-C-y",
+    "M-C-z",
+    "M-C-\\",
+    "M-C-]",
+    "M-C-^",
+    "M-C-_",
 ]
 
 PREDEFINED_ALIASES = {
@@ -61,6 +263,24 @@ PREDEFINED_ALIASES = {
     "Delete": ["DC", "DeleteCharacter"],
     "PgDn": ["PageDown", "NPage"],
     "PgUp": ["PageUp", "PPage"],
+    "Enter": ["Return", "CarriageReturn", "CR", "LineFeed", "LF", "CRLF"],
+    "Up": [
+        "ArrowUp",
+        "CursorUp",
+    ],
+    "Down": [
+        "ArrowDown",
+        "CursorDown",
+    ],
+    "Left": [
+        "ArrowLeft",
+        "CursorLeft",
+    ],
+    "Right": [
+        "ArrowRight",
+        "CursorRight",
+    ],
+    "Meta": ["Alt"],
     "\\": ["BackSlash"],
     "[": ["LeftSquareBracket"],
     "]": ["RightSquareBracket"],
@@ -103,15 +323,10 @@ PREDEFINED_ALIASES = {
     "7": ["DigitSeven", "Seven"],
     "8": ["DigitEight", "Eight"],
     "9": ["DigitNine", "Nine"],
-    "Up": ["ArrowUp","CursorUp", ],
-    "Down": ["ArrowDown","CursorDown", ],
-    "Left": ["ArrowLeft","CursorLeft", ],
-    "Down": ["ArrowDown","CursorDown", ],
-    "Meta": ["Alt"],
 }
 
 PREDEFINED_ALIASES_REVERSE_MAP = {
-    it:k for k,v in PREDEFINED_ALIASES.items() for it in v
+    it: k for k, v in PREDEFINED_ALIASES.items() for it in v
 }
 
 FUNCKEY_COMBOS = ("S-M", "S-C", "C-M", "S-C-M")
@@ -136,8 +351,10 @@ def generate_case_aliases(key: str):
 
 
 def generate_hotkey_with_different_connectors(hotkey: str):
-    plus_connected_hotkey = hotkey.replace("-", "+")
-    return plus_connected_hotkey
+    ret = hotkey
+    for it in FUNCKEY_LETTERS.keys():
+        ret = ret.replace(f"{it}-", f"{it}+")
+    return ret
 
 
 def generate_all_permutation_hotkeys(key: str):
@@ -146,7 +363,7 @@ def generate_all_permutation_hotkeys(key: str):
     prefixes = components[:-1]
     suffix = components[-1]
     for it in permutations(prefixes):
-        ret.append("-".join(it + [suffix]))
+        ret.append("-".join(list(it) + [suffix]))
     return ret
 
 
@@ -178,15 +395,23 @@ def generate_funckeys_aliases():
     ret = {}
     for key in FUNC_KEYS:
         aliases = set()
-        fullkey = key.replace("F", "FuncKey")
-        baseform, camelform, kebaform = generate_multiforms(fullkey)
-        candidates = [key.lower(), fullkey, baseform, camelform, kebaform]
-        aliases.update(candidates)
-        for it in candidates:
-            case_aliases = generate_case_aliases(it)
-            aliases.update(case_aliases)
+        fullkey_list = [
+            key.replace("F", "FuncKey"),
+            key.replace("F", "FunctionKey"),
+            key.replace("F", "Function"),
+            key.replace("F", "Func"),
+            key.replace("F", "Fn"),
+        ]
+        for fullkey in fullkey_list:
+            baseform, camelform, kebaform = generate_multiforms(fullkey)
+            candidates = [key.lower(), fullkey, baseform, camelform, kebaform]
+            aliases.update(candidates)
+            for it in candidates:
+                case_aliases = generate_case_aliases(it)
+                aliases.update(case_aliases)
         ret[key] = list(aliases)
     return ret
+
 
 def generate_additionalkey_aliases():
     ret = {}
@@ -206,23 +431,32 @@ def generate_additionalkey_aliases():
         ret[key] = list(aliases)
     return ret
 
-def generate_display_and_update_aliases(candidates:dict, name:str, ret:dict):
+
+def generate_display_and_update_aliases(candidates: dict, name: str, ret: dict):
     print(f"[*] {name} aliases:")
     json_pretty_print(candidates)
     ret.update(candidates)
 
+
 def generate_all_aliases():
     ret = {}
-    generate_display_and_update_aliases(generate_funckeys_aliases(),"Funckey",ret)
-    generate_display_and_update_aliases(generate_additionalkey_aliases(),"Additionalkey",ret)
-    
+    generate_display_and_update_aliases(generate_funckeys_aliases(), "Funckey", ret)
+    generate_display_and_update_aliases(
+        generate_additionalkey_aliases(), "Additionalkey", ret
+    )
+
     return ret
 
 
 def main():
     all_aliases = generate_all_aliases()
+    key_aliases_lut = {it: k for k, v in all_aliases.items() for it in v}
+    output_path = "key_aliases_lut.json"
+    with open(output_path, "w+") as f:
+        f.write(json.dumps(key_aliases_lut, ensure_ascii=False, indent=4))
 
 
 if __name__ == "__main__":
     # test()
-    main()
+    # main()
+    generate_all_aliases()
