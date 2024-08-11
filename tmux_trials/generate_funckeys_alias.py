@@ -439,14 +439,19 @@ def test():
         for it in value:
             assert it in key_aliases, f"Alias '{it}' not found for key '{key}'"
         remained_aliases = [it for it in key_aliases if it not in value]
-        assert remained_aliases == [], f"Containing unexpected aliases for key '{key}': {remained_aliases}"
+        assert (
+            remained_aliases == []
+        ), f"Containing unexpected aliases for key '{key}': {remained_aliases}"
+
 
 def generate_funckeys_aliases():
     ret = {}
     for standard_key in FUNC_KEYS:
         aliases = set()
-        derived_keys = [standard_key.replace('F', 'F-'), 
-        standard_key.replace('F', 'F_')]
+        derived_keys = [
+            standard_key.replace("F", "F-"),
+            standard_key.replace("F", "F_"),
+        ]
         for key in [standard_key, *derived_keys]:
             fullkey_list = [
                 key.replace("F", "FuncKey"),
@@ -490,7 +495,8 @@ def generate_display_and_update_aliases(candidates: dict, name: str, ret: dict):
     json_pretty_print(candidates)
     ret.update(candidates)
 
-def generate_modifier_key_aliases(modifier_letter:str):
+
+def generate_modifier_key_aliases(modifier_letter: str):
     aliases = set()
     modifier_name = MODIFIER_KEY_LETTER_TO_NAME[modifier_letter]
     modifier_predefined_aliases = PREDEFINED_ALIASES.get(modifier_name, [])
@@ -502,15 +508,27 @@ def generate_modifier_key_aliases(modifier_letter:str):
     ret = list(aliases)
     return ret
 
-def filter_invalid_modifier_keys(modkeys:list[str]):
-    ret = []
+
+def filter_invalid_modifier_keys(modkeys: list[str]):
+    valid_keys = set()
     for it in modkeys:
         prefix = it[:-1]
-        if '-' not in prefix and '+' not in prefix:
+        if "-" not in prefix and "+" not in prefix:
             continue
         else:
-            ret.append(it)
+            if len(it) > 3:
+                for invalid_connector in ["-_", "+-", "+_", "--", "__"]:
+                    if it.endswith(invalid_connector):
+                        it = (
+                            it[:-2].replace(invalid_connector, invalid_connector[0])
+                            + invalid_connector
+                        )
+                    else:
+                        it = it.replace(invalid_connector, invalid_connector[0])
+            valid_keys.add(it)
+    ret = list(valid_keys)
     return ret
+
 
 def generate_ctrl_hotkey_aliases():
     ret = {}
@@ -522,16 +540,13 @@ def generate_ctrl_hotkey_aliases():
         for key in [standard_key, *derived_keys]:
 
             plus_connected_key = generate_hotkey_with_plus_connector(key)
-            ctrl_key_aliases = generate_modifier_key_aliases('C')
-            fullkey_list = [
-                (key, False),
-                (plus_connected_key, True)
-            ]
+            ctrl_key_aliases = generate_modifier_key_aliases("C")
+            fullkey_list = [(key, False), (plus_connected_key, True)]
 
             for it in ctrl_key_aliases:
                 fullkey_list.append((key.replace("C-", f"{it}-"), False))
-                fullkey_list.append((plus_connected_key.replace("C+", f"{it}+"),True))
-        
+                fullkey_list.append((plus_connected_key.replace("C+", f"{it}+"), True))
+
             for fullkey, is_plus_connected in fullkey_list:
                 baseform, camelform, kebaform = generate_multiforms(fullkey)
                 candidates = [fullkey, baseform, camelform, kebaform]
@@ -539,10 +554,11 @@ def generate_ctrl_hotkey_aliases():
                 for it in candidates:
                     case_aliases = generate_case_aliases(it)
                     aliases.update(case_aliases)
-        
+
         ret[standard_key] = filter_invalid_modifier_keys(list(aliases))
 
     return ret
+
 
 def generate_all_aliases():
     ret = {}
@@ -550,8 +566,9 @@ def generate_all_aliases():
     generate_display_and_update_aliases(
         generate_additionalkey_aliases(), "AdditionalKey", ret
     )
-    generate_display_and_update_aliases(generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret)
-
+    generate_display_and_update_aliases(
+        generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret
+    )
 
     return ret
 
