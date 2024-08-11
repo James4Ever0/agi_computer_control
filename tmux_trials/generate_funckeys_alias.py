@@ -54,7 +54,7 @@ EXTRA_KEYS_WITH_ARROW_KEYS = [
 ]
 
 CTRL_HOTKEYS = [
-    "C-Space",
+    "C-Tab" "C-Space",
     "C-a",
     "C-b",
     "C-c",
@@ -86,6 +86,8 @@ CTRL_HOTKEYS = [
     "C-^",
     "C-_",
 ]
+
+CTRL_SHIFT_HOTKEYS = ["C-S-Tab"]
 
 META_HOTKEYS = [
     "M-Escape",
@@ -253,6 +255,47 @@ META_CONTROL_HOTKEYS = [
     "M-C-^",
     "M-C-_",
 ]
+
+EXTENDED_KEY_PREFIXES = [
+    "S",
+    "M",
+    "S-M",
+    "C",
+    "S-C",
+    "C-M",
+    "S-C-M",
+]
+
+EXTENDED_KEY_SUFFIXES = [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    "Up",
+    "Down",
+    "Right",
+    "Left",
+    "Home",
+    "End",
+    "PPage",
+    "PageUp",
+    "PgUp",
+    "NPage",
+    "PageDown",
+    "PgDn",
+    "IC",
+    "Insert",
+    "DC",
+    "Delete",
+]
+
 
 PREDEFINED_ALIASES = {
     "BSpace": ["BackSpace"],
