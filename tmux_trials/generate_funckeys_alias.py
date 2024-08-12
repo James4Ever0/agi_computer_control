@@ -238,7 +238,7 @@ META_CONTROL_HOTKEYS = [
     "M-C-k",
     "M-C-l",
     "M-C-m",
-    "M-C-n",
+    "M-C-n", 
     "M-C-o",
     "M-C-p",
     "M-C-q",
@@ -367,6 +367,8 @@ PREDEFINED_ALIASES = {
     "7": ["DigitSeven", "Seven"],
     "8": ["DigitEight", "Eight"],
     "9": ["DigitNine", "Nine"],
+    "Space":["SpaceKey"],
+    "Tab":["TabKey"],
 }
 
 PREDEFINED_ALIASES_REVERSE_MAP = {
@@ -377,7 +379,7 @@ MODIFIER_KEY_COMBOS = ("S-M", "S-C", "C-M", "S-C-M")
 MODIFIER_KEY_LETTER_TO_NAME = {"C": "Ctrl", "S": "Shift", "M": "Meta"}
 
 KEYPAD_SHORTHAND = "KP"
-KEYPAD_FULLNAME = "KeyPad"
+KEYPAD_FULLNAME_LIST = ["KeyPad", "KeyPadKey"]
 
 
 # TODO: imitate `/usr/lib/command-not-found` and handle inaccurate keystrokes from agent
@@ -411,40 +413,7 @@ def generate_all_permutation_hotkeys(key: str):
     return ret
 
 
-def test():
-    test_cases = [
-        (
-            "C-Tab",
-            [
-                "Ctrl-Tab",
-                "Control-Tab",
-                "c-tab",
-                "c+tab",
-                "ctrl-tab",
-                "ctrl+tab",
-                "control-tab",
-                "control+tab",
-                "C-TAB",
-                "C+TAB",
-                "CTRL+TAB",
-                "CTRL-TAB",
-                "CONTROL+TAB",
-                "CONTROL-TAB",
-            ],
-        ),
-    ]
-    aliases = generate_funckeys_aliases()
-    for key, value in test_cases:
-        key_aliases = aliases[key]
-        for it in value:
-            assert it in key_aliases, f"Alias '{it}' not found for key '{key}'"
-        remained_aliases = [it for it in key_aliases if it not in value]
-        assert (
-            remained_aliases == []
-        ), f"Containing unexpected aliases for key '{key}': {remained_aliases}"
-
-
-def generate_funckeys_aliases():
+def generate_funckey_aliases():
     ret = {}
     for standard_key in FUNC_KEYS:
         aliases = set()
@@ -547,7 +516,7 @@ def generate_ctrl_hotkey_aliases():
                 fullkey_list.append((key.replace("C-", f"{it}-"), False))
                 fullkey_list.append((plus_connected_key.replace("C+", f"{it}+"), True))
 
-            for fullkey, is_plus_connected in fullkey_list:
+            for fullkey, _ in fullkey_list:
                 baseform, camelform, kebaform = generate_multiforms(fullkey)
                 candidates = [fullkey, baseform, camelform, kebaform]
                 aliases.update(candidates)
@@ -560,15 +529,74 @@ def generate_ctrl_hotkey_aliases():
     return ret
 
 
+def generate_keypadkey_aliases():
+    ret = {}
+    for key, derived_key in [(it, it.replace("KP", "KP-")) for it in KEYPAD_KEYS]:
+        suffix = key[-1]
+        suffix_derivatives = [suffix, *PREDEFINED_ALIASES.get(suffix, [])]
+
+        aliases = set()
+        fullkey_list = []
+
+        for new_suffix in suffix_derivatives:
+            new_key = f"{key[:-1]}{new_suffix}"
+            new_derived_key = f"{derived_key[:-1]}{new_suffix}"
+            for it in KEYPAD_FULLNAME_LIST:
+                fullkey_list.append(new_key.replace("KP", it))
+                fullkey_list.append(new_derived_key.replace("KP", it))
+            
+        for fullkey in fullkey_list:
+            baseform, camelform, kebaform = generate_multiforms(fullkey)
+            candidates = [fullkey, baseform, camelform, kebaform]
+            aliases.update(candidates)
+            for it in candidates:
+                case_aliases = generate_case_aliases(it)
+                aliases.update(case_aliases)
+        ret[key] = list(aliases)
+    return ret
+
+def generate_meta_hotkey_aliases():
+    ret = {}
+    for standard_key in META_HOTKEYS:
+        aliases = set()
+        suffix = standard_key.split("M-")[-1]
+        suffix_is_alpha = suffix.isalpha()
+        suffix_aliases = PREDEFINED_ALIASES.get(suffix, [])
+        derived_keys = [f"M-{it}" for it in suffix_aliases]
+        for key in [standard_key, *derived_keys]:
+
+            plus_connected_key = generate_hotkey_with_plus_connector(key)
+            ctrl_key_aliases = generate_modifier_key_aliases("M")
+            fullkey_list = [(key, False), (plus_connected_key, True)]
+
+            for it in ctrl_key_aliases:
+                fullkey_list.append((key.replace("M-", f"{it}-"), False))
+                fullkey_list.append((plus_connected_key.replace("M+", f"{it}+"), True))
+
+            for fullkey, _ in fullkey_list:
+                baseform, camelform, kebaform = generate_multiforms(fullkey)
+                candidates = [fullkey, baseform, camelform, kebaform]
+                aliases.update(candidates)
+                for it in candidates:
+                    case_aliases = generate_case_aliases(it)
+                    aliases.update(case_aliases)
+
+        key_aliases = filter_invalid_modifier_keys(list(aliases))
+        key_aliases = list(set([it[:-1]+ suffix if suffix_is_alpha else it for it in key_aliases]))
+        ret[standard_key] = key_aliases
+
+    return ret
+
+
 def generate_all_aliases():
     ret = {}
-    generate_display_and_update_aliases(generate_funckeys_aliases(), "FuncKey", ret)
+    generate_display_and_update_aliases(generate_funckey_aliases(), "FuncKey", ret)
     generate_display_and_update_aliases(
         generate_additionalkey_aliases(), "AdditionalKey", ret
     )
-    generate_display_and_update_aliases(
-        generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret
-    )
+    generate_display_and_update_aliases(generate_keypadkey_aliases(), "KeypadKey", ret)
+    generate_display_and_update_aliases(generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret)
+    generate_display_and_update_aliases(generate_meta_hotkey_aliases(), "MetaHotKey", ret)
 
     return ret
 
@@ -576,9 +604,45 @@ def generate_all_aliases():
 def main():
     all_aliases = generate_all_aliases()
     key_aliases_lut = {it: k for k, v in all_aliases.items() for it in v}
+    for k in all_aliases.keys():
+        key_aliases_lut[k] = k
     output_path = "key_aliases_lut.json"
+    print("[*] Write to:", output_path)
     with open(output_path, "w+") as f:
         f.write(json.dumps(key_aliases_lut, ensure_ascii=False, indent=4))
+
+
+def test():
+    test_cases = [
+        (
+            "C-Tab",
+            [
+                "Ctrl-Tab",
+                "Control-Tab",
+                "c-tab",
+                "c+tab",
+                "ctrl-tab",
+                "ctrl+tab",
+                "control-tab",
+                "control+tab",
+                "C-TAB",
+                "C+TAB",
+                "CTRL+TAB",
+                "CTRL-TAB",
+                "CONTROL+TAB",
+                "CONTROL-TAB",
+            ],
+        ),
+    ]
+    aliases = generate_all_aliases()
+    for key, value in test_cases:
+        key_aliases = aliases[key]
+        for it in value:
+            assert it in key_aliases, f"Alias '{it}' not found for key '{key}'"
+        remained_aliases = [it for it in key_aliases if it not in value]
+        assert (
+            remained_aliases == []
+        ), f"Containing unexpected aliases for key '{key}': {remained_aliases}"
 
 
 if __name__ == "__main__":
