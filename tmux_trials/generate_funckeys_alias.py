@@ -2,6 +2,7 @@ import humps
 from itertools import permutations
 from lib import json_pretty_print
 import json
+import string
 
 # libraries providing naming style conversion
 # dedicated: pip install pyhumps
@@ -498,6 +499,25 @@ def filter_invalid_modifier_keys(modkeys: list[str]):
     ret = list(valid_keys)
     return ret
 
+def filter_invalid_keypad_keys(modkeys: list[str]):
+    valid_keys = set()
+    for it in modkeys:
+        prefix = it[:-1]
+        if "-" not in prefix and "+" not in prefix:
+            pass
+        else:
+            if len(it) > 3:
+                for invalid_connector in ["-_", "+-", "+_", "--", "__"]:
+                    if it.endswith(invalid_connector):
+                        it = (
+                            it[:-2].replace(invalid_connector, invalid_connector[0])
+                            + invalid_connector
+                        )
+                    else:
+                        it = it.replace(invalid_connector, invalid_connector[0])
+        valid_keys.add(it)
+    ret = list(valid_keys)
+    return ret
 
 def generate_ctrl_hotkey_aliases():
     ret = {}
@@ -552,16 +572,35 @@ def generate_keypadkey_aliases():
             for it in candidates:
                 case_aliases = generate_case_aliases(it)
                 aliases.update(case_aliases)
-        ret[key] = list(aliases)
+        key_aliases = list(aliases)
+        key_aliases = filter_invalid_keypad_keys(key_aliases)
+        ret[key] = key_aliases
     return ret
 
-def generate_meta_hotkey_aliases():
+def check_if_is_invalid_meta_key(meta_key:str):
+    meta_key=meta_key.replace("-", "_")
+    items = meta_key.split("_")
+    for it in items[:-1]:
+        if len(it) == 1 and it.isalpha():
+            return True
+    return False
+
+def filter_invalid_meta_keys(aliases:list[str]):
+    ret = []
+    for it in aliases:
+        invalid = check_if_is_invalid_meta_key(it)
+        if invalid: continue
+        ret.append(it)
+    return ret
+        
+
+def generate_meta_hotkey_aliases(current_aliases:dict):
     ret = {}
     for standard_key in META_HOTKEYS:
         aliases = set()
         suffix = standard_key.split("M-")[-1]
         suffix_is_alpha = suffix.isalpha()
-        suffix_aliases = PREDEFINED_ALIASES.get(suffix, [])
+        suffix_aliases = current_aliases.get(suffix, [])
         derived_keys = [f"M-{it}" for it in suffix_aliases]
         for key in [standard_key, *derived_keys]:
 
@@ -583,6 +622,7 @@ def generate_meta_hotkey_aliases():
 
         key_aliases = filter_invalid_modifier_keys(list(aliases))
         key_aliases = list(set([it[:-1]+ suffix if suffix_is_alpha else it for it in key_aliases]))
+        key_aliases = filter_invalid_meta_keys(key_aliases)
         ret[standard_key] = key_aliases
 
     return ret
@@ -596,7 +636,7 @@ def generate_all_aliases():
     )
     generate_display_and_update_aliases(generate_keypadkey_aliases(), "KeypadKey", ret)
     generate_display_and_update_aliases(generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret)
-    generate_display_and_update_aliases(generate_meta_hotkey_aliases(), "MetaHotKey", ret)
+    generate_display_and_update_aliases(generate_meta_hotkey_aliases(ret), "MetaHotKey", ret)
 
     return ret
 
