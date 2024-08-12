@@ -1,8 +1,8 @@
 import humps
-from itertools import permutations
+import itertools
 from lib import json_pretty_print
 import json
-import string
+# import string
 
 # libraries providing naming style conversion
 # dedicated: pip install pyhumps
@@ -85,8 +85,13 @@ CTRL_HOTKEYS = [
     "C-z",
     "C-\\",
     "C-]",
+    "C-[",
     "C-^",
     "C-_",
+    "C-/",
+    "C-,",
+    "C-.",
+    "C-?",
 ]
 
 CTRL_SHIFT_HOTKEYS = ["C-S-Tab"]
@@ -376,7 +381,8 @@ PREDEFINED_ALIASES_REVERSE_MAP = {
     it: k for k, v in PREDEFINED_ALIASES.items() for it in v
 }
 
-MODIFIER_KEY_COMBOS = ("S-M", "S-C", "C-M", "S-C-M")
+EXTENDED_MODIFIER_KEY_COMBOS = ("S-M", "S-C", "C-M", "S-C-M")
+
 MODIFIER_KEY_LETTER_TO_NAME = {"C": "Ctrl", "S": "Shift", "M": "Meta"}
 
 KEYPAD_SHORTHAND = "KP"
@@ -409,7 +415,7 @@ def generate_all_permutation_hotkeys(key: str):
     ret = []
     prefixes = components[:-1]
     suffix = components[-1]
-    for it in permutations(prefixes):
+    for it in itertools.permutations(prefixes):
         ret.append("-".join(list(it) + [suffix]))
     return ret
 
@@ -627,6 +633,72 @@ def generate_meta_hotkey_aliases(current_aliases:dict):
 
     return ret
 
+def get_modifier_letter_aliases(modkey_letter:str):
+    letter_fullname = MODIFIER_KEY_LETTER_TO_NAME[modkey_letter]
+    predefined_aliases = PREDEFINED_ALIASES.get(letter_fullname, [])
+    ret = [letter_fullname, *predefined_aliases]
+    ret = ret +[f"{it}Key" for it in ret]
+    return ret
+
+
+def generate_hotkey_fullkeys(hotkey:str, hotkey_letters:list[str],connector:str):
+    fullkeys = set([hotkey])
+    for i in range(1, len(hotkey_letters)+1):
+        for letters in itertools.combinations(hotkey_letters, i):
+            product_params = []
+            for it in letters:
+                letter_alias_list = get_modifier_letter_aliases(it)
+                product_params.append(letter_alias_list)
+            
+            source_prefix = connector.join(letters)+ connector
+            for prod_result in itertools.product(*product_params):
+                candidate = hotkey
+                target_prefix = connector.join(prod_result) + connector
+                candidate = candidate.replace(source_prefix, target_prefix)
+                fullkeys.add(candidate)
+    ret = list(fullkeys)
+    return ret
+
+def generate_meta_ctrl_hotkey_aliases():
+    ret = generate_multi_hotkey_aliases(META_CONTROL_HOTKEYS, ['M', 'C'])
+    return ret
+
+def generate_ctrl_shift_hotkey_aliases():
+    ret = generate_multi_hotkey_aliases(CTRL_SHIFT_HOTKEYS, ['S', 'C'])
+    return ret
+
+
+def generate_multi_hotkey_aliases(init_hotkeys:list[str], hotkey_letters:list[str]):
+    ret = {}
+    for key in init_hotkeys:
+        aliases = set()
+        permuted_keys = generate_all_permutation_hotkeys(key)
+        fullkey_list = set()
+        for it in permuted_keys:
+            fullkey_list.update(generate_hotkey_fullkeys(it, hotkey_letters,'-'))
+            fullkey_list.update(generate_hotkey_fullkeys(generate_hotkey_with_plus_connector(it), hotkey_letters, '+'))
+        fullkey_list = list(fullkey_list)
+        for fullkey in fullkey_list:
+            baseform, camelform, kebaform = generate_multiforms(fullkey)
+            candidates = [fullkey, baseform, camelform, kebaform]
+            aliases.update(candidates)
+            for it in candidates:
+                case_aliases = generate_case_aliases(it)
+                aliases.update(case_aliases)
+        hotkey_aliases = list(aliases)
+        hotkey_aliases = filter_invalid_modifier_keys(hotkey_aliases)
+        ret[key] = list(set(hotkey_aliases))
+    return ret
+
+def generate_extended_hotkey_aliases():
+    ret = {}
+    for key_combo, suffix in itertools.product(EXTENDED_MODIFIER_KEY_COMBOS, EXTENDED_KEY_SUFFIXES):
+        hotkey_letters = key_combo.split("-")
+        hotkey = "-".join([key_combo, suffix])
+        aliases = generate_multi_hotkey_aliases([hotkey], hotkey_letters) # type: ignore
+        ret.update(aliases)
+    return ret
+
 
 def generate_all_aliases():
     ret = {}
@@ -637,6 +709,9 @@ def generate_all_aliases():
     generate_display_and_update_aliases(generate_keypadkey_aliases(), "KeypadKey", ret)
     generate_display_and_update_aliases(generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret)
     generate_display_and_update_aliases(generate_meta_hotkey_aliases(ret), "MetaHotKey", ret)
+    generate_display_and_update_aliases(generate_meta_ctrl_hotkey_aliases(), "MetaCtrlHotKey", ret)
+    generate_display_and_update_aliases(generate_ctrl_shift_hotkey_aliases(), "CtrlShiftHotKey", ret)
+    generate_display_and_update_aliases(generate_extended_hotkey_aliases(), "ExtendedHotKey", ret)
 
     return ret
 
