@@ -1,5 +1,6 @@
 from log_utils import logger_print
 from log_utils import pretty
+# from pydantic import BaseModel
 
 # from pydantic import BaseModel
 import argparse
@@ -120,7 +121,6 @@ class ExternalFunctionManager(ArgumentTransformer[T]):
         def decorated_func():
             param = self.parse()
             return func(param)
-
         return decorated_func
 
     def call(self, func: Callable[[T], Any]):
