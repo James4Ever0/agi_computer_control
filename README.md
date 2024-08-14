@@ -44,7 +44,7 @@ Terminal with dark theme and grayscale effects except for the cursor:
 
 ![Cursor highlight](propaganda/grayscale_dark_tmux.png)
 
-You can also have block-styled cursor:
+You can also have a block-styled cursor:
 
 ![Block cursor](propaganda/block_cursor_terminal_screenshot.png)
 
