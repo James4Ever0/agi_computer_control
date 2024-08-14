@@ -1,3 +1,4 @@
+
 from lib import TmuxServer, TmuxSession, TmuxEnvironment
 import threading
 import time
@@ -46,7 +47,9 @@ def write_session_preview_with_cursor_periodically(session: TmuxSession):
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, block_style=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True)
-            preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, block_style=True)
+            # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, cursor_char="_")
+            # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, block_style=True)
+            preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, block_style=True, block_css_style="newDiv.style.borderLeft='1.5px solid red';")
             if preview is None:
                 preview = "Empty preview for session: " + session.name
             with open(PREVIEW_FILEPATH, "w+") as f:

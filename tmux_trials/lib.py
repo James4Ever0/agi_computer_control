@@ -34,10 +34,13 @@ CURSOR_END = "<<<CURSOR_END>>>"
 HEAD = "<head>"
 BODY_END = "</body>"
 
+BLOCK_CSS_STYLE="newDiv.style.backgroundColor = 'red';"
+
 REQUIRED_BINARIES = (ENV, TMUX, TMUXP, AHA)
 
 CURSOR_HTML = "<cursor>"
 CURSOR_END_HTML = "</cursor>"
+CURSOR_CHAR = "|"
 
 HTML_TAG_REGEX = re.compile(r"<[^>]+?>")
 Text = Union[str, bytes]
@@ -232,7 +235,7 @@ def retrieve_pre_lines_from_html(html: Text):
     return ret
 
 
-def render_html_cursor(html: str, block_style:bool, cursor_html=CURSOR_HTML, cursor_end_html = CURSOR_END_HTML):
+def render_html_cursor(html: str, block_style:bool, block_css_style:str, cursor_char:str, cursor_html=CURSOR_HTML, cursor_end_html = CURSOR_END_HTML, ):
     if block_style:
         # force the cursor area has transparent background, and has higher z-index than all
         ret = html.replace(cursor_html, '<span id="cursor" style="background: none !important; position:relative; z-index: 2 !important;">') 
@@ -256,7 +259,7 @@ def render_html_cursor(html: str, block_style:bool, cursor_html=CURSOR_HTML, cur
             newDiv.style.width = rect.width + 'px';
             newDiv.style.height = rect.height + 'px';
             
-            newDiv.style.backgroundColor = 'red'; 
+            '''+block_css_style+'''
             newDiv.style.zIndex=1;
 
             // Add the newly created div directly into body
@@ -267,12 +270,12 @@ def render_html_cursor(html: str, block_style:bool, cursor_html=CURSOR_HTML, cur
     else:
         ret = html.replace(
         cursor_html,
-        '<span style="filter: none !important; color: red !important; font-weight: bold !important;" id="cursor">|</span>',
+        f'<span style="filter: none !important; color: red !important; font-weight: bold !important;" id="cursor">{cursor_char}</span>',
     )
     return ret
 
 
-def wrap_to_html_pre_elem(html: Text, pre_inner_html: str,grayscale:bool, block_style:bool, cursor_render: bool = True):
+def wrap_to_html_pre_elem(html: Text, pre_inner_html: str,grayscale:bool, block_style:bool, block_css_style:str, cursor_char:str, cursor_render: bool = True):
     soup = html_to_soup(html)
     soup.find("pre").extract()  # type: ignore
     ret = str(soup)
@@ -280,7 +283,7 @@ def wrap_to_html_pre_elem(html: Text, pre_inner_html: str,grayscale:bool, block_
         ret = ret.replace(HEAD, HEAD+"<style> span {filter: grayscale(100%);} </style>")
     ret = ret.replace(BODY_END, f"<pre>{pre_inner_html}</pre>"+BODY_END)
     if cursor_render:
-        ret = render_html_cursor(ret,block_style)
+        ret = render_html_cursor(ret,block_style=block_style, block_css_style=block_css_style,cursor_char=cursor_char)
     return ret
 
 
@@ -366,12 +369,11 @@ class TmuxServer:
         self.reset()
 
     def reset(self):
-        exit_code = self.tmux_execute_command("kill-server")
-        ret = exit_code == 0
+        ret = self.tmux_execute_command("kill-server")
         if ret:
             print(f"[+] Server '{self.name}' reset complete")
         else:
-            print(f"[+] Server '{self.name}' reset failed with exit code", exit_code)
+            print(f"[-] Server '{self.name}' reset failed")
         return ret
 
     def create_session(self, name: str, command: str):
@@ -508,8 +510,8 @@ class TmuxSession:
         self.set_option("aggressive-resize", "off")
         self.set_option("window-size", "manual")
 
-    def preview_png(self, show_cursor=False,filename:Optional[str]=None, dark_mode=False,grayscale=False, block_style=False):
-        html=self.preview_html(show_cursor=show_cursor, wrap_html=True, dark_mode=dark_mode, grayscale=grayscale, block_style=block_style)
+    def preview_png(self, show_cursor=False,filename:Optional[str]=None, dark_mode=False,grayscale=False, block_style=False, cursor_char=CURSOR_CHAR,block_css_style=BLOCK_CSS_STYLE):
+        html=self.preview_html(show_cursor=show_cursor, wrap_html=True, dark_mode=dark_mode, grayscale=grayscale, block_style=block_style, cursor_char=cursor_char, block_css_style=block_css_style)
         png_bytes = html_to_png(html)
         if filename:
             with open(filename, 'wb') as f:
@@ -527,7 +529,7 @@ class TmuxSession:
         ret = ansi_to_html(ret, dark_mode)
         return ret
 
-    def preview_html(self, show_cursor=False, wrap_html=False, dark_mode=False, grayscale=False, block_style=False):
+    def preview_html(self, show_cursor=False, wrap_html=False, dark_mode=False, grayscale=False, block_style=False, cursor_char=CURSOR_CHAR,block_css_style=BLOCK_CSS_STYLE):
         html_bytes = self.preview_html_bytes(dark_mode)
         pre_lines = retrieve_pre_lines_from_html(html_bytes)
         if show_cursor:
@@ -559,7 +561,7 @@ class TmuxSession:
                 pre_lines[y] = merged_line
         ret = NEWLINE.join(pre_lines)
         if wrap_html:
-            ret = wrap_to_html_pre_elem(html_bytes, ret, grayscale=grayscale,block_style=block_style)
+            ret = wrap_to_html_pre_elem(html_bytes, ret, cursor_char=cursor_char, block_css_style=block_css_style, grayscale=grayscale,block_style=block_style)
         return ret
 
     def get_cursor_coordinates(self):
