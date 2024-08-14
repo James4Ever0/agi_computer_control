@@ -16,6 +16,8 @@ from PIL import Image
 # size: 2232x1456
 # saved size: 2232x1456
 
+# TODO: get current cursor state (text input? loading? etc) and render cursor in different icons
+
 
 def convert_cursor_in_red(cursor: ImageClass):
     red = (255, 0, 0)

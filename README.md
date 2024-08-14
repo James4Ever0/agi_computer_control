@@ -1,4 +1,4 @@
-![Cybergod logo](propaganda/logos/cybergod_2.png)
+<div align="center"><img src="propaganda/logos/cybergod_2.png?v=1&type=image)" alt="Cybergod logo"></div>
 
 <!-- https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-4d2b-835d-0ffc9a5a458e -->
 
