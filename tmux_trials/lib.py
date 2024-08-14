@@ -530,10 +530,10 @@ class TmuxSession:
         return ret
 
     def preview_html(self, show_cursor=False, wrap_html=False, dark_mode=False, grayscale=False, block_style=False, cursor_char=CURSOR_CHAR,block_css_style=BLOCK_CSS_STYLE):
+        has_cursor, (x, y) = self.get_cursor_coordinates()
         html_bytes = self.preview_html_bytes(dark_mode)
         pre_lines = retrieve_pre_lines_from_html(html_bytes)
         if show_cursor:
-            has_cursor, (x, y) = self.get_cursor_coordinates()
             if has_cursor:
                 cursor_line_html = pre_lines[y]
                 print("[*] Cursor line html:", cursor_line_html)
@@ -579,9 +579,9 @@ class TmuxSession:
         return has_cursor, coordinates
 
     def preview(self, show_cursor=False,block_style=False):
+        has_cursor, (x, y) = self.get_cursor_coordinates()
         content_bytes = self.preview_bytes()
         if show_cursor:
-            has_cursor, (x, y) = self.get_cursor_coordinates()
             if has_cursor:
                 content_byte_lines = content_bytes.splitlines()
                 cursor_line_bytes = content_byte_lines[y]
