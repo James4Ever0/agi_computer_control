@@ -44,6 +44,10 @@ Terminal with dark theme and grayscale effects except for the cursor:
 
 ![Cursor highlight](propaganda/grayscale_dark_tmux.png)
 
+You can also have block-styled cursor:
+
+![Block cursor](propaganda/block_cursor_terminal_screenshot.png)
+
 ---
 
 For GUI, Cybergod can render cursor correctly on given position. Code can be found [here](the_frozen_forest_intro/render_cursor_on_image.py).
