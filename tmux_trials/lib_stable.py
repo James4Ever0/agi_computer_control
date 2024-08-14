@@ -30,14 +30,12 @@ NEWLINE_BYTES = NEWLINE.encode(ENCODING)
 CMDLIST_EXECUTE_TIMEOUT = 10
 
 CURSOR = "<<<CURSOR>>>"
-CURSOR_END = "<<<CURSOR_END>>>"
 HEAD = "<head>"
 BODY_END = "</body>"
 
 REQUIRED_BINARIES = (ENV, TMUX, TMUXP, AHA)
 
 CURSOR_HTML = "<cursor>"
-CURSOR_END_HTML = "</cursor>"
 
 HTML_TAG_REGEX = re.compile(r"<[^>]+?>")
 Text = Union[str, bytes]
@@ -90,10 +88,10 @@ def html_unescape(content: Text):
 
 
 def line_with_cursor_to_html(
-    line_with_cursor: Text, cursor: str, cursor_html=CURSOR_HTML, cursor_end_html = CURSOR_END_HTML
+    line_with_cursor: Text, cursor: str, cursor_html=CURSOR_HTML
 ):
     escaped_line = html_escape(line_with_cursor)
-    ret = escaped_line.replace(cursor, cursor_html,1).replace(cursor, cursor_end_html,1)
+    ret = escaped_line.replace(cursor, cursor_html)
     return ret
 
 
@@ -143,18 +141,6 @@ def tag_diff(source_with_tag: str) -> list[str]:
             ret.extend(diff_gen(it, " "))
     return ret
 
-def get_original_char_index_in_diff_by_original_index(difflist:list[str], origin_index:int):
-    counter = 0
-    ret = 0
-    for index, it in enumerate(difflist):
-        ret = index
-        if counter == origin_index:
-            break
-        if it.startswith(" "):
-            counter += 1
-    if ret <origin_index:
-        ret = -1
-    return ret
 
 def line_merger(line_with_cursor: str, line_with_span: str):
     # def line_merger(source_line: str, line_with_cursor: str, line_with_span: str):
@@ -163,47 +149,24 @@ def line_merger(line_with_cursor: str, line_with_span: str):
     cursor_diff = tag_diff(line_with_cursor)
     print("[*] Cursor diff:", cursor_diff)
     cursor_insert_index = cursor_diff.index("+ <")
-    cursor_end_index = len(cursor_diff) - list(reversed(cursor_diff)).index("+ >") - 1
+    cursor_end_index = cursor_diff.index("+ >")
     cursor = line_with_cursor[cursor_insert_index : cursor_end_index + 1]
-    cursor_range_diff = cursor_diff[cursor_insert_index : cursor_end_index+1]
-    is_block_cursor = cursor_range_diff.count("+ <") == 2
-    cursor_ingested_chars = [it for it in cursor_range_diff if it.startswith(" ")]
-    block_cursor_ingested_char_count = len(cursor_ingested_chars)
     # span_diff = list(differ.compare(source_line, line_with_span))
     span_diff = tag_diff(line_with_span)
     print("[*] Span diff:", span_diff)
-    if is_block_cursor:
-        if block_cursor_ingested_char_count == 1:
-            print("[*] Origin index:", cursor_insert_index)
-            span_diff_ingested_char_index = get_original_char_index_in_diff_by_original_index(span_diff,cursor_insert_index)
-            span_diff_chars=[it[2] for it in span_diff]
-            print("[*] Span diff ingested char index:", span_diff_ingested_char_index)
-            print("[*] Span diff char count:", len(span_diff_chars))
-            if span_diff_ingested_char_index==-1:
-                print("[*] Appending cursor to the end.")
-                span_diff_chars.append(cursor)
-            else:
-                print("[*] Replacing cursor at span diff char #"+str(span_diff_ingested_char_index))
-                span_diff_chars[span_diff_ingested_char_index]=cursor
-            ret = "".join(span_diff_chars)
-        elif block_cursor_ingested_char_count == 0:
-            raise Exception("Error merging block cursor with zero ingested char count.")
-        else:
-            raise Exception("Error merging block cursor with abnormal ingested char count:", block_cursor_ingested_char_count)
-    else:
-        cursor_inserted = False
-        original_char_index = 0
-        ret = ""
-        for it in span_diff:
-            if original_char_index == cursor_insert_index:
-                if not cursor_inserted:
-                    cursor_inserted = True
-                    ret += cursor
-            if it.startswith(" "):
-                original_char_index += 1
-            ret += it[-1]
-        if cursor_inserted == False:
-            ret += cursor
+    cursor_inserted = False
+    original_char_index = 0
+    ret = ""
+    for it in span_diff:
+        if original_char_index == cursor_insert_index:
+            if not cursor_inserted:
+                cursor_inserted = True
+                ret += cursor
+        if it.startswith(" "):
+            original_char_index += 1
+        ret += it[-1]
+    if cursor_inserted == False:
+        ret += cursor
     return ret
 
 
@@ -232,47 +195,15 @@ def retrieve_pre_lines_from_html(html: Text):
     return ret
 
 
-def render_html_cursor(html: str, block_style:bool, cursor_html=CURSOR_HTML, cursor_end_html = CURSOR_END_HTML):
-    if block_style:
-        # force the cursor area has transparent background, and has higher z-index than all
-        ret = html.replace(cursor_html, '<span id="cursor" style="background: none !important; position:relative; z-index: 2 !important;">') 
-        ret = ret.replace(cursor_end_html, '</span>')
-        # use javascript to place a red div with the same size of the cursor area, in between the cursor span and pre elem
-        ret = ret.replace(HEAD, HEAD+'''<script>
-        // Wait for the page to load
-        window.addEventListener('load', function() {
-        // Get element by ID 'cursor'
-        var cursorElement = document.getElementById('cursor');
-        
-        if(cursorElement) {
-            // Get position, width and height of the element
-            var rect = cursorElement.getBoundingClientRect();
-            
-            // Create a new div with red background
-            var newDiv = document.createElement('div');
-            newDiv.style.position = 'absolute';
-            newDiv.style.left = rect.left + 'px';
-            newDiv.style.top = rect.top + 'px';
-            newDiv.style.width = rect.width + 'px';
-            newDiv.style.height = rect.height + 'px';
-            
-            newDiv.style.backgroundColor = 'red'; 
-            newDiv.style.zIndex=1;
-
-            // Add the newly created div directly into body
-            document.body.appendChild(newDiv);
-        }
-        });
-        </script>'''.lstrip())
-    else:
-        ret = html.replace(
-        cursor_html,
-        '<span style="filter: none !important; color: red !important; font-weight: bold !important;" id="cursor">|</span>',
+def render_html_cursor(html: str):
+    ret = html.replace(
+        "<cursor>",
+        '<span style="filter: grayscale(0%) !important; color: red !important; font-weight: bold !important;">|</span>',
     )
     return ret
 
 
-def wrap_to_html_pre_elem(html: Text, pre_inner_html: str,grayscale:bool, block_style:bool, cursor_render: bool = True):
+def wrap_to_html_pre_elem(html: Text, pre_inner_html: str,grayscale:bool, cursor_render: bool = True):
     soup = html_to_soup(html)
     soup.find("pre").extract()  # type: ignore
     ret = str(soup)
@@ -280,7 +211,7 @@ def wrap_to_html_pre_elem(html: Text, pre_inner_html: str,grayscale:bool, block_
         ret = ret.replace(HEAD, HEAD+"<style> span {filter: grayscale(100%);} </style>")
     ret = ret.replace(BODY_END, f"<pre>{pre_inner_html}</pre>"+BODY_END)
     if cursor_render:
-        ret = render_html_cursor(ret,block_style)
+        ret = render_html_cursor(ret)
     return ret
 
 
@@ -289,42 +220,26 @@ def decode_bytes(_bytes: bytes, errors="ignore"):
     return ret
 
 
-def insert_cursor(content: Text, x: int, block_style:bool, cursor=CURSOR, cursor_end=CURSOR_END):
+def insert_cursor(content: Text, x: int, cursor=CURSOR):
     _bytes = ensure_bytes(content)
     ret = b""
     cursor_bytes = cursor.encode(ENCODING)
-    cursor_end_bytes = cursor_end.encode(ENCODING)
     try:
         line = decode_bytes(_bytes, errors="replace")
         char_index = 0
         for index, it in enumerate(line):
             if char_index >= x:
-                if len(line)<index:
-                    line+=" "*(len(line)-index)
-                if block_style:
-                    if len(line)<index+1:
-                        line+=" "
-                    ret = line[:index] + cursor + line[index] + cursor_end + line[index+1:]
-                else:
-                    ret = line[:index] + cursor + line[index:]
+                ret = line[:index] + cursor + line[index:]
                 ret = ret.encode(ENCODING)
                 break
             char_width = wcswidth(it)
             char_index += char_width
         if ret == b"":
-            if block_style:
-                ret=_bytes+cursor_bytes+b" " +cursor_end_bytes
-            else:
-                ret = _bytes + cursor_bytes
+            ret = _bytes + cursor_bytes
     except UnicodeDecodeError:
         print("[-] Failed to decode line while inserting cursor:", _bytes)
         print("[*] Falling back to bytes insert mode")
-        if block_style:
-            if len(_bytes)<x+1:
-                _bytes+=b" "*(x+1-len(_bytes))
-            ret = _bytes[:x] + cursor_bytes + bytes([_bytes[x]]) + cursor_end_bytes + _bytes[x+1:]
-        else:
-            ret = _bytes[:x] + cursor_bytes + _bytes[x:]
+        ret = _bytes[:x] + cursor_bytes + _bytes[x:]
     return ret
 
 
@@ -508,8 +423,8 @@ class TmuxSession:
         self.set_option("aggressive-resize", "off")
         self.set_option("window-size", "manual")
 
-    def preview_png(self, show_cursor=False,filename:Optional[str]=None, dark_mode=False,grayscale=False, block_style=False):
-        html=self.preview_html(show_cursor=show_cursor, wrap_html=True, dark_mode=dark_mode, grayscale=grayscale, block_style=block_style)
+    def preview_png(self, show_cursor=False,filename:Optional[str]=None, dark_mode=False,grayscale=False):
+        html=self.preview_html(show_cursor=show_cursor, wrap_html=True, dark_mode=dark_mode, grayscale=grayscale)
         png_bytes = html_to_png(html)
         if filename:
             with open(filename, 'wb') as f:
@@ -527,7 +442,7 @@ class TmuxSession:
         ret = ansi_to_html(ret, dark_mode)
         return ret
 
-    def preview_html(self, show_cursor=False, wrap_html=False, dark_mode=False, grayscale=False, block_style=False):
+    def preview_html(self, show_cursor=False, wrap_html=False, dark_mode=False, grayscale=False):
         html_bytes = self.preview_html_bytes(dark_mode)
         pre_lines = retrieve_pre_lines_from_html(html_bytes)
         if show_cursor:
@@ -543,7 +458,7 @@ class TmuxSession:
                 print("[*] Cursor line:", cursor_line)
                 uuid_cursor = uuid_generator()
                 cursor_line_bytes_with_uuid_cursor = insert_cursor(
-                    cursor_line, x, cursor=uuid_cursor, cursor_end=uuid_cursor, block_style=block_style
+                    cursor_line, x, uuid_cursor
                 )
                 print("[*] Inserting cursor:", cursor_line_bytes_with_uuid_cursor)
                 cursor_line_html_with_cursor = line_with_cursor_to_html(
@@ -559,7 +474,7 @@ class TmuxSession:
                 pre_lines[y] = merged_line
         ret = NEWLINE.join(pre_lines)
         if wrap_html:
-            ret = wrap_to_html_pre_elem(html_bytes, ret, grayscale=grayscale,block_style=block_style)
+            ret = wrap_to_html_pre_elem(html_bytes, ret, grayscale)
         return ret
 
     def get_cursor_coordinates(self):
@@ -576,14 +491,14 @@ class TmuxSession:
             has_cursor = True
         return has_cursor, coordinates
 
-    def preview(self, show_cursor=False,block_style=False):
+    def preview(self, show_cursor=False):
         content_bytes = self.preview_bytes()
         if show_cursor:
             has_cursor, (x, y) = self.get_cursor_coordinates()
             if has_cursor:
                 content_byte_lines = content_bytes.splitlines()
                 cursor_line_bytes = content_byte_lines[y]
-                content_byte_lines[y] = insert_cursor(cursor_line_bytes, x, block_style=block_style)
+                content_byte_lines[y] = insert_cursor(cursor_line_bytes, x)
                 content_bytes = NEWLINE_BYTES.join(content_byte_lines)
         ret = decode_bytes(content_bytes)
         return ret

@@ -38,11 +38,15 @@ def write_session_preview_with_cursor_periodically(session: TmuxSession):
     while True:
         try:
             # preview = session.preview(show_cursor=True)
+            # preview = session.preview(show_cursor=True, block_style=True)
             # preview = session.preview_html(show_cursor=False)
             # preview = session.preview_html(show_cursor=True)
+            # preview = session.preview_html(show_cursor=True, block_style=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True)
-            preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True)
+            # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, block_style=True)
+            # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True)
+            preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, block_style=True)
             if preview is None:
                 preview = "Empty preview for session: " + session.name
             with open(PREVIEW_FILEPATH, "w+") as f:
