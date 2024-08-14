@@ -48,6 +48,10 @@ You can also have a block-styled cursor:
 
 ![Block cursor](propaganda/block_cursor_terminal_screenshot.png)
 
+Change the cursor character to underline:
+
+![Underline cursor char](propaganda/custom_cursor_char.png)
+
 ---
 
 For GUI, Cybergod can render cursor correctly on given position. Code can be found [here](the_frozen_forest_intro/render_cursor_on_image.py).
