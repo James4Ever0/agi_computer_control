@@ -10,6 +10,8 @@
     </a>
 </p>
 
+[Why](https://github.com/James4Ever0/notes/blob/master/The%20reason%20why%20you%20build%20cybergod.md) I build this? (and probably would you)
+
 ## Disclamer
 
 This repo is mostly in [Python](https://github.com/James4Ever0/agi_computer_control/search?l=python) and [Bash](https://github.com/James4Ever0/agi_computer_control/search?l=shell). Github stats are misleading.
