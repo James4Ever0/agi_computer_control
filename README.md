@@ -14,7 +14,7 @@
 
 ## Disclamer
 
-This repo is mostly in [Python](https://github.com/James4Ever0/agi_computer_control/search?l=python) and [Bash](https://github.com/James4Ever0/agi_computer_control/search?l=shell). Github stats are misleading.
+This repo is mostly in [Python](https://github.com/James4Ever0/agi_computer_control/search?l=python) and [Bash](https://github.com/James4Ever0/agi_computer_control/search?l=shell). Github programming language stats are misleading.
 
 ## Demo
 
