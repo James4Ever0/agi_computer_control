@@ -12,10 +12,6 @@
 
 [Why](https://github.com/James4Ever0/notes/blob/master/The%20reason%20why%20you%20build%20cybergod.md) I build this? (and probably would you)
 
-## Disclamer
-
-This repo is mostly in [Python](https://github.com/James4Ever0/agi_computer_control/search?l=python) and [Bash](https://github.com/James4Ever0/agi_computer_control/search?l=shell). Github programming language stats are misleading.
-
 ## Demo
 
 Built on top of [`tmux`](https://github.com/tmux/tmux) and many other libraries, Cybergod is capable of understanding and interacting terminal interface with both text-only and multimodal modes. With the help of [`wcwidth`](https://github.com/jquast/wcwidth), cursor is placed precisely at the right position even if there are multi-width unicode chars (CJK characters for example).
