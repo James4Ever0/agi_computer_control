@@ -1,4 +1,5 @@
 # from remote_socket import SocketServer
+import time
 from naive_actor import NaiveActor, run_naive
 from contextlib import contextmanager
 
@@ -21,6 +22,7 @@ class RelayActor(NaiveActor):
     
     def log_read_bytes(self, content):
         if content:
+            print("[*] Receive bytes at:", time.time())
             super().log_read_bytes(content)
 
     @contextmanager
