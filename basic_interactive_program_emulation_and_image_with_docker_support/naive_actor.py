@@ -534,7 +534,7 @@ class AbstractActor(ABC):
 
 
 def run_naive(cls):
-    actor = cls(f"{sys.executable} naive_interactive.py")
+    actor = cls(os.environ.get("INIT_CLI", f"{sys.executable} naive_interactive.py"))
     actor.run()
 
 class NaiveActor(AbstractActor):

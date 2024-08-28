@@ -1,0 +1,6 @@
+session_name: naive_tmux_session
+windows:
+  - panes:
+      - "bash test_tmux_with_naive_actor.sh"
+      - "sleep 7; env TMUX='' tmux attach -t naive_interactive_session"
+    layout: even-horizontal
