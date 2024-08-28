@@ -62,6 +62,12 @@ It even has an augmented mode (red on grey), just like the terminal.
 
 ![GUI Augmented](propaganda/gui_screenshot_augmented.png)
 
+---
+
+Now you can view the input/output statistics of the terminal environment, including the number of characters, words, lines, and the time spent on each operation (TO BE IMPLEMENTED).
+
+![Tmux stats](./propaganda/naive_tmux.gif)
+
 ## Usage
 
 ### Terminal environment integration
