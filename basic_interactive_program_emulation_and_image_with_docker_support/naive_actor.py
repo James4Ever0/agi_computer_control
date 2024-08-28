@@ -482,7 +482,7 @@ class AbstractActor(ABC):
 
     def loop(self):
         self.read()
-        self.write(NaiveVocab.generate())
+        self.write(NaiveVocab.generate()) # let's not
         return True
 
     def init_check(self):
