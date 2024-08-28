@@ -6,6 +6,8 @@ import traceback
 import sys
 import os
 from io import TextIOWrapper
+import string
+import random
 
 SERVER_NAME = "test_server"
 SESSION_NAME = "test_session"
@@ -42,14 +44,14 @@ def write_session_preview_with_cursor_periodically(session: TmuxSession):
             # preview = session.preview(show_cursor=True, block_style=True)
             # preview = session.preview_html(show_cursor=False)
             # preview = session.preview_html(show_cursor=True)
-            # preview = session.preview_html(show_cursor=True, block_style=True)
+            preview = session.preview_html(show_cursor=True, block_style=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, block_style=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True)
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, cursor_char="_")
             # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, block_style=True)
-            preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, block_style=True, block_css_style="newDiv.style.borderLeft='1.5px solid red';")
+            # preview = session.preview_html(show_cursor=True,wrap_html=True, dark_mode=True, grayscale=True, block_style=True, block_css_style="newDiv.style.borderLeft='1.5px solid red';")
             if preview is None:
                 preview = "Empty preview for session: " + session.name
             with open(PREVIEW_FILEPATH, "w+") as f:
@@ -63,10 +65,16 @@ def write_session_preview_with_cursor_periodically(session: TmuxSession):
             time.sleep(PREVIEW_INTERVAL)
 
 
+def generate_random_keys():
+    ret = "".join([random.choice(string.ascii_letters) for _ in range(10)])
+    return ret
+
 def test_key_inputs(env: TmuxEnvironment):
     while True:
         print("[*] Sending test keys...")
-        env.send_key("date")
+        # env.send_key("date")
+        random_keys = generate_random_keys()
+        env.send_key(random_keys)
         env.send_key("Enter")
         time.sleep(SEND_KEY_INTERVAL)
 

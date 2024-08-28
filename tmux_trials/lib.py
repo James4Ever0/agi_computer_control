@@ -187,7 +187,10 @@ def line_merger(line_with_cursor: str, line_with_span: str):
                 span_diff_chars.append(cursor)
             else:
                 print("[*] Replacing cursor at span diff char #"+str(span_diff_ingested_char_index))
-                span_diff_chars[span_diff_ingested_char_index]=cursor
+                try:
+                    span_diff_chars[span_diff_ingested_char_index]=cursor
+                except IndexError:
+                    span_diff_chars.insert(span_diff_ingested_char_index, cursor)
             ret = "".join(span_diff_chars)
         elif block_cursor_ingested_char_count == 0:
             raise Exception("Error merging block cursor with zero ingested char count.")
