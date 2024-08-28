@@ -68,6 +68,8 @@ Now you can view the input/output statistics of the terminal environment, includ
 
 With terminal stats, one can build a more efficient event-driven terminal agent, for example, listen for event `TerminalIdle` just like `NetworkIdle` in Playwright, and interval-driven terminal agent can be more intelligent by adding statistics to the prompt, and conditional prompts based on different stats.
 
+More can be learned at [here](./basic_interactive_program_emulation_and_image_with_docker_support/run_and_view_tmux_with_naive_actor.sh).
+
 ![Tmux stats](./propaganda/naive_tmux.gif)
 
 ## Usage
