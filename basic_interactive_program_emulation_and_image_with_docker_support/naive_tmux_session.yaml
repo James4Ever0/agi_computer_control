@@ -3,4 +3,5 @@ windows:
   - panes:
       - "bash test_tmux_with_naive_actor.sh"
       - "sleep 7; env TMUX='' tmux attach -t naive_interactive_session"
+      - "sleep 7; env TMUX='' COLUMNS=100 LINES=30 INIT_CLI='tmux attach -t naive_interactive_session' conda run -n cybergod --no-capture-output python3 relay_statistics_actor.py"
     layout: even-horizontal

@@ -348,6 +348,7 @@ class AbstractActor(ABC):
         self.max_loop_time = 3
         self.init_alive_time = 2
         self.max_init_time = 12
+        self.mute = False
         self.max_rwtime = 0.5
         # self.timeout = 0.2 # equivalent to wexpect
         # self.timeout = 0.001
@@ -415,10 +416,14 @@ class AbstractActor(ABC):
         else:
             sep = b"\n...\n"
         content = sep.join([head_content, tail_content])
+        self.log_read_bytes(content)
 
-        print("read:", get_repr(content), sep="\t")
         self.read_bytes += read_byte_len
         return content
+    
+    def log_read_bytes(self, content):
+        if not self.mute:
+            print("read:", get_repr(content), sep="\t")
 
     def print_stats(self):
         stats = self.stats
@@ -508,7 +513,8 @@ class AbstractActor(ABC):
         access_time = heartbeat_base(
             uuid=actor_uuid, action="heartbeat", pid=current_pid, role="client"
         )
-        print("beat at:", access_time)
+        if not self.mute:
+            print("beat at:", access_time)
         return True
 
     def run(self):
@@ -524,7 +530,8 @@ class AbstractActor(ABC):
         while self.heartbeat():
             loop = self.loop()
             if loop is True:
-                print(f"[loop\t{str(self.loop_count)}]".center(60, "-"))
+                if not self.mute:
+                    print(f"[loop\t{str(self.loop_count)}]".center(60, "-"))
                 self.loop_count += 1
             else:
                 break
