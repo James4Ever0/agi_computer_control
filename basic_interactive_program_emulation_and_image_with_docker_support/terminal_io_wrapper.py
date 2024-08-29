@@ -56,8 +56,8 @@ def main():
         # print('[*] Average bytes received in the last five seconds:', five_seconds_avg)
         # print('[*] Average bytes received in the last three seconds:', three_seconds_avg)
         # print('[*] Average bytes received in the last second:', one_second_avg)
-        if ten_seconds_avg > 0:
-        # if five_seconds_avg > 0:
+        # if ten_seconds_avg > 0:
+        if five_seconds_avg > 0:
             if terminal_idle:
                 terminal_idle = False
                 print('[*] TerminalActive event fired!')

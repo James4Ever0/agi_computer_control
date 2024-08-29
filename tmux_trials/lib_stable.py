@@ -306,6 +306,7 @@ class TmuxServer:
 
     def create_env(self, name: str, command: str):
         session = self.create_session(name, command)
+    # count = 0
         if session:
             ret = TmuxEnvironment(session)
             print("[+] Tmux env created")

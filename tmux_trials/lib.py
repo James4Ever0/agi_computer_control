@@ -391,6 +391,9 @@ class TmuxServer:
     def set_session_option(self, name: str, key: str, value: str):
         self.tmux_execute_command(f"set-option -t {name} {key} {value}")
 
+    def resize_session_size(self, name:str, x:int, y:int):
+        self.tmux_execute_command(f"resize-window -t {name} -x {x} -y {y}")
+
     def kill_session(self, name: str):
         self.tmux_execute_command(f"kill-session -t {name}")
 
@@ -494,6 +497,8 @@ class TmuxSession:
     ):
         self.name = name
         self.server = server
+        self.width = width
+        self.height = height
         if kill_existing:
             print(f"[*] Killing session '{name}' before creation")
             server.kill_session(name)
@@ -596,6 +601,12 @@ class TmuxSession:
     def kill(self):
         self.server.kill_session(self.name)
         del self
+
+    def resize(self, x:int, y:int):
+        self.server.resize_session_size(self.name, x ,y)
+    
+    def resize_to_default(self):
+        self.resize(self.width, self.height)
 
     def set_option(self, key: str, value: str):
         self.server.set_session_option(self.name, key, value)
@@ -726,6 +737,7 @@ class TmuxSessionViewer:
         window["panes"].append(dict(shell_command=cmd, name=pane_name))
 
     def view(self, view_only=False):
+        self.session.resize_to_default()
         pane_name = "VIEW_EDIT" if not view_only else "VIEW_ONLY"
         self.add_viewer_pane(pane_name, view_only=view_only)
         self.server.apply_manifest(self.manifest, attach=True)

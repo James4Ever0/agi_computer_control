@@ -1,6 +1,6 @@
 session_name: test_terminal_io_wrapper
 windows:
   - panes:
-      - "env TMUX='' bash -c 'tmux new-session -s test_tmux  -x 80 -y 25 -d; tmux set-option -t test_tmux prefix None; tmux set-option -t test_tmux prefix2 None; tmux set-option -t test_tmux status off; tmux set-option -t test_tmux aggressive-resize off; tmux set-option -t test_tmux window-size manual; tmux resize-window -t test_tmux -x 80 -y 25; tmux attach -t test_tmux'"
-      - "sleep 7; env TMUX='' conda run -n cybergod --no-capture-output python3 terminal_io_wrapper.py"
+      - "env TMUX='' bash -c 'tmux new-session -s test_tmux -x 80 -y 25 -d; tmux set-option -t test_tmux prefix None; tmux set-option -t test_tmux prefix2 None; tmux set-option -t test_tmux status off; tmux set-option -t test_tmux aggressive-resize off; tmux set-option -t test_tmux window-size manual; tmux resize-window -t test_tmux -x 80 -y 25; tmux attach -t test_tmux'"
+      - "sleep 3; env TMUX='' conda run -n cybergod --no-capture-output python3 terminal_io_wrapper.py"
     layout: even-horizontal
