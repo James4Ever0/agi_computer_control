@@ -66,13 +66,15 @@ It even has an augmented mode (red on grey), just like the terminal.
 
 Now you can view the input/output statistics of the terminal environment, including the number of characters, words, lines, and the time spent on each operation (TO BE IMPLEMENTED).
 
-With terminal stats, one can build a more efficient event-driven terminal agent, for example, listen for event `TerminalIdle` just like `NetworkIdle` in Playwright, and interval-driven terminal agent can be more intelligent by adding statistics to the prompt, and conditional prompts based on different stats.
-
 ![Tmux stats](./propaganda/naive_tmux.gif)
 
 Furthermore, any Tmux session can be attached by the statistic collector (as displayed in the third pane below), with readable byte counts and time information.
 
 ![Tmux attachable](./propaganda/naive_tmux_triple.gif)
+
+With terminal stats, one can build a more efficient event-driven terminal agent, for example, listen for event `TerminalIdle` just like `NetworkIdle` in Playwright, and interval-driven terminal agent can be more intelligent by adding statistics to the prompt, and conditional prompts based on different stats.
+
+![Tmux event](./propaganda/tmux_event.gif)
 
 More can be learned at [here](./basic_interactive_program_emulation_and_image_with_docker_support/run_and_view_tmux_with_naive_actor.sh).
 
