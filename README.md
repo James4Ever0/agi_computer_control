@@ -76,7 +76,7 @@ With terminal stats, one can build a more efficient event-driven terminal agent,
 
 ![Tmux event](./propaganda/tmux_event.gif)
 
-More can be learned at [here](./basic_interactive_program_emulation_and_image_with_docker_support/run_and_view_tmux_with_naive_actor.sh).
+More can be learned at [here](./basic_interactive_program_emulation_and_image_with_docker_support/run_and_view_tmux_with_naive_actor.sh) and [here](./basic_interactive_program_emulation_and_image_with_docker_support/test_terminal_io_wrapper.sh).
 
 ## Usage
 
