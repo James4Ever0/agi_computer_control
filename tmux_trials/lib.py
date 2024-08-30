@@ -1,4 +1,4 @@
-from typing import Optional, Iterable, TypedDict
+from typing import Optional, Iterable, TypedDict, Callable
 from wcwidth import wcswidth
 import subprocess
 import os
@@ -9,6 +9,29 @@ import json
 from tempfile import NamedTemporaryFile
 import uuid
 from playwright.sync_api import sync_playwright
+import pexpect
+import threading
+from pyventus import AsyncIOEventEmitter
+
+class TerminalEvent:
+    active = 'TerminalActive'
+    idle = 'TerminalIdle'
+
+class EventManager:
+    def __init__(self):
+        self.emitter = AsyncIOEventEmitter()
+        self.event_linker = self.emitter._event_linker
+    
+    def on(self, event_name:str, callback:Callable):
+        self.event_linker.on(event_name)(callback)
+    
+    def emit_classic(self, event, *args, **kwargs):
+        self.emitter.emit(event, *args, **kwargs)
+    
+    def emit(self, event, *args, **kwargs):
+        if type(event) == str:
+            args = (event, *args)
+        self.emit_classic(event, *args, **kwargs)
 
 # import difflib
 import html
@@ -664,6 +687,17 @@ class TmuxEnvironment:
     def __init__(self, session: TmuxSession):
         self.session = session
         self.server = session.server
+        self.initialize_event_listener()
+
+    def initialize_event_listener(self):
+        self.event_manager = EventManager()
+        self.terminal_idle = True
+
+    def on_active(self, callback:Callable):
+        self.event_manager.on(TerminalEvent.active, callback)
+    
+    def on_idle(self, callback:Callable):
+        self.event_manager.on(TerminalEvent.idle, callback)
 
     def send_key_list(self, key_list: list[str]):
         command_list = ["send-keys", "-t", self.session.name, *key_list]

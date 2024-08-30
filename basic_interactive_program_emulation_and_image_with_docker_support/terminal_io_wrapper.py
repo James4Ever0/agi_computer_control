@@ -4,6 +4,44 @@ import pexpect
 import time
 import threading
 import numpy as np
+from typing import Callable
+# from eventemitter import EventEmitter # alternative: pyventus
+# ref: https://github.com/asyncdef/eventemitter
+
+from pyventus import AsyncIOEventEmitter
+
+class EventManager:
+    def __init__(self):
+        self.emitter = AsyncIOEventEmitter()
+        self.event_linker = self.emitter._event_linker
+    
+    def on(self, event_name:str, callback:Callable):
+        self.event_linker.on(event_name)(callback)
+    
+    def emit_classic(self, event, *args, **kwargs):
+        self.emitter.emit(event, *args, **kwargs)
+    
+    def emit(self, event, *args, **kwargs):
+        if type(event) == str:
+            args = (event, *args)
+        self.emit_classic(event, *args, **kwargs)
+
+eventManager = EventManager()
+# @EventLinker.on('TerminalActive', 'TerminalIdle')
+def naive_event_callback(name):
+    print(f'[*] Event <{name}> received')
+
+def second_naive_event_callback(name):
+    print(f"[*] Event <{name}> received by the second listener")
+
+# emitter.on('TerminalActive', naive_event_callback)
+# emitter.on('TerminalIdle', naive_event_callback)
+# or you can implement it yourself.
+
+eventManager.on('TerminalIdle', naive_event_callback)
+eventManager.on('TerminalIdle', second_naive_event_callback)
+eventManager.on('TerminalActive', naive_event_callback)
+eventManager.on('TerminalActive', second_naive_event_callback)
 
 TMUX_SESSION_NAME='test_tmux'
 
@@ -32,7 +70,6 @@ def main():
     read_thread = threading.Thread(target=read_bytes_from_proc_and_update_stats, args=(proc, stats), daemon=True)
     read_thread.start()
 
-
     datapoints = []
 
     maxpoints = 10
@@ -60,12 +97,15 @@ def main():
         if five_seconds_avg > 0:
             if terminal_idle:
                 terminal_idle = False
-                print('[*] TerminalActive event fired!')
+                print('[*] Emitting event: TerminalActive')
+                eventManager.emit('TerminalActive')
         else:
             if not terminal_idle:
                 terminal_idle = True
-                print('[*] TerminalIdle event fired!')
+                print('[*] Emitting event: TerminalIdle')
+                eventManager.emit('TerminalIdle')
     print('[*] Process exited with status code:', proc.status)
 
 if __name__ == '__main__':
+    print('[*] Running terminal activity listener')
     main()
