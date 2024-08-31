@@ -771,8 +771,8 @@ class TmuxSession:
         else:
             print("[-] No info for session:", self.name)
 
-    def create_viewer(self):
-        ret = TmuxSessionViewer(self)
+    def create_viewer(self, *args, **kwargs):
+        ret = TmuxSessionViewer(self, *args, **kwargs)
         return ret
 
     def view(self):
@@ -979,7 +979,7 @@ class TmuxEnvironment:
         self.watcher.watch_in_background()
 
     @property
-    def io_stats(self):
+    def stats(self):
         return self.watcher.stats
 
     def wait_for_idle_state(self):

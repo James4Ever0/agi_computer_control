@@ -14,6 +14,7 @@ SESSION_NAME = "test_session"
 # SESSION_COMMAND = "docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 ubuntu:22.04"
 SESSION_COMMAND = "docker run --rm -it -e LANG=C.UTF-8 -e LANGUAGE=C.UTF-8 -e LC_ALL=C.UTF-8 openinterpreter /bin/bash"
 PREVIEW_FILEPATH = "/tmp/test_session_preview.html"
+STATS_FILEPATH = "/tmp/test_session_stats.log"
 PREVIEW_INTERVAL = 2
 FLUSH_INTERVAL = 1
 SEND_KEY_INTERVAL = 1
@@ -36,6 +37,18 @@ def start_daemon_thread(target, *args, **kwargs):
     t.daemon = True
     t.start()
 
+def write_env_stats_periodically(env: TmuxEnvironment):
+    while True:
+        try:
+            stats = env.stats
+            content = str(stats)
+        except:
+            content = "Failed to log stats for TmuxEnvironment\n"
+            content += traceback.format_exc()
+        finally:
+            time.sleep(PREVIEW_INTERVAL)
+        with open(STATS_FILEPATH, 'w+') as f:
+            f.write(content)
 
 def write_session_preview_with_cursor_periodically(session: TmuxSession):
     while True:
@@ -83,9 +96,13 @@ server = TmuxServer(SERVER_NAME)
 env = server.create_env(SESSION_NAME, SESSION_COMMAND)
 
 start_daemon_thread(write_session_preview_with_cursor_periodically, env.session)
-viewer = env.session.create_viewer()
+start_daemon_thread(write_env_stats_periodically, env)
+viewer = env.session.create_viewer(default_layout='tiled')
 viewer.add_cmd_pane(
     f"watch -n {PREVIEW_INTERVAL} cat {PREVIEW_FILEPATH}", "PREVIEW_WITH_CURSOR"
+)
+viewer.add_cmd_pane(
+    f"watch -n {PREVIEW_INTERVAL} cat {STATS_FILEPATH}", "ENV_STATS"
 )
 viewer.add_cmd_pane(f"watch -n {PREVIEW_INTERVAL} tac {STDOUT_FILEPATH}", "STDOUT")
 # Save the current stdout for later restoration
