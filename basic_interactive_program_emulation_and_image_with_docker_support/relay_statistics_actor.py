@@ -5,6 +5,7 @@ from contextlib import contextmanager
 
 # TODO: make sure the terminal width and height is bigger than 80x25, for example, 100x30
 
+
 class RelayActor(NaiveActor):
     # def recv_write_bytes(self):
     #     ret = ...
@@ -19,7 +20,7 @@ class RelayActor(NaiveActor):
     def process_alive(self):
         ret = self.process.isalive()
         return ret
-    
+
     def log_read_bytes(self, content):
         if content:
             print("[*] Receive bytes at:", time.time())
@@ -32,13 +33,13 @@ class RelayActor(NaiveActor):
             yield
         finally:
             self.mute = True
-    
+
     def heartbeat(self):
         ret = False
         if self.process_alive():
             ret = super().heartbeat()
         return ret
-    
+
     def loop(self):
         with self.unmute():
             self.read()

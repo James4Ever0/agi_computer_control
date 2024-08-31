@@ -15,7 +15,7 @@ from container_config import CONTAINER_NAME, DOCKER_ALPINE_CMD, KILL_CONTAINER_C
 MAX_TRIAL = 4
 INIT_TIME = 3
 LOOP_TIME = 1
-ACTION_TIME=1
+ACTION_TIME = 1
 MAX_EVAL_TRIAL = 10
 
 sys.path.append(BENCHMARK_DIR)
@@ -53,7 +53,7 @@ def eval_action_generator(
     init_time=INIT_TIME,
     max_trial=MAX_TRIAL,
     loop_time=LOOP_TIME,
-    action_time= ACTION_TIME,
+    action_time=ACTION_TIME,
 ):
     # quiz = Quiz(os.path.join(BENCHMARK_DIR, "test_spec/json/test_08.json")) # dig
     time.sleep(init_time)
@@ -108,7 +108,9 @@ def eval_action_generator(
         print("[-] Quiz Failed")
     return success
 
+
 import progressbar
+
 
 class DockerActor(AbstractActor):
     def _init_check(self):
@@ -119,15 +121,19 @@ class DockerActor(AbstractActor):
             lambda: self.process.expect("root"),
         ]
         for step in progressbar.progressbar(steps):
-            step() # type: ignore
+            step()  # type: ignore
 
-def prepare_quiz_by_num(num:int):
+
+def prepare_quiz_by_num(num: int):
     quiz_filename = f"test_{str(num).zfill(2)}.json"
     quiz_realpath = os.path.join(BENCHMARK_JSON_DIR, quiz_filename)
     quiz = Quiz(quiz_realpath)  # docker python eval
     return quiz
 
-def prepare_quiz_and_actor_for_test(num=7,cleanup_cmd = KILL_CONTAINER_CMD, cmd=DOCKER_ALPINE_CMD):
+
+def prepare_quiz_and_actor_for_test(
+    num=7, cleanup_cmd=KILL_CONTAINER_CMD, cmd=DOCKER_ALPINE_CMD
+):
     quiz = prepare_quiz_by_num(num)
     # quiz = Quiz(os.path.join(BENCHMARK_DIR, "test_spec/json/test_01.json"))
     os.system(cleanup_cmd)

@@ -420,7 +420,7 @@ class AbstractActor(ABC):
 
         self.read_bytes += read_byte_len
         return content
-    
+
     def log_read_bytes(self, content):
         if not self.mute:
             print("read:", get_repr(content), sep="\t")
@@ -487,7 +487,7 @@ class AbstractActor(ABC):
 
     def loop(self):
         self.read()
-        self.write(NaiveVocab.generate()) # let's not
+        self.write(NaiveVocab.generate())  # let's not
         return True
 
     def init_check(self):
@@ -495,7 +495,7 @@ class AbstractActor(ABC):
         Check or wait until the interactive program emits expected output.
         """
         time.sleep(self.init_alive_time)
-        assert self.process.isalive(), '[-] process is dead'
+        assert self.process.isalive(), "[-] process is dead"
         ret = func_timeout.func_timeout(self.max_init_time, self._init_check)
         print("[+] init check passed")
         return ret
@@ -544,8 +544,10 @@ def run_naive(cls):
     actor = cls(os.environ.get("INIT_CLI", f"{sys.executable} naive_interactive.py"))
     actor.run()
 
+
 class NaiveActor(AbstractActor):
-    def _init_check(self):...
+    def _init_check(self): ...
+
 
 if __name__ == "__main__":
     run_naive(NaiveActor)

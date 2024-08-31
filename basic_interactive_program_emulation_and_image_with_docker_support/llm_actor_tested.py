@@ -4,6 +4,7 @@
 
 import requests
 from naive_actor_tested import prepare_quiz_env, eval_quiz_env
+
 # from naive_actor_tested import prepare_and_eval_quiz_env
 # import markdown
 import marko
@@ -21,14 +22,14 @@ def extract_commands(response: str):
     soup = BeautifulSoup(response_html, features="lxml")
     print("[*] Soup:")
     print(soup)
-    for pre in soup.find_all('pre'):
+    for pre in soup.find_all("pre"):
         for code in pre.find_all("code"):
-            language = code.get('class', None)
+            language = code.get("class", None)
             if language:
                 language = "".join(language)
                 language = language.split("language-")[-1]
             else:
-                language = 'unspecified'
+                language = "unspecified"
             print("[*] Language:", language)
             code_content = code.text
             print("[*] Code:", code_content)
@@ -37,8 +38,8 @@ def extract_commands(response: str):
     return commands
 
 
-def llm_action_generator(observation: str, question:str):
-    system="""
+def llm_action_generator(observation: str, question: str):
+    system = """
     
     [[SYSTEM]]
     
@@ -61,9 +62,11 @@ def llm_action_generator(observation: str, question:str):
 
     {observation}
 
-    """.lstrip() # so try to make everything conversational?
+    """.lstrip()  # so try to make everything conversational?
     # the answer is just not so parser friendly
-    response = requests.get(LLM_FALLBACK_SERVER_API_URL, params=dict(query=query,system=system))
+    response = requests.get(
+        LLM_FALLBACK_SERVER_API_URL, params=dict(query=query, system=system)
+    )
     llm_response = response.text
     print("[*] LLM Response:")
     print(llm_response)
@@ -75,9 +78,9 @@ def llm_action_generator(observation: str, question:str):
 def main(num=7):
     print("[*] Quiz num:", num)
     quizEnv = prepare_quiz_env(num)
-    question = quizEnv['quiz'].question
+    question = quizEnv["quiz"].question
     print("[*] Quiz question:", question)
-    action_generator = functools.partial(llm_action_generator, question= question)
+    action_generator = functools.partial(llm_action_generator, question=question)
     eval_quiz_env(quizEnv, action_generator)
     # prepare_and_eval_quiz_env(llm_action_generator)
 

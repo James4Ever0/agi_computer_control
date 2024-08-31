@@ -7,18 +7,22 @@ import platform
 
 PROMPT_PATH = "/tmp/prompt.txt"
 
+
 def get_system_info():
     cmd = "neofetch --stdout".split()
-    system_info = subprocess.check_output(cmd, encoding='utf-8')
+    system_info = subprocess.check_output(cmd, encoding="utf-8")
     return system_info
+
 
 def get_processor_architecture():
     ret = f"Processor architecture: {platform.processor()}"
     return ret
 
+
 def get_python_version():
     ret = f"Python: {platform.python_version()}"
     return ret
+
 
 def build_custom_system_prompt():
     ret = f"""
@@ -38,7 +42,8 @@ You are capable of **any** task.
 """.strip()
     return ret
 
-def replace_sudo(multiline_string:str):
+
+def replace_sudo(multiline_string: str):
     updated_string = re.sub(r"^[ \t]*(sudo )", "", multiline_string, flags=re.MULTILINE)
     return updated_string
 
@@ -51,6 +56,7 @@ def custom_input(banner: str, ans: str = "y"):
 
     return ans
 
+
 import subprocess
 import copy
 
@@ -62,11 +68,12 @@ SUBPROCESS_TIMEOUT = 20
 old_popen = copy.copy(subprocess.Popen)
 import threading
 
+
 class new_popen(old_popen):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs) # type: ignore
+        super().__init__(*args, **kwargs)  # type: ignore
         # threading.Thread(target=self.self_destruct, daemon=True).start()
-    
+
     def self_destruct(self):
         print("[*] Initiating self destruct countdown.")
         time.sleep(SUBPROCESS_TIMEOUT)
@@ -77,29 +84,37 @@ class new_popen(old_popen):
         else:
             print(f"[*] Process exited with code", self.returncode)
 
+
 setattr(subprocess, "Popen", new_popen)
 
-from interpreter.core.computer.terminal.languages.subprocess_language import SubprocessLanguage
+from interpreter.core.computer.terminal.languages.subprocess_language import (
+    SubprocessLanguage,
+)
 import time
 
-def subprocess_input(self:SubprocessLanguage, command:str, suffix:str= "\n"):
-    print("[*] Writing to stdin:", command)
-    self.process.stdin.write(command+suffix) # type: ignore
-    self.process.stdin.flush() # type: ignore
 
-def yes(self:SubprocessLanguage, interval = 2):
+def subprocess_input(self: SubprocessLanguage, command: str, suffix: str = "\n"):
+    print("[*] Writing to stdin:", command)
+    self.process.stdin.write(command + suffix)  # type: ignore
+    self.process.stdin.flush()  # type: ignore
+
+
+def yes(self: SubprocessLanguage, interval=2):
     while True:
         # subprocess_input(self,"y")
         # subprocess_input(self,"")
         time.sleep(interval)
 
+
 setattr(SubprocessLanguage, "input", subprocess_input)
 old_start_process = copy.copy(SubprocessLanguage.start_process)
 
-def new_start_process(self:SubprocessLanguage):
+
+def new_start_process(self: SubprocessLanguage):
     old_start_process(self)
     print("[*] Starting yes input thread.")
-    threading.Thread(target=yes, daemon=True, args=(self, )).start()
+    threading.Thread(target=yes, daemon=True, args=(self,)).start()
+
 
 setattr(SubprocessLanguage, "start_process", new_start_process)
 
@@ -112,8 +127,11 @@ from interpreter.core.computer.computer import Computer
 
 SYSTEM_MESSAGE = build_custom_system_prompt()
 
-interpreter = OpenInterpreter(disable_telemetry = True, system_message=SYSTEM_MESSAGE, loop=True)
+interpreter = OpenInterpreter(
+    disable_telemetry=True, system_message=SYSTEM_MESSAGE, loop=True
+)
 # interpreter = OpenInterpreter(disable_telemetry = True, system_message=default_system_message)
+
 
 # old_run = copy.copy(computer.run)
 class CustomComputer(Computer):
@@ -128,9 +146,12 @@ class CustomComputer(Computer):
             code = replace_sudo(code)
             print("[*] Processed code:")
             print(code)
-        ret = super().run(language, code, **kwargs) # <generator object Terminal._streaming_run>
+        ret = super().run(
+            language, code, **kwargs
+        )  # <generator object Terminal._streaming_run>
         print("[*] computer execution result:", ret)
         return ret
+
 
 computer = CustomComputer(interpreter)
 # setattr(computer, 'run', new_run)
@@ -166,7 +187,7 @@ API_BASE = os.environ.get("OPENAI_API_BASE", "http://localhost:8101/v1")
 
 if os.path.isfile(PROMPT_PATH):
     print("[*] Reading prompt from:", PROMPT_PATH)
-    with open(PROMPT_PATH, 'r', encoding='utf-8') as f:
+    with open(PROMPT_PATH, "r", encoding="utf-8") as f:
         prompt = f.read()
 else:
     print("[*] Prompt file not found at:", PROMPT_PATH)
