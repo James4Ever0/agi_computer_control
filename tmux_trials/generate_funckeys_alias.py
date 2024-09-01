@@ -2,6 +2,7 @@ import humps
 import itertools
 from lib import json_pretty_print
 import json
+
 # import string
 
 # libraries providing naming style conversion
@@ -244,7 +245,7 @@ META_CONTROL_HOTKEYS = [
     "M-C-k",
     "M-C-l",
     "M-C-m",
-    "M-C-n", 
+    "M-C-n",
     "M-C-o",
     "M-C-p",
     "M-C-q",
@@ -373,8 +374,8 @@ PREDEFINED_ALIASES = {
     "7": ["DigitSeven", "Seven"],
     "8": ["DigitEight", "Eight"],
     "9": ["DigitNine", "Nine"],
-    "Space":["SpaceKey"],
-    "Tab":["TabKey"],
+    "Space": ["SpaceKey"],
+    "Tab": ["TabKey"],
 }
 
 PREDEFINED_ALIASES_REVERSE_MAP = {
@@ -505,6 +506,7 @@ def filter_invalid_modifier_keys(modkeys: list[str]):
     ret = list(valid_keys)
     return ret
 
+
 def filter_invalid_keypad_keys(modkeys: list[str]):
     valid_keys = set()
     for it in modkeys:
@@ -524,6 +526,7 @@ def filter_invalid_keypad_keys(modkeys: list[str]):
         valid_keys.add(it)
     ret = list(valid_keys)
     return ret
+
 
 def generate_ctrl_hotkey_aliases():
     ret = {}
@@ -570,7 +573,7 @@ def generate_keypadkey_aliases():
             for it in KEYPAD_FULLNAME_LIST:
                 fullkey_list.append(new_key.replace("KP", it))
                 fullkey_list.append(new_derived_key.replace("KP", it))
-            
+
         for fullkey in fullkey_list:
             baseform, camelform, kebaform = generate_multiforms(fullkey)
             candidates = [fullkey, baseform, camelform, kebaform]
@@ -583,24 +586,27 @@ def generate_keypadkey_aliases():
         ret[key] = key_aliases
     return ret
 
-def check_if_is_invalid_meta_key(meta_key:str):
-    meta_key=meta_key.replace("-", "_")
+
+def check_if_is_invalid_meta_key(meta_key: str):
+    meta_key = meta_key.replace("-", "_")
     items = meta_key.split("_")
     for it in items[:-1]:
         if len(it) == 1 and it.isalpha():
             return True
     return False
 
-def filter_invalid_meta_keys(aliases:list[str]):
+
+def filter_invalid_meta_keys(aliases: list[str]):
     ret = []
     for it in aliases:
         invalid = check_if_is_invalid_meta_key(it)
-        if invalid: continue
+        if invalid:
+            continue
         ret.append(it)
     return ret
-        
 
-def generate_meta_hotkey_aliases(current_aliases:dict):
+
+def generate_meta_hotkey_aliases(current_aliases: dict):
     ret = {}
     for standard_key in META_HOTKEYS:
         aliases = set()
@@ -627,30 +633,33 @@ def generate_meta_hotkey_aliases(current_aliases:dict):
                     aliases.update(case_aliases)
 
         key_aliases = filter_invalid_modifier_keys(list(aliases))
-        key_aliases = list(set([it[:-1]+ suffix if suffix_is_alpha else it for it in key_aliases]))
+        key_aliases = list(
+            set([it[:-1] + suffix if suffix_is_alpha else it for it in key_aliases])
+        )
         key_aliases = filter_invalid_meta_keys(key_aliases)
         ret[standard_key] = key_aliases
 
     return ret
 
-def get_modifier_letter_aliases(modkey_letter:str):
+
+def get_modifier_letter_aliases(modkey_letter: str):
     letter_fullname = MODIFIER_KEY_LETTER_TO_NAME[modkey_letter]
     predefined_aliases = PREDEFINED_ALIASES.get(letter_fullname, [])
     ret = [letter_fullname, *predefined_aliases]
-    ret = ret +[f"{it}Key" for it in ret]
+    ret = ret + [f"{it}Key" for it in ret]
     return ret
 
 
-def generate_hotkey_fullkeys(hotkey:str, hotkey_letters:list[str],connector:str):
+def generate_hotkey_fullkeys(hotkey: str, hotkey_letters: list[str], connector: str):
     fullkeys = set([hotkey])
-    for i in range(1, len(hotkey_letters)+1):
+    for i in range(1, len(hotkey_letters) + 1):
         for letters in itertools.combinations(hotkey_letters, i):
             product_params = []
             for it in letters:
                 letter_alias_list = get_modifier_letter_aliases(it)
                 product_params.append(letter_alias_list)
-            
-            source_prefix = connector.join(letters)+ connector
+
+            source_prefix = connector.join(letters) + connector
             for prod_result in itertools.product(*product_params):
                 candidate = hotkey
                 target_prefix = connector.join(prod_result) + connector
@@ -659,24 +668,30 @@ def generate_hotkey_fullkeys(hotkey:str, hotkey_letters:list[str],connector:str)
     ret = list(fullkeys)
     return ret
 
+
 def generate_meta_ctrl_hotkey_aliases():
-    ret = generate_multi_hotkey_aliases(META_CONTROL_HOTKEYS, ['M', 'C'])
+    ret = generate_multi_hotkey_aliases(META_CONTROL_HOTKEYS, ["M", "C"])
     return ret
+
 
 def generate_ctrl_shift_hotkey_aliases():
-    ret = generate_multi_hotkey_aliases(CTRL_SHIFT_HOTKEYS, ['S', 'C'])
+    ret = generate_multi_hotkey_aliases(CTRL_SHIFT_HOTKEYS, ["S", "C"])
     return ret
 
 
-def generate_multi_hotkey_aliases(init_hotkeys:list[str], hotkey_letters:list[str]):
+def generate_multi_hotkey_aliases(init_hotkeys: list[str], hotkey_letters: list[str]):
     ret = {}
     for key in init_hotkeys:
         aliases = set()
         permuted_keys = generate_all_permutation_hotkeys(key)
         fullkey_list = set()
         for it in permuted_keys:
-            fullkey_list.update(generate_hotkey_fullkeys(it, hotkey_letters,'-'))
-            fullkey_list.update(generate_hotkey_fullkeys(generate_hotkey_with_plus_connector(it), hotkey_letters, '+'))
+            fullkey_list.update(generate_hotkey_fullkeys(it, hotkey_letters, "-"))
+            fullkey_list.update(
+                generate_hotkey_fullkeys(
+                    generate_hotkey_with_plus_connector(it), hotkey_letters, "+"
+                )
+            )
         fullkey_list = list(fullkey_list)
         for fullkey in fullkey_list:
             baseform, camelform, kebaform = generate_multiforms(fullkey)
@@ -690,12 +705,15 @@ def generate_multi_hotkey_aliases(init_hotkeys:list[str], hotkey_letters:list[st
         ret[key] = list(set(hotkey_aliases))
     return ret
 
+
 def generate_extended_hotkey_aliases():
     ret = {}
-    for key_combo, suffix in itertools.product(EXTENDED_MODIFIER_KEY_COMBOS, EXTENDED_KEY_SUFFIXES):
+    for key_combo, suffix in itertools.product(
+        EXTENDED_MODIFIER_KEY_COMBOS, EXTENDED_KEY_SUFFIXES
+    ):
         hotkey_letters = key_combo.split("-")
         hotkey = "-".join([key_combo, suffix])
-        aliases = generate_multi_hotkey_aliases([hotkey], hotkey_letters) # type: ignore
+        aliases = generate_multi_hotkey_aliases([hotkey], hotkey_letters)  # type: ignore
         ret.update(aliases)
     return ret
 
@@ -707,11 +725,21 @@ def generate_all_aliases():
         generate_additionalkey_aliases(), "AdditionalKey", ret
     )
     generate_display_and_update_aliases(generate_keypadkey_aliases(), "KeypadKey", ret)
-    generate_display_and_update_aliases(generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret)
-    generate_display_and_update_aliases(generate_meta_hotkey_aliases(ret), "MetaHotKey", ret)
-    generate_display_and_update_aliases(generate_meta_ctrl_hotkey_aliases(), "MetaCtrlHotKey", ret)
-    generate_display_and_update_aliases(generate_ctrl_shift_hotkey_aliases(), "CtrlShiftHotKey", ret)
-    generate_display_and_update_aliases(generate_extended_hotkey_aliases(), "ExtendedHotKey", ret)
+    generate_display_and_update_aliases(
+        generate_ctrl_hotkey_aliases(), "CtrlHotKey", ret
+    )
+    generate_display_and_update_aliases(
+        generate_meta_hotkey_aliases(ret), "MetaHotKey", ret
+    )
+    generate_display_and_update_aliases(
+        generate_meta_ctrl_hotkey_aliases(), "MetaCtrlHotKey", ret
+    )
+    generate_display_and_update_aliases(
+        generate_ctrl_shift_hotkey_aliases(), "CtrlShiftHotKey", ret
+    )
+    generate_display_and_update_aliases(
+        generate_extended_hotkey_aliases(), "ExtendedHotKey", ret
+    )
 
     return ret
 

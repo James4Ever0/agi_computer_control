@@ -6,6 +6,7 @@ import traceback
 import shutil
 import parse
 import json
+import time
 from tempfile import NamedTemporaryFile
 import uuid
 from playwright.sync_api import sync_playwright
@@ -588,7 +589,7 @@ class TmuxSession:
             print(f"[*] Performing isolation for tmux session '{name}'")
             self.isolate()
 
-    def prepare_attach_command(self, view_only:bool):
+    def prepare_attach_command(self, view_only: bool):
         ret = self.server.tmux_prepare_attach_command(self.name, view_only)
         return ret
 
@@ -779,6 +780,7 @@ class TmuxSession:
         viewer = self.create_viewer()
         viewer.view()
 
+
 class ProcessEvent(StrEnum):
     active = "ProcessActive"
     idle = "ProcessIdle"
@@ -798,11 +800,12 @@ class EventManager:
         self.emitter.emit(event, *args, **kwargs)
 
     def emit(self, event, *args, **kwargs):
-        if type(event) == str:
-            args = (event, *args)
+        args = (event, *args)
         self.emit_classic(event, *args, **kwargs)
 
+
 class ProcessEventWaitTimeout(Exception): ...
+
 
 class ProcessEventWatcher:
     def __init__(
@@ -815,7 +818,7 @@ class ProcessEventWatcher:
         self.watch_interval = watch_interval
         self.command = command
         self.process = pexpect.spawn(command, timeout=None)
-        self.speed_intervals = speed_intervals
+        self.speed_intervals = list(speed_intervals)
         self.speed_intervals.sort()
         self.idle_threshold = self.calculate_idle_threshold(idle_threshold)
         self.event_manager = EventManager()
@@ -830,10 +833,21 @@ class ProcessEventWatcher:
         self.maxpoints = max(speed_intervals) + 1
 
     def get_process_info(self):
-        info = (
-            f"PID: {self.process.pid} Command: {self.command} Idle: {self.process_idle}"
-        )
+        info_items = []
+        for k, v in self.info.items():
+            info_items.append(f"{k.title()}: {v}")
+        info = " ".join(info_items)
         return info
+
+    @property
+    def info(self):
+        ret = dict(
+            pid=self.process.pid,
+            command=self.command,
+            idle=self.process_idle,
+            stats=self.stats,
+        )
+        return ret
 
     def activity_callback(self, name):
         print("[*]", self.get_process_info(), f"Event: {name}")
@@ -860,13 +874,15 @@ class ProcessEventWatcher:
             self.stats["bytes"] += one_byte
 
     def calculate_nth_average_speed(self, nth: int):
-        nth = min(len(self.datapoints), nth)
+        slice_length = min(len(self.datapoints), nth)
         diff = np.diff(self.datapoints)
-        ret = sum(diff[:nth]) / nth
+        ret = sum(diff[:slice_length]) / nth
         ret = float(-ret)
         return ret
 
-    def wait_for_process_state(self, idle:bool, timeout:float, confirmation_threshold=1, loop_interval=1):
+    def wait_for_process_state(
+        self, idle: bool, timeout: float, confirmation_threshold=1, loop_interval=1
+    ):
         if idle:
             inverse_state = False
         else:
@@ -881,14 +897,16 @@ class ProcessEventWatcher:
             if confirmation_count >= confirmation_threshold:
                 break
             if elaspsed_time >= timeout:
-                raise ProcessStateWaitTimeout(f"[-] Failed to wait for process state (idle: {idle}) within {timeout} sec(s) timeout limit")
+                raise ProcessStateWaitTimeout(
+                    f"[-] Failed to wait for process state (idle: {idle}) within {timeout} sec(s) timeout limit"
+                )
             time.sleep(loop_interval)
             elapsed_time += loop_interval
 
-    def wait_for_idle_state(self, timeout:float):
+    def wait_for_idle_state(self, timeout: float):
         self.wait_for_process_state(True, timeout)
 
-    def wait_for_active_state(self, timeout:float):
+    def wait_for_active_state(self, timeout: float):
         self.wait_for_process_state(False, timeout)
 
     def on_idle(self, callback: Callable):
@@ -962,13 +980,21 @@ class ProcessEventWatcher:
         t.daemon = True
         t.start()
 
+
 class TmuxEventWatcher(ProcessEventWatcher):
-    def __init__(self, session:TmuxSession, 
-                 speed_intervals=TMUX_IO_SPEED_CALCULATION_SCALE,
-                 idle_threshold=TMUX_IDLE_SECONDS_THRESHOLD,
-                 ):
+    def __init__(
+        self,
+        session: TmuxSession,
+        speed_intervals=TMUX_IO_SPEED_CALCULATION_SCALE,
+        idle_threshold=TMUX_IDLE_SECONDS_THRESHOLD,
+    ):
         command = session.prepare_attach_command(view_only=True)
-        super().__init__(command=command, speed_interval=speed_interval, idle_threshold=idle_threshold)
+        super().__init__(
+            command=command,
+            speed_intervals=speed_intervals,
+            idle_threshold=idle_threshold,
+        )
+
 
 class TmuxEnvironment:
     def __init__(self, session: TmuxSession, wait_timeout=TMUX_EVENT_WAIT_TIMEOUT):
@@ -981,6 +1007,10 @@ class TmuxEnvironment:
     @property
     def stats(self):
         return self.watcher.stats
+
+    @property
+    def info(self):
+        return self.watcher.info
 
     def wait_for_idle_state(self):
         self.watcher.wait_for_idle_state(self.wait_timeout)

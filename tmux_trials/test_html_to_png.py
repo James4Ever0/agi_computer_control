@@ -1,4 +1,6 @@
 from lib import html_to_png
+
+
 def test():
     input_path = "/tmp/test_session_preview.html"
     output_path = "screenshot.png"
@@ -8,6 +10,7 @@ def test():
     image_bytes = html_to_png(html)
     with open(output_path, "wb") as f:
         f.write(image_bytes)
+
 
 if __name__ == "__main__":
     test()

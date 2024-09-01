@@ -1,4 +1,3 @@
-
 from lib import TmuxServer, TmuxSession, TmuxEnvironment
 import threading
 import time
@@ -37,18 +36,19 @@ def start_daemon_thread(target, *args, **kwargs):
     t.daemon = True
     t.start()
 
+
 def write_env_stats_periodically(env: TmuxEnvironment):
     while True:
         try:
-            stats = env.stats
-            content = str(stats)
+            content = str(env.info)
         except:
             content = "Failed to log stats for TmuxEnvironment\n"
             content += traceback.format_exc()
         finally:
             time.sleep(PREVIEW_INTERVAL)
-        with open(STATS_FILEPATH, 'w+') as f:
+        with open(STATS_FILEPATH, "w+") as f:
             f.write(content)
+
 
 def write_session_preview_with_cursor_periodically(session: TmuxSession):
     while True:
@@ -82,6 +82,7 @@ def generate_random_keys():
     ret = "".join([random.choice(string.ascii_letters) for _ in range(10)])
     return ret
 
+
 def test_key_inputs(env: TmuxEnvironment):
     while True:
         print("[*] Sending test keys...")
@@ -97,13 +98,11 @@ env = server.create_env(SESSION_NAME, SESSION_COMMAND)
 
 start_daemon_thread(write_session_preview_with_cursor_periodically, env.session)
 start_daemon_thread(write_env_stats_periodically, env)
-viewer = env.session.create_viewer(default_layout='tiled')
+viewer = env.session.create_viewer(default_layout="tiled")
 viewer.add_cmd_pane(
     f"watch -n {PREVIEW_INTERVAL} cat {PREVIEW_FILEPATH}", "PREVIEW_WITH_CURSOR"
 )
-viewer.add_cmd_pane(
-    f"watch -n {PREVIEW_INTERVAL} cat {STATS_FILEPATH}", "ENV_STATS"
-)
+viewer.add_cmd_pane(f"watch -n {PREVIEW_INTERVAL} cat {STATS_FILEPATH}", "ENV_STATS")
 viewer.add_cmd_pane(f"watch -n {PREVIEW_INTERVAL} tac {STDOUT_FILEPATH}", "STDOUT")
 # Save the current stdout for later restoration
 original_stdout = sys.stdout

@@ -39,12 +39,13 @@ CURSOR_HTML = "<cursor>"
 
 HTML_TAG_REGEX = re.compile(r"<[^>]+?>")
 Text = Union[str, bytes]
-TERMINAL_VIEWPORT={"width":645, "height":350}
+TERMINAL_VIEWPORT = {"width": 645, "height": 350}
 
-def html_to_png(html:str, viewport=TERMINAL_VIEWPORT):
+
+def html_to_png(html: str, viewport=TERMINAL_VIEWPORT):
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
-        context = browser.new_context(viewport=viewport) # type: ignore
+        context = browser.new_context(viewport=viewport)  # type: ignore
         page = context.new_page()
         page.set_content(html)
         ret = page.screenshot()
@@ -170,7 +171,7 @@ def line_merger(line_with_cursor: str, line_with_span: str):
     return ret
 
 
-def ansi_to_html(ansi: bytes, dark_mode:bool):
+def ansi_to_html(ansi: bytes, dark_mode: bool):
     with NamedTemporaryFile("wb") as f:
         f.write(ansi)
         f.flush()
@@ -203,13 +204,17 @@ def render_html_cursor(html: str):
     return ret
 
 
-def wrap_to_html_pre_elem(html: Text, pre_inner_html: str,grayscale:bool, cursor_render: bool = True):
+def wrap_to_html_pre_elem(
+    html: Text, pre_inner_html: str, grayscale: bool, cursor_render: bool = True
+):
     soup = html_to_soup(html)
     soup.find("pre").extract()  # type: ignore
     ret = str(soup)
     if grayscale:
-        ret = ret.replace(HEAD, HEAD+"<style> span {filter: grayscale(100%);} </style>")
-    ret = ret.replace(BODY_END, f"<pre>{pre_inner_html}</pre>"+BODY_END)
+        ret = ret.replace(
+            HEAD, HEAD + "<style> span {filter: grayscale(100%);} </style>"
+        )
+    ret = ret.replace(BODY_END, f"<pre>{pre_inner_html}</pre>" + BODY_END)
     if cursor_render:
         ret = render_html_cursor(ret)
     return ret
@@ -306,7 +311,7 @@ class TmuxServer:
 
     def create_env(self, name: str, command: str):
         session = self.create_session(name, command)
-    # count = 0
+        # count = 0
         if session:
             ret = TmuxEnvironment(session)
             print("[+] Tmux env created")
@@ -424,11 +429,22 @@ class TmuxSession:
         self.set_option("aggressive-resize", "off")
         self.set_option("window-size", "manual")
 
-    def preview_png(self, show_cursor=False,filename:Optional[str]=None, dark_mode=False,grayscale=False):
-        html=self.preview_html(show_cursor=show_cursor, wrap_html=True, dark_mode=dark_mode, grayscale=grayscale)
+    def preview_png(
+        self,
+        show_cursor=False,
+        filename: Optional[str] = None,
+        dark_mode=False,
+        grayscale=False,
+    ):
+        html = self.preview_html(
+            show_cursor=show_cursor,
+            wrap_html=True,
+            dark_mode=dark_mode,
+            grayscale=grayscale,
+        )
         png_bytes = html_to_png(html)
         if filename:
-            with open(filename, 'wb') as f:
+            with open(filename, "wb") as f:
                 f.write(png_bytes)
         return png_bytes
 
@@ -443,7 +459,9 @@ class TmuxSession:
         ret = ansi_to_html(ret, dark_mode)
         return ret
 
-    def preview_html(self, show_cursor=False, wrap_html=False, dark_mode=False, grayscale=False):
+    def preview_html(
+        self, show_cursor=False, wrap_html=False, dark_mode=False, grayscale=False
+    ):
         html_bytes = self.preview_html_bytes(dark_mode)
         pre_lines = retrieve_pre_lines_from_html(html_bytes)
         if show_cursor:
@@ -602,9 +620,9 @@ class TmuxSessionViewer:
         self.add_new_window(self.default_window_name)
 
     def add_new_window(self, window_name: str, layout: Optional[str] = None):
-        self.windows[window_name] = dict( # type:ignore
+        self.windows[window_name] = dict(  # type:ignore
             layout=self.default_layout, panes=[]
-        )  
+        )
         if layout is not None:
             self.modify_window_layout(window_name, layout)
 
