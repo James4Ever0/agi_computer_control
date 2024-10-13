@@ -10,7 +10,21 @@
     </a>
 </p>
 
+*Do what can be done, and don't be afraid of the unknown.*
+
 [Why](https://github.com/James4Ever0/notes/blob/master/The%20reason%20why%20you%20build%20cybergod.md) I build this? (and probably would you)
+
+## Development
+
+In order to get involved in this very project real quick, you need a few commands to help you do the job.
+
+First, you would learn how to get the latest modified directories and files.
+
+```bash
+ls -lthd */ | less # on the top would be our latest modified directory.
+ls -lth | less # get latest modified file
+```
+
 
 ## Demo
 
@@ -120,6 +134,10 @@ A full mapping from conventional special keys to standard Tmux special keys can 
 You can read the test file for further integration.
 
 ## Intro
+
+Our primary target is to let every user uses Cybergod more often than ChatGPT.
+
+---
 
 Agent powered by Godlang, the official agent language for cybergod.
 
