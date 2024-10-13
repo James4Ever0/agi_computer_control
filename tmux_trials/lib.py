@@ -69,7 +69,7 @@ def check_if_in_tmux_session() -> bool:
     return "TMUX" in os.environ.keys()
 
 def warn_if_in_tmux_session():
-    if check_if_in_tmux_session:
+    if check_if_in_tmux_session():
         print("[-] Warning: You are running this script under a tmux session. Unexpected exception might happen. It is recommended to run this outside of tmux, or within zellij (an tmux alternative)")
         print("[-] Additionally, you may need to run Ctrl+B Ctrl+B D in order to detach a nested tmux session")
         print("[*] Visit zellij here:", ZELLIJ_URL)
