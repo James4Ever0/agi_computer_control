@@ -1,0 +1,27 @@
+ProcessEvent
+
+tmux_trials/lib.py has event emitters
+
+lib.py does not connect event stats to watcher panes
+
+tmux_trials/test_lib.py failed to start within cybergod env, python3 test_lib.py
+
+start_daemon_threads(test_keys, env) has been commented out
+
+server reset in watcher init. need to stop reset
+
+[+] Tmux session 'test_session' created                            
+[*] Calculated idle threshold: 5 sec(s)                            
+[+] Tmux env created             
+[*] Requesting cursor coordinates           
+can't find session: test_session_viewer      
+[Loading] /tmp/tmpcil0n90k.json        
+[*] Executing command: tmux -L test_server kill-server   
+[+] Server 'test_server' reset complete
+
+potential cause: loading from nested tmux session, tmuxp loader does not set TMUX environment to empty string
+potential fix: attach 'env TMUX= ' prefix to cmd in method tmuxp_load_from_filepath
+
+fix: first load tmuxp manifest without attaching to it, then attach manually with 'env TMUX= ' prefix using method 'tmux_prepare_attach_command'
+
+fix has been implemented

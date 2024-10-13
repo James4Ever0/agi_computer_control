@@ -62,6 +62,18 @@ HTML_TAG_REGEX = re.compile(r"<[^>]+?>")
 Text = Union[str, bytes]
 TERMINAL_VIEWPORT = {"width": 645, "height": 350}
 
+TMUX_WARN_INFO_DISPLAY_TIME = 2.5
+ZELLIJ_URL= "https://github.com/zellij-org/zellij"
+
+def check_if_in_tmux_session() -> bool:
+    return "TMUX" in os.environ.keys()
+
+def warn_if_in_tmux_session():
+    if check_if_in_tmux_session:
+        print("[-] Warning: You are running this script under a tmux session. Unexpected exception might happen. It is recommended to run this outside of tmux, or within zellij (an tmux alternative)")
+        print("[-] Additionally, you may need to run Ctrl+B Ctrl+B D in order to detach a nested tmux session")
+        print("[*] Visit zellij here:", ZELLIJ_URL)
+        time.sleep(TMUX_WARN_INFO_DISPLAY_TIME)
 
 def html_to_png(html: str, viewport=TERMINAL_VIEWPORT):
     with sync_playwright() as playwright:
@@ -435,6 +447,7 @@ def warn_nonzero_exitcode(exitcode: int):
 
 class TmuxServer:
     def __init__(self, name: Optional[str] = None, reset: bool = True):
+        warn_if_in_tmux_session()
         if name is None:
             print("[*] Falling back to default server name")
             name = "default"
@@ -484,7 +497,7 @@ class TmuxServer:
         else:
             raise TmuxEnvironmentCreationFailure("[-] Failed to create tmux env")
 
-    def tmux_prepare_command(self, suffix: str):
+    def tmux_prepare_command(self, suffix: str) -> str:
         ret = f"{self.prefix} {suffix}"
         return ret
 
@@ -526,14 +539,14 @@ class TmuxServer:
 
     @staticmethod
     def execute_command_list(
-        cmd_list: list[str], timeout: Optional[float] = CMDLIST_EXECUTE_TIMEOUT
+        cmd_list: list[str], timeout: Optional[float] = CMDLIST_EXECUTE_TIMEOUT, **kwargs
     ):
         print("[*] Executing command list:", *cmd_list)
-        exitcode = subprocess.Popen(cmd_list).wait(timeout=timeout)
+        exitcode = subprocess.Popen(cmd_list, **kwargs).wait(timeout=timeout)
         ret = warn_nonzero_exitcode(exitcode)
         return ret
 
-    def apply_manifest(self, manifest: dict, attach=False):
+    def apply_manifest(self, manifest: dict, attach=False, view_only=False):
         session_name = manifest["session_name"]
         print("[*] Tmuxp session name:", session_name)
         print("[*] Applying manifest:")
@@ -544,21 +557,26 @@ class TmuxServer:
             f.flush()
             self.kill_session(session_name)
             try:
-                self.tmuxp_load_from_filepath(manifest_filepath, attach)
+                self.tmuxp_load_from_filepath(manifest_filepath, session_name, attach, view_only)
             finally:
-                print("[*] Removing session:", session_name)
+                print(f"[*] Removing tmuxp session '{session_name}' loaded from '{manifest_filepath}'")
                 self.kill_session(session_name)
 
-    def tmuxp_load_from_filepath(self, filepath: str, attach: bool):
+    def tmuxp_load_from_filepath(self, filepath: str, session_name:str, attach: bool, view_only:bool):
         cmd_list = [TMUXP, "load", "-L", self.name, "-y", filepath]
         kwargs = {}
+        # always detach. if not attach, we simply do not run the attach command later on.
+        cmd_list.append("-d")
         if not attach:
-            cmd_list.append("-d")
-        else:
             kwargs["timeout"] = None
         ret = self.execute_command_list(cmd_list, **kwargs)
         if not ret:
             print("[-] Tmuxp manifest load failed")
+        if attach:
+            attach_cmd = self.tmux_prepare_attach_command(session_name, view_only)
+            ret = self.execute_command(attach_cmd)
+            if not ret:
+                print("[-] Tmuxp session attach failed")
         return ret
 
 

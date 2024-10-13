@@ -110,6 +110,7 @@ original_stderr = sys.stderr
 
 # start_daemon_thread(test_key_inputs, env)
 
+exception_log = None
 try:
     # Open a file in write mode to redirect stdout
     with open(STDOUT_FILEPATH, "a+") as f:
@@ -117,9 +118,19 @@ try:
         sys.stderr = f
         start_daemon_thread(flush_filehandle_periodically, f)
         viewer.view()
+except:
+    exception_log = traceback.format_exc()
 finally:
     # Restore original stdout after writing is done
     sys.stdout = original_stdout
     sys.stderr = original_stderr
 
+    print("Printing output from:", STDOUT_FILEPATH)
+    os.system("cat "+STDOUT_FILEPATH)
+    if exception_log:
+        print(exception_log)
+        print("Exception found while running viewer.")
+    else:
+        print("No exception during running viewer.")
+    print("Cleaning up by resetting server")
     server.reset()
