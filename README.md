@@ -4,8 +4,9 @@
 
 <h1 align="center">Cybergod</h1>
 
+<div align="center"><em>Do what can be done, and don't be afraid of the unknown.</em></div>
+
 <p align="center">
-    <div><em>Do what can be done, and don't be afraid of the unknown.</em></div>
     <a href="https://discord.gg/eM5vezJvEQ">
         <img alt="Discord" src="https://img.shields.io/discord/1146610656779440188?logo=discord&style=flat&logoColor=white"/>
     </a>
