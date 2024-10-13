@@ -3,6 +3,7 @@
 <!-- https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-4d2b-835d-0ffc9a5a458e -->
 
 <h1 align="center">Cybergod</h1>
+<em align="center">Do what can be done, and don't be afraid of the unknown.</em>
 
 <p align="center">
     <a href="https://discord.gg/eM5vezJvEQ">
@@ -10,7 +11,6 @@
     </a>
 </p>
 
-*Do what can be done, and don't be afraid of the unknown.*
 
 [Why](https://github.com/James4Ever0/notes/blob/master/The%20reason%20why%20you%20build%20cybergod.md) I build this? (and probably would you)
 
