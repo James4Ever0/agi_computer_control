@@ -3,9 +3,9 @@
 <!-- https://github.com/Significant-Gravitas/Auto-GPT/assets/103997068/8e1cd6fe-c49d-4d2b-835d-0ffc9a5a458e -->
 
 <h1 align="center">Cybergod</h1>
-<em align="center">Do what can be done, and don't be afraid of the unknown.</em>
 
 <p align="center">
+    <em>Do what can be done, and don't be afraid of the unknown.</em>
     <a href="https://discord.gg/eM5vezJvEQ">
         <img alt="Discord" src="https://img.shields.io/discord/1146610656779440188?logo=discord&style=flat&logoColor=white"/>
     </a>
