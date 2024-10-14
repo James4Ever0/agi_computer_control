@@ -7,6 +7,9 @@ import os
 from io import TextIOWrapper
 import string
 import random
+import black
+
+
 
 SERVER_NAME = "test_server"
 SESSION_NAME = "test_session"
@@ -24,6 +27,9 @@ if os.path.exists(STDOUT_FILEPATH):
     print("[*] Removing old log file:", STDOUT_FILEPATH)
     os.remove(STDOUT_FILEPATH)
 
+def format_python_object(obj):
+    ret = black.format_str(repr(obj), mode=black.FileMode())
+    return ret
 
 def flush_filehandle_periodically(f: TextIOWrapper):
     while True:
@@ -40,7 +46,8 @@ def start_daemon_thread(target, *args, **kwargs):
 def write_env_stats_periodically(env: TmuxEnvironment):
     while True:
         try:
-            content = str(env.info)
+            content=format_python_object(env.info)
+            #content = ujson.dumps(env.info,indent=4)
         except:
             content = "Failed to log stats for TmuxEnvironment\n"
             content += traceback.format_exc()

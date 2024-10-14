@@ -62,7 +62,7 @@ HTML_TAG_REGEX = re.compile(r"<[^>]+?>")
 Text = Union[str, bytes]
 TERMINAL_VIEWPORT = {"width": 645, "height": 350}
 
-TMUX_WARN_INFO_DISPLAY_TIME = 2.5
+TMUX_WARN_INFO_DISPLAY_TIME = 1.5
 ZELLIJ_URL= "https://github.com/zellij-org/zellij"
 
 def check_if_in_tmux_session() -> bool:
