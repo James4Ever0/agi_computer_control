@@ -15,6 +15,10 @@
 
 [Why](https://github.com/James4Ever0/notes/blob/master/The%20reason%20why%20you%20build%20cybergod.md) I build this? (and probably would you)
 
+## Paper publications
+
+[First release](https://github.com/James4Ever0/agi_computer_control/releases/download/paper-initial-publication/Cybergod__God_is_in_your_computer.pdf)
+
 ## Development
 
 In order to get involved in this very project real quick, you need a few commands to help you do the job.
