@@ -17,7 +17,7 @@
 
 ## Paper publications
 
-[First release](https://github.com/James4Ever0/agi_computer_control/releases/download/paper-initial-publication/Cybergod__God_is_in_your_computer.pdf)
+First release: [View online](https://james4ever0.github.io/Cybergod__God_is_in_your_computer.html) [Download](https://github.com/James4Ever0/agi_computer_control/releases/download/paper-initial-publication/Cybergod__God_is_in_your_computer.pdf)
 
 ## Development
 
