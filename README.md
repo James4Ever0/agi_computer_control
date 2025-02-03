@@ -17,7 +17,16 @@
 
 ## Paper publications
 
-First release: 1/30/2025 [[view online](https://james4ever0.github.io/Cybergod__God_is_in_your_computer.html)] [[pdf download](https://github.com/James4Ever0/agi_computer_control/releases/download/paper-initial-publication/Cybergod__God_is_in_your_computer.pdf)]
+- First release: 1/30/2025 [[view online](https://james4ever0.github.io/Cybergod__God_is_in_your_computer.html)] [[pdf download](https://github.com/James4Ever0/agi_computer_control/releases/download/paper-initial-publication/Cybergod__God_is_in_your_computer.pdf)]
+
+<details>
+
+<summary>TL;DR</summary>
+
+![cybergod_tldr](https://github.com/user-attachments/assets/105a7681-05f2-4a35-a6a9-f707ede9ee5c)
+
+    
+</details>
 
 ## Development
 
