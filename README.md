@@ -20,11 +20,20 @@
 
 <details>
 
-<summary>TL;DR</summary>
+<summary>AI paper summary</summary>
 
 ![cybergod_tldr](https://github.com/user-attachments/assets/105a7681-05f2-4a35-a6a9-f707ede9ee5c)
     
 </details>
+
+<details>
+
+<summary>Free AI announcement</summary>
+
+![cybergod_4_freedom](https://github.com/user-attachments/assets/7c664aba-c535-4095-b7eb-4eedb99aacb0)
+    
+</details>
+
 
 - First release: 1/30/2025 [[view online](https://james4ever0.github.io/Cybergod__God_is_in_your_computer.html)] [[pdf download](https://github.com/James4Ever0/agi_computer_control/releases/download/paper-initial-publication/Cybergod__God_is_in_your_computer.pdf)]
 
