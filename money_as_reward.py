@@ -6,7 +6,7 @@
 
 import time
 
-class FinancialReward:
+class TaxAccountant:
     def __init__(self, init_money:float, tax_rate:float):
         self.money=init_money
         self.tax_rate=tax_rate
