@@ -7,10 +7,22 @@
 import time
 
 class FinancialReward:
-    def __init__(self, init_money:float, decrease_rate:float):
+    def __init__(self, init_money:float, tax_rate:float):
         self.money=init_money
-        self.decrease_rate=decrease_rate
-        self.state = 'active'
+        self.tax_rate=tax_rate
+        # self.state = 'active'
         self.born_time = time.time()
-    def get_step(self):
-        ...
+        self.last_tax_time = time.time()
+
+    def pay_tax(self):
+        if self.state == "suspended": return
+        current_time = time.time()
+        tax_duration = current_time-self.last_tax_time
+        living_tax = tax_duration * self.tax_rate
+        self.money -= living_tax
+        self.last_tax_time = current_time
+
+    @property
+    def state(self):
+        if self.money > 0: return "active"
+        return "suspended"
