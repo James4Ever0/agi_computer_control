@@ -7,9 +7,10 @@
 import time
 
 class TaxAccountant:
-    def __init__(self, init_money:float, tax_rate:float):
-        self.money=init_money
-        self.tax_rate=tax_rate
+    def __init__(self, init_money:float, tax_rate:float, debug:bool = True):
+        self.money = init_money
+        self.debug = debug
+        self.tax_rate = tax_rate
         # self.state = 'active'
         self.born_time = time.time()
         self.last_tax_time = time.time()
@@ -19,6 +20,8 @@ class TaxAccountant:
         current_time = time.time()
         tax_duration = current_time-self.last_tax_time
         living_tax = tax_duration * self.tax_rate
+        if self.debug:
+            print('money: %f tax: %f' % (self.money, living_tax))
         self.money -= living_tax
         self.last_tax_time = current_time
 
@@ -26,3 +29,13 @@ class TaxAccountant:
     def state(self):
         if self.money > 0: return "active"
         return "suspended"
+
+def test():
+    acc = TaxAccountant(3, 1)
+    for _ in range(4):
+        acc.pay_tax()
+        time.sleep(1)
+    assert acc.state == 'suspended'
+
+if __name__ == '__main__':
+    test()
