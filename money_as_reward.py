@@ -22,7 +22,9 @@ class TaxAccountant:
         living_tax = tax_duration * self.tax_rate
         if self.debug:
             print('money: %f tax: %f' % (self.money, living_tax))
-        paied_tax = min(self.money, living_tax)
+        paid_tax = min(self.money, living_tax)
+        if self.debug:
+            print('paid tax:', paid_tax)
         self.money -= paid_tax
         self.last_tax_time = current_time
         return paid_tax
