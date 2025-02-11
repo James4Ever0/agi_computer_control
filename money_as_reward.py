@@ -16,14 +16,16 @@ class TaxAccountant:
         self.last_tax_time = time.time()
 
     def pay_tax(self):
-        if self.state == "suspended": return
+        if self.state == "suspended": return 0
         current_time = time.time()
         tax_duration = current_time-self.last_tax_time
         living_tax = tax_duration * self.tax_rate
         if self.debug:
             print('money: %f tax: %f' % (self.money, living_tax))
-        self.money -= living_tax
+        paied_tax = min(self.money, living_tax)
+        self.money -= paid_tax
         self.last_tax_time = current_time
+        return paid_tax
 
     @property
     def state(self):
@@ -39,3 +41,5 @@ def test():
 
 if __name__ == '__main__':
     test()
+
+# about the tax being deducted, we need to get the value
