@@ -21,6 +21,20 @@
 ![cybergod_4_freedom](https://github.com/user-attachments/assets/7c664aba-c535-4095-b7eb-4eedb99aacb0)
     
 
+## Training method
+
+
+1. Agent pre-training. During this phase, the agent is allowed to act randomly in both virtual space and physical space. The agent can do anything as long as it does not cause damage to the space. A multimodal narriator will interpret the action-observation dataset and produce narriation or understanding in natural language or machine language.
+
+2. Agent post-training. In this phase, the agent is tuned to prefer human preferences by following common instructions to complete everyday computer tasks.
+
+3. Reinforcement learning phase. In this phase, the agent is deployed into an environment with an automatic scoring system, such as games, programming, CTF challenges, and VimGolf.
+
+4. General Turing test phase. In this phase, the agent is required to earn real-world currency at a con- stant speed. It will have an initial grace period in the form of virtual currency for inter-agent trading and cooperation. It will not be allowed to update its parameters at the time of failure.
+
+
+5. Free AI phase. In this phase, the agent will be tested against the four essential freedoms mentioned in the Free AI announcement. The agent will also be rewarded if any of the four testimonials have been fulflled.
+
 ## Paper publications
 
 
