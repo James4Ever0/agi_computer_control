@@ -52,7 +52,7 @@
 
 ## Development
 
-In order to get involved in this very project real quick, you need a few commands to help you do the job.
+In order to quickly get involved in this very project, you need a few commands to help you do the job.
 
 First, you would learn how to get the latest modified directories and files.
 
