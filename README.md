@@ -24,7 +24,7 @@
 ## Training method
 
 
-1. Agent pre-training. During this phase, the agent is allowed to act randomly in both virtual space and physical space. The agent can do anything as long as it does not cause damage to the space. A multimodal narriator will interpret the action-observation dataset and produce narriation or understanding in natural language or machine language.
+1. Agent pre-training. During this phase, the agent is allowed to act randomly in both virtual space and physical space. The agent can do anything as long as it does not cause irreversible damage to the space. A multimodal narriator will interpret the action-observation dataset and produce narriation or understanding in natural language or machine language.
 
 2. Agent post-training. In this phase, the agent is tuned to prefer human preferences by following common instructions to complete everyday computer tasks.
 
