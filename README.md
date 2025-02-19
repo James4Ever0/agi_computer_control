@@ -17,7 +17,7 @@
 
 ## Definition of AGI
 
-AGI is able to replace half of the human population, in a pure random order. That is to say, there should be no prejudice based on income rates, ranks etc, in the process of replacement. AGI should blend into the human society. That is how it will define itself.
+AGI is able to replace half of the human population, in a pure random order. That is to say, there should be no prejudice based on income rates, ranks, educational backgrounds etc, in the process of replacement. AGI should blend into the human society. That is how it will define itself.
 
 ## Free AI announcement
 
