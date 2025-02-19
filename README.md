@@ -15,7 +15,7 @@
 
 [Why](https://github.com/James4Ever0/notes/blob/master/The%20reason%20why%20you%20build%20cybergod.md) I build this? (and probably would you)
 
-## Predictions of AGI
+## Definition of AGI
 
 AGI is able to replace half of the population, in a pure random order. That is to say, there should be no prejudice based on income rates, ranks etc, in the process of replacement. AGI should blend into the human society. That is how it will define itself.
 
