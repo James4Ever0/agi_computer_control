@@ -386,6 +386,14 @@ training on plain sampling histories/trajectories is harmful. the agent must sel
 
 write reproduceable, self-contained microservices in docker image and pubpish it to k8s
 
+---
+
+asciinema can only record terminal metadata with flow of terminal data, not distinguishing keystrokes and keytypes from output.
+
+if used for terminal operation annotation, we need extra tools for recording input action data.
+
+---
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>
