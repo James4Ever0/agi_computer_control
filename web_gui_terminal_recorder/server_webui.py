@@ -135,7 +135,9 @@ def start_ttyd():
     # poc_ttyd_command = ["ttyd", "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "Terminal Recorder", "-y", "%s/terminal.cast" % tmpdir_path, "--overwrite"]
     image_name = "cybergod_worker_terminal"
     container_name = "terminal_recorder_ttyd"
+    # TODO: ttyd uses xterm.js. maybe we can tweak there for 80x25 fixed size terminal
     docker_ttyd_command = ["docker", "run", "--rm", "--tty", "-d", "--publish", "8080:8080", "--name", container_name, "-v", "%s:/tmp" % tmpdir_path,"--entrypoint", "ttyd", image_name, "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "TerminalRecorder", "-y", "/tmp/terminal.cast", "--overwrite"]
+
     print("Executing command:", " ".join(docker_ttyd_command))
     subprocess.call(docker_ttyd_command)
     # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
