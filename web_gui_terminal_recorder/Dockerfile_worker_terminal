@@ -1,0 +1,10 @@
+FROM ubuntu:22.04
+
+RUN apt update
+RUN apt install -y ttyd asciinema
+
+# copy the config file for asciinema to ~/.config/asciinema/config
+COPY asciinema_2.x_config /home/ubuntu/.config/asciinema/config
+COPY asciinema_2.x_config /root/.config/asciinema/config
+
+ENTRYPOINT /usr/bin/bash

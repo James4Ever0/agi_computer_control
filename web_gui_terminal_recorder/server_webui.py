@@ -1,3 +1,4 @@
+import pathlib
 import fastapi
 from fastapi.responses import HTMLResponse
 import uvicorn
@@ -7,6 +8,8 @@ import os
 import signal
 import shutil
 import datetime
+import socket
+import asyncio
 
 app = fastapi.FastAPI()
 
@@ -43,8 +46,12 @@ def read_general_recorder(title = "General Recorder", iframe_link = "", javascri
 
     reload_iframe_javascript = """
     function reloadIFrame(){
+        // this function does not work in javascript. do we need to use nginx?
         const iframe = document.getElementById("recorder_iframe");
         iframe.contentWindow.location.reload();
+    }
+    function reloadPage(){
+        location.reload();
     }
     """
     if iframe_link:
@@ -66,7 +73,7 @@ def read_general_recorder(title = "General Recorder", iframe_link = "", javascri
         <textarea id="description"></textarea>
         <button onclick="startRecording()">Start Recording</button>
         <button onclick="stopRecording()">Stop Recording</button>
-        <!-- <button onclick="reloadIFrame()">Reload Iframe</button> -->
+        <button onclick="reloadPage()">Reload Page</button>
         {iframe_elem}
     </body>
     </html>
@@ -119,29 +126,41 @@ def read_gui_recorder(show_iframe=False):
     return read_general_recorder(title="GUI Recorder", iframe_link=gui_iframe_link, javascript=javascript)
 
 def start_ttyd():
+    stop_ttyd()
     # wrap all subcomponent in quotes
-    p = subprocess.Popen(["ttyd", "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "Terminal Recorder", "-y", "/tmp/terminal.cast", "--overwrite"])
-    pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
-    pid = p.pid
-    with open(pidfile, "w") as f:
-        f.write(str(pid))
-    p.wait()
-    return pid
+    tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
+    pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
+    # poc_ttyd_command = ["ttyd", "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "Terminal Recorder", "-y", "%s/terminal.cast" % tmpdir_path, "--overwrite"]
+    image_name = "cybergod_worker_terminal"
+    container_name = "terminal_recorder_ttyd"
+    docker_ttyd_command = ["docker", "run", "--rm", "--tty", "-d", "--publish", "8080:8080", "--name", container_name, "-v", "%s:/tmp" % tmpdir_path,"--entrypoint", "ttyd", image_name, "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "TerminalRecorder", "-y", "/tmp/terminal.cast", "--overwrite"]
+    print("Executing command:", " ".join(docker_ttyd_command))
+    subprocess.call(docker_ttyd_command)
+    # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
+    # pid = p.pid
+    # with open(pidfile, "w") as f:
+    #     f.write(str(pid))
+    # p.wait()
+    # return pid
+def stop_ttyd():
+    subprocess.call(["docker", "stop", "terminal_recorder_ttyd"])
+    
+def save_ttyd_recording(description:str):
 
-def stop_ttyd(description:str):
-    pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
-    outputfile = "/tmp/terminal.cast"
-    if not os.path.exists(pidfile):
-        print("Pidfile %s not found" % pidfile)
+    # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
+    tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
+    outputfile = os.path.join(tmpdir_path, "terminal.cast")
+    if not os.path.exists(outputfile):
+        print("Output file %s not found" % outputfile)
         return
-    with open(pidfile, "r") as f:
-        pid = f.read()
-    try:
-        os.kill(int(pid), signal.SIGTERM)
-        print("Terminated ttyd process %s" % pid)
-    except ProcessLookupError:
-        print("Process %s not found" % pid)
-    os.remove(pidfile)
+    # docker stop terminal_recorder_ttyd
+    stop_ttyd()
+    # try:
+    #     os.kill(int(pid), signal.SIGTERM)
+    #     print("Terminated ttyd process %s" % pid)
+    # except ProcessLookupError:
+    #     print("Process %s not found" % pid)
+    # os.remove(pidfile)
     # copy the output file to destination
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -155,16 +174,31 @@ def stop_ttyd(description:str):
     print("Copied %s to %s" % (outputfile, destination))
 
 @app.get("/start/terminal") # use fastapi background process
-def start_terminal_recording(background_tasks: BackgroundTasks):
+async def start_terminal_recording():
     # start the ttyd process
-    background_tasks.add_task(start_ttyd)
+    start_ttyd()
+    connection_timeout=True
+    # wait for port 8080 to be available, for most 3 seconds
+    timeout = 3
+    for i in range(timeout):
+        try:
+            conn = socket.create_connection(("127.0.0.1", 8080))
+            print("Port 8080 is available after %s seconds" % (i))
+            connection_timeout=False
+            conn.close()
+            break
+        except:
+            await asyncio.sleep(1)
+    if connection_timeout:
+        print("Port 8080 is not available in %s seconds" % timeout)
+        return "Terminal recording started, but port 8080 is not available"
     return "Terminal recording started"
 
 @app.get("/stop/terminal")
-def stop_terminal_recording(description:str, background_tasks: BackgroundTasks):
+def stop_terminal_recording(description:str):
     # stop the ttyd process
     # just read the ttyd PID and terminate it.
-    background_tasks.add_task(stop_ttyd, description)
+    save_ttyd_recording(description)
     return "Terminal recording stopped"
 
 @app.get("/start/gui")
@@ -178,7 +212,13 @@ def stop_gui_recording():
     return "GUI recording stopped"
 
 def main():
-    uvicorn.run(app, host="0.0.0.0", port=9001)
+    try:
+        uvicorn.run(app, host="0.0.0.0", port=9001)
+    finally:
+        print("Server down.")
+        print("Running cleanup jobs")
+        # cleanup jobs
+        stop_ttyd()
 
 if __name__ == "__main__":
     main()

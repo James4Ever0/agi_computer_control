@@ -1,0 +1,4 @@
+!asciinema_2.x_config
+!Dockerfile_worker_gui
+!Dockerfile_worker_terminal
+!docker-compose.yaml
