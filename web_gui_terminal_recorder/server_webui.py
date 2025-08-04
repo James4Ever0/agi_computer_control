@@ -13,7 +13,9 @@ import asyncio
 
 app = fastapi.FastAPI()
 
-EXTERNAL_HOST = "http://localhost"
+EXTERNAL_HOST = os.environ.get("EXTERNAL_HOST", "http://localhost")
+
+print("Using external host: %s" % EXTERNAL_HOST)
 
 # return html
 @app.get("/", response_class=HTMLResponse)
@@ -142,9 +144,10 @@ def start_ttyd():
     #     f.write(str(pid))
     # p.wait()
     # return pid
+
 def stop_ttyd():
     subprocess.call(["docker", "stop", "terminal_recorder_ttyd"])
-    
+
 def save_ttyd_recording(description:str):
 
     # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
