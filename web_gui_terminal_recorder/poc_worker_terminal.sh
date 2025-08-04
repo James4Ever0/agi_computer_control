@@ -1,0 +1,1 @@
+ttyd -p 8080 -c "asciinema rec -c 'bash' -t 'Terminal Recorder' -y -o /tmp/asciinema/terminal.cast"
