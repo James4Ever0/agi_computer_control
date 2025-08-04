@@ -11,9 +11,24 @@ import asyncio
 
 app = fastapi.FastAPI()
 
-EXTERNAL_HOST = os.environ.get("EXTERNAL_HOST", "http://localhost")
+EXTERNAL_HOST = os.environ.get("EXTERNAL_HOST", "http://127.0.0.1")
 
 print("Using external host: %s" % EXTERNAL_HOST)
+
+async def wait_for_connection(host:str, port:int, timeout:int):
+    connection_timeout=True
+    for i in range(timeout):
+        try:
+            conn = socket.create_connection((host, port))
+            print("Port %s is available after %s seconds" % (port, i))
+            connection_timeout=False
+            conn.close()
+            break
+        except:
+            await asyncio.sleep(1)
+    if connection_timeout:
+        print("Port port is not available in %s seconds" % timeout)
+    return connection_timeout
 
 # return html
 @app.get("/", response_class=HTMLResponse)
@@ -24,7 +39,7 @@ def read_root():
         <title>Web GUI Terminal Recorder</title>
     </head>
     <body>
-        <h1>Web GUI Terminal Recorder</h1>
+        <h1>Web GUI/Terminal Recorder</h1>
         <p>Choose a recorder type:</p>
         <ul>
             <li><a href="/recorder/terminal">Terminal Recorder</a></li>
@@ -46,7 +61,7 @@ def read_general_recorder(title = "General Recorder", iframe_link = "", javascri
 
     reload_iframe_javascript = """
     function reloadIFrame(){
-        // this function does not work in javascript. do we need to use nginx?
+        // this function does not work in firefox. do we need to use nginx for mapping all urls into the same host and port? or is there some wrong header in the ttyd respose?
         const iframe = document.getElementById("recorder_iframe");
         iframe.contentWindow.location.reload();
     }
@@ -112,8 +127,10 @@ def read_terminal_recorder(show_iframe:bool=False):
     return read_general_recorder(title="Terminal Recorder", iframe_link=terminal_iframe_link, javascript=javascript)
 
 @app.get("/recorder/gui", response_class=HTMLResponse)
-def read_gui_recorder(show_iframe=False):
-    gui_iframe_link = f"{EXTERNAL_HOST}:8081/vnc.html?password=password&autoconnect=1" if show_iframe else ""
+def read_gui_recorder(show_iframe:bool=False):
+    # set resize=scale to make it fit into window
+    # ref: https://novnc.com/noVNC/docs/EMBEDDING.html
+    gui_iframe_link = f"{EXTERNAL_HOST}:8081/vnc.html?password=password&autoconnect=1&resize=scale&reconnect=1&reconnect_delay=1000" if show_iframe else ""
     javascript = """
     function startRecording() {
         fetch("/start/gui").then(() => {
@@ -147,11 +164,16 @@ def start_ttyd():
     # poc_ttyd_command = ["ttyd", "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "Terminal Recorder", "-y", "%s/terminal.cast" % tmpdir_path, "--overwrite"]
     image_name = "cybergod_worker_terminal"
     container_name = "terminal_recorder_ttyd"
+    # web terminal apps on xterm.js official website: https://xtermjs.org/
     # TODO: ttyd uses xterm.js. maybe we can tweak there for 80x25 fixed size terminal
     # TODO: state is not persisted. may use ssh to connect to a persistant machine
+
+    # gotty supports fixed column and height
+    # ref: https://github.com/sorenisanerd/gotty
     docker_ttyd_command = ["docker", "run", "--rm", "--tty", "-d", "--publish", "8080:8080", "--name", container_name, "-v", "%s:/tmp" % tmpdir_path, "--entrypoint", "ttyd", image_name, "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "TerminalRecorder", "-y", "/tmp/terminal.cast", "--overwrite"]
 
-    print("Executing command:", " ".join(docker_ttyd_command))
+    print("Executing command:")
+    print(" ".join(docker_ttyd_command))
     subprocess.call(docker_ttyd_command)
     # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
     # pid = p.pid
@@ -196,24 +218,12 @@ def save_ttyd_recording(description:str):
     os.remove(tmp_outputfile)
     print("Removed %s" % tmp_outputfile)
 
-@app.get("/start/terminal") # use fastapi background process
+@app.get("/start/terminal")
 async def start_terminal_recording():
     # start the ttyd process
     start_ttyd()
-    connection_timeout=True
-    # wait for port 8080 to be available, for most 3 seconds
-    timeout = 3
-    for i in range(timeout):
-        try:
-            conn = socket.create_connection(("127.0.0.1", 8080))
-            print("Port 8080 is available after %s seconds" % (i))
-            connection_timeout=False
-            conn.close()
-            break
-        except:
-            await asyncio.sleep(1)
+    connection_timeout=await wait_for_connection(host="127.0.0.1", port=8080,timeout = 3)
     if connection_timeout:
-        print("Port 8080 is not available in %s seconds" % timeout)
         return "Terminal recording started, but port 8080 is not available"
     return "Terminal recording started"
 
@@ -229,40 +239,55 @@ async def start_novnc():
     stop_novnc()
     image_name = "cybergod_worker_gui"
     container_name = "gui_recorder_novnc"
+    volume_name = "x11vnc_project"
 
     tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
+    container_gui_record_path="/tmp/gui_record_data"
     pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
 
     # the docker command here is to be cross-referenced with x11vnc-docker launch script (python)
     # ref: https://github.com/x11vnc/x11vnc-desktop/blob/main/x11vnc_desktop.py
     vnc_password = "password"
-
-    docker_novnc_command = ["docker", "run", "--rm", "--tty", "-d", "-e", "RESOLUT=1920x1080", "-e", "VNCPASS=%s" % vnc_password, "-p", "8081:6080", "-p", "8950:5900", "--name", container_name, "-v", "%s:/tmp" % tmpdir_path,'--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE', image_name, 'startvnc.sh']
+    # too many local directories mounted to this container using the original python script
+    # docker run -d --rm --name x11vnc-zrvgaz --shm-size 2g -p 6080:6080 -p 5950:5900 --hostname x11vnc-zrvgaz --env VNCPASS= --env RESOLUT=1920x1080 --env HOST_UID=1000 --env HOST_GID=1000 -p 2222:22 -v /media/jamesbrown/Ventoy/agi_computer_control/web_gui_terminal_recorder:/home/ubuntu/shared -v x11vnc_zh_CN_config:/home/ubuntu/.config -v /home/jamesbrown/.gnupg:/home/ubuntu/.gnupg -v /home/jamesbrown/.gitconfig:/home/ubuntu/.gitconfig_host -v x11vnc_project:/home/ubuntu/project -w /home/ubuntu/project -v /home/jamesbrown/.ssh:/home/ubuntu/.ssh --security-opt seccomp=unconfined --cap-add=SYS_PTRACE x11vnc/docker-desktop:zh_CN startvnc.sh >> /home/ubuntu/.log/vnc.log
+    docker_novnc_command = ["docker", "run", "--rm", "--tty", "-d", "-e", "RESOLUT=1920x1080", "-e", "VNCPASS=%s" % vnc_password, "--publish", "8081:6080", "--publish", "8950:5900", "--name", container_name, "-v", "%s:%s" % (tmpdir_path,container_gui_record_path),'--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE', "-v", "%s:%s" % (volume_name, "/home/ubuntu/project"), image_name, 'startvnc.sh']
+    print("Running command:")
+    print(" ".join(docker_novnc_command))
     subprocess.call(docker_novnc_command)
 
     # call the recorder only if the vnc server is ready
-    # wait for port 8950 to be available, for most 5 seconds
-    timeout = 5
-    for i in range(timeout):
-        try:
-            conn = socket.create_connection(("127.0.0.1", 8950))
-            print("Port 8950 is available after %s seconds" % (i))
-            connection_timeout=False
-            conn.close()
+    # wait for port 8081 to be available, for most 5 seconds
+    
+    # novnc_connection_timeout=await wait_for_connection(host="127.0.0.1", port =8081, timeout = 5)
+    # vnc_connection_timeout=await wait_for_connection(host="127.0.0.1", port =8950, timeout = 5)
+    # connection_timeout= vnc_connection_timeout or novnc_connection_timeout
+    view_log_cmd = ["docker", "logs", container_name]
+    ready = False
+    # timeout in 7 seconds.
+    for i in range(7):
+        container_log_output = subprocess.check_output(view_log_cmd)
+        if "Open your web browser with URL:" in container_log_output.decode():
+            ready = True
+            print("novnc service ready at %s seconds" % i)
             break
-        except:
-            await asyncio.sleep(1)
-    if connection_timeout:
-        print("Port 8950 is not available in %s seconds" % timeout)
-        return "GUI recording started, but port 8950 is not available"
+        await asyncio.sleep(1)
+    if not ready:
+        return "GUI recording started, but not all services available"
     else:
-        docker_novnc_recorder_command = ["docker", "exec","-d", container_name, 'python3', "/user/ubuntu/worker_gui.py", "--output_dir", tmpdir_path]
+        display_name = ":0.0" 
+        docker_novnc_recorder_command = ["docker", "exec","-d",  "-e", "DISPLAY=%s" % display_name,container_name, 'python3', "/home/ubuntu/worker_gui.py", "--output_dir", container_gui_record_path]
+        print("Executing command:")
+        print(" ".join(docker_novnc_recorder_command))
         subprocess.call(docker_novnc_recorder_command)
         return "GUI recording started"
 
 def stop_novnc():
     container_name = "gui_recorder_novnc"
     stop_docker_container(container_name)
+    volume_name = "x11vnc_project"
+    print("Removing docker volume:", volume_name)
+    cmd = ['docker', "volume", "rm", "-f", volume_name]
+    subprocess.call(cmd)
 
 def save_novnc_recording(description:str):
     stop_novnc()
@@ -273,7 +298,7 @@ def save_novnc_recording(description:str):
     description_savepath = os.path.join(destination, "description.txt")
     if not os.path.exists(destination):
         os.makedirs(destination)
-    shutil.copytree(tmpdir_path, destination)
+    shutil.copytree(tmpdir_path, destination, dirs_exist_ok=True)
     print("Copied %s to %s" % (tmpdir_path, destination))
     with open(description_savepath, "w") as f:
         f.write(description)
@@ -295,8 +320,9 @@ def stop_gui_recording(description:str):
 def main():
     try:
         uvicorn.run(app, host="0.0.0.0", port=9001)
+    except KeyboardInterrupt:
+        print("User interrputed")
     finally:
-        print("Server down.")
         print("Running cleanup jobs")
         # cleanup jobs
         stop_ttyd()
