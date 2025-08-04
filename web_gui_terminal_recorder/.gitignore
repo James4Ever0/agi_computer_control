@@ -2,3 +2,4 @@
 !Dockerfile_worker_gui
 !Dockerfile_worker_terminal
 !docker-compose.yaml
+!tsinghua_tuna_ubuntu_jammy_mirrors
