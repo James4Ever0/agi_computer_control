@@ -2,7 +2,6 @@ import pathlib
 import fastapi
 from fastapi.responses import HTMLResponse
 import uvicorn
-from fastapi import BackgroundTasks
 import subprocess
 import os
 import shutil
@@ -114,14 +113,28 @@ def read_terminal_recorder(show_iframe:bool=False):
 
 @app.get("/recorder/gui", response_class=HTMLResponse)
 def read_gui_recorder(show_iframe=False):
-    gui_iframe_link = f"{EXTERNAL_HOST}:8081" if show_iframe else ""
+    gui_iframe_link = f"{EXTERNAL_HOST}:8081/vnc.html?password=password&autoconnect=1" if show_iframe else ""
     javascript = """
     function startRecording() {
-        // there is no need to reload
-        fetch("/start/gui");
+        fetch("/start/gui").then(() => {
+            // change to "show_iframe=True" in url, then reload
+            const url = new URL(window.location.href);
+            url.searchParams.set("show_iframe", "true");
+            window.location.href = url.toString();
+        });
     }
     function stopRecording() {
-        fetch("/stop/gui");
+        const description = document.getElementById("description").value;
+        if (!description) {
+            alert("Please enter a description");
+            return;
+        }
+        fetch("/stop/gui?description=" + encodeURIComponent(description)).then(() => {
+            // change to "show_iframe=False" in url, then reload
+            const url = new URL(window.location.href);
+            url.searchParams.set("show_iframe", "false");
+            window.location.href = url.toString();
+        });
     }
     """
     return read_general_recorder(title="GUI Recorder", iframe_link=gui_iframe_link, javascript=javascript)
@@ -147,16 +160,19 @@ def start_ttyd():
     # p.wait()
     # return pid
 
+def stop_docker_container(container_name:str):
+    subprocess.call(["docker", "stop", container_name])
+
 def stop_ttyd():
-    subprocess.call(["docker", "stop", "terminal_recorder_ttyd"])
+    stop_docker_container("terminal_recorder_ttyd")
 
 def save_ttyd_recording(description:str):
 
     # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
     tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
-    outputfile = os.path.join(tmpdir_path, "terminal.cast")
-    if not os.path.exists(outputfile):
-        print("Output file %s not found" % outputfile)
+    tmp_outputfile = os.path.join(tmpdir_path, "terminal.cast")
+    if not os.path.exists(tmp_outputfile):
+        print("Output file %s not found" % tmp_outputfile)
         return
     # docker stop terminal_recorder_ttyd
     stop_ttyd()
@@ -173,10 +189,12 @@ def save_ttyd_recording(description:str):
     description_savepath = os.path.join(destination, "description.txt")
     if not os.path.exists(destination):
         os.makedirs(destination)
-    shutil.copy(outputfile, destination)
+    shutil.copy(tmp_outputfile, destination)
     with open(description_savepath, "w") as f:
         f.write(description)
-    print("Copied %s to %s" % (outputfile, destination))
+    print("Copied %s to %s" % (tmp_outputfile, destination))
+    os.remove(tmp_outputfile)
+    print("Removed %s" % tmp_outputfile)
 
 @app.get("/start/terminal") # use fastapi background process
 async def start_terminal_recording():
@@ -206,14 +224,72 @@ def stop_terminal_recording(description:str):
     save_ttyd_recording(description)
     return "Terminal recording stopped"
 
+
+async def start_novnc():
+    stop_novnc()
+    image_name = "cybergod_worker_gui"
+    container_name = "gui_recorder_novnc"
+
+    tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
+    pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
+
+    # the docker command here is to be cross-referenced with x11vnc-docker launch script (python)
+    # ref: https://github.com/x11vnc/x11vnc-desktop/blob/main/x11vnc_desktop.py
+    vnc_password = "password"
+
+    docker_novnc_command = ["docker", "run", "--rm", "--tty", "-d", "-e", "RESOLUT=1920x1080", "-e", "VNCPASS=%s" % vnc_password, "-p", "8081:6080", "-p", "8950:5900", "--name", container_name, "-v", "%s:/tmp" % tmpdir_path,'--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE', image_name, 'startvnc.sh']
+    subprocess.call(docker_novnc_command)
+
+    # call the recorder only if the vnc server is ready
+    # wait for port 8950 to be available, for most 5 seconds
+    timeout = 5
+    for i in range(timeout):
+        try:
+            conn = socket.create_connection(("127.0.0.1", 8950))
+            print("Port 8950 is available after %s seconds" % (i))
+            connection_timeout=False
+            conn.close()
+            break
+        except:
+            await asyncio.sleep(1)
+    if connection_timeout:
+        print("Port 8950 is not available in %s seconds" % timeout)
+        return "GUI recording started, but port 8950 is not available"
+    else:
+        docker_novnc_recorder_command = ["docker", "exec","-d", container_name, 'python3', "/user/ubuntu/worker_gui.py", "--output_dir", tmpdir_path]
+        subprocess.call(docker_novnc_recorder_command)
+        return "GUI recording started"
+
+def stop_novnc():
+    container_name = "gui_recorder_novnc"
+    stop_docker_container(container_name)
+
+def save_novnc_recording(description:str):
+    stop_novnc()
+    tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
+    savepath = "./record/gui"
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    destination = os.path.join(savepath, "gui_record_%s" % timestamp)
+    description_savepath = os.path.join(destination, "description.txt")
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+    shutil.copytree(tmpdir_path, destination)
+    print("Copied %s to %s" % (tmpdir_path, destination))
+    with open(description_savepath, "w") as f:
+        f.write(description)
+    print("Saved description to %s" % description_savepath)
+    shutil.rmtree(tmpdir_path)
+    print("Removed %s" % tmpdir_path)
+
 @app.get("/start/gui")
-def start_gui_recording():
+async def start_gui_recording():
     # start the novnc process
+    await start_novnc()
     return "GUI recording started"
 
 @app.get("/stop/gui")
-def stop_gui_recording():
-    # stop the novnc process
+def stop_gui_recording(description:str):
+    save_novnc_recording(description)
     return "GUI recording stopped"
 
 def main():
@@ -224,6 +300,7 @@ def main():
         print("Running cleanup jobs")
         # cleanup jobs
         stop_ttyd()
+        stop_novnc()
 
 if __name__ == "__main__":
     main()
