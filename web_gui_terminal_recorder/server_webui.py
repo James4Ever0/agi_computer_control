@@ -239,7 +239,7 @@ async def start_novnc():
     stop_novnc()
     image_name = "cybergod_worker_gui"
     container_name = "gui_recorder_novnc"
-    volume_name = "x11vnc_project"
+    volume_name = "cybergod_gui_recorder_x11vnc_project"
 
     tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
     container_gui_record_path="/tmp/gui_record_data"
@@ -249,7 +249,7 @@ async def start_novnc():
     # ref: https://github.com/x11vnc/x11vnc-desktop/blob/main/x11vnc_desktop.py
     vnc_password = "password"
     # too many local directories mounted to this container using the original python script
-    # docker run -d --rm --name x11vnc-zrvgaz --shm-size 2g -p 6080:6080 -p 5950:5900 --hostname x11vnc-zrvgaz --env VNCPASS= --env RESOLUT=1920x1080 --env HOST_UID=1000 --env HOST_GID=1000 -p 2222:22 -v /media/jamesbrown/Ventoy/agi_computer_control/web_gui_terminal_recorder:/home/ubuntu/shared -v x11vnc_zh_CN_config:/home/ubuntu/.config -v /home/jamesbrown/.gnupg:/home/ubuntu/.gnupg -v /home/jamesbrown/.gitconfig:/home/ubuntu/.gitconfig_host -v x11vnc_project:/home/ubuntu/project -w /home/ubuntu/project -v /home/jamesbrown/.ssh:/home/ubuntu/.ssh --security-opt seccomp=unconfined --cap-add=SYS_PTRACE x11vnc/docker-desktop:zh_CN startvnc.sh >> /home/ubuntu/.log/vnc.log
+    # docker run -d --rm --name x11vnc-zrvgaz --shm-size 2g -p 6080:6080 -p 5950:5900 --hostname x11vnc-zrvgaz --env VNCPASS= --env RESOLUT=1920x1080 --env HOST_UID=1000 --env HOST_GID=1000 -p 2222:22 -v /media/jamesbrown/Ventoy/agi_computer_control/web_gui_terminal_recorder:/home/ubuntu/shared -v x11vnc_zh_CN_config:/home/ubuntu/.config -v /home/jamesbrown/.gnupg:/home/ubuntu/.gnupg -v /home/jamesbrown/.gitconfig:/home/ubuntu/.gitconfig_host -v cybergod_gui_recorder_x11vnc_project:/home/ubuntu/project -w /home/ubuntu/project -v /home/jamesbrown/.ssh:/home/ubuntu/.ssh --security-opt seccomp=unconfined --cap-add=SYS_PTRACE x11vnc/docker-desktop:zh_CN startvnc.sh >> /home/ubuntu/.log/vnc.log
     docker_novnc_command = ["docker", "run", "--rm", "--tty", "-d", "-e", "RESOLUT=1920x1080", "-e", "VNCPASS=%s" % vnc_password, "--publish", "8081:6080", "--publish", "8950:5900", "--name", container_name, "-v", "%s:%s" % (tmpdir_path,container_gui_record_path),'--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE', "-v", "%s:%s" % (volume_name, "/home/ubuntu/project"), image_name, 'startvnc.sh']
     print("Running command:")
     print(" ".join(docker_novnc_command))
@@ -284,7 +284,7 @@ async def start_novnc():
 def stop_novnc():
     container_name = "gui_recorder_novnc"
     stop_docker_container(container_name)
-    volume_name = "x11vnc_project"
+    volume_name = "cybergod_gui_recorder_x11vnc_project"
     print("Removing docker volume:", volume_name)
     cmd = ['docker', "volume", "rm", "-f", volume_name]
     subprocess.call(cmd)
