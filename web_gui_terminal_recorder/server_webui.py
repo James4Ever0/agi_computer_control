@@ -154,6 +154,11 @@ def read_terminal_recorder(show_iframe: bool = False, user_agent: Union[str, Non
     # in chrome it is different. at least it is fixed sized in the same session
     print("User agent:", user_agent)
 
+    iframe_size = dict(
+        iframe_width="600px",
+        iframe_height="400px"
+    )
+
     if user_agent:
         if "Firefox/" in user_agent:
             print("Using firefox iframe size")
@@ -167,10 +172,8 @@ def read_terminal_recorder(show_iframe: bool = False, user_agent: Union[str, Non
             iframe_height="405px",)
         else:
             print("Unknown user agent, using default iframe size")
-            iframe_size = dict()
     else:
         print("No user agent, using default iframe size")
-        iframe_size = dict()
 
     # finding alternative solutions
     return read_general_recorder(
