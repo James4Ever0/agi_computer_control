@@ -6,7 +6,7 @@ This is a web GUI/terminal recorder. It can record the GUI/terminal input/output
 
 Has some buttons for controlling recording, a textarea for specifying output filename and descriptions, and an iframe for novnc/ttyd interactions.
 
-The Web server launches two Docker containers (workers) running ttyd/novnc and recording the terminal/GUI input/output.
+The web server launches two docker containers (workers) running ttyd/novnc and recording the terminal/GUI input/output.
 
 ## Usage
 
