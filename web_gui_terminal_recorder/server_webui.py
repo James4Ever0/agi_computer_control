@@ -58,8 +58,8 @@ def read_root():
 def read_general_recorder(
     title="General Recorder",
     iframe_link="",
-    iframe_width="320",
-    iframe_height="240",
+    iframe_width="100%",
+    iframe_height="100%",
     javascript="""
     function startRecording() {
         console.log("Recording started (stub)")
@@ -87,12 +87,13 @@ def read_general_recorder(
     }
     """
     if iframe_link:
-        iframe_elem = f"""<iframe id="recorder_iframe" style="overflow:hidden;" src="{iframe_link}" width="{iframe_width}" height="{iframe_height}"></iframe>"""
+        iframe_elem = f"""<iframe id="recorder_iframe" width="{iframe_width}" height="{iframe_height}" src="{iframe_link}" ></iframe>"""
     else:
         iframe_elem = ""
 
     return f"""
-    <!DOCTYPE html>
+    <!-- kind of weird. do not add the following thing into the html file, otherwise the height of novnc iframe will not work -->
+    <!-- <!DOCTYPE html> -->
     <html>
     <head>
         <title>{title}</title>
@@ -223,8 +224,8 @@ def read_gui_recorder(show_iframe: bool = False):
     return read_general_recorder(
         title="GUI Recorder",
         iframe_link=gui_iframe_link,
-        iframe_width="90%",
-        iframe_height="90%",
+        iframe_width="100%",
+        iframe_height="100%",
         javascript=javascript,
     )
 
