@@ -8,7 +8,7 @@ import shutil
 import datetime
 import socket
 import asyncio
-
+from typing import Union
 # TODO: store beginning and ending timestamp of recording to record folder
 
 app = fastapi.FastAPI()
@@ -17,13 +17,14 @@ EXTERNAL_HOST = os.environ.get("EXTERNAL_HOST", "http://127.0.0.1")
 
 print("Using external host: %s" % EXTERNAL_HOST)
 
-async def wait_for_connection(host:str, port:int, timeout:int):
-    connection_timeout=True
+
+async def wait_for_connection(host: str, port: int, timeout: int):
+    connection_timeout = True
     for i in range(timeout):
         try:
             conn = socket.create_connection((host, port))
             print("Port %s is available after %s seconds" % (port, i))
-            connection_timeout=False
+            connection_timeout = False
             conn.close()
             break
         except:
@@ -31,6 +32,7 @@ async def wait_for_connection(host:str, port:int, timeout:int):
     if connection_timeout:
         print("Port port is not available in %s seconds" % timeout)
     return connection_timeout
+
 
 # return html
 @app.get("/", response_class=HTMLResponse)
@@ -51,15 +53,22 @@ def read_root():
     </html>
     """
 
+
 @app.get("/recorder/general", response_class=HTMLResponse)
-def read_general_recorder(title = "General Recorder", iframe_link = "", javascript = """
+def read_general_recorder(
+    title="General Recorder",
+    iframe_link="",
+    iframe_width="320",
+    iframe_height="240",
+    javascript="""
     function startRecording() {
         console.log("Recording started (stub)")
     }
     function stopRecording() {
         console.log("Recording stopped (stub)")
     }
-    """):
+    """,
+):
 
     reload_iframe_javascript = """
     function reloadIFrame(){
@@ -72,10 +81,10 @@ def read_general_recorder(title = "General Recorder", iframe_link = "", javascri
     }
     """
     if iframe_link:
-        iframe_elem = f"<iframe id='recorder_iframe' src='{iframe_link}' width='100%' height='100%'></iframe>"
+        iframe_elem = f"""<iframe id="recorder_iframe" style="overflow:hidden;" src="{iframe_link}" width="{iframe_width}" height="{iframe_height}"></iframe>"""
     else:
         iframe_elem = ""
-    
+
     return f"""
     <html>
     <head>
@@ -87,17 +96,20 @@ def read_general_recorder(title = "General Recorder", iframe_link = "", javascri
     </script>
     <body>
         <h1>{title}</h1>
-        <textarea id="description"></textarea>
+        <div>
+        <textarea id="description" placeholder="description"></textarea>
         <button onclick="startRecording()">Start Recording</button>
         <button onclick="stopRecording()">Stop Recording</button>
         <button onclick="reloadPage()">Reload Page</button>
+        </div>
         {iframe_elem}
     </body>
     </html>
     """
 
+
 @app.get("/recorder/terminal", response_class=HTMLResponse)
-def read_terminal_recorder(show_iframe:bool=False):
+def read_terminal_recorder(show_iframe: bool = False, user_agent: Union[str, None] = fastapi.Header(default=None)):
 
     terminal_iframe_link = f"{EXTERNAL_HOST}:8080" if show_iframe else ""
     javascript = """
@@ -126,13 +138,46 @@ def read_terminal_recorder(show_iframe:bool=False):
         });
     }
     """
-    return read_general_recorder(title="Terminal Recorder", iframe_link=terminal_iframe_link, javascript=javascript)
+    # for 80x25 terminal, width=615px, height=416px (firefox)
+    # in chrome it is different. at least it is fixed sized in the same session
+    print("User agent:", user_agent)
+
+    if user_agent:
+        if "Firefox/" in user_agent:
+            print("Using firefox iframe size")
+            iframe_size = dict(
+            iframe_width="615px",
+            iframe_height="416px",)
+        elif "Chrome/" in user_agent:
+            print("Using chrome iframe size")
+            iframe_size = dict(
+            iframe_width="615px",
+            iframe_height="405px",)
+        else:
+            print("Unknown user agent, using default iframe size")
+            iframe_size = dict()
+    else:
+        print("No user agent, using default iframe size")
+        iframe_size = dict()
+
+    # finding alternative solutions
+    return read_general_recorder(
+        title="Terminal Recorder",
+        iframe_link=terminal_iframe_link,
+        **iframe_size,
+        javascript=javascript,
+    )
+
 
 @app.get("/recorder/gui", response_class=HTMLResponse)
-def read_gui_recorder(show_iframe:bool=False):
+def read_gui_recorder(show_iframe: bool = False):
     # set resize=scale to make it fit into window
     # ref: https://novnc.com/noVNC/docs/EMBEDDING.html
-    gui_iframe_link = f"{EXTERNAL_HOST}:8081/vnc.html?password=password&autoconnect=1&resize=scale&reconnect=1&reconnect_delay=1000" if show_iframe else ""
+    gui_iframe_link = (
+        f"{EXTERNAL_HOST}:8081/vnc.html?password=password&autoconnect=1&resize=scale&reconnect=1&reconnect_delay=1000"
+        if show_iframe
+        else ""
+    )
     javascript = """
     function startRecording() {
         fetch("/start/gui").then(() => {
@@ -156,18 +201,28 @@ def read_gui_recorder(show_iframe:bool=False):
         });
     }
     """
-    return read_general_recorder(title="GUI Recorder", iframe_link=gui_iframe_link, javascript=javascript)
+    return read_general_recorder(
+        title="GUI Recorder",
+        iframe_link=gui_iframe_link,
+        iframe_width="90%",
+        iframe_height="90%",
+        javascript=javascript,
+    )
+
 
 def start_ttyd():
     import time
     import json
+
     stop_ttyd()
     # wrap all subcomponent in quotes
     tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
+    if os.path.exists(tmpdir_path):
+        shutil.rmtree(tmpdir_path)
     pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
     begin_recording_file = os.path.join(tmpdir_path, "begin_recording.txt")
     with open(begin_recording_file, "w") as f:
-        f.write(json.dumps({"timestamp": time.time(), 'event': "begin_recording"}))
+        f.write(json.dumps({"timestamp": time.time(), "event": "begin_recording"}))
     # poc_ttyd_command = ["ttyd", "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "Terminal Recorder", "-y", "%s/terminal.cast" % tmpdir_path, "--overwrite"]
     image_name = "cybergod_worker_terminal"
     container_name = "terminal_recorder_ttyd"
@@ -177,7 +232,34 @@ def start_ttyd():
 
     # gotty supports fixed column and height
     # ref: https://github.com/sorenisanerd/gotty
-    docker_ttyd_command = ["docker", "run", "--rm", "--tty", "-d", "--publish", "8080:8080", "--name", container_name, "-v", "%s:/tmp" % tmpdir_path, "--entrypoint", "ttyd", image_name, "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "TerminalRecorder", "-y", "/tmp/terminal.cast", "--overwrite"]
+    docker_ttyd_command = [
+        "docker",
+        "run",
+        "--rm",
+        "--tty",
+        "-d",
+        "--publish",
+        "8080:8080",
+        "--name",
+        container_name,
+        "-v",
+        "%s:/tmp" % tmpdir_path,
+        "--entrypoint",
+        "ttyd",
+        image_name,
+        "-p",
+        "8080",
+        "--once",
+        "asciinema",
+        "rec",
+        "-c",
+        "bash",
+        "-t",
+        "TerminalRecorder",
+        "-y",
+        "/tmp/terminal.cast",
+        "--overwrite",
+    ]
 
     print("Executing command:")
     print(" ".join(docker_ttyd_command))
@@ -189,13 +271,16 @@ def start_ttyd():
     # p.wait()
     # return pid
 
-def stop_docker_container(container_name:str):
+
+def stop_docker_container(container_name: str):
     subprocess.call(["docker", "stop", container_name])
+
 
 def stop_ttyd():
     stop_docker_container("terminal_recorder_ttyd")
 
-def save_ttyd_recording(description:str):
+
+def save_ttyd_recording(description: str):
     import time
     import json
 
@@ -209,7 +294,7 @@ def save_ttyd_recording(description:str):
     stop_ttyd()
     stop_recording_file = os.path.join(tmpdir_path, "stop_recording.txt")
     with open(stop_recording_file, "w") as f:
-        f.write(json.dumps({"timestamp": time.time(), 'event': "stop_recording"}))
+        f.write(json.dumps({"timestamp": time.time(), "event": "stop_recording"}))
 
     # try:
     #     os.kill(int(pid), signal.SIGTERM)
@@ -231,17 +316,21 @@ def save_ttyd_recording(description:str):
     os.remove(tmp_outputfile)
     print("Removed %s" % tmp_outputfile)
 
+
 @app.get("/start/terminal")
 async def start_terminal_recording():
     # start the ttyd process
     start_ttyd()
-    connection_timeout=await wait_for_connection(host="127.0.0.1", port=8080,timeout = 3)
+    connection_timeout = await wait_for_connection(
+        host="127.0.0.1", port=8080, timeout=3
+    )
     if connection_timeout:
         return "Terminal recording started, but port 8080 is not available"
     return "Terminal recording started"
 
+
 @app.get("/stop/terminal")
-def stop_terminal_recording(description:str):
+def stop_terminal_recording(description: str):
     # stop the ttyd process
     # just read the ttyd PID and terminate it.
     save_ttyd_recording(description)
@@ -251,32 +340,65 @@ def stop_terminal_recording(description:str):
 async def start_novnc():
     import json
     import time
+
     stop_novnc()
     image_name = "cybergod_worker_gui"
     container_name = "gui_recorder_novnc"
     volume_name = "cybergod_gui_recorder_x11vnc_project"
 
     tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
-    container_gui_record_path="/tmp/gui_record_data"
+    if os.path.exists(tmpdir_path):
+        shutil.rmtree(tmpdir_path)
+    container_gui_record_path = "/tmp/gui_record_data"
     pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
 
     begin_recording_file = os.path.join(tmpdir_path, "begin_recording.txt")
     with open(begin_recording_file, "w") as f:
-        f.write(json.dumps({"timestamp": time.time(), 'event': "begin_recording"}))
+        f.write(json.dumps({"timestamp": time.time(), "event": "begin_recording"}))
 
     # the docker command here is to be cross-referenced with x11vnc-docker launch script (python)
     # ref: https://github.com/x11vnc/x11vnc-desktop/blob/main/x11vnc_desktop.py
     vnc_password = "password"
     # too many local directories mounted to this container using the original python script
     # docker run -d --rm --name x11vnc-zrvgaz --shm-size 2g -p 6080:6080 -p 5950:5900 --hostname x11vnc-zrvgaz --env VNCPASS= --env RESOLUT=1920x1080 --env HOST_UID=1000 --env HOST_GID=1000 -p 2222:22 -v /media/jamesbrown/Ventoy/agi_computer_control/web_gui_terminal_recorder:/home/ubuntu/shared -v x11vnc_zh_CN_config:/home/ubuntu/.config -v /home/jamesbrown/.gnupg:/home/ubuntu/.gnupg -v /home/jamesbrown/.gitconfig:/home/ubuntu/.gitconfig_host -v cybergod_gui_recorder_x11vnc_project:/home/ubuntu/project -w /home/ubuntu/project -v /home/jamesbrown/.ssh:/home/ubuntu/.ssh --security-opt seccomp=unconfined --cap-add=SYS_PTRACE x11vnc/docker-desktop:zh_CN startvnc.sh >> /home/ubuntu/.log/vnc.log
-    docker_novnc_command = ["docker", "run", "--rm", "--tty", "-d", "-e", "RESOLUT=1920x1080", "-e", "VNCPASS=%s" % vnc_password, "--publish", "8081:6080", "--publish", "8950:5900", "--name", container_name, "-v", "%s:%s" % (tmpdir_path,container_gui_record_path),'--security-opt', 'seccomp=unconfined', '--cap-add=SYS_PTRACE', "-v", "%s:%s" % (volume_name, "/home/ubuntu/project"), image_name, 'startvnc.sh']
+
+    # the resolution must be one in the xrandr output, or it will fall back to 1920x1080
+    # resolution = "1920x1080"
+    resolution = "800x600"
+    # resolution = "1280x800"
+    docker_novnc_command = [
+        "docker",
+        "run",
+        "--rm",
+        "--tty",
+        "-d",
+        "-e",
+        "RESOLUT=%s" % resolution,
+        "-e",
+        "VNCPASS=%s" % vnc_password,
+        "--publish",
+        "8081:6080",
+        "--publish",
+        "8950:5900",
+        "--name",
+        container_name,
+        "-v",
+        "%s:%s" % (tmpdir_path, container_gui_record_path),
+        "--security-opt",
+        "seccomp=unconfined",
+        "--cap-add=SYS_PTRACE",
+        "-v",
+        "%s:%s" % (volume_name, "/home/ubuntu/project"),
+        image_name,
+        "startvnc.sh",
+    ]
     print("Running command:")
     print(" ".join(docker_novnc_command))
     subprocess.call(docker_novnc_command)
 
     # call the recorder only if the vnc server is ready
     # wait for port 8081 to be available, for most 5 seconds
-    
+
     # novnc_connection_timeout=await wait_for_connection(host="127.0.0.1", port =8081, timeout = 5)
     # vnc_connection_timeout=await wait_for_connection(host="127.0.0.1", port =8950, timeout = 5)
     # connection_timeout= vnc_connection_timeout or novnc_connection_timeout
@@ -293,29 +415,43 @@ async def start_novnc():
     if not ready:
         return "GUI recording started, but not all services available"
     else:
-        display_name = ":0.0" 
-        docker_novnc_recorder_command = ["docker", "exec","-d",  "-e", "DISPLAY=%s" % display_name,container_name, 'python3', "/home/ubuntu/worker_gui.py", "--output_dir", container_gui_record_path]
+        display_name = ":0.0"
+        docker_novnc_recorder_command = [
+            "docker",
+            "exec",
+            "-d",
+            "-e",
+            "DISPLAY=%s" % display_name,
+            container_name,
+            "python3",
+            "/home/ubuntu/worker_gui.py",
+            "--output_dir",
+            container_gui_record_path,
+        ]
         print("Executing command:")
         print(" ".join(docker_novnc_recorder_command))
         subprocess.call(docker_novnc_recorder_command)
         return "GUI recording started"
+
 
 def stop_novnc():
     container_name = "gui_recorder_novnc"
     stop_docker_container(container_name)
     volume_name = "cybergod_gui_recorder_x11vnc_project"
     print("Removing docker volume:", volume_name)
-    cmd = ['docker', "volume", "rm", "-f", volume_name]
+    cmd = ["docker", "volume", "rm", "-f", volume_name]
     subprocess.call(cmd)
 
-def save_novnc_recording(description:str):
+
+def save_novnc_recording(description: str):
     import json
     import time
+
     stop_novnc()
     tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
     stop_recording_file = os.path.join(tmpdir_path, "stop_recording.txt")
     with open(stop_recording_file, "w") as f:
-        f.write(json.dumps({"timestamp": time.time(), 'event': "stop_recording"}))
+        f.write(json.dumps({"timestamp": time.time(), "event": "stop_recording"}))
     savepath = "./record/gui"
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     destination = os.path.join(savepath, "gui_record_%s" % timestamp)
@@ -330,22 +466,27 @@ def save_novnc_recording(description:str):
     shutil.rmtree(tmpdir_path)
     print("Removed %s" % tmpdir_path)
 
+
 @app.get("/start/gui")
 async def start_gui_recording():
     # start the novnc process
     await start_novnc()
     return "GUI recording started"
 
+
 @app.get("/stop/gui")
-def stop_gui_recording(description:str):
+def stop_gui_recording(description: str):
     save_novnc_recording(description)
     return "GUI recording stopped"
 
+
 def check_is_root():
     import sys
+
     if os.geteuid() != 0:
         print("This script must be run as root")
         sys.exit(1)
+
 
 def main():
     # need to be root to run this script, otherwise some files may not get removed
@@ -360,6 +501,7 @@ def main():
         # cleanup jobs
         stop_ttyd()
         stop_novnc()
+
 
 if __name__ == "__main__":
     main()
