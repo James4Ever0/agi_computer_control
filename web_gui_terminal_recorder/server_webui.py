@@ -317,7 +317,15 @@ def stop_gui_recording(description:str):
     save_novnc_recording(description)
     return "GUI recording stopped"
 
+def check_is_root():
+    import sys
+    if os.geteuid() != 0:
+        print("This script must be run as root")
+        sys.exit(1)
+
 def main():
+    # need to be root to run this script, otherwise some files will not get removed
+    check_is_root()
     try:
         uvicorn.run(app, host="0.0.0.0", port=9001)
     except KeyboardInterrupt:
