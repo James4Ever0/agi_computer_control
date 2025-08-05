@@ -1,3 +1,5 @@
+# Web GUI/Terminal Recorder
+
 ## Intro
 
 This is a web GUI/terminal recorder. It can record the GUI/terminal input/output and save it to a file.
