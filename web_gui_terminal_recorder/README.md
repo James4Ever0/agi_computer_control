@@ -65,9 +65,18 @@ File structure:
 
 Unique file contents:
 
-- `screenshot`: Directory containing screenshots of the GUI. Each screenshot is named with a timestamp.
+- `screenshot`: Directory containing screenshots (PNG files) of the GUI. Each screenshot is named with a timestamp.
 - `mouse.log`: Log of mouse movements. Each line is a JSON object containing the timestamp and mouse event.
+  
+  Examples:
+    - `{"event": "mouse_move", "x": <x: int>, "y": <y: int>, "timestamp": <timestamp: float>}`
+    - `{"event": "mouse_click", "x": <x: int>, "y": <y: int>, "button": <button: str>, "pressed": <pressed: bool>, "timestamp": <timestamp: float>}`
+    - `{"event": "mouse_scroll", "x": <x: int>, "y": <y: int>, "dx": <dx: int>, "dy": <dy: int>,  "timestamp": <timestamp: float>}`
 - `keyboard.log`: Log of keyboard input. Each line is a JSON object containing the timestamp and keyboard event.
+
+  Examples:
+    - `{"event": "key_press", "key": <key: str>, "timestamp": <timestamp: float>}`
+    - `{"event": "key_release", "key": <key: str>, "timestamp": <timestamp: float>}`
 
 ### Terminal Recording
 
@@ -83,9 +92,21 @@ File structure:
 
 Unique file contents:
 
-- `terminal.cast`: Log of terminal input and output (asciinema v2 format). The first line is a JSON object storing metadata about the recording. Each subsequent line is a JSON object containing the timestamp and terminal event.
+- `terminal.cast`:
+    
+    Log of terminal input and output (asciinema v2 format).
+    
+    The first line is a JSON object storing metadata about the recording.
+
+    `{"version": 2, "width": <width: int>, "height": <height: int>, "timestamp": <timestamp: int>, "idle_time_limit": <idle_time_limit: float>, "env": <env: dict>, "title": <title: str>}`
+    
+    Each subsequent line is a JSON object containing the timestamp and terminal event. The terminal worker is configured to distinguish input from output.
+
+    - input: `[<relative_timestamp: float>, "i", <content: str>]`
+    - output: `[<relative_timestamp: float>, "o", <content: str>]`
 
 ## TODO
 
 - [ ] Add support for multiple recordings at the same time.
 - [ ] Add screenshot metadata saving to GUI recordings.
+- [ ] Make terminal recordings fixed to 80x25 size.
