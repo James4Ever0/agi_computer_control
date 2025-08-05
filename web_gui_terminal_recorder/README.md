@@ -108,6 +108,7 @@ Unique file contents:
 
 ## Video demo
 
+[cybergod_terminal_gui_recorder_demo.webm](https://github.com/user-attachments/assets/620e4625-38ca-4c83-ae35-410ef008c640)
 
 ## TODO
 
