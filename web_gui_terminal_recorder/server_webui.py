@@ -80,12 +80,19 @@ def read_general_recorder(
         location.reload();
     }
     """
+    window_onbeforeunload_javascript = """
+    window.onbeforeunload = function () {
+     // Your Code here 
+      return null;  // return null to avoid pop up
+    }
+    """
     if iframe_link:
         iframe_elem = f"""<iframe id="recorder_iframe" style="overflow:hidden;" src="{iframe_link}" width="{iframe_width}" height="{iframe_height}"></iframe>"""
     else:
         iframe_elem = ""
 
     return f"""
+    <!DOCTYPE html>
     <html>
     <head>
         <title>{title}</title>
@@ -93,6 +100,7 @@ def read_general_recorder(
     <script>
     {javascript}
     {reload_iframe_javascript}
+    {window_onbeforeunload_javascript}
     </script>
     <body>
         <h1>{title}</h1>
@@ -129,11 +137,15 @@ def read_terminal_recorder(show_iframe: bool = False, user_agent: Union[str, Non
         }
 
         // send the description to /stop/terminal as query params
+        window.onbeforeunload = null;
 
         fetch("/stop/terminal?description=" + encodeURIComponent(description)).then(() => {
             // change to "show_iframe=False" in url, then reload
             const url = new URL(window.location.href);
             url.searchParams.set("show_iframe", "false");
+            document.getElementById("description").value = "";
+            // remove the iframe
+            document.getElementById("recorder_iframe").remove();
             window.location.href = url.toString();
         });
     }
@@ -193,10 +205,14 @@ def read_gui_recorder(show_iframe: bool = False):
             alert("Please enter a description");
             return;
         }
+        
+
         fetch("/stop/gui?description=" + encodeURIComponent(description)).then(() => {
             // change to "show_iframe=False" in url, then reload
             const url = new URL(window.location.href);
             url.searchParams.set("show_iframe", "false");
+            document.getElementById("description").value = "";
+            document.getElementById("recorder_iframe").remove();
             window.location.href = url.toString();
         });
     }
