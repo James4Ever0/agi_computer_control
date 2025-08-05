@@ -9,6 +9,8 @@ import datetime
 import socket
 import asyncio
 
+# TODO: store beginning and ending timestamp of recording to record folder
+
 app = fastapi.FastAPI()
 
 EXTERNAL_HOST = os.environ.get("EXTERNAL_HOST", "http://127.0.0.1")
@@ -157,10 +159,15 @@ def read_gui_recorder(show_iframe:bool=False):
     return read_general_recorder(title="GUI Recorder", iframe_link=gui_iframe_link, javascript=javascript)
 
 def start_ttyd():
+    import time
+    import json
     stop_ttyd()
     # wrap all subcomponent in quotes
     tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
     pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
+    begin_recording_file = os.path.join(tmpdir_path, "begin_recording.txt")
+    with open(begin_recording_file, "w") as f:
+        f.write(json.dumps({"timestamp": time.time(), 'event': "begin_recording"}))
     # poc_ttyd_command = ["ttyd", "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "Terminal Recorder", "-y", "%s/terminal.cast" % tmpdir_path, "--overwrite"]
     image_name = "cybergod_worker_terminal"
     container_name = "terminal_recorder_ttyd"
@@ -189,6 +196,8 @@ def stop_ttyd():
     stop_docker_container("terminal_recorder_ttyd")
 
 def save_ttyd_recording(description:str):
+    import time
+    import json
 
     # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
     tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
@@ -198,6 +207,10 @@ def save_ttyd_recording(description:str):
         return
     # docker stop terminal_recorder_ttyd
     stop_ttyd()
+    stop_recording_file = os.path.join(tmpdir_path, "stop_recording.txt")
+    with open(stop_recording_file, "w") as f:
+        f.write(json.dumps({"timestamp": time.time(), 'event': "stop_recording"}))
+
     # try:
     #     os.kill(int(pid), signal.SIGTERM)
     #     print("Terminated ttyd process %s" % pid)
@@ -236,6 +249,8 @@ def stop_terminal_recording(description:str):
 
 
 async def start_novnc():
+    import json
+    import time
     stop_novnc()
     image_name = "cybergod_worker_gui"
     container_name = "gui_recorder_novnc"
@@ -244,6 +259,10 @@ async def start_novnc():
     tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
     container_gui_record_path="/tmp/gui_record_data"
     pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
+
+    begin_recording_file = os.path.join(tmpdir_path, "begin_recording.txt")
+    with open(begin_recording_file, "w") as f:
+        f.write(json.dumps({"timestamp": time.time(), 'event': "begin_recording"}))
 
     # the docker command here is to be cross-referenced with x11vnc-docker launch script (python)
     # ref: https://github.com/x11vnc/x11vnc-desktop/blob/main/x11vnc_desktop.py
@@ -290,8 +309,13 @@ def stop_novnc():
     subprocess.call(cmd)
 
 def save_novnc_recording(description:str):
+    import json
+    import time
     stop_novnc()
     tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
+    stop_recording_file = os.path.join(tmpdir_path, "stop_recording.txt")
+    with open(stop_recording_file, "w") as f:
+        f.write(json.dumps({"timestamp": time.time(), 'event': "stop_recording"}))
     savepath = "./record/gui"
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     destination = os.path.join(savepath, "gui_record_%s" % timestamp)
@@ -324,7 +348,8 @@ def check_is_root():
         sys.exit(1)
 
 def main():
-    # need to be root to run this script, otherwise some files will not get removed
+    # need to be root to run this script, otherwise some files may not get removed
+    # TODO: use python managed tempdir instead (will it solves the issue of files in docker volume being owned by root?)
     check_is_root()
     try:
         uvicorn.run(app, host="0.0.0.0", port=9001)
