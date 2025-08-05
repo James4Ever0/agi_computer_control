@@ -224,9 +224,7 @@ def save_ttyd_recording(description:str):
     description_savepath = os.path.join(destination, "description.txt")
     if not os.path.exists(destination):
         os.makedirs(destination)
-    shutil.copy(tmp_outputfile, destination)
-    shutil.copy(stop_recording_file, destination)
-    shutil.copy(os.path.join(tmpdir_path, "begin_recording.txt"), destination)
+    shutil.copytree(tmpdir_path, destination, dirs_exist_ok=True)
     with open(description_savepath, "w") as f:
         f.write(description)
     print("Copied %s to %s" % (tmp_outputfile, destination))
