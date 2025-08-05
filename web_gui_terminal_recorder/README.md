@@ -47,6 +47,7 @@ Common file contents:
 - `description.txt`: Description of the recording. Pure text.
 - `begin_recording.txt`: Timestamp of when the recording started. JSON format. Example: `{"timestamp": <timestamp>, "event": "begin_recording"}`
 - `stop_recording.txt`: Timestamp of when the recording stopped. JSON format. Example: `{"timestamp": <timestamp>, "event": "stop_recording"}`
+- You need to have the following free ports on the host machine: 9001 (webui), 8080 (ttyd), 8081 (novnc), 8950 (vnc)
 
 ### GUI Recording
 
@@ -104,6 +105,9 @@ Unique file contents:
 
     - input: `[<relative_timestamp: float>, "i", <content: str>]`
     - output: `[<relative_timestamp: float>, "o", <content: str>]`
+
+## Video demo
+
 
 ## TODO
 
