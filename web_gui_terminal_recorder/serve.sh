@@ -1,1 +1,1 @@
-python3 server_webui.py
+sudo $(which python3) server_webui.py
