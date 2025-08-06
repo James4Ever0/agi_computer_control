@@ -8,6 +8,10 @@ Has some buttons for controlling recording, a textarea for specifying output fil
 
 The web server launches two docker containers (workers) running ttyd/novnc and recording the terminal/GUI input/output.
 
+## Video demo
+
+[cybergod_terminal_gui_recorder_demo.webm](https://github.com/user-attachments/assets/620e4625-38ca-4c83-ae35-410ef008c640)
+
 ## Usage
 
 1. Build the images for the workers:
@@ -106,9 +110,6 @@ Unique file contents:
     - input: `[<relative_timestamp: float>, "i", <content: str>]`
     - output: `[<relative_timestamp: float>, "o", <content: str>]`
 
-## Video demo
-
-[cybergod_terminal_gui_recorder_demo.webm](https://github.com/user-attachments/assets/620e4625-38ca-4c83-ae35-410ef008c640)
 
 ## TODO
 
