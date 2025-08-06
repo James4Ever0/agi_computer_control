@@ -43,6 +43,7 @@ The web server launches two docker containers (workers) running ttyd/novnc and r
 - The workers use asciinema/mss/pynput to record the terminal/GUI input/output.
 - The recorded sessions are saved to `./record` directory.
 - Currently, only one recording can be done at a time.
+- You need to have the following free ports on the host machine: 9001 (webui), 8080 (ttyd), 8081 (novnc), 8950 (vnc)
 
 ## Recording Format
 
@@ -51,7 +52,6 @@ Common file contents:
 - `description.txt`: Description of the recording. Pure text.
 - `begin_recording.txt`: Timestamp of when the recording started. JSON format. Example: `{"timestamp": <timestamp>, "event": "begin_recording"}`
 - `stop_recording.txt`: Timestamp of when the recording stopped. JSON format. Example: `{"timestamp": <timestamp>, "event": "stop_recording"}`
-- You need to have the following free ports on the host machine: 9001 (webui), 8080 (ttyd), 8081 (novnc), 8950 (vnc)
 
 ### GUI Recording
 
