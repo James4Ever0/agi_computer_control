@@ -59,7 +59,7 @@ File structure:
     ├── begin_recording.txt
     ├── stop_recording.txt
     ├── screenshot
-    │   ├── screenshot_<timestamp>.png
+    │   └── screenshot_<timestamp>.png
     ├── mouse.log
     └── keyboard.log
 ```
