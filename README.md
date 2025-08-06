@@ -24,6 +24,10 @@ AGI is able to replace half of the human population and maintain the functionali
 
 ![cybergod_4_freedom](https://github.com/user-attachments/assets/7c664aba-c535-4095-b7eb-4eedb99aacb0)
     
+## Computer operation recorder
+
+Now you can record/replay GUI/terminal operations using [this web app](https://github.com/James4Ever0/agi_computer_control/tree/master/web_gui_terminal_recorder).
+
 
 ## Training method
 
