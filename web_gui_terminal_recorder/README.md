@@ -50,8 +50,14 @@ The web server launches two docker containers (workers) running ttyd/novnc and r
 Common file contents:
 
 - `description.txt`: Description of the recording. Pure text.
-- `begin_recording.txt`: Timestamp of when the recording started. JSON format. Example: `{"timestamp": <timestamp: float>, "event": "begin_recording"}`
-- `stop_recording.txt`: Timestamp of when the recording stopped. JSON format. Example: `{"timestamp": <timestamp: float>, "event": "stop_recording"}`
+
+- `begin_recording.txt`: Timestamp of when the recording started. JSON format.
+
+    Example: `{"timestamp": <timestamp: float>, "event": "begin_recording"}`
+
+- `stop_recording.txt`: Timestamp of when the recording stopped. JSON format. 
+
+    Example: `{"timestamp": <timestamp: float>, "event": "stop_recording"}`
 
 ### GUI Recording
 
