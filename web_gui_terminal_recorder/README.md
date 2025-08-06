@@ -122,3 +122,5 @@ Unique file contents:
 - [ ] Add support for multiple recordings at the same time.
 - [ ] Add screenshot metadata saving to GUI recordings.
 - [ ] Make terminal recordings fixed to 80x25 size.
+- [ ] Implement GUI/terminal record viewer.
+- [ ] Implement GUI/tetminal executor and replayer.
