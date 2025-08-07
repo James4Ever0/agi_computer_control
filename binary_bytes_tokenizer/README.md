@@ -7,3 +7,5 @@ since unicode is a variable length encoding, and tokenizers may only use encoded
 if not, we will use some special escape sequence or write our own tokenizer.
 
 secondly, we need to use a special asciicast-like format to retain the structure of our input data for tokenization, controlling training and inference.
+
+a rather destructive method for adding more tokens while maintaining the overall token limit is to eradicate parts of rarely used tokens from the normal tokens. it is easy to do in openai tiktoken programmatically. meanwhile, one can directly edit the tokenizer.json file in huggingface tokenizers.

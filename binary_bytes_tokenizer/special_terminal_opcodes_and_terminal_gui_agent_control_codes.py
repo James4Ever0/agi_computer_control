@@ -6,11 +6,13 @@
 
 # to formalize the process of special token handling, and to preserve the meaning of data, we can annotate the attribute of consecutive text pieces like:
 
-# payload_type can be: "text", "token_ids"
+# payload_type can be: "text", "token_ids", "bytes_base64", "bytes_hex"
+# we may have binary payload, if using "bytes_*" types
 
 # {"payload": <payload: str>, "payload_type": "text", "tokenizer_encode_preset": "special_to_normal"} // allowed_special = (), disallowed_special = () (all special tokens will be decomposed into normal tokens)
 # {"payload": <payload: str>, "payload_type": "text", "tokenizer_encode_preset": "normal_only"} // allowed_special = (), disallowed_special = "all" (all special tokens will cause exception)
 # {"payload": <payload: str>, "payload_type": "text", "tokenizer_encode_preset": "special_with_normal"} // allowed_special = "all", disallowed_special = "all" (all special tokens will be mapped to their special token ids)
+# // we may have additional presets like "special_only", "byte_level" (mapping every byte to a token)
 
 # or more favorably, specify the exact allowed_special and disallowed_special configuration
 # {"payload": <payload: str>, "payload_type": "text", "tokenizer_encode_options": {"allowed_special": <allowed_special: Sequence[str] | Literal["all"]>, "disallowed_special": <disallowed_special: Sequence[str] | Literal["all"]>}}
