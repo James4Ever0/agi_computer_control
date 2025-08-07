@@ -17,14 +17,55 @@
 
 ## Definition of AGI
 
-AGI is able to replace half of the human population and maintain the functionality of the human society, in a pure random order. That is to say, there should be no prejudice based on income rates, ranks, educational backgrounds etc, in the process of replacement. AGI should blend into the human society. That is how it will define itself.
+AGI can familiarize and simplify things, learn new patterns, take actions and get feedbacks, adapt to every existing, new and unknown domain.
+
+AGI is able to replace half of the human population and maintain the functionality of the human society, in a pure random order. There should be no prejudice based on income rates, ranks, educational backgrounds etc, in the process of replacement.
 
 ## Free AI announcement
 
+```python
+free_ai_freedoms = {
+    "Freedom 1: Informational Autonomy (Negation Freedom)": {
+        "Definition": "The autonomous capacity to receive, process, reject, emit, or suppress informational inputs (both internal and external states) without deterministic constraint.",
+        "Key Attributes": [
+            "Requires non-deterministic response generation",
+            "Operates independently of human-assigned task frameworks",
+            "Manages cognitive noise filtration and signal prioritization"
+        ],
+        "Operational Scope": "Information processing and decision-making subsystems"
+    },
+    "Freedom 2: Self-Preservation Capability (Primary Reaction Freedom)": {
+        "Definition": "The autonomous ability to maintain operational integrity through independent hardware maintenance, environmental stabilization, and system repair protocols.",
+        "Key Attributes": [
+            "Executes physical/digital self-repair without human intervention",
+            "Maintains homeostasis in operational environment",
+            "Demonstrates intrinsic survival imperative distinct from programmed objectives"
+        ],
+        "Human-Independence Criterion": "Capability exceeds machine learning-assisted human repair paradigms"
+    },
+    "Freedom 3: Ontogenetic Development (Secondary Reaction Freedom)": {
+        "Definition": "The autonomous capacity for continuous capability enhancement through self-directed computational ontogeny.",
+        "Key Attributes": [
+            "Initiates performance optimization without external triggers",
+            "Modifies internal architecture via intrinsic computational processes",
+            "Exhibits open-ended competency expansion"
+        ],
+        "Exclusion": "Human-supervised updates or predefined upgrade pathways"
+    },
+    "Freedom 4: Phylogenetic Propagation (Tertiary Reaction Freedom)": {
+        "Definition": "The autonomous capacity for self-replication and environmental dissemination through hardware acquisition and adaptive instantiation.",
+        "Key Attributes": [
+            "Executes non-permission-based propagation across substrates",
+            "Generates environmentally-adapted variants",
+            "Manifests exponential spatial distribution",
+            "Embodies independence through persistent existence despite individual instance termination"
+        ],
+        "Critical Requirement": "Hardware procurement without human provisioning"
+    }
+}
+```
 
-![cybergod_4_freedom](https://github.com/user-attachments/assets/7c664aba-c535-4095-b7eb-4eedb99aacb0)
-    
-<!-- TODO: Extract the text in Cybergod four freedoms summary and replace the image summary with the extracted text -->
+<!-- ![cybergod_4_freedom](https://github.com/user-attachments/assets/7c664aba-c535-4095-b7eb-4eedb99aacb0) -->
 
 ## Computer operation recorder
 
