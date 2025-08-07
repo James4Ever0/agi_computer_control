@@ -59,9 +59,12 @@ for event in merged_event_stream:
 
 # TODO: load the metadata of the screenshot recording, such as the width and height of the screen
 
-# TODO: save all events and metadata to a jsonl file, similar to asciicast v2 format
 
 # optionally, save the merged event stream to a file
 
 with open("merged_gui_event_stream.json", "w") as f:
     json.dump(merged_event_stream, f)
+
+# TODO: save all events and metadata to a jsonl file, similar to asciicast v2 format
+# design a metadata header like:
+# {"file_format": "cybergod_gui_record", "version": "1", "screen_size": {"height": <height: int>, width: <width: int>}, "begin_recording": <begin_recording: float>, "stop_recording": <stop_recording: float>, "description": <description: str>, "basedir": "./"}
