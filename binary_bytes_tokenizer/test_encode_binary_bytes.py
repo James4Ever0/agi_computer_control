@@ -36,9 +36,9 @@ def test_encode_with_tokenizers(input_string: str):
 
     from tokenizers import Tokenizer
 
-    tokenizer = Tokenizer.from_pretrained(
-        "openai/gpt-oss-20b"
-    )  # "bert-base-uncased" assertation failed. not lossless.
+    tokenizer = Tokenizer.from_file(
+        "./gpt-oss-tokenizer/tokenizer.json" # 'gpt-oss' load from json passed assertion
+    )  # "bert-base-uncased" assertion failed. not lossless.
     encoded_tokens = tokenizer.encode(input_string)
 
     print("Input: %s" % repr(input_string))
@@ -47,6 +47,9 @@ def test_encode_with_tokenizers(input_string: str):
     print("", encoded_tokens)
 
     assert tokenizer.decode(ids=encoded_tokens.ids) == input_string
+    for it in encoded_tokens.ids:
+        decoded_token=tokenizer.decode(ids=[it])
+        print('Token: %s, Decoded: %s' % (it, repr(decoded_token)))
 
 
 def test():
@@ -56,6 +59,7 @@ def test():
     )
     print("Testing with tiktoken")
     test_encode_with_tiktoken(input_string)
+    print()
     print("Testing with tokenizers")
     test_encode_with_tokenizers(input_string)
 
