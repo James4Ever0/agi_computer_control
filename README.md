@@ -98,7 +98,7 @@ Now you can record/replay GUI/terminal operations using [this web app](https://g
 
 
 
-- First release: 1/30/2025 [[view online](https://james4ever0.github.io/Cybergod__God_is_in_your_computer.html)] [[pdf download](https://github.com/James4Ever0/agi_computer_control/releases/download/paper-initial-publication/Cybergod__God_is_in_your_computer.pdf)]
+- First release: 1/30/2025 [[view online](https://james4ever0.github.io/Cybergod__God_is_in_your_computer.html)] [[download pdf](https://github.com/James4Ever0/agi_computer_control/releases/download/paper-initial-publication/Cybergod__God_is_in_your_computer.pdf)]
 
 ## Development
 
