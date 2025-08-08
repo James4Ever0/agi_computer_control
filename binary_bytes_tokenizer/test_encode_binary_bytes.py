@@ -51,7 +51,6 @@ def test_encode_with_tiktoken(input_string: str):
     # Min mergeable rank: 0, Max mergeable rank: 199997
     print("Special tokens:" , enc._special_tokens)
     # Special tokens: {'<|endoftext|>': 199999, '<|endofprompt|>': 200018}
-    breakpoint()
 
     try:
         assert (
