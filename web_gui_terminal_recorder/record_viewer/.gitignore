@@ -1,1 +1,4 @@
 *.json
+*.jsonl
+gui_jsonl_event_stream.jsonl
+merged_gui_event_stream.json
