@@ -70,6 +70,7 @@ def read_general_recorder(
     """,
 ):
 
+    
     reload_iframe_javascript = """
     function reloadIFrame(){
         // this function does not work in firefox. do we need to use nginx for mapping all urls into the same host and port? or is there some wrong header in the ttyd respose?
@@ -248,6 +249,7 @@ def start_ttyd():
     container_name = "terminal_recorder_ttyd"
     # web terminal apps on xterm.js official website: https://xtermjs.org/
     # TODO: ttyd uses xterm.js. maybe we can tweak there for 80x25 fixed size terminal
+    # hint: run "window.term.resize(80, 25)" then get the actual size of the terminal element later
     # TODO: state is not persisted. may use ssh to connect to a persistant machine
 
     # gotty supports fixed column and height
@@ -373,6 +375,8 @@ async def start_novnc():
     pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
 
     begin_recording_file = os.path.join(tmpdir_path, "begin_recording.txt")
+
+    screenshot_metadata_file = os.path.join(tmpdir_path, "screenshot_metadata.json")
     with open(begin_recording_file, "w") as f:
         f.write(json.dumps({"timestamp": time.time(), "event": "begin_recording"}))
 
@@ -384,8 +388,11 @@ async def start_novnc():
 
     # the resolution must be one in the xrandr output, or it will fall back to 1920x1080
     # resolution = "1920x1080"
-    resolution = "800x600"
+    resolution = "800x600" 
     # resolution = "1280x800"
+
+    with open(screenshot_metadata_file, 'w+') as f:
+        f.write(json.dumps(dict(presumed_resolution=resolution)))
     docker_novnc_command = [
         "docker",
         "run",
