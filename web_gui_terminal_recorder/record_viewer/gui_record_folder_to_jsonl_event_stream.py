@@ -84,11 +84,11 @@ print("Stop recording timestamp: %s" % stop_recording_timestamp)
 
 # TODO: save all events and metadata to a jsonl file, similar to asciicast v2 format
 # design a metadata header like:
-# {"file_format": "cybergod_gui_record", "version": "1", "screen_size": {"height": <height: int>, "width": <width: int>}, "begin_recording": <begin_recording: float>, "stop_recording": <stop_recording: float>, "description": <description: str>, "basedir": "./"}
+# {"file_format": "cybergod_gui_record", "version": "1", "screen_size": {"height": <height: int>, "width": <width: int>}, "begin_recording": <begin_recording: float>, "stop_recording": <stop_recording: float>, "duration": <duration: float>, "description": <description: str>, "basedir": "./"}
 
 jsonl_file_export_path = "gui_jsonl_event_stream.jsonl"
 
-event_stream_metadata = {"file_format": "cybergod_gui_record", "version": "1", "screen_size": {"height": screenshot_height, "width": screenshot_width}, "begin_recording": begin_recording_timestamp, "stop_recording": stop_recording_timestamp, "description": description, "basedir": "./"}
+event_stream_metadata = {"file_format": "cybergod_gui_record", "version": "1", "screen_size": {"height": screenshot_height, "width": screenshot_width}, "begin_recording": begin_recording_timestamp, "stop_recording": stop_recording_timestamp, "duration": stop_recording_timestamp- begin_recording_timestamp, "description": description, "basedir": "./"}
 
 with open(jsonl_file_export_path, "w+") as f:
     f.write(json.dumps(event_stream_metadata)+'\n')
