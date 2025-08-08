@@ -21,3 +21,28 @@
 
 # optionally, specify the file format and annotation details in the beginning of the file, just like asciicast v2
 # {"file_format": "cybergod_tokenizer_exchange_format", "version": "1", "tokenizer_library": "openai-tiktoken", "tokenizer_config": {"tokenizer_load_method": <tokenizer_load_method: str>, "tokenizer_load_name": <tokenizer_load_name: str>, "additional_special_tokens": <additional_special_tokens: list[str]>, "additional_tokens": <additional_tokens: list[str]>}}
+
+
+# enumerate common ones, like "\x1b[A"
+terminal_opcodes = [
+    "\x1b[", # Control sequence prefix
+    "\x1b[A",    # Cursor up
+    "\x1b[B",    # Cursor down
+    "\x1b[C",    # Cursor forward (right)
+    "\x1b[D",    # Cursor back (left)
+    "\x1b[E",    # Move to next line (cursor down + column 0)
+    "\x1b[F",    # Move to previous line (cursor up + column 0)
+    "\x1b[H",    # Move cursor to home position (0,0)
+    "\x1b[J",    # Clear screen from cursor down
+    "\x1b[K",    # Clear line from cursor right
+    "\x1b[1J",   # Clear screen from cursor up
+    "\x1b[2J",   # Clear entire screen
+    "\x1b[0K",   # Clear line from cursor right (same as \x1b[K)
+    "\x1b[1K",   # Clear line from cursor left
+    "\x1b[2K",   # Clear entire line
+    "\x1b[s",    # Save cursor position
+    "\x1b[u",    # Restore cursor position
+    "\x1b[?25h", # Show cursor
+    "\x1b[?25l", # Hide cursor
+    "\x1b[0m",   # Reset text formatting
+]
