@@ -10,6 +10,10 @@
     <a href="https://discord.gg/eM5vezJvEQ">
         <img alt="Discord" src="https://img.shields.io/discord/1146610656779440188?logo=discord&style=flat&logoColor=white"/>
     </a>
+    <a href="https://huggingface.co/collections/cybergod-agi/the-frozen-forest-6896f39f95790b18de5abb3f">
+        <img alt="Huggingface Badge" src="https://img.shields.io/badge/🤗&nbsp;-HuggingFace-blue">
+    </a>
+
 </p>
 
 
