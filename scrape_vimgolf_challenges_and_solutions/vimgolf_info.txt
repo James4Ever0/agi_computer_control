@@ -12,6 +12,8 @@ install vimgolf: pip install vimgolf
 
 play an online game: vimgolf put <challenge-number>
 
+play a local game: vimgolf local <in_file> <out_file>
+
 scraping vimgolf.com
 
 we can scrape all challenges without login, and the least favorable solution.
@@ -33,5 +35,3 @@ to prevent dns lookup error during scraping, just write the resolved ip of vimgo
 more vimgolf solutions can be found on github or web
 
 https://github.com/mawww/golf
-
-more vimgolf custom host can be found
