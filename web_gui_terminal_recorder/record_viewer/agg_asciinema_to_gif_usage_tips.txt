@@ -1,0 +1,9 @@
+instead of extacting every frame created by agg, we are going to use the classic 1 FPS sampling frequency.
+
+we can configure the fps directly at agg.
+
+the time alignment with original .cast file requires further investigation.
+
+if time alignment is a problem, simply investigate the agg rust codebase and pick up the rendering part only.
+
+also, test if agg can render utf-8 outputs (inclusing cjk characters)
