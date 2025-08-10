@@ -1,0 +1,37 @@
+library: pip install vimgolf
+
+https://pypi.org/project/vimgolf/
+
+intro: 
+
+https://zhuanlan.zhihu.com/p/151036862
+
+usage (python version):
+
+install vimgolf: pip install vimgolf
+
+play an online game: vimgolf put <challenge-number>
+
+scraping vimgolf.com
+
+we can scrape all challenges without login, and the least favorable solution.
+
+we have to sign in and submit higher rank solutions to get lower rank ones.
+
+visit a specific challenge, see definition and lowest rank solution:
+
+https://www.vimgolf.com/challenges/9v0067401f2500000000061b
+
+iterate challenges by page number, currently 13 pages total
+
+https://www.vimgolf.com/?page=2
+
+you can iterate with commandline too: vimgolf list [PAGE]
+
+to prevent dns lookup error during scraping, just write the resolved ip of vimgolf.com to /etc/hosts
+
+more vimgolf solutions can be found on github or web
+
+https://github.com/mawww/golf
+
+more vimgolf custom host can be found
