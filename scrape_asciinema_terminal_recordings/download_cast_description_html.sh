@@ -1,0 +1,1 @@
+curl -o asciinema_cast_description.html https://asciinema.org/a/648882
