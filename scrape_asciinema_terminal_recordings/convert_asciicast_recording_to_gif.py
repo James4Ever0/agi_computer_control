@@ -70,9 +70,17 @@ for it in record_ids:
                     cmd = f"{agg_binary_path} {options} {record_filepath} {gif_tmp_output_path}"
                     print("Executing cmd:", cmd)
                     exitcode = os.system(cmd)
-                    if exitcode != 0:
-                        print("Exit code not zero:", exitcode)
+                    if exitcode == 130:
+                        print("Keyboard interrupt")
                         print("Stop looping")
+                        break
+                    elif exitcode == 256:
+                        print("Format parsing error")
+                        print("Skipping")
+                        continue
+                    elif exitcode != 0:
+                        print("Unknown non-zero exitcode:", exitcode)
+                        print("Exiting")
                         break
                     # copy the tmp gif file to gif output path
                     print("Copying GIF to:", gif_output_path)

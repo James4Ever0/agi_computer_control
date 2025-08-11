@@ -48,13 +48,19 @@ def scrape_all_public_explore_pages():
     print("Scraping done")
 
 def download_all_public_cast_and_descriptions():
+    import random
     input_jsonl_filepath = "asciinema_public_explore_pages.jsonl"
     output_dirpath = "./recordings"
 
     os.makedirs(output_dirpath, exist_ok=True)
+    
+    candidate_lines = []
 
     with open(input_jsonl_filepath, "r") as f:
         for line in f.readlines():
+            candidate_lines.append(line)
+        random.shuffle(candidate_lines)
+        for line in candidate_lines:
             print("Processing line:", line)
             try:
                 data = json.loads(line) # keys: href, title, duration, author, submit_time
@@ -120,5 +126,5 @@ def download_all_public_cast_and_descriptions():
 
 if __name__ == "__main__":
     # test_request_asciinema_explore_pages()
-    scrape_all_public_explore_pages() # estimate stop page at 8/10/25: 5667
-    # download_all_public_cast_and_descriptions()
+    # scrape_all_public_explore_pages() # estimate stop page at 8/10/25: 5667
+    download_all_public_cast_and_descriptions()

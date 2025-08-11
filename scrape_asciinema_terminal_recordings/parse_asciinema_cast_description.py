@@ -1,12 +1,9 @@
 from bs4 import BeautifulSoup
 
 def test():
-
     html_filepath = "asciinema_cast_description.html"
-
     with open(html_filepath, "r") as f:
         html_doc = f.read()
-    
     parse_asciinema_cast_description(html_doc)
 
 def parse_asciinema_cast_description(html_doc:str):
@@ -72,6 +69,17 @@ def parse_asciinema_cast_description(html_doc:str):
                 asciicast_version = "v3"
     
     print("Asciicast version:", asciicast_version)
+    
+    # TODO: views, to be added into info
+    span_view_element = soup.find("span", attrs=dict(title="Total views"))
+    total_views="unknown"
+    if span_view_element:
+        print("Span view element found")
+        total_views = span_view_element.text.strip()
+        total_views = total_views.split()[0]
+    else:
+        print('Span view element not found')
+    print("Total views:", total_views)
 
     return dict(title=title_text, description=description_text, asciicast_file_extension_name=asciicast_file_extension_name, asciicast_version=asciicast_version)
 

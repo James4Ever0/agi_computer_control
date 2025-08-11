@@ -1,14 +1,24 @@
 from bs4 import BeautifulSoup
+import requests
+import json
 
+def test_view_online_first_page():
+    url = "https://asciinema.org/explore/public?order=date"
+    response=requests.get(url)
+    html_content=response.text
+    for it in parse_asciinema_explore_public_page(html_content):
+        print("Yield result:")
+        if type(it) == dict:
+            print(json.dumps(it))
+        else:
+            print(repr(it))
 
 def test():
     html_filepath = (
         "nonexistant_page_as_last_page_asciinema_explore_public_order_by_date.html"
     )
-
     with open(html_filepath, "r") as html_file:
         html_content = html_file.read()
-
     for _ in parse_asciinema_explore_public_page(html_content):
         ...
 
