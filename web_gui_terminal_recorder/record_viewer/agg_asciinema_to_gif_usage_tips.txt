@@ -1,3 +1,31 @@
+alternatively, use javascript/phantomjs based asciinema to gif converter
+
+https://github.com/asciinema/asciicast2gif
+
+the docker image is at: 
+
+docker pull asciinema/asciicast2gif
+
+show help:
+
+docker run --rm -it asciinema/asciicast2gif --help
+
+docker usage:
+
+docker run --rm -v $PWD:/data asciinema/asciicast2gif -s 2 -t solarized-dark demo.json demo.gif
+
+it has been deprecated by the author.
+
+older or newer versions of asciicast may not work with this tool.
+
+---
+
+use pyo3 to convert agg (rust) into a python module.
+
+https://github.com/PyO3/pyo3
+
+---
+
 instead of extacting every frame created by agg, we are going to use the classic 1 FPS sampling frequency.
 
 we can configure the fps directly at agg.
@@ -6,4 +34,77 @@ the time alignment with original .cast file requires further investigation.
 
 if time alignment is a problem, simply investigate the agg rust codebase and pick up the rendering part only.
 
-also, test if agg can render utf-8 outputs (inclusing cjk characters)
+also, test if agg can render utf-8 outputs (inclusing cjk characters) correctly.
+
+download latest release of agg:
+
+https://github.com/asciinema/agg/releases
+
+extract the files to a folder, then run:
+./agg --idle_time_limit <idie_time_limit> <input.cast> <output.gif>
+
+agg commandline help:
+
+agg 1.5.0
+
+USAGE:
+    agg-x86_64-pc-windows-msvc.exe [OPTIONS] <INPUT_FILENAME_OR_URL> <OUTPUT_FILENAME>
+
+ARGS:
+    <INPUT_FILENAME_OR_URL>    asciicast path/filename or URL
+    <OUTPUT_FILENAME>          GIF path/filename
+
+OPTIONS:
+        --cols <COLS>
+            Override terminal width (number of columns)
+
+        --font-dir <FONT_DIR>
+            Use additional font directory
+
+        --font-family <FONT_FAMILY>
+            Specify font family [default: "JetBrains Mono,Fira Code,SF Mono,Menlo,Consolas,DejaVu
+            Sans Mono,Liberation Mono"]
+
+        --font-size <FONT_SIZE>
+            Specify font size (in pixels) [default: 14]
+
+        --fps-cap <FPS_CAP>
+            Set FPS cap [default: 30]
+
+    -h, --help
+            Print help information
+
+        --idle-time-limit <IDLE_TIME_LIMIT>
+            Limit idle time to max number of seconds [default: 5]
+
+        --last-frame-duration <LAST_FRAME_DURATION>
+            Set last frame duration [default: 3]
+
+        --line-height <LINE_HEIGHT>
+            Specify line height [default: 1.4]
+
+        --no-loop
+            Disable animation loop
+
+        --renderer <RENDERER>
+            Select frame rendering backend [default: resvg] [possible values: resvg, fontdue]
+
+        --rows <ROWS>
+            Override terminal height (number of rows)
+
+        --speed <SPEED>
+            Adjust playback speed [default: 1]
+
+        --theme <THEME>
+            Select color theme [possible values: asciinema, dracula, github-dark, github-light,
+            monokai, nord, solarized-dark, solarized-light, custom]
+
+    -v, --verbose
+            Enable verbose logging
+
+    -V, --version
+            Print version information
+
+we need to use agg as a library, since it will skip many frames, and the result cannot be synched with the action event timestamps.
+
+but if we only want to create a terminal recording video, it is ok to use agg commandline tool.

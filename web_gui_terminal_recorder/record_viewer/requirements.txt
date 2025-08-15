@@ -1,0 +1,6 @@
+imageio
+pyte
+-r tty2img_requirements.txt
+numpy
+opencv-python
+agg_python_bindings # created by cybergod

@@ -13,7 +13,7 @@ description_file = "%s/description.txt" % basedir
 begin_recording_file = "%s/begin_recording.txt" % basedir
 stop_recording_file = "%s/stop_recording.txt" % basedir
 
-with open(description_file, 'r') as f:
+with open(description_file, "r") as f:
     description = f.read()
 
 with open(begin_recording_file, "r") as f:
@@ -26,7 +26,7 @@ with open(stop_recording_file, "r") as f:
 
 screenshot_filenames = os.listdir(screenshot_dir)
 
-first_screenshot_path = "%s/%s" % ( "%s/screenshot" % basedir, screenshot_filenames[0])
+first_screenshot_path = "%s/%s" % ("%s/screenshot" % basedir, screenshot_filenames[0])
 
 # get first screenshot metadata
 first_screenshot_img = PIL.Image.open(first_screenshot_path)
@@ -63,14 +63,33 @@ merged_event_stream = screenshot_log_data + keyboard_log_data + mouse_log_data
 merged_event_stream.sort(key=lambda x: x["timestamp"])
 
 # now filter out events that happened after the stop recording timestamp
-merged_event_stream = [event for event in merged_event_stream if event["timestamp"] <= stop_recording_timestamp and event["timestamp"] >= begin_recording_timestamp]
+merged_event_stream = [
+    event
+    for event in merged_event_stream
+    if event["timestamp"] <= stop_recording_timestamp
+    and event["timestamp"] >= begin_recording_timestamp
+]
 
 # make event timestamp relative
 for it in merged_event_stream:
-    it['timestamp'] -= begin_recording_timestamp
+    it["timestamp"] -= begin_recording_timestamp
 
 print("Begin recording timestamp: %s" % begin_recording_timestamp)
 print("Stop recording timestamp: %s" % stop_recording_timestamp)
+
+# rearrange event_data
+
+merged_event_stream = [
+    dict(
+        timestamp=event["timestamp"],
+        event_source=event["event_source"],
+        event_type = "screenshot" if event["event_source"] == "screenshot" else event['event'],
+        event_data={
+            k: v for k, v in event.items() if k != "timestamp" and k != "event_source"
+        },
+    )
+    for event in merged_event_stream
+]
 
 # for event in merged_event_stream:
 #     print(event)
@@ -88,9 +107,18 @@ print("Stop recording timestamp: %s" % stop_recording_timestamp)
 
 jsonl_file_export_path = "gui_jsonl_event_stream.jsonl"
 
-event_stream_metadata = {"file_format": "cybergod_gui_record", "version": "1", "screen_size": {"height": screenshot_height, "width": screenshot_width}, "begin_recording": begin_recording_timestamp, "stop_recording": stop_recording_timestamp, "duration": stop_recording_timestamp- begin_recording_timestamp, "description": description, "basedir": "./"}
+event_stream_metadata = {
+    "file_format": "cybergod_gui_record",
+    "version": "1",
+    "screen_size": {"height": screenshot_height, "width": screenshot_width},
+    "begin_recording": begin_recording_timestamp,
+    "stop_recording": stop_recording_timestamp,
+    "duration": stop_recording_timestamp - begin_recording_timestamp,
+    "description": description,
+    "basedir": "./",
+}
 
 with open(jsonl_file_export_path, "w+") as f:
-    f.write(json.dumps(event_stream_metadata)+'\n')
+    f.write(json.dumps(event_stream_metadata) + "\n")
     for it in merged_event_stream:
-        f.write(json.dumps(it)+'\n')
+        f.write(json.dumps(it) + "\n")
