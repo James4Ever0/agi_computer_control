@@ -1,6 +1,11 @@
 # the executor shall only perform actions
 # reference in current project: ./containerized_chatgpt_agent/ptyproc.py
 
+# pyte is deprecated. use asciinema agg or rvt instead.
+# links:
+# https://github.com/asciinema/agg
+# https://github.com/asciinema/avt
+
 import ptyprocess
 import pyte 
 import time
