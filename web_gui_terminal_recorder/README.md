@@ -14,17 +14,28 @@ The web server launches two docker containers (workers) running ttyd/novnc and r
 
 ## Usage
 
-1. Build the images for the workers:
-    ```
+1. Prepare the images for the workers:
+
+    Build the image locally:
+
+    ```bash
     bash build_docker_image_worker_terminal.sh
     bash build_docker_image_worker_gui.sh
     ```
-2. Install the requirements for the web server:
+
+    Or pull prebuilt images from Docker Hub:
+
+    ```bash
+    docker pull agile4im/cybergod_worker_gui
+    docker pull agile4im/cybergod_worker_terminal
     ```
+
+2. Install the requirements for the web server:
+    ```bash
     pip3 install -r server_webui_requirements.txt
     ```
 3. Start the web server:
-    ```
+    ```bash
     bash serve.sh
     ```
 4. Open the web GUI in a browser:
@@ -105,7 +116,7 @@ Unique file contents:
 
 - `terminal.cast`:
     
-    Log of terminal input and output (asciinema v2 format).
+    Log of terminal input and output ([asciinema v2 format](https://docs.asciinema.org/manual/asciicast/v2/)).
     
     The first line is a JSON object storing metadata about the recording.
 
@@ -124,3 +135,4 @@ Unique file contents:
 - [ ] Make terminal recordings fixed to 80x25 size.
 - [ ] Implement GUI/terminal record viewer.
 - [ ] Implement GUI/tetminal executor and replayer.
+- [ ] Implement remote VNC recording by building a custom VNC client with input recording capabilities (for example, open the VNC client without window manager in x11vnc-desktop, and pass all input events into the client; or record noVNC client input events using client-side javascript or electron).
