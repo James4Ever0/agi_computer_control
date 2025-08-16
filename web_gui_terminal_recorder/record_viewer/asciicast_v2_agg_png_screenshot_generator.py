@@ -111,7 +111,9 @@ screenshot_events.sort(key=lambda x: x["timestamp"])
 screen_size = screenshot_events[0]["size"]
 screen_size_changed = len([it for it in text_events if it['type'] == "resize"]) != 0
 
-overall_events = screenshot_events + text_events
+# common sense: text/action before screenshot/observation
+overall_events = text_events + screenshot_events 
+
 overall_events.sort(key=lambda x: x["timestamp"])
 
 # get the first screenshot and obtain dimension aspects
