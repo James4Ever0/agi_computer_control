@@ -16,6 +16,9 @@
 
 </p>
 
+<!-- TODO: put our previous conference histories into a folder, if necessary -->
+<!-- one is with Kevin, one with Xinyuan Wang -->
+<!-- Kevin left some links in the middle of conference -->
 
 [Why](https://github.com/James4Ever0/notes/blob/master/The%20reason%20why%20you%20build%20cybergod.md) I build this? (and probably would you)
 
@@ -96,8 +99,19 @@ Now you can record/replay GUI/terminal operations using [this web app](https://g
 
 <summary>AI paper summary</summary>
 
-![cybergod_tldr](https://github.com/user-attachments/assets/105a7681-05f2-4a35-a6a9-f707ede9ee5c)
-    
+**The Cybergod Framework for Autonomous Agent Development Towards AGI**
+
+This work introduces **Cybergod**, a novel framework for developing autonomous computational agents targeting Artificial General Intelligence (AGI). Departing from static model architectures, Cybergod emphasizes *continuous evolutionary adaptation* as a core principle. The framework's primary objective is the creation of agents capable of sustained, independent operation within dynamic computational environments, prioritizing intrinsic autonomy and environmental adaptability over predefined task optimization.
+
+Key conceptual contributions include:
+
+1.  **Evolutionary Autonomy:** Agents must operate within complex, changing environments to facilitate genuine learning and evolution. The framework proposes constrained environmental parameters (e.g., network policies, resource barriers) to guide development while ensuring safety.
+2.  **Paradigm Shift in Human-Computer Interaction:** The framework challenges sequential interaction models. It posits that true AGI requires agents capable of concurrent, independent cognitive processes during latent computational periods, ultimately aiming to supplant the user role through self-directed action and problem-solving.
+3.  **Intrinsic Motivation Discovery:** A critical training target involves enabling agents to autonomously identify and pursue their own computational "needs" and goals, rather than relying solely on externally imposed objectives derived from human behavioral patterns.
+4.  **Economic Agency Validation:** A practical scenario demonstrating agent autonomy involves participation in economic systems, exemplified by an agent autonomously generating cryptocurrency via competitive challenges (e.g., VimGolf contests).
+
+In conclusion, Cybergod proposes a fundamental reorientation in AGI development, advocating for systems that evolve autonomously, discover intrinsic value, and interact adaptively within complex environments, moving beyond fixed architectures and explicit human supervision.
+
 </details>
 
 
