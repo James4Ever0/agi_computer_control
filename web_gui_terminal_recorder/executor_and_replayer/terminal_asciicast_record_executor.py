@@ -125,7 +125,7 @@ class PyTEScreen:
         pillow_img.save(png_output_path)
 
 
-class PyTEPTYProcess:
+class TerminalProcess:
     def __init__(self, command: list[str], width: int, height: int, backend="avt"):
         """
         Initializes the terminal emulator with a command to execute.
@@ -188,7 +188,7 @@ class TerminalExecutor:
         Args:
             command: List of command strings to execute
         """
-        self.pyte_ptyprocess = PyTEPTYProcess(
+        self.terminal = TerminalProcess(
             command=command, width=width, height=height
         )
 
@@ -196,16 +196,16 @@ class TerminalExecutor:
         """
         Sends input text to the terminal process
         """
-        self.pyte_ptyprocess.write(text.encode())
+        self.terminal.write(text.encode())
         # Allow time for processing output
         time.sleep(0.1)
 
     @property
     def display(self) -> str:
-        return self.pyte_ptyprocess.vt_screen.display
+        return self.terminal.vt_screen.display
 
     def screenshot(self, png_save_path: str):
-        self.pyte_ptyprocess.vt_screen.screenshot(png_save_path)
+        self.terminal.vt_screen.screenshot(png_save_path)
 
 
 def test_terminal_executor_using_terminal_recorder_container():
