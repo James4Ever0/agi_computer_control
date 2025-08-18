@@ -1,0 +1,5 @@
+pyte
+ptyprocess
+agg-python-bindings
+tty2img
+pillow
