@@ -37,7 +37,7 @@ screenshot_height = first_screenshot_img.height
 screenshot_log_data = []
 for filename in screenshot_filenames:
     data = dict(
-        screenshot_file="screenshot/%s" % filename,
+        screenshot_file="./screenshot/%s" % filename,
         timestamp=float(filename[:-4].split("_")[-1]),
         event_source="screenshot",
     )

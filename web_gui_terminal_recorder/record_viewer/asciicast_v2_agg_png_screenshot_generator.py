@@ -72,6 +72,7 @@ else:
     # file extension unknown
     raise ValueError("File '%s' does not end with '.json' or '.cast'" % input_file)
 
+assert asciicast_header is not None, "asciicast_header is None"
 asciicast_version = asciicast_header["version"]
 if asciicast_version not in [1]:
     print(

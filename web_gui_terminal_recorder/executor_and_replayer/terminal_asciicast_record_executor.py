@@ -78,7 +78,7 @@ class AvtScreen:
 
 
 class PyTEScreen:
-    def __init__(self, width, height):
+    def __init__(self, width:int, height:int):
         """
         Initializes the screen with a given width and height.
         Args:
@@ -233,7 +233,9 @@ def test_harmless_command_locally_with_bash():
     executor.screenshot("terminal_executor_screenshot.png")
     print("Done")
 
-
-if __name__ == "__main__":
+def test():
     # test_terminal_executor_using_terminal_recorder_container()
     test_harmless_command_locally_with_bash()
+
+if __name__ == "__main__":
+    test()

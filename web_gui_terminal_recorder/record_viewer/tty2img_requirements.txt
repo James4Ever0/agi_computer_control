@@ -1,0 +1,5 @@
+# according to the last release date (May 2021) of tty2img, we need to install the corresponding freetype-py package
+# setup python script for tty2img: https://github.com/opcode-eu-org-libs/asciicast2movie/blob/master/setup-tty2img.py
+tty2img==0.3.6
+freetype-py==2.2.0
+Pillow==9.5.0 # required for tty2img to function properly

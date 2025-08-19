@@ -1,0 +1,1 @@
+docker build -t cybergod_playwright_server -f Dockerfile_cybergod_playwright_server . 

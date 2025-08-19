@@ -1,3 +1,11 @@
+phantomjs is required to run the javascript version of asciicast viewer
+
+check out xterm.js/headless and headless canvas for nodejs version of terminal emulator and image rendering
+
+check out https://pypi.org/project/pyxtermjs/ for steps on running pty and connect to xterm.js
+
+---
+
 alternatively, use javascript/phantomjs based asciinema to gif converter
 
 https://github.com/asciinema/asciicast2gif

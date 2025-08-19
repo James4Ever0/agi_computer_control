@@ -9,3 +9,4 @@ binaries/
 x11vnc_desktop.py
 test_gotty_once_bash_size_80x25_writable.sh
 test_run_x11vnc_docker_container_zh_cn.sh
+serve_pn51.sh

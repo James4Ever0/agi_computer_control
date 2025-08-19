@@ -1,0 +1,2 @@
+# start a vnc server, a novnc server, and a scriptable browser (playwright)
+# create a dedicated network for the containers to avoid port conflicts
