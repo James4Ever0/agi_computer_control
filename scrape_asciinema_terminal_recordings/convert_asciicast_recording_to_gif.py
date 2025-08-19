@@ -109,8 +109,9 @@ def run_commands(max_workers=10):
         for record_filepath, gif_output_path in task_generator():
             future = executor.submit(task_executor, record_filepath, gif_output_path)
             future_to_record_filepath[future] = record_filepath
-            
-        # Collect results as they complete
+        
+        # do not have to collect results.
+        # the code below will only execute after all tasks are completed.
         for future in concurrent.futures.as_completed(future_to_record_filepath):
             try:
                 return_code = future.result()
