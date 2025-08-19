@@ -107,11 +107,11 @@ def run_commands(max_workers=10):
         # Submit all tasks to the thread pool
         future_to_record_filepath = dict()
         for record_filepath, gif_output_path in task_generator():
-            future_to_record_filepath[record_filepath] = executor.submit(task_executor, record_filepath, gif_output_path)
+            future = executor.submit(task_executor, record_filepath, gif_output_path)
+            future_to_record_filepath[future] = record_filepath
             
         # Collect results as they complete
         for future in concurrent.futures.as_completed(future_to_record_filepath):
-            record_filepath = future_to_record_filepath[future]
             try:
                 return_code = future.result()
                 assert return_code == 0
