@@ -1,0 +1,2 @@
+https://unix.stackexchange.com/questions/613782/running-x-appplication-without-desktop-environment-in-full-screen
+https://unix.stackexchange.com/questions/237763/graphical-application-kiosk-mode-fullscreen

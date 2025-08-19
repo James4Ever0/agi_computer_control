@@ -1,0 +1,1 @@
+echo password | tightvncpasswd -f > vnc_password

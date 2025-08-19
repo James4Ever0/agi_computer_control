@@ -1,0 +1,8 @@
+FROM cybergod_worker_gui
+
+RUN apt install -y xdotool
+RUN apt install -y x11-utils
+RUN apt install -y tigervnc-viewer
+RUN apt install -y tightvncpasswd
+
+# prepare the .xinit, is it customizable? do it depend on pre-mounted files for configuration?

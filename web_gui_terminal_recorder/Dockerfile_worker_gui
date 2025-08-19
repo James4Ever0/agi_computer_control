@@ -1,7 +1,9 @@
 # require unicode support
 FROM x11vnc/docker-desktop:zh_CN
 
-COPY tsinghua_tuna_ubuntu_jammy_mirrors /etc/apt/sources.list
+COPY ustc_mirror_ubuntu_jammy_mirrors /etc/apt/sources.list
+# COPY tsinghua_tuna_ubuntu_jammy_mirrors /etc/apt/sources.list
+
 RUN rm /etc/apt/sources.list.d/mozillateam-ubuntu-ppa-jammy.list
 
 RUN apt update
