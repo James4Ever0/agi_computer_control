@@ -235,11 +235,13 @@ def start_ttyd():
     import time
     import json
 
-    stop_ttyd()
-    # wrap all subcomponent in quotes
     tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
-    if os.path.exists(tmpdir_path):
-        shutil.rmtree(tmpdir_path)
+    try:
+        stop_ttyd()
+        # wrap all subcomponent in quotes
+    finally:
+        if os.path.exists(tmpdir_path):
+            shutil.rmtree(tmpdir_path)
     pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
     begin_recording_file = os.path.join(tmpdir_path, "begin_recording.txt")
     with open(begin_recording_file, "w") as f:
@@ -363,14 +365,16 @@ async def start_novnc():
     import json
     import time
 
-    stop_novnc()
     image_name = "cybergod_worker_gui"
     container_name = "gui_recorder_novnc"
     volume_name = "cybergod_gui_recorder_x11vnc_project"
 
     tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
-    if os.path.exists(tmpdir_path):
-        shutil.rmtree(tmpdir_path)
+    try:
+        stop_novnc()
+    finally:
+        if os.path.exists(tmpdir_path):
+            shutil.rmtree(tmpdir_path)
     container_gui_record_path = "/tmp/gui_record_data"
     pathlib.Path(tmpdir_path).mkdir(parents=True, exist_ok=True)
 
