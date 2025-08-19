@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# repository: https://github.com/x11vnc/x11vnc-desktop
+
 # Note: this script is located at /usr/local/bin/startvnc.sh, in the image x11vnc/docker-desktop
 # Note: we dislike bash and we will convert this script into python3
 

@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# TODO: verify its effectiveness via bash run_x11vnc_desktop_python.sh
+# TODO: make its launch behavior configurable, remote into other machines using tigervnc/ssh from the start, with some checks to ensure the connectivity exists first, and exit the entire script/container if the connection is closed
+# TODO: use shlex to separate commands passed via environment variable
+
 import os
 import sys
 import re
@@ -22,6 +26,8 @@ local_ssh_agent = False
 novnc_process = None
 x11vnc_process = None
 stop_file = None
+
+print("Notice: You are using the Python 3 variant of startvnc.sh")
 
 def cleanup():
     """Clean up function to kill child processes and remove lock files"""
