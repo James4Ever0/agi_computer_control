@@ -1,0 +1,20 @@
+vim agents:
+
+https://arxiv.org/pdf/2310.10634
+
+https://lachlan-gray.com/Controlling+Vim+With+ChatGPT
+
+https://github.com/LachlanGray/vim-agent
+
+https://github.com/nsbradford/VimGPT
+
+agent currency exchange and trust:
+
+https://agent-trust.camel-ai.org
+
+latent space thinking:
+
+https://github.com/seal-rg/recurrent-pretraining
+
+https://github.com/facebookresearch/coconut/
+

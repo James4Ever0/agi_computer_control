@@ -1,0 +1,5 @@
+check for more hints in the rtf document
+
+bytedance long term memory:
+
+https://github.com/bytedance-seed/m3-agent

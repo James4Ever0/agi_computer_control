@@ -43,8 +43,8 @@ def kill(pipe):
 # signal.signal(signal.SIGINT, signal_handler)
 display = ""
 lag = 0.05
-executable = "bash"  # this is wrong. could get your computer in danger.
-# unless you want to take the risk. everything worth the try?
+executable = "bash"  # "bash" is not good. could get your computer in danger. run evertthing in sandbox, such as docker
+# unless you want to take the risk. everything worth a try?
 from terminal_config import cols, rows
 import time
 

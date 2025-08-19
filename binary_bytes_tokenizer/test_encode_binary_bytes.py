@@ -1,10 +1,10 @@
 # try to use tiktoken to tokenize the above thing
 # tiktoken works
 
-SPECIAL_TOKEN_ENDOFTEXT_LITERAL = "<|endoftext|>"
+SPECIAL_TOKEN_ENDOFTEXT_LITERAL = "<|endoftext|>" # <|endoftext|> is for openai tokenizers, may not be the same for others
 
 
-def test_encode_with_tiktoken(input_string: str):
+def test_encode_with_tiktoken(input_string: str, pretrained_tokenizer_name: str):
     import tiktoken
 
     # TODO: implement tiktoken tokenizer JSON saver and loader
@@ -14,9 +14,9 @@ def test_encode_with_tiktoken(input_string: str):
     # to construct custom tokenizer:
     # tiktoken.Encoding(name: 'str', *, pat_str: 'str', mergeable_ranks: 'dict[bytes, int]', special_tokens: 'dict[str, int]', explicit_n_vocab: 'int | None' = None)
     #  |      Creates an Encoding object.
-    #  |      
+    #  |
     #  |      See openai_public.py for examples of how to construct an Encoding object.
-    #  |      
+    #  |
     #  |      Args:
     #  |          name: The name of the encoding. It should be clear from the name of the encoding
     #  |              what behaviour to expect, in particular, encodings with different special tokens
@@ -46,10 +46,13 @@ def test_encode_with_tiktoken(input_string: str):
     #     }
     # )
 
-    enc = tiktoken.get_encoding("o200k_base")
-    print("Min mergeable rank: %s, Max mergeable rank: %s" % (min(enc._mergeable_ranks.values()), max(enc._mergeable_ranks.values())))
+    enc = tiktoken.get_encoding(pretrained_tokenizer_name)
+    print(
+        "Min mergeable rank: %s, Max mergeable rank: %s"
+        % (min(enc._mergeable_ranks.values()), max(enc._mergeable_ranks.values()))
+    )
     # Min mergeable rank: 0, Max mergeable rank: 199997
-    print("Special tokens:" , enc._special_tokens)
+    print("Special tokens:", enc._special_tokens)
     # Special tokens: {'<|endoftext|>': 199999, '<|endofprompt|>': 200018}
 
     try:
@@ -78,14 +81,24 @@ def test_encode_with_tiktoken(input_string: str):
     for it in encoded_tokens:
         print("Token: %s, Decoded: %s" % (it, repr(enc.decode([it]))))
 
-    endoftext_token_ids = enc.encode(SPECIAL_TOKEN_ENDOFTEXT_LITERAL, allowed_special="all")
-    print("Special token: %s, Encoded: %s, Decoded: %s" % (SPECIAL_TOKEN_ENDOFTEXT_LITERAL, endoftext_token_ids, repr(enc.decode(endoftext_token_ids))))
+    endoftext_token_ids = enc.encode(
+        SPECIAL_TOKEN_ENDOFTEXT_LITERAL, allowed_special="all"
+    )
+    print(
+        "Special token: %s, Encoded: %s, Decoded: %s"
+        % (
+            SPECIAL_TOKEN_ENDOFTEXT_LITERAL,
+            endoftext_token_ids,
+            repr(enc.decode(endoftext_token_ids)),
+        )
+    )
 
     # print("Attributes of OpenAI tiktoken tokenizer:")
     # print(dir(enc))
     # ['_core_bpe', '_encode_bytes', '_encode_only_native_bpe', '_encode_single_piece', '_mergeable_ranks', '_pat_str', '_special_tokens', 'decode', 'decode_batch', 'decode_bytes', 'decode_bytes_batch', 'decode_single_token_bytes', 'decode_tokens_bytes', 'decode_with_offsets', 'encode', 'encode_batch', 'encode_ordinary', 'encode_ordinary_batch', 'encode_single_token', 'encode_to_numpy', 'encode_with_unstable', 'eot_token', 'is_special_token', 'max_token_value', 'n_vocab', 'name', 'special_tokens_set', 'token_byte_values']
 
-def test_encode_with_tokenizers(input_string: str):
+
+def test_encode_with_tokenizers(input_string: str, tokenizer_json_filepath: str):
     import os
 
     os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
@@ -93,7 +106,7 @@ def test_encode_with_tokenizers(input_string: str):
     from tokenizers import Tokenizer
 
     tokenizer = Tokenizer.from_file(
-        "./gpt-oss-tokenizer/tokenizer.json" # 'gpt-oss' load from json passed assertion
+        tokenizer_json_filepath  # 'gpt-oss' load from json passed assertion
     )  # "bert-base-uncased" assertion failed. not lossless.
     encoded_tokens = tokenizer.encode(input_string)
     # the output of tokenizer.encode() is an instance of Encoding
@@ -106,8 +119,8 @@ def test_encode_with_tokenizers(input_string: str):
 
     assert tokenizer.decode(ids=encoded_tokens.ids) == input_string
     for it in encoded_tokens.ids:
-        decoded_token=tokenizer.decode(ids=[it])
-        print('Token: %s, Decoded: %s' % (it, repr(decoded_token)))
+        decoded_token = tokenizer.decode(ids=[it])
+        print("Token: %s, Decoded: %s" % (it, repr(decoded_token)))
 
     # list attributes of tokenizer object
     # print("Attributes of huggingface BPE tokenizer:")
@@ -120,7 +133,7 @@ def test_encode_with_tokenizers(input_string: str):
     # encode(sequence, pair=None, is_pretokenized=False, add_special_tokens=True), add_special_tokens are for whether to convert literal special token representations into token ids
     # save(path: str, pretty=True)
     # decode(self, ids, skip_special_tokens=True)
-    
+
     # to show help on these methods:
     # for it in ["decode", "add_tokens", "add_special_tokens", "encode", "save"]:
     #     print("Getting help on tokenizer.%s" % it)
@@ -129,18 +142,55 @@ def test_encode_with_tokenizers(input_string: str):
     endoftext_token_ids = tokenizer.encode(SPECIAL_TOKEN_ENDOFTEXT_LITERAL)
     # endoftext_token_ids shall be list[str] of length = 1
 
-    print("Special token: %s, Encoded: %s, Decoded: %s" % (SPECIAL_TOKEN_ENDOFTEXT_LITERAL, endoftext_token_ids.ids, repr(tokenizer.decode(endoftext_token_ids.ids, skip_special_tokens=False))))
+    print(
+        "Special token: %s, Encoded: %s, Decoded: %s"
+        % (
+            SPECIAL_TOKEN_ENDOFTEXT_LITERAL,
+            endoftext_token_ids.ids,
+            repr(tokenizer.decode(endoftext_token_ids.ids, skip_special_tokens=False)),
+        )
+    )
+
+
+def test_tiktoken_encoding(input_string, pretrained_tokenizer_name: str):
+    print(
+        "Testing with tiktoken, pretrained_tokenizer_name=%s"
+        % pretrained_tokenizer_name
+    )
+    test_encode_with_tiktoken(
+        input_string, pretrained_tokenizer_name=pretrained_tokenizer_name
+    )
+
+
+def test_tokenizers_encoding(input_string, tokenizer_json_filepath: str):
+    print(
+        "Testing with tokenizers, tokenizer_json_filepath=%s" % tokenizer_json_filepath
+    )
+    test_encode_with_tokenizers(
+        input_string, tokenizer_json_filepath=tokenizer_json_filepath
+    )
+
 
 def test():
     # example in asciinema cast recording
-    input_string = ( # <|endoftext|> is a special token in gpt
-        "\u001b[?2004h\u001b]0;root@50a6d006d95a: /\u0007root@50a6d006d95a:/# "
+    input_string = (  # <|endoftext|> is a special token in gpt
+        # "\u001b[?2004h\u001b]0;root@50a6d006d95a: /\u0007root@50a6d006d95a:/# "
+        "".join([chr(i) for i in range(0, 256)])
     )
-    print("Testing with tiktoken")
-    test_encode_with_tiktoken(input_string)
+    test_tiktoken_encoding(input_string, pretrained_tokenizer_name="o200k_base")
     print()
-    print("Testing with tokenizers")
-    test_encode_with_tokenizers(input_string)
+    test_tokenizers_encoding(
+        input_string, tokenizer_json_filepath="./gpt-oss-tokenizer/tokenizer.json"
+    )
+    print()
+    test_tokenizers_encoding(
+        input_string,
+        tokenizer_json_filepath="./gemma3_1b_unsloth_bnb_4bit_tokenizer/tokenizer.json",
+    )
+    print()
+    test_tokenizers_encoding(
+        input_string, tokenizer_json_filepath="./llama3.2_1b_tokenizer/tokenizer.json"
+    )
 
 
 if __name__ == "__main__":

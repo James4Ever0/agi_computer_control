@@ -1,0 +1,131 @@
+Hi Xinyuan,
+
+Tencent meeting has a live AI metting summary feature. I have enabled it and saved the output as an RTF document. You can try it too.
+
+After the meeting, I have some new ideas.
+
+1. OS-Level Magnifier for Precise GUI Interaction
+   - An AI agent should learn to leverage built-in OS accessibility tools (e.g., magnifiers in Windows, GNOME, macOS) to execute delicate GUI operations.  
+   - Focus: Enable intricate mouse/keyboard interactions in complex software like Adobe Photoshop by using system-level magnification for accuracy.  
+
+2. State Management via Force Truncation & Prompt Engineering
+   - Use force truncation (enforcing strict length limits) with specialized prompts to train language models to self-summarize and maintain a compact internal state—mimicking RNN-like memory in transformers.  
+   - State updates can be triggered by context length or dialogue rounds, with variable limits for different state aspects.  
+   - Training: Achieved via demonstrations or reinforcement learning (e.g., GRPO).  
+
+3. High-FPS Action for Human-Like Fluency
+   - Increase both video feed FPS and agent action frequency to enable seamless real-time tasks (gaming, captcha, digital art, music software tuning, hover-triggered hints).  
+   - Adaptive FPS: Use low FPS (e.g., 1fps) for non-intensive tasks but maintain continuous action streams (e.g., curved mouse movements).  
+   - Key requirement: Agent must execute rapid, extended action sequences to emulate human responsiveness.  
+
+Furthermore, some related CUA projects, including RL ones.
+
+https://github.com/SunzeY/SEAgent
+
+https://github.com/yuntian-group/neural-os
+
+https://github.com/OpenGVLab/ZeroGUI
+
+The Hierarchical Reasoning Model project is also worth mentioning. It is similar to my second idea.
+
+https://github.com/sapientinc/HRM
+
+A full list of Unsloth Kaggle notebooks can be found here:
+
+https://github.com/unslothai/notebooks#-kaggle-notebooks
+
+You can download and read my paper (with core principles) here:
+
+https://github.com/James4Ever0/agi_computer_control/releases/tag/paper-second-publication
+
+Meanwhile, the terminal action environment is ready.
+
+https://github.com/James4Ever0/agi_computer_control/blob/master/web_gui_terminal_recorder/executor_and_replayer/terminal_asciicast_record_executor.py
+
+Best,
+James
+
+
+---Original---
+From: "Xinyuan Wang"<xywang626@gmail.com>
+Date: Sun, Aug 17, 2025 10:31 AM
+To: "James Brown"<randomvoidmail@foxmail.com>;
+Subject: Re: Meeting schedule
+
+Hi James,
+
+It seems that I have to download the app. Sorry for waiting.
+
+Best,
+Xinyuan
+
+On Sun, Aug 17, 2025 at 12:53 AM Xinyuan Wang <xywang626@gmail.com> wrote:
+Thanks for sharing. See you in the morning!
+
+Best,
+Xinyuan
+
+On Sat, Aug 16, 2025 at 1:21 PM James Brown <randomvoidmail@foxmail.com> wrote:
+Recently I have curated a list of computer operation datasets with documentation.
+
+https://huggingface.co/datasets/cybergod-agi/gui_and_terminal_operation_recording
+
+https://huggingface.co/datasets/James4Ever0/asciinema_terminal_recordings
+
+https://huggingface.co/datasets/James4Ever0/vimgolf_challenges_and_solutions
+
+I am working on converting asciicast v2 (a terminal session recording format) into interleaving input/output/screenshot format. Here is a Python library I have built:
+
+https://github.com/James4Ever0/agg-python-bindings
+
+On Huggingface, a collection of CUA datasets and models, working on docs and demo jupyter notebooks.
+
+https://huggingface.co/collections/cybergod-agi/the-frozen-forest-6896f39f95790b18de5abb3f
+
+Kindly reminder: The schedule is in CST.
+
+---Original---
+From: "Xinyuan Wang"<xywang626@gmail.com>
+Date: Fri, Aug 15, 2025 16:37 PM
+To: "James Brown"<randomvoidmail@foxmail.com>;
+Subject: Re: Meeting schedule
+
+Noted. Thanks for scheduling!
+
+Best,
+Xinyuan
+
+On Fri, Aug 15, 2025 at 4:12 PM James Brown <randomvoidmail@foxmail.com> wrote:
+Would be available at that time.
+
+The meeting details:
+
+Tencent Meeting ID: <redacted>
+
+See you then.
+
+---Original---
+From: "Xinyuan Wang"<xywang626@gmail.com>
+Date: Fri, Aug 15, 2025 02:11 AM
+To: "James Brown"<randomvoidmail@foxmail.com>;
+Subject: Re: Meeting schedule
+
+Hi James,
+
+How about Sunday 10:30 AM?
+
+Best,
+Xinyuan
+
+On Thu, Aug 14, 2025 at 8:57 AM James Brown <randomvoidmail@foxmail.com> wrote:
+Hi, Xinyuan
+
+Here is the meeting proposal:
+
+Software: Tencent Meeting
+Date: Sunday, August 17
+Time: Anytime from 10:00 AM to 8:00 PM
+
+If you consider this proposal suitable, or want to alter some details, please reply.
+
+James from Github
