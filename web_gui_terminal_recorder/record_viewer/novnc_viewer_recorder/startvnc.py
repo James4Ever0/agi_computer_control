@@ -240,7 +240,7 @@ def start_tigervnc_client(
     subprocess.run(
         ["bash", "-c", f"echo {vnc_password} | tightvncpasswd -f > {passwd_file}"]
     )
-    command = f"vncviewer -passwd {passwd_file} -FullScreen {vnc_host}:{vnc_port}"
+    command = f"vncviewer -passwd={passwd_file} -FullScreen -MenuKey= {vnc_host}:{vnc_port}"
     start_application(command, log_file, processes)
 
 

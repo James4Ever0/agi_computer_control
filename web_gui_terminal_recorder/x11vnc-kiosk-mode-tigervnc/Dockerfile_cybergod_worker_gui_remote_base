@@ -4,5 +4,6 @@ RUN apt install -y xdotool
 RUN apt install -y x11-utils
 RUN apt install -y tigervnc-viewer
 RUN apt install -y tightvncpasswd
+RUN apt install -y sshpass
 
 # prepare the .xinit, is it customizable? do it depend on pre-mounted files for configuration?
