@@ -18,6 +18,7 @@ import argparse
 from pathlib import Path
 import shlex
 import threading
+
 # Global variables to track processes and state
 processes: list[subprocess.Popen] = []
 disp = None
@@ -30,6 +31,7 @@ stop_file = None
 
 print("Notice: You are using the Python 3 variant of startvnc.sh")
 SCRIPT_PID = os.getpid()
+
 
 def cleanup():
     """Clean up function to kill child processes and remove lock files"""
@@ -214,9 +216,12 @@ def start_application(
 # want something like xterm but with full unicode support
 # alternatives: xterm(1), gnome-terminal(1), konsole(1), terminator(1), urxvt(1), qterminal(1)
 
+
 # note: you can configure lxterminal with gui at edit > preferences > display > hide xxx
 def start_lxterminal(
-    log_file: Path, processes: list[subprocess.Popen], init_command: str = "bash" # "top" 
+    log_file: Path,
+    processes: list[subprocess.Popen],
+    init_command: str = "bash",  # "top"
 ):
     # https://linuxcommandlibrary.com/man/lxterminal
     # window class: lxterminal
@@ -240,7 +245,9 @@ def start_tigervnc_client(
     subprocess.run(
         ["bash", "-c", f"echo {vnc_password} | tightvncpasswd -f > {passwd_file}"]
     )
-    command = f"vncviewer -passwd={passwd_file} -FullScreen -MenuKey= {vnc_host}:{vnc_port}"
+    command = (
+        f"vncviewer -passwd={passwd_file} -FullScreen -MenuKey= {vnc_host}:{vnc_port}"
+    )
     start_application(command, log_file, processes)
 
 
@@ -276,6 +283,7 @@ def start_lxsession(log_file: Path, processes: list[subprocess.Popen]):
     p = start_application(command, log_file, processes)
     return p
 
+
 def start_ssh_agent():
     local_ssh_agent = False
     if "SSH_AUTH_SOCK" not in os.environ:
@@ -287,7 +295,10 @@ def start_ssh_agent():
                 os.environ[match.group(1)] = match.group(2)
     return local_ssh_agent
 
-def monitor_main_process_and_exit_script_when_main_process_gone(main_process:subprocess.Popen, poll_interval=0.5):
+
+def monitor_main_process_and_exit_script_when_main_process_gone(
+    main_process: subprocess.Popen, poll_interval=0.5
+):
     def monitor_thread():
         exitcode = 1
         try:
@@ -300,9 +311,10 @@ def monitor_main_process_and_exit_script_when_main_process_gone(main_process:sub
             print("Main process exited with code:", exitcode)
             # reference: https://superfastpython.com/interrupt-the-main-thread-in-python/
             # _thread.interrupt_main() # does not work
-            os.system("kill %s" % SCRIPT_PID) # working
-    
+            os.system("kill %s" % SCRIPT_PID)  # working
+
     threading.Thread(target=monitor_thread, daemon=True).start()
+
 
 def main():
     global disp, vnc_port, web_port, local_ssh_agent, novnc_process, x11vnc_process, stop_file
@@ -317,6 +329,13 @@ def main():
         "--resolution",
         default="1920x1080",
         help="Screen resolution (e.g., 1280x720)",
+    )
+    parser.add_argument(
+        "-m",
+        "--main",
+        default="lxterminal",
+        choices=["lxsession", "lxterminal", "vncviewer"],
+        help="Main Xorg client process to execute",
     )
     args = parser.parse_args()
 
@@ -363,19 +382,46 @@ def main():
     # Start ssh-agent if needed
     local_ssh_agent = start_ssh_agent()
 
-    # TODO: this 'lxde' part we might want to swap with tigervnc, lxterminal etc
-    # log_file = Path.home() / f".log/lxsession_X{disp}.log"
-    # main_process = start_lxsession(log_file, processes)
+    main_xorg_client_process_name = args.main
 
-    # for persistance, we should place logs under /home/ubuntu/project/.log (create the folder first)
-    # since the docker volume novnc_test is mounted at /home/ubuntu/project
-    os.makedirs("/home/ubuntu/project/.log", exist_ok=True)
+    # TODO: this 'lxsession' part we might want to swap with tigervnc, lxterminal etc
+    if main_xorg_client_process_name == "lxsession":
+        log_file = Path.home() / f".log/lxsession_X{disp}.log"
+        main_process = start_lxsession(log_file, processes)
+    else:
+        # for persistance, we should place logs under /home/ubuntu/project/.log (create the folder first)
+        # since the docker volume novnc_test is mounted at /home/ubuntu/project
+        os.makedirs("/home/ubuntu/project/.log", exist_ok=True)
+        if main_xorg_client_process_name == "lxterminal":
+            log_file = Path(f"/home/ubuntu/project/.log/lxterminal_X{disp}.log")
 
-    log_file = f"/home/ubuntu/project/.log/lxterminal_X{disp}.log"
+            lxterminal_init_command = os.environ.get("LXTERMINAL_INIT_COMMAND", "bash")
 
-    log_file = Path(log_file)
+            main_process = start_lxterminal(
+                log_file=log_file,
+                processes=processes,
+                init_command=lxterminal_init_command,
+            )
+        elif main_xorg_client_process_name == "vncviewer":
+            log_file = Path(f"/home/ubuntu/project/.log/vncviewer_X{disp}.log")
 
-    main_process = start_lxterminal(log_file, processes)
+            vnc_port = os.environ.get("VNCVIEWER_VNC_PORT", "5900")
+            vnc_host = os.environ.get("VNCVIEWER_VNC_HOST", "localhost")
+            vnc_password = os.environ.get("VNCVIEWER_VNC_PASSWORD", "password")
+
+            start_tigervnc_client(
+                log_file=log_file,
+                processes=processes,
+                vnc_password=vnc_password,
+                vnc_host=vnc_host,
+                vnc_port=vnc_port,
+            )
+        else:
+            print(
+                "Xorg client process '%s' is not implemented yet"
+                % main_xorg_client_process_name
+            )
+            sys.exit(1)
 
     # exit if the main process is gone
 

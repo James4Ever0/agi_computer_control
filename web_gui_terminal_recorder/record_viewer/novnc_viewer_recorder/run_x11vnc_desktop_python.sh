@@ -14,4 +14,4 @@ echo "noVNC Proxy WebUI will be hosted at: http://localhost:16080/vnc.html?resiz
 
 # the python script is different from bash.
 # it takes resolution from command line argument "--resolution" instead of environment variable "RESOLUT"
-docker run --rm --tty -e VNCPASS=secret -p 16080:$NOVNC_PORT -v novnc_test:/home/ubuntu/project -v ./startvnc.py:/usr/local/bin/startvnc.py:ro -v ./lxterminal-cybergod.conf:/home/ubuntu/.config/lxterminal/lxterminal.conf:ro --security-opt seccomp=unconfined --cap-add=SYS_PTRACE --entrypoint /usr/bin/env $IMAGE_NAME python3 /usr/local/bin/startvnc.py --resolution 640x480
+docker run --rm --tty -e VNCPASS=secret -p 16080:$NOVNC_PORT -v novnc_test:/home/ubuntu/project -v ./startvnc.py:/usr/local/bin/startvnc.py:ro -v ./lxterminal-cybergod.conf:/home/ubuntu/.config/lxterminal/lxterminal.conf:ro --security-opt seccomp=unconfined --cap-add=SYS_PTRACE --entrypoint /usr/bin/env $IMAGE_NAME python3 /usr/local/bin/startvnc.py --resolution 640x480 --main lxterminal
