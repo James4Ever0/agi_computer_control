@@ -28,6 +28,9 @@ The web server launches two docker containers (workers) running ttyd/novnc and r
     ```bash
     docker pull agile4im/cybergod_worker_gui
     docker pull agile4im/cybergod_worker_terminal
+
+    docker tag agile4im/cybergod_worker_gui cybergod_worker_gui
+    docker tag agile4im/cybergod_worker_terminal cybergod_worker_terminal
     ```
 
 2. Install the requirements for the web server:
