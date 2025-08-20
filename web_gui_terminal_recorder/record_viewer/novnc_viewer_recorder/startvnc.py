@@ -17,7 +17,7 @@ import tempfile
 import argparse
 from pathlib import Path
 import shlex
-
+import threading
 # Global variables to track processes and state
 processes: list[subprocess.Popen] = []
 disp = None
@@ -29,7 +29,7 @@ x11vnc_process = None
 stop_file = None
 
 print("Notice: You are using the Python 3 variant of startvnc.sh")
-
+SCRIPT_PID = os.getpid()
 
 def cleanup():
     """Clean up function to kill child processes and remove lock files"""
@@ -207,21 +207,25 @@ def start_application(
         with open(log_file) as f:
             print(f.read(), file=sys.stderr)
         sys.exit(1)
+    return p
 
 
-# lxterminal has toolbar on top. We don't want that.
+# lxterminal has menu bar (tool bar) on top. We don't want that.
 # want something like xterm but with full unicode support
 # alternatives: xterm(1), gnome-terminal(1), konsole(1), terminator(1), urxvt(1), qterminal(1)
+
+# note: you can configure lxterminal with gui at edit > preferences > display > hide xxx
 def start_lxterminal(
-    log_file: Path, processes: list[subprocess.Popen], init_command: str = "bash"
+    log_file: Path, processes: list[subprocess.Popen], init_command: str = "bash" # "top" 
 ):
     # https://linuxcommandlibrary.com/man/lxterminal
     # window class: lxterminal
     # lxterminal configuration file in container: /home/ubuntu/.config/lxterminal/lxterminal.conf
     # TODO: make it full screen
-    command: str = "lxterminal --command '%s'" % init_command
-    start_application(command, log_file, processes)
+    command: str = "lxterminal --command 'env DISPLAY= %s'" % init_command
+    p = start_application(command, log_file, processes)
     maximize_window(window_class="lxterminal", window_count=2)
+    return p
 
 
 def start_tigervnc_client(
@@ -264,10 +268,13 @@ def maximize_window(window_class: str, window_count: int):
     subprocess.run(["sh", "-c", command])
 
 
-def start_lxde(log_file: Path, processes: list[subprocess.Popen]):
+# under /home/ubuntu/.config/lxsession/LXDE we have two files
+# - autostart contains "@lxterminal -t LXTerminal -e /usr/local/bin/start_shell", which is why we see a terminal at the very beginning
+# - desktop.conf which we shall be able to limit the virtual desktop count from there
+def start_lxsession(log_file: Path, processes: list[subprocess.Popen]):
     command: str = "lxsession -s LXDE -e LXDE"
-    start_application(command, log_file, processes)
-
+    p = start_application(command, log_file, processes)
+    return p
 
 def start_ssh_agent():
     local_ssh_agent = False
@@ -280,6 +287,22 @@ def start_ssh_agent():
                 os.environ[match.group(1)] = match.group(2)
     return local_ssh_agent
 
+def monitor_main_process_and_exit_script_when_main_process_gone(main_process:subprocess.Popen, poll_interval=0.5):
+    def monitor_thread():
+        exitcode = 1
+        try:
+            while True:
+                time.sleep(poll_interval)
+                if main_process.poll() is not None:
+                    exitcode = main_process.poll()
+                    break
+        finally:
+            print("Main process exited with code:", exitcode)
+            # reference: https://superfastpython.com/interrupt-the-main-thread-in-python/
+            # _thread.interrupt_main() # does not work
+            os.system("kill %s" % SCRIPT_PID) # working
+    
+    threading.Thread(target=monitor_thread, daemon=True).start()
 
 def main():
     global disp, vnc_port, web_port, local_ssh_agent, novnc_process, x11vnc_process, stop_file
@@ -342,7 +365,7 @@ def main():
 
     # TODO: this 'lxde' part we might want to swap with tigervnc, lxterminal etc
     # log_file = Path.home() / f".log/lxsession_X{disp}.log"
-    # start_lxde(log_file, processes)
+    # main_process = start_lxsession(log_file, processes)
 
     # for persistance, we should place logs under /home/ubuntu/project/.log (create the folder first)
     # since the docker volume novnc_test is mounted at /home/ubuntu/project
@@ -352,7 +375,11 @@ def main():
 
     log_file = Path(log_file)
 
-    start_lxterminal(log_file, processes)
+    main_process = start_lxterminal(log_file, processes)
+
+    # exit if the main process is gone
+
+    monitor_main_process_and_exit_script_when_main_process_gone(main_process)
 
     # Generate or use existing VNC password
     password = os.getenv("VNCPASS")
