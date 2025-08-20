@@ -1,0 +1,16 @@
+Usage:
+  lxsession [OPTION?] - Lightweight Session manager
+
+Help Options:
+  -h, --help                   Show help options
+
+Application Options:
+  -s, --session=NAME           specify name of the desktop session profile
+  -e, --de=NAME                specify name of DE, such as LXDE, GNOME, or XFCE.
+  -r, --reload                 reload configurations (for Xsettings daemon)
+  -n, --noxsettings            disable Xsettings daemon support
+  -a, --noautostart            autostart applications disable (window-manager mode only)
+  -c, --compatibility=NAME     specify a compatibility mode for settings (only razor-qt supported)
+
+---
+
