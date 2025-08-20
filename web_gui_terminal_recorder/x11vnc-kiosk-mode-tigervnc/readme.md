@@ -1,3 +1,12 @@
+
+pull prebuilt image:
+
+docker pull agile4im/cybergod_worker_gui:remote-base
+
+docker tag agile4im/cybergod_worker_gui:remote-base cybergod_worker_gui:remote-base
+
+---
+
 can start a new gui program at :1 without window manager
 
 openssh-client is already installed in x11vnc/docker-desktop

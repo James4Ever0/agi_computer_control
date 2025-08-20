@@ -181,7 +181,13 @@ def start_x11vnc(disp, vnc_port, password):
 
     return p
 
-def start_application(command:str, log_file:Path, processes:list[subprocess.Popen], check_started_timeout=0.5):
+
+def start_application(
+    command: str,
+    log_file: Path,
+    processes: list[subprocess.Popen],
+    check_started_timeout=0.5,
+):
     print("Starting application")
     print("App start command:", command)
     cmd_list = shlex.split(command)
@@ -202,17 +208,66 @@ def start_application(command:str, log_file:Path, processes:list[subprocess.Pope
             print(f.read(), file=sys.stderr)
         sys.exit(1)
 
-def start_lxterminal(log_file:Path, processes:list[subprocess.Popen]):
+
+# lxterminal has toolbar on top. We don't want that.
+# want something like xterm but with full unicode support
+# alternatives: xterm(1), gnome-terminal(1), konsole(1), terminator(1), urxvt(1), qterminal(1)
+def start_lxterminal(
+    log_file: Path, processes: list[subprocess.Popen], init_command: str = "bash"
+):
     # https://linuxcommandlibrary.com/man/lxterminal
     # window class: lxterminal
     # lxterminal configuration file in container: /home/ubuntu/.config/lxterminal/lxterminal.conf
     # TODO: make it full screen
-    command: str = "lxterminal"
+    command: str = "lxterminal --command '%s'" % init_command
     start_application(command, log_file, processes)
+    maximize_window(window_class="lxterminal", window_count=2)
+
+
+def start_tigervnc_client(
+    log_file: Path,
+    processes: list[subprocess.Popen],
+    vnc_password: str,
+    vnc_host: str,
+    vnc_port: str,
+):
+    # generate the password file
+    passwd_file = "/tmp/vncpasswd"
+    subprocess.run(
+        ["bash", "-c", f"echo {vnc_password} | tightvncpasswd -f > {passwd_file}"]
+    )
+    command = f"vncviewer -passwd {passwd_file} -FullScreen {vnc_host}:{vnc_port}"
+    start_application(command, log_file, processes)
+
+
+def maximize_window(window_class: str, window_count: int):
+    # kiosk mode
+    # https://unix.stackexchange.com/questions/613782/running-x-appplication-without-desktop-environment-in-full-screen
+    # https://unix.stackexchange.com/questions/237763/graphical-application-kiosk-mode-fullscreen
+    while True:
+        # find the window id
+        command = f'xdotool search --class "{window_class}"'
+        window_id = subprocess.run(
+            command, shell=True, capture_output=True, text=True
+        ).stdout.strip()
+        if window_id:
+            # count window id
+            current_window_count = len(window_id.split())
+            if current_window_count < window_count:  # wait for the window to appear
+                time.sleep(0.1)
+                continue
+            else:
+                break
+        time.sleep(0.1)
+    command = f'xdotool search --class "{window_class}" | xargs -Iabc xdotool windowsize abc 100% 100%'
+    # print("Running window maximization command:", "sh -c '%s'" % command)
+    subprocess.run(["sh", "-c", command])
+
 
 def start_lxde(log_file: Path, processes: list[subprocess.Popen]):
     command: str = "lxsession -s LXDE -e LXDE"
     start_application(command, log_file, processes)
+
 
 def start_ssh_agent():
     local_ssh_agent = False

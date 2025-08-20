@@ -1,3 +1,12 @@
+
+pull prebuilt images:
+
+docker pull agile4im/cybergod_playwright_server
+
+docker tag agile4im/cybergod_playwright_server cybergod_playwright_server
+
+---
+
 novnc requires browser to work.
 no headless version, requiring rework to hide buttons, send keys and take screenshots.
 

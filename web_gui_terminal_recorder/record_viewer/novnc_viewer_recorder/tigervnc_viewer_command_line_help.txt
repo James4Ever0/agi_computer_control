@@ -1,0 +1,104 @@
+
+TigerVNC Viewer 64-bit v1.12.0
+Built on: 2024-01-23 19:20
+Copyright (C) 1999-2021 TigerVNC Team and many others (see README.rst)
+See https://www.tigervnc.org for information on TigerVNC.
+
+usage: vncviewer [parameters] [host][:displayNum]
+       vncviewer [parameters] [host][::port]
+       vncviewer [parameters] [unix socket]
+       vncviewer [parameters] -listen [port]
+       vncviewer [parameters] [.tigervnc file]
+
+Options:
+
+  -display Xdisplay  - Specifies the X display for the viewer window
+  -geometry geometry - Initial position of the main VNC viewer window. See the
+                       man page for details.
+
+Options:
+
+  -display Xdisplay - Specifies the X display for the viewer window
+  -geometry geometry - Standard X position and sizing specification.
+
+Parameters can be turned on with -<param> or off with -<param>=0
+Parameters which take a value can be specified as -<param> <value>
+Other valid forms are <param>=<value> -<param>=<value> --<param>=<value>
+Parameter names are case-insensitive.  The parameters are:
+
+Global Parameters:
+  via            - Gateway to tunnel via (default=)
+  FullscreenSystemKeys - Pass special keys (like Alt+Tab) directly to the
+                   server when in full screen mode. (default=1)
+  MenuKey        - The key which brings up the popup menu (default=F8)
+  display        - Specifies the X display on which the VNC viewer window
+                   should appear. (default=)
+  SendPrimary    - Send the primary selection to the server as well as the
+                   clipboard selection (default=1)
+  SetPrimary     - Set the primary selection as well as the clipboard selection
+                   (default=1)
+  SendClipboard  - Send clipboard changes to the server (default=1)
+  AcceptClipboard - Accept clipboard changes from the server (default=1)
+  Shared         - Don't disconnect other viewers upon connection - share the
+                   desktop instead (default=0)
+  ViewOnly       - Don't send any mouse or keyboard events to the server
+                   (default=0)
+  RemoteResize   - Dynamically resize the remote desktop size as the size of
+                   the local client window changes. (Does not work with all
+                   servers) (default=1)
+  listen         - Listen for connections from VNC servers (default=0)
+  geometry       - Specify size and position of viewer window (default=)
+  DesktopSize    - Reconfigure desktop size on the server on connect (if
+                   possible) (default=)
+  FullScreenSelectedMonitors - Use the given list of monitors in full screen
+                   when -FullScreenMode=Selected. (default=1)
+  FullScreenAllMonitors - [DEPRECATED] Enable full screen over all monitors
+                   (default=0)
+  FullScreenMode - Specify which monitors to use when in full screen. Should be
+                   either Current, Selected or All (default=Current)
+  FullScreen     - Enable full screen (default=0)
+  Maximize       - Maximize viewer window (default=0)
+  QualityLevel   - JPEG quality level. 0 = Low, 9 = High (default=8)
+  NoJPEG         - Disable lossy JPEG compression in Tight encoding.
+                   (default=0)
+  CompressLevel  - Use specified compression level 0 = Low, 9 = High
+                   (default=2)
+  CustomCompressLevel - Use custom compression level. Default if CompressLevel
+                   is specified. (default=0)
+  PreferredEncoding - Preferred encoding to use (Tight, ZRLE, Hextile or Raw)
+                   (default=Tight)
+  LowColourLevel - Alias for LowColorLevel
+  LowColorLevel  - Color level to use on slow connections. 0 = Very Low, 1 =
+                   Low, 2 = Medium (default=2)
+  FullColour     - Alias for FullColor
+  FullColor      - Use full color (default=1)
+  AutoSelect     - Auto select pixel format and encoding. Default if
+                   PreferredEncoding and FullColor are not specified.
+                   (default=1)
+  passwd         - Alias for PasswordFile
+  PasswordFile   - Password file for VNC authentication (default=)
+  ReconnectOnError - Give a dialog on connection problems rather than exiting
+                   immediately and ask for a reconnect. (default=1)
+  AlertOnFatalError - Give a dialog on connection problems rather than exiting
+                   immediately (default=1)
+  DotWhenNoCursor - Show the dot cursor when the server sends an invisible
+                   cursor (default=0)
+  EmulateMiddleButton - Emulate middle mouse button by pressing left and right
+                   mouse buttons simultaneously (default=0)
+  PointerEventInterval - Time in milliseconds to rate-limit successive pointer
+                   events (default=17)
+  MaxCutText     - Maximum permitted length of an incoming clipboard update
+                   (default=262144)
+  Log            - Specifies which log output should be directed to which
+                   target logger, and the level of output to log. Format is
+                   <log>:<target>:<level>[, ...]. (default=)
+  GnuTLSPriority - GnuTLS priority string that controls the TLS session’s
+                   handshake algorithms (default=)
+  UseIPv6        - Use IPv6 for incoming and outgoing connections. (default=1)
+  UseIPv4        - Use IPv4 for incoming and outgoing connections. (default=1)
+Viewer Parameters:
+  SecurityTypes  - Specify which security scheme to use (None, VncAuth, Plain,
+                   TLSNone, TLSVnc, TLSPlain, X509None, X509Vnc, X509Plain)
+                   (default=X509Plain,TLSPlain,X509Vnc,TLSVnc,X509None,TLSNone,VncAuth,None)
+  X509CRL        - X509 CRL file (default=/root/.vnc/x509_crl.pem)
+  X509CA         - X509 CA certificate (default=/root/.vnc/x509_ca.pem)

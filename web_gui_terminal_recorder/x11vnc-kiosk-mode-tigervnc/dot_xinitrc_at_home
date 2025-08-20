@@ -1,2 +1,2 @@
-/usr/bin/xdotool search "lxterminal" -sync windowsize 100% 100%
+/usr/bin/xdotool search --class "Lxterminal" --sync windowsize 100% 100%
 /usr/bin/firefox
