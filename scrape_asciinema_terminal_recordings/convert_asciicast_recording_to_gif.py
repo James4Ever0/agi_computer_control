@@ -108,11 +108,12 @@ def run_commands(max_workers=10):
         future_to_record_filepath = dict()
         for record_filepath, gif_output_path in task_generator():
             future = executor.submit(task_executor, record_filepath, gif_output_path)
-            future_to_record_filepath[future] = record_filepath
+            future_to_record_filepath[future] = gif_output_path
         
         # do not have to collect results.
         # the code below will only execute after all tasks are completed.
         for future in concurrent.futures.as_completed(future_to_record_filepath):
+            gif_output_path = future_to_record_filepath[future]
             try:
                 return_code = future.result()
                 assert return_code == 0
@@ -122,6 +123,9 @@ def run_commands(max_workers=10):
                     break # user interrupted
                 else:
                     print("Agg process returned non-zero code:", return_code)
+                # remove the output file
+                print("Removing output file:", gif_output_path)
+                os.remove(gif_output_path)
             except KeyboardInterrupt: # user interrupted
                 print("KeyboardInterrupt: User interrupted main program execution")
                 break

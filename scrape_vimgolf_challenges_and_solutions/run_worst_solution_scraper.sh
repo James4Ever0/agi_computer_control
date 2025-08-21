@@ -1,0 +1,1 @@
+xvfb-run python3 scrape_worst_solution.py

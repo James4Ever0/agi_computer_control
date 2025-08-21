@@ -9,6 +9,7 @@ import datetime
 import socket
 import asyncio
 from typing import Union
+
 # TODO: store beginning and ending timestamp of recording to record folder
 
 app = fastapi.FastAPI()
@@ -37,6 +38,7 @@ async def wait_for_connection(host: str, port: int, timeout: int):
 # actually the base gui recorder can be tuned into a remote ssh client.
 # the recording will be directly available as a series of screenshots, mouse and keyboard events
 
+
 # return html
 @app.get("/", response_class=HTMLResponse)
 def read_root():
@@ -51,24 +53,241 @@ def read_root():
         <ul>
             <li><a href="/recorder/terminal">Terminal Recorder</a></li>
             <li><a href="/recorder/gui">GUI Recorder</a></li>
-            <li><a href="/recorder/remote-gui">Remote GUI Recorder</a></li>
-            <li><a href="/recorder/remote-terminal">Remote Terminal Recorder</a></li>
+            <li><a href="/recorder/remote-gui/login">Remote GUI Recorder Login</a></li>
+            <li><a href="/recorder/remote-terminal/login">Remote Terminal Recorder Login</a></li>
         </ul>
     </body>
     </html>
     """
 
+
+@app.get("/recorder/remote-terminal/login", response_class=HTMLResponse)
+def read_remote_terminal_recorder_login():
+    # collect ip_address, port, username, password with form
+    # show_iframe will be false
+    # use javascript to GET page /recorder/remote-terminal with encoded parameters, when the "connect" button is clicked
+    ret = """
+<html>
+<head>
+    <title>Login: Remote terminal recorder</title>
+</head>
+<body>
+    <h1>Login: Remote terminal recorder</h1>
+    <!-- use query param uri component encode -->
+    <form class="form-container" action="/recorder/remote-terminal" enctype="application/x-www-form-urlencoded" method="get">
+      <div class="form-group">
+        <label for="ip_address">IP address:</label>
+        <input type="text" id="ip_address" name="ip_address" required>
+      </div>
+
+      <div class="form-group">
+        <label for="port">Port:</label>
+        <input type="text" id="port" name="port" required>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password" required>
+      </div>
+       <button type="submit" class="submit-btn">Login</button>
+    </form>
+</body>
+</html>
+"""
+    return ret
+
+
+@app.get("/recorder/remote-gui/login", response_class=HTMLResponse)
+def read_remote_gui_recorder_login():
+    ret = """
+<html>
+<head>
+    <title>Login: Remote GUI recorder</title>
+</head>
+<body>
+    <h1>Login: Remote GUI recorder</h1>
+    <!-- use query param uri component encode -->
+    <form class="form-container" action="/recorder/remote-gui" enctype="application/x-www-form-urlencoded" method="get">
+      <div class="form-group">
+        <label for="ip_address">IP address:</label>
+        <input type="text" id="ip_address" name="ip_address" required>
+      </div>
+
+      <div class="form-group">
+        <label for="port">Port:</label>
+        <input type="text" id="port" name="port" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password" required>
+      </div>
+       <button type="submit" class="submit-btn">Login</button>
+    </form>
+</body>
+</html>    
+"""
+    return ret
+
+
 @app.get("/recorder/remote-terminal", response_class=HTMLResponse)
-def read_remote_terminal_recorder():
-    # ssh into the remote machine
+def read_remote_terminal_recorder(
+    ip_address: str,
+    port: int,
+    username: str,
+    password: str,
+    show_iframe: bool = False,
+    user_agent: Union[str, None] = fastapi.Header(default=None),
+):  # port: 8082
+    """
+    Webpage for remote terminal recording.
+
+    This endpoint is used to record the terminal activity on a remote machine.
+    The user needs to provide the ip address, port, username, and password of
+    the remote machine.
+
+    The `show_iframe` parameter determines whether the iframe with the
+    terminal recording is shown in the response. If `show_iframe` is True,
+    the iframe is shown. Otherwise, the iframe is not shown.
+
+    The `user_agent` parameter is used to determine the size of the iframe
+    based on the user agent. If the user agent is not provided, the iframe
+    size is determined based on the default user agent.
+
+    The response is an HTML page with a button to start and stop the
+    recording. When the button is clicked, the iframe is shown or hidden
+    depending on the value of `show_iframe`.
+
+    The start recording button is implemented as a JavaScript function that
+    is called when the button is clicked. The function sends a GET request to
+    `/recorder/remote-terminal/start` with the parameters `ip_address`, `port`,
+    `username`, and `password`. The request is sent with the `fetch` API.
+
+    is called when the button is clicked. The function sends a GET request to
+    `/recorder/remote-terminal/stop` with the parameter `description`. The request is
+    sent with the `fetch` API.
+
+    The response is an HTML page with a form to enter the description of the
+    recording. When the form is submitted, the description is sent to
+    `/recorder/remote-terminal/stop` as a query parameter.
+
+    The iframe size is determined based on the user agent. If the user agent
+    is not provided, the iframe size is determined based on the default user
+    """
     # user needs to provide the ip address, port, username, and password
-    ...
+    terminal_iframe_link = f"{EXTERNAL_HOST}:8082" if show_iframe else ""
+
+    # TODO: encode connection info into description
+
+    javascript = """
+    function startRecording() {
+        const url = new URL(window.location.href);
+
+        const ip_address = url.searchParams.get("ip_address");
+        const port = url.searchParams.get("port");
+        const username = url.searchParams.get("username");
+        const password = url.searchParams.get("password");
+
+        // urlencode all params
+        const start_terminal_recording_url = `/recorder/remote-terminal/start?ip_address=${encodeURIComponent(ip_address)}&port=${encodeURIComponent(port)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+
+        fetch(start_terminal_recording_url).then(() => {
+            // change to "show_iframe=True" in url, then reload
+            url.searchParams.set("show_iframe", "true");
+            window.location.href = url.toString();
+        });
+    }
+    function stopRecording() {
+        const description = document.getElementById("description").value;
+        if (!description) {
+            alert("Please enter a description");
+            return;
+        }
+
+        // send the description to /recorder/remote-terminal/stop as query params
+        window.onbeforeunload = null;
+
+        fetch("/recorder/remote-terminal/stop?description=" + encodeURIComponent(description)).then(() => {
+            // change to "show_iframe=False" in url, then reload
+            const url = new URL(window.location.href);
+            url.searchParams.set("show_iframe", "false");
+            document.getElementById("description").value = "";
+            // remove the iframe
+            document.getElementById("recorder_iframe").remove();
+            window.location.href = url.toString();
+        });
+    }
+    """
+    iframe_size = get_terminal_iframe_size_based_on_user_agent(user_agent)
+
+    # finding alternative solutions
+    return read_general_recorder(
+        title="Terminal Recorder",
+        iframe_link=terminal_iframe_link,
+        **iframe_size,
+        javascript=javascript,
+    )
+
 
 @app.get("/recorder/remote-gui", response_class=HTMLResponse)
-def read_remote_gui_recorder():
+def read_remote_gui_recorder(
+    ip_address: str, port: int, password: str, show_iframe: bool = False
+):  # port: 8083
     # vnc into the remote machine
     # user needs to provide the ip address, port and password
-    ...
+    gui_iframe_link = (
+        f"{EXTERNAL_HOST}:8083/vnc.html?password=password&autoconnect=1&resize=scale&reconnect=1&reconnect_delay=1000"
+        if show_iframe
+        else ""
+    )
+
+    javascript = """
+    function startRecording() {
+        const url = new URL(window.location.href);
+
+        const ip_address = url.searchParams.get("ip_address");
+        const port = url.searchParams.get("port");
+        const password = url.searchParams.get("password");
+
+        // urlencode all params
+        const start_gui_recording_url = `/recorder/remote-gui/start?ip_address=${encodeURIComponent(ip_address)}&port=${encodeURIComponent(port)}&password=${encodeURIComponent(password)}`;
+
+        fetch(start_gui_recording_url).then(() => {
+            // change to "show_iframe=True" in url, then reload
+            url.searchParams.set("show_iframe", "true");
+            window.location.href = url.toString();
+        });
+    }
+    function stopRecording() {
+        const description = document.getElementById("description").value;
+        if (!description) {
+            alert("Please enter a description");
+            return;
+        }
+        
+        fetch("/recorder/remote-gui/stop?description=" + encodeURIComponent(description)).then(() => {
+            // change to "show_iframe=False" in url, then reload
+            const url = new URL(window.location.href);
+            url.searchParams.set("show_iframe", "false");
+            document.getElementById("description").value = "";
+            document.getElementById("recorder_iframe").remove();
+            window.location.href = url.toString();
+        });
+    }
+    """
+    return read_general_recorder(
+        title="GUI Recorder",
+        iframe_link=gui_iframe_link,
+        iframe_width="100%",
+        iframe_height="100%",
+        javascript=javascript,
+    )
+
 
 @app.get("/recorder/general", response_class=HTMLResponse)
 def read_general_recorder(
@@ -86,7 +305,6 @@ def read_general_recorder(
     """,
 ):
 
-    
     reload_iframe_javascript = """
     function reloadIFrame(){
         // this function does not work in firefox. do we need to use nginx for mapping all urls into the same host and port? or is there some wrong header in the ttyd respose?
@@ -135,12 +353,15 @@ def read_general_recorder(
 
 
 @app.get("/recorder/terminal", response_class=HTMLResponse)
-def read_terminal_recorder(show_iframe: bool = False, user_agent: Union[str, None] = fastapi.Header(default=None)):
+def read_terminal_recorder(
+    show_iframe: bool = False,
+    user_agent: Union[str, None] = fastapi.Header(default=None),
+):
 
     terminal_iframe_link = f"{EXTERNAL_HOST}:8080" if show_iframe else ""
     javascript = """
     function startRecording() {
-        fetch("/start/terminal").then(() => {
+        fetch("/recorder/terminal/start").then(() => {
             // change to "show_iframe=True" in url, then reload
             const url = new URL(window.location.href);
             url.searchParams.set("show_iframe", "true");
@@ -154,10 +375,10 @@ def read_terminal_recorder(show_iframe: bool = False, user_agent: Union[str, Non
             return;
         }
 
-        // send the description to /stop/terminal as query params
+        // send the description to /recorder/terminal/stop as query params
         window.onbeforeunload = null;
 
-        fetch("/stop/terminal?description=" + encodeURIComponent(description)).then(() => {
+        fetch("/recorder/terminal/stop?description=" + encodeURIComponent(description)).then(() => {
             // change to "show_iframe=False" in url, then reload
             const url = new URL(window.location.href);
             url.searchParams.set("show_iframe", "false");
@@ -168,30 +389,7 @@ def read_terminal_recorder(show_iframe: bool = False, user_agent: Union[str, Non
         });
     }
     """
-    # for 80x25 terminal, width=615px, height=416px (firefox)
-    # in chrome it is different. at least it is fixed sized in the same session
-    print("User agent:", user_agent)
-
-    iframe_size = dict(
-        iframe_width="600px",
-        iframe_height="400px"
-    )
-
-    if user_agent:
-        if "Firefox/" in user_agent:
-            print("Using firefox iframe size")
-            iframe_size = dict(
-            iframe_width="615px",
-            iframe_height="416px",)
-        elif "Chrome/" in user_agent:
-            print("Using chrome iframe size")
-            iframe_size = dict(
-            iframe_width="615px",
-            iframe_height="405px",)
-        else:
-            print("Unknown user agent, using default iframe size")
-    else:
-        print("No user agent, using default iframe size")
+    iframe_size = get_terminal_iframe_size_based_on_user_agent(user_agent)
 
     # finding alternative solutions
     return read_general_recorder(
@@ -200,6 +398,34 @@ def read_terminal_recorder(show_iframe: bool = False, user_agent: Union[str, Non
         **iframe_size,
         javascript=javascript,
     )
+
+
+def get_terminal_iframe_size_based_on_user_agent(user_agent):
+    # for 80x25 terminal, width=615px, height=416px (firefox)
+    # in chrome it is different. at least it is fixed sized in the same session
+    print("User agent:", user_agent)
+
+    iframe_size = dict(iframe_width="600px", iframe_height="400px")
+
+    if user_agent:
+        if "Firefox/" in user_agent:
+            print("Using firefox iframe size")
+            iframe_size = dict(
+                iframe_width="615px",
+                iframe_height="416px",
+            )
+        elif "Chrome/" in user_agent:
+            print("Using chrome iframe size")
+            iframe_size = dict(
+                iframe_width="615px",
+                iframe_height="405px",
+            )
+        else:
+            print("Unknown user agent, using default iframe size")
+    else:
+        print("No user agent, using default iframe size")
+
+    return iframe_size
 
 
 @app.get("/recorder/gui", response_class=HTMLResponse)
@@ -213,7 +439,7 @@ def read_gui_recorder(show_iframe: bool = False):
     )
     javascript = """
     function startRecording() {
-        fetch("/start/gui").then(() => {
+        fetch("/recorder/gui/start").then(() => {
             // change to "show_iframe=True" in url, then reload
             const url = new URL(window.location.href);
             url.searchParams.set("show_iframe", "true");
@@ -228,7 +454,7 @@ def read_gui_recorder(show_iframe: bool = False):
         }
         
 
-        fetch("/stop/gui?description=" + encodeURIComponent(description)).then(() => {
+        fetch("/recorder/gui/stop?description=" + encodeURIComponent(description)).then(() => {
             // change to "show_iframe=False" in url, then reload
             const url = new URL(window.location.href);
             url.searchParams.set("show_iframe", "false");
@@ -247,13 +473,18 @@ def read_gui_recorder(show_iframe: bool = False):
     )
 
 
-def start_ttyd():
+def start_ttyd(
+    image_name="cybergod_worker_terminal",
+    container_name="terminal_recorder_ttyd",
+    tmpdir_path="/tmp/cybergod_terminal_recorder_worker_tempdir",
+    asciinema_command="bash",
+    public_port=8080,
+):
     import time
     import json
 
-    tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
     try:
-        stop_ttyd()
+        stop_docker_container(container_name)
         # wrap all subcomponent in quotes
     finally:
         if os.path.exists(tmpdir_path):
@@ -262,9 +493,6 @@ def start_ttyd():
     begin_recording_file = os.path.join(tmpdir_path, "begin_recording.txt")
     with open(begin_recording_file, "w") as f:
         f.write(json.dumps({"timestamp": time.time(), "event": "begin_recording"}))
-    # poc_ttyd_command = ["ttyd", "-p", "8080", "--once", "asciinema", "rec", "-c", "bash", "-t", "Terminal Recorder", "-y", "%s/terminal.cast" % tmpdir_path, "--overwrite"]
-    image_name = "cybergod_worker_terminal"
-    container_name = "terminal_recorder_ttyd"
     # web terminal apps on xterm.js official website: https://xtermjs.org/
     # TODO: ttyd uses xterm.js. maybe we can tweak there for 80x25 fixed size terminal
     # hint: run "window.term.resize(80, 25)" then get the actual size of the terminal element later
@@ -279,7 +507,7 @@ def start_ttyd():
         "--tty",
         "-d",
         "--publish",
-        "8080:8080",
+        "%s:8080" % public_port,
         "--name",
         container_name,
         "-v",
@@ -293,7 +521,7 @@ def start_ttyd():
         "asciinema",
         "rec",
         "-c",
-        "bash",
+        asciinema_command,
         "-t",
         "TerminalRecorder",
         "-y",
@@ -304,12 +532,6 @@ def start_ttyd():
     print("Executing command:")
     print(" ".join(docker_ttyd_command))
     subprocess.call(docker_ttyd_command)
-    # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
-    # pid = p.pid
-    # with open(pidfile, "w") as f:
-    #     f.write(str(pid))
-    # p.wait()
-    # return pid
 
 
 def stop_docker_container(container_name: str):
@@ -320,29 +542,35 @@ def stop_ttyd():
     stop_docker_container("terminal_recorder_ttyd")
 
 
-def save_ttyd_recording(description: str):
+def stop_ttyd_remote():
+    stop_docker_container("terminal_recorder_ttyd_remote")
+
+
+def save_ttyd_remote_recording(description: str):
+    tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir_remote"
+    container_name = "terminal_recorder_ttyd_remote"
+    save_ttyd_recording(
+        description, tmpdir_path=tmpdir_path, container_name=container_name
+    )
+
+
+def save_ttyd_recording(
+    description: str,
+    tmpdir_path="/tmp/cybergod_terminal_recorder_worker_tempdir",
+    container_name="terminal_recorder_ttyd",
+):
     import time
     import json
 
-    # pidfile = "/tmp/terminal_recorder_managed_ttyd.pid"
-    tmpdir_path = "/tmp/cybergod_terminal_recorder_worker_tempdir"
     tmp_outputfile = os.path.join(tmpdir_path, "terminal.cast")
     if not os.path.exists(tmp_outputfile):
         print("Output file %s not found" % tmp_outputfile)
         return
-    # docker stop terminal_recorder_ttyd
-    stop_ttyd()
+    # docker stop <container_name>
+    stop_docker_container(container_name)
     stop_recording_file = os.path.join(tmpdir_path, "stop_recording.txt")
     with open(stop_recording_file, "w") as f:
         f.write(json.dumps({"timestamp": time.time(), "event": "stop_recording"}))
-
-    # try:
-    #     os.kill(int(pid), signal.SIGTERM)
-    #     print("Terminated ttyd process %s" % pid)
-    # except ProcessLookupError:
-    #     print("Process %s not found" % pid)
-    # os.remove(pidfile)
-    # copy the output file to destination
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     destination = "./record/terminal/terminal_record_%s" % timestamp
@@ -357,7 +585,33 @@ def save_ttyd_recording(description: str):
     print("Removed %s" % tmp_outputfile)
 
 
-@app.get("/start/terminal")
+@app.get("/recorder/remote-terminal/start")
+async def start_remote_terminal_recording(
+    ip_address: str, port: int, username: str, password: str
+):
+    asciinema_command = "sshpass -p '%s' ssh %s@%s -p %s" % (
+        password,
+        username,
+        ip_address,
+        port,
+    )
+    start_ttyd(
+        image_name="cybergod_worker_terminal:remote-base",
+        container_name="terminal_recorder_ttyd_remote",
+        tmpdir_path="/tmp/cybergod_terminal_recorder_worker_tempdir_remote",
+        asciinema_command=asciinema_command,
+        public_port=8082,
+    )
+
+    connection_timeout = await wait_for_connection(
+        host="127.0.0.1", port=8082, timeout=3
+    )
+    if connection_timeout:
+        return "Remote terminal recording started, but port 8082 is not available"
+    return "Remote terminal recording started"
+
+
+@app.get("/recorder/terminal/start")
 async def start_terminal_recording():
     # start the ttyd process
     start_ttyd()
@@ -369,7 +623,13 @@ async def start_terminal_recording():
     return "Terminal recording started"
 
 
-@app.get("/stop/terminal")
+@app.get("/recorder/remote-terminal/stop")
+def stop_remote_terminal_recording(description: str):
+    save_ttyd_remote_recording(description)
+    return "Terminal recording stopped"
+
+
+@app.get("/recorder/terminal/stop")
 def stop_terminal_recording(description: str):
     # stop the ttyd process
     # just read the ttyd PID and terminate it.
@@ -377,17 +637,17 @@ def stop_terminal_recording(description: str):
     return "Terminal recording stopped"
 
 
-async def start_novnc():
+async def start_novnc(
+    container_name="gui_recorder_novnc",
+    volume_name="cybergod_gui_recorder_x11vnc_project",
+    image_name = "cybergod_worker_gui",
+    tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir",
+):
     import json
     import time
 
-    image_name = "cybergod_worker_gui"
-    container_name = "gui_recorder_novnc"
-    volume_name = "cybergod_gui_recorder_x11vnc_project"
-
-    tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
     try:
-        stop_novnc()
+        stop_novnc(container_name=container_name, volume_name=volume_name)
     finally:
         if os.path.exists(tmpdir_path):
             shutil.rmtree(tmpdir_path)
@@ -403,15 +663,11 @@ async def start_novnc():
     # the docker command here is to be cross-referenced with x11vnc-docker launch script (python)
     # ref: https://github.com/x11vnc/x11vnc-desktop/blob/main/x11vnc_desktop.py
     vnc_password = "password"
-    # too many local directories mounted to this container using the original python script
-    # docker run -d --rm --name x11vnc-zrvgaz --shm-size 2g -p 6080:6080 -p 5950:5900 --hostname x11vnc-zrvgaz --env VNCPASS= --env RESOLUT=1920x1080 --env HOST_UID=1000 --env HOST_GID=1000 -p 2222:22 -v /media/jamesbrown/Ventoy/agi_computer_control/web_gui_terminal_recorder:/home/ubuntu/shared -v x11vnc_zh_CN_config:/home/ubuntu/.config -v /home/jamesbrown/.gnupg:/home/ubuntu/.gnupg -v /home/jamesbrown/.gitconfig:/home/ubuntu/.gitconfig_host -v cybergod_gui_recorder_x11vnc_project:/home/ubuntu/project -w /home/ubuntu/project -v /home/jamesbrown/.ssh:/home/ubuntu/.ssh --security-opt seccomp=unconfined --cap-add=SYS_PTRACE x11vnc/docker-desktop:zh_CN startvnc.sh >> /home/ubuntu/.log/vnc.log
 
     # the resolution must be one in the xrandr output, or it will fall back to 1920x1080
-    # resolution = "1920x1080"
-    resolution = "800x600" 
-    # resolution = "1280x800"
+    resolution = "800x600"
 
-    with open(screenshot_metadata_file, 'w+') as f:
+    with open(screenshot_metadata_file, "w+") as f:
         f.write(json.dumps(dict(presumed_resolution=resolution)))
     docker_novnc_command = [
         "docker",
@@ -425,8 +681,6 @@ async def start_novnc():
         "VNCPASS=%s" % vnc_password,
         "--publish",
         "8081:6080",
-        "--publish",
-        "8950:5900",
         "--name",
         container_name,
         "-v",
@@ -446,9 +700,6 @@ async def start_novnc():
     # call the recorder only if the vnc server is ready
     # wait for port 8081 to be available, for most 5 seconds
 
-    # novnc_connection_timeout=await wait_for_connection(host="127.0.0.1", port =8081, timeout = 5)
-    # vnc_connection_timeout=await wait_for_connection(host="127.0.0.1", port =8950, timeout = 5)
-    # connection_timeout= vnc_connection_timeout or novnc_connection_timeout
     view_log_cmd = ["docker", "logs", container_name]
     ready = False
     # timeout in 7 seconds.
@@ -481,21 +732,23 @@ async def start_novnc():
         return "GUI recording started"
 
 
-def stop_novnc():
-    container_name = "gui_recorder_novnc"
+def stop_novnc(
+    container_name="gui_recorder_novnc",
+    volume_name="cybergod_gui_recorder_x11vnc_project",
+):
     stop_docker_container(container_name)
-    volume_name = "cybergod_gui_recorder_x11vnc_project"
     print("Removing docker volume:", volume_name)
     cmd = ["docker", "volume", "rm", "-f", volume_name]
     subprocess.call(cmd)
 
 
-def save_novnc_recording(description: str):
+def save_novnc_recording(
+    description: str, tmpdir_path="/tmp/cybergod_gui_recorder_worker_tempdir", **kwargs
+):
     import json
     import time
 
-    stop_novnc()
-    tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir"
+    stop_novnc(**kwargs)
     stop_recording_file = os.path.join(tmpdir_path, "stop_recording.txt")
     with open(stop_recording_file, "w") as f:
         f.write(json.dumps({"timestamp": time.time(), "event": "stop_recording"}))
@@ -514,17 +767,37 @@ def save_novnc_recording(description: str):
     print("Removed %s" % tmpdir_path)
 
 
-@app.get("/start/gui")
+async def start_novnc_remote(ip_address: str, port: int, password: str): ...
+
+
+@app.get("/recorder/gui/start")
 async def start_gui_recording():
     # start the novnc process
     await start_novnc()
     return "GUI recording started"
 
 
-@app.get("/stop/gui")
+@app.get("/recorder/remote-gui/start")
+async def start_remote_gui_recording(ip_address: str, port: int, password: str):
+    await start_novnc_remote(ip_address=ip_address, port=port, password=password)
+    return "Remote GUI recording started"
+
+
+@app.get("/recorder/gui/stop")
 def stop_gui_recording(description: str):
     save_novnc_recording(description)
     return "GUI recording stopped"
+
+
+@app.get("/recorder/remote-gui/stop")
+def stop_remote_gui_recording(description: str):
+    save_novnc_recording(
+        description,
+        tmpdir_path="/tmp/cybergod_gui_recorder_worker_tempdir_remote",
+        container_name="gui_recorder_novnc_remote",
+        volume_name="cybergod_gui_recorder_x11vnc_project_remote",
+    )
+    return "Remote GUI recording stopped"
 
 
 def check_is_root():

@@ -19,18 +19,31 @@ The web server launches two docker containers (workers) running ttyd/novnc and r
     Build the image locally:
 
     ```bash
+    # building base images
     bash build_docker_image_worker_terminal.sh
     bash build_docker_image_worker_gui.sh
+
+    # building remote connection base images
+    bash build_docker_image_worker_terminal_remote_base.sh
+    bash build_docker_image_worker_gui_remote_base.sh
     ```
 
     Or pull prebuilt images from Docker Hub:
 
     ```bash
+    # pulling base images
     docker pull agile4im/cybergod_worker_gui
     docker pull agile4im/cybergod_worker_terminal
 
     docker tag agile4im/cybergod_worker_gui cybergod_worker_gui
     docker tag agile4im/cybergod_worker_terminal cybergod_worker_terminal
+
+    # pulling images for remote connection
+    docker pull agile4im/cybergod_worker_gui:remote-base
+    docker pull agile4im/cybergod_worker_terminal:remote-base
+
+    docker tag agile4im/cybergod_worker_gui:remote-base cybergod_worker_gui:remote-base
+    docker tag agile4im/cybergod_worker_terminal:remote-base  cybergod_worker_terminal:remote-base 
     ```
 
 2. Install the requirements for the web server:

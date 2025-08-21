@@ -21,20 +21,25 @@ def stop_playwright_server():
     os.system(stop_command)
 
 
-def scrape_worst_solution(playwright_server_url: str, url: str):
+def scrape_worst_solution(playwright_server_url: str, url: str, use_proxy: bool = True):
     with sync_playwright() as p:
-        # browser = p.chromium.launch(
-        #     headless=False, proxy={"server": "http://127.0.0.1:7897"} # run with xvfb-run
-        # )
-        print("Connecting to remote playwright server:", playwright_server_url)
-        browser = p.chromium.connect(playwright_server_url)
+        if use_proxy:
+            browser = p.chromium.launch(
+                headless=False,
+                proxy={"server": "http://127.0.0.1:7897"},  # run with xvfb-run
+            )
+        else:
+            print("Connecting to remote playwright server:", playwright_server_url)
+            browser = p.chromium.connect(playwright_server_url)
         print("Creating new page")
         page = browser.new_page()
         print("Visit URL:", url)
-        page.goto(url, wait_until="commit")
+        page.goto(url, wait_until="commit")  # commit taking too long?
         print("Waiting for selector")
-        page.wait_for_selector("div.success.clearfix", timeout=60 * 1000)
-        loc = page.locator("div.success.clearfix").first # sometimes there are two success divs with the same score, so we take the first one
+        page.wait_for_selector("div.success.clearfix")
+        loc = page.locator(
+            "div.success.clearfix"
+        ).first  # sometimes there are two success divs with the same score, so we take the first one
         header_elem = loc.locator("h6")
         header = header_elem.inner_text()
         rank_elem = header_elem.locator("a.anchor")
@@ -65,6 +70,9 @@ def main(test=False):
                     solution = scrape_worst_solution(playwright_server_url, url)
                     break
                 except playwright._impl._errors.TimeoutError:
+                    import traceback
+
+                    traceback.print_exc()
                     print("Timeout error, retrying...")
                     continue
             if test:
