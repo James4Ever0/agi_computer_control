@@ -1,4 +1,5 @@
 import agg_python_bindings
+# Note: pty looks very primitive than pexpect and ptyprocess.
 import pty
 import threading
 # how to use pty/ptyproc:

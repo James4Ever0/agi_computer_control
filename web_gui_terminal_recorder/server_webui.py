@@ -34,6 +34,9 @@ async def wait_for_connection(host: str, port: int, timeout: int):
     return connection_timeout
 
 
+# actually the base gui recorder can be tuned into a remote ssh client.
+# the recording will be directly available as a series of screenshots, mouse and keyboard events
+
 # return html
 @app.get("/", response_class=HTMLResponse)
 def read_root():
@@ -48,11 +51,24 @@ def read_root():
         <ul>
             <li><a href="/recorder/terminal">Terminal Recorder</a></li>
             <li><a href="/recorder/gui">GUI Recorder</a></li>
+            <li><a href="/recorder/remote-gui">Remote GUI Recorder</a></li>
+            <li><a href="/recorder/remote-terminal">Remote Terminal Recorder</a></li>
         </ul>
     </body>
     </html>
     """
 
+@app.get("/recorder/remote-terminal", response_class=HTMLResponse)
+def read_remote_terminal_recorder():
+    # ssh into the remote machine
+    # user needs to provide the ip address, port, username, and password
+    ...
+
+@app.get("/recorder/remote-gui", response_class=HTMLResponse)
+def read_remote_gui_recorder():
+    # vnc into the remote machine
+    # user needs to provide the ip address, port and password
+    ...
 
 @app.get("/recorder/general", response_class=HTMLResponse)
 def read_general_recorder(
