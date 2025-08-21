@@ -8,9 +8,11 @@ import shutil
 import datetime
 import socket
 import asyncio
-from typing import Union
+from typing import Union, Optional
+import shlex
 
 # TODO: store beginning and ending timestamp of recording to record folder
+# TODO: check port 8080-8085 are free before launching the server
 
 app = fastapi.FastAPI()
 
@@ -53,12 +55,154 @@ def read_root():
         <ul>
             <li><a href="/recorder/terminal">Terminal Recorder</a></li>
             <li><a href="/recorder/gui">GUI Recorder</a></li>
+            <li><a href="/recorder/terminal-in-gui">Terminal in GUI Recorder</a></li>
             <li><a href="/recorder/remote-gui/login">Remote GUI Recorder Login</a></li>
             <li><a href="/recorder/remote-terminal/login">Remote Terminal Recorder Login</a></li>
+            <li><a href="/recorder/remote-terminal-in-gui/login">Remote Terminal in GUI Recorder Login</a></li>
         </ul>
     </body>
     </html>
     """
+
+
+@app.get("/recorder/remote-terminal-in-gui", response_class=HTMLResponse)
+def read_remote_terminal_in_gui_recorder(
+    ip_address: str, port: int, username: str, password: str, show_iframe: bool = False
+):  # port: 8084
+
+    gui_iframe_link = (
+        f"{EXTERNAL_HOST}:8084/vnc.html?password=password&autoconnect=1&resize=scale&reconnect=1&reconnect_delay=1000"
+        if show_iframe
+        else ""
+    )
+
+    javascript = """
+    function startRecording() {
+        const url = new URL(window.location.href);
+
+        const ip_address = url.searchParams.get("ip_address");
+        const port = url.searchParams.get("port");
+        const username = url.searchParams.get("username");
+        const password = url.searchParams.get("password");
+
+        // urlencode all params
+        const start_gui_recording_url = `/recorder/remote-terminal-in-gui/start?ip_address=${encodeURIComponent(ip_address)}&port=${encodeURIComponent(port)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+
+        fetch(start_gui_recording_url).then(() => {
+            // change to "show_iframe=True" in url, then reload
+            url.searchParams.set("show_iframe", "true");
+            window.location.href = url.toString();
+        });
+    }
+    function stopRecording() {
+        const description = document.getElementById("description").value;
+        if (!description) {
+            alert("Please enter a description");
+            return;
+        }
+        
+        fetch("/recorder/remote-terminal-in-gui/stop?description=" + encodeURIComponent(description)).then(() => {
+            // change to "show_iframe=False" in url, then reload
+            const url = new URL(window.location.href);
+            url.searchParams.set("show_iframe", "false");
+            document.getElementById("description").value = "";
+            document.getElementById("recorder_iframe").remove();
+            window.location.href = url.toString();
+        });
+    }
+    """
+    return read_general_recorder(
+        title="Remote terminal in GUI Recorder",
+        iframe_link=gui_iframe_link,
+        iframe_width="100%",
+        iframe_height="100%",
+        javascript=javascript,
+    )
+
+
+@app.get("/recorder/terminal-in-gui", response_class=HTMLResponse)
+def read_terminal_in_gui_recorder(show_iframe: bool = False):  # port: 8085
+
+    gui_iframe_link = (
+        f"{EXTERNAL_HOST}:8085/vnc.html?password=password&autoconnect=1&resize=scale&reconnect=1&reconnect_delay=1000"
+        if show_iframe
+        else ""
+    )
+
+    javascript = """
+    function startRecording() {
+        const url = new URL(window.location.href);
+
+        const start_gui_recording_url = "/recorder/terminal-in-gui/start";
+
+        fetch(start_gui_recording_url).then(() => {
+            // change to "show_iframe=True" in url, then reload
+            url.searchParams.set("show_iframe", "true");
+            window.location.href = url.toString();
+        });
+    }
+    function stopRecording() {
+        const description = document.getElementById("description").value;
+        if (!description) {
+            alert("Please enter a description");
+            return;
+        }
+        
+        fetch("/recorder/terminal-in-gui/stop?description=" + encodeURIComponent(description)).then(() => {
+            // change to "show_iframe=False" in url, then reload
+            const url = new URL(window.location.href);
+            url.searchParams.set("show_iframe", "false");
+            document.getElementById("description").value = "";
+            document.getElementById("recorder_iframe").remove();
+            window.location.href = url.toString();
+        });
+    }
+    """
+    return read_general_recorder(
+        title="Terminal in GUI Recorder",
+        iframe_link=gui_iframe_link,
+        iframe_width="100%",
+        iframe_height="100%",
+        javascript=javascript,
+    )
+
+
+@app.get("/recorder/remote-terminal-in-gui/login", response_class=HTMLResponse)
+def read_remote_terminal_in_gui_recorder_login():  # port: 8084
+    ret = """
+<html>
+<head>
+    <title>Login: Remote terminal in GUI recorder</title>
+</head>
+<body>
+    <h1>Login: Remote terminal in GUI recorder</h1>
+    <!-- use query param uri component encode -->
+    <form class="form-container" action="/recorder/remote-terminal-in-gui" enctype="application/x-www-form-urlencoded" method="get">
+      <div class="form-group">
+        <label for="ip_address">IP address:</label>
+        <input type="text" id="ip_address" name="ip_address" required>
+      </div>
+
+      <div class="form-group">
+        <label for="port">Port:</label>
+        <input type="text" id="port" name="port" required>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password" required>
+      </div>
+       <button type="submit" class="submit-btn">Login</button>
+    </form>
+</body>
+</html>
+"""
+    return ret
 
 
 @app.get("/recorder/remote-terminal/login", response_class=HTMLResponse)
@@ -281,7 +425,7 @@ def read_remote_gui_recorder(
     }
     """
     return read_general_recorder(
-        title="GUI Recorder",
+        title="Remote GUI Recorder",
         iframe_link=gui_iframe_link,
         iframe_width="100%",
         iframe_height="100%",
@@ -640,8 +784,12 @@ def stop_terminal_recording(description: str):
 async def start_novnc(
     container_name="gui_recorder_novnc",
     volume_name="cybergod_gui_recorder_x11vnc_project",
-    image_name = "cybergod_worker_gui",
-    tmpdir_path = "/tmp/cybergod_gui_recorder_worker_tempdir",
+    image_name="cybergod_worker_gui",
+    tmpdir_path="/tmp/cybergod_gui_recorder_worker_tempdir",
+    run_command=["startvnc.sh"],
+    public_port=8081,
+    entrypoint: Optional[str] = None,
+    extra_run_options: list[str] = [],
 ):
     import json
     import time
@@ -680,7 +828,7 @@ async def start_novnc(
         "-e",
         "VNCPASS=%s" % vnc_password,
         "--publish",
-        "8081:6080",
+        "%s:6080" % public_port,
         "--name",
         container_name,
         "-v",
@@ -690,8 +838,10 @@ async def start_novnc(
         "--cap-add=SYS_PTRACE",
         "-v",
         "%s:%s" % (volume_name, "/home/ubuntu/project"),
+        *extra_run_options,
+        *(["--entrypoint", entrypoint] if entrypoint else []),
         image_name,
-        "startvnc.sh",
+        *run_command,
     ]
     print("Running command:")
     print(" ".join(docker_novnc_command))
@@ -767,7 +917,78 @@ def save_novnc_recording(
     print("Removed %s" % tmpdir_path)
 
 
-async def start_novnc_remote(ip_address: str, port: int, password: str): ...
+async def start_novnc_remote(ip_address: str, port: int, password: str):
+    script_mountpoint_base = "./record_viewer/novnc_viewer_recorder"
+    vncviewer_environments = f"-e VNCVIEWER_VNC_PORT={port} -e VNCVIEWER_VNC_HOST={ip_address} -e VNCVIEWER_VNC_PASSWORD={password}"
+    assert os.path.isdir(script_mountpoint_base)
+    extra_run_options = shlex.split(
+        f"-v {script_mountpoint_base}/startvnc.py:/usr/local/bin/startvnc.py:ro -v {script_mountpoint_base}/lxterminal-cybergod.conf:/home/ubuntu/.config/lxterminal/lxterminal.conf:ro {vncviewer_environments}"
+    ) # TODO: remove excessive lxterminal.conf mount
+
+    run_command = shlex.split(
+        "python3 /usr/local/bin/startvnc.py --resolution 640x480 --main vncviewer"
+    )
+
+
+    await start_novnc(
+        container_name="gui_recorder_novnc_remote",
+        volume_name="cybergod_gui_recorder_x11vnc_project_remote",
+        tmpdir_path="/tmp/cybergod_gui_recorder_worker_tempdir_remote",
+        image_name="cybergod_worker_gui:remote-base",
+        run_command=run_command,
+        public_port=8083,
+        entrypoint="/usr/bin/env",
+        extra_run_options=extra_run_options,
+    )
+
+
+async def start_novnc_remote_terminal(
+    ip_address: str, port: int, username: str, password: str
+):
+    script_mountpoint_base = "./record_viewer/novnc_viewer_recorder"
+    lxterminal_init_command = (
+        f'"sshpass -p {password} ssh {username}@{ip_address} -p {port}"'
+    )
+    assert os.path.isdir(script_mountpoint_base)
+    extra_run_options = shlex.split(
+        f"-v {script_mountpoint_base}/startvnc.py:/usr/local/bin/startvnc.py:ro -v {script_mountpoint_base}/lxterminal-cybergod.conf:/home/ubuntu/.config/lxterminal/lxterminal.conf:ro -e LXTERMINAL_INIT_COMMAND={lxterminal_init_command}"
+    )
+    run_command = shlex.split(
+        "python3 /usr/local/bin/startvnc.py --resolution 640x480 --main lxterminal"
+    )
+
+    await start_novnc(
+        container_name="gui_recorder_novnc_remote_terminal",
+        volume_name="cybergod_gui_recorder_x11vnc_project_remote_terminal",
+        tmpdir_path="/tmp/cybergod_gui_recorder_worker_tempdir_remote_terminal",
+        image_name="cybergod_worker_gui:remote-base",
+        run_command=run_command,
+        public_port=8084,
+        entrypoint="/usr/bin/env",
+        extra_run_options=extra_run_options,
+    )
+
+
+async def start_novnc_terminal():
+    script_mountpoint_base = "./record_viewer/novnc_viewer_recorder"
+    assert os.path.isdir(script_mountpoint_base)
+    extra_run_options = shlex.split(
+        f"-v {script_mountpoint_base}/startvnc.py:/usr/local/bin/startvnc.py:ro -v {script_mountpoint_base}/lxterminal-cybergod.conf:/home/ubuntu/.config/lxterminal/lxterminal.conf:ro"
+    )
+    run_command = shlex.split(
+        "python3 /usr/local/bin/startvnc.py --resolution 640x480 --main lxterminal"
+    )
+    await start_novnc(
+        container_name="gui_recorder_novnc_terminal",
+        volume_name="cybergod_gui_recorder_x11vnc_project_terminal",
+        tmpdir_path="/tmp/cybergod_gui_recorder_worker_tempdir_terminal",
+        image_name="cybergod_worker_gui:remote-base",
+        run_command=run_command,
+        public_port=8085,
+        entrypoint="/usr/bin/env",
+        extra_run_options=extra_run_options,
+    )
+
 
 
 @app.get("/recorder/gui/start")
@@ -777,10 +998,48 @@ async def start_gui_recording():
     return "GUI recording started"
 
 
+@app.get("/recorder/terminal-in-gui/start")
+async def start_terminal_in_gui_recording():
+    await start_novnc_terminal()
+    return "Terminal in GUI recording started"
+
+
+@app.get("/recorder/remote-terminal-in-gui/start")
+async def start_remote_terminal_in_gui_recording(
+    ip_address: str, port: int, username: str, password: str
+):
+    await start_novnc_remote_terminal(
+        ip_address=ip_address, port=port, username=username, password=password
+    )
+    return "Remote terminal in GUI recording started"
+
+
 @app.get("/recorder/remote-gui/start")
 async def start_remote_gui_recording(ip_address: str, port: int, password: str):
     await start_novnc_remote(ip_address=ip_address, port=port, password=password)
     return "Remote GUI recording started"
+
+
+@app.get("/recorder/remote-terminal-in-gui/stop")
+def stop_remote_terminal_in_gui_recording(description: str):
+    save_novnc_recording(
+        description,
+        tmpdir_path="/tmp/cybergod_gui_recorder_worker_tempdir_remote_terminal",
+        container_name="gui_recorder_novnc_remote_terminal",
+        volume_name="cybergod_gui_recorder_x11vnc_project_remote_terminal",
+    )
+    return "Remote terminal in GUI recording stopped"
+
+
+@app.get("/recorder/terminal-in-gui/stop")
+def stop_terminal_in_gui_recording(description: str):
+    save_novnc_recording(
+        description,
+        tmpdir_path="/tmp/cybergod_gui_recorder_worker_tempdir_terminal",
+        container_name="gui_recorder_novnc_terminal",
+        volume_name="cybergod_gui_recorder_x11vnc_project_terminal",
+    )
+    return "Terminal in GUI recording stopped"
 
 
 @app.get("/recorder/gui/stop")
@@ -808,6 +1067,36 @@ def check_is_root():
         sys.exit(1)
 
 
+def stop_novnc_terminal():
+    stop_novnc(
+        container_name="gui_recorder_novnc_terminal",
+        volume_name="cybergod_gui_recorder_x11vnc_project_terminal",
+    )
+
+
+def stop_novnc_remote():
+    stop_novnc(
+        container_name="gui_recorder_novnc_remote",
+        volume_name="cybergod_gui_recorder_x11vnc_project_remote",
+    )
+
+
+def stop_novnc_terminal_remote():
+    stop_novnc(
+        container_name="gui_recorder_novnc_terminal_remote",
+        volume_name="cybergod_gui_recorder_x11vnc_project_terminal_remote",
+    )
+
+
+def stop_all_workers():
+    stop_ttyd()
+    stop_novnc()
+    stop_novnc_terminal()
+    stop_ttyd_remote()
+    stop_novnc_remote()
+    stop_novnc_terminal_remote()
+
+
 def main():
     # need to be root to run this script, otherwise some files may not get removed
     # TODO: use python managed tempdir instead (will it solves the issue of files in docker volume being owned by root?)
@@ -819,8 +1108,7 @@ def main():
     finally:
         print("Running cleanup jobs")
         # cleanup jobs
-        stop_ttyd()
-        stop_novnc()
+        stop_all_workers()
 
 
 if __name__ == "__main__":
