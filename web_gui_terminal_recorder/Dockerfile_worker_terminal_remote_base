@@ -1,0 +1,6 @@
+FROM cybergod_worker_terminal:base
+
+RUN apt install -y sshpass
+RUN apt install -y openssh-client
+
+ENTRYPOINT /usr/bin/bash

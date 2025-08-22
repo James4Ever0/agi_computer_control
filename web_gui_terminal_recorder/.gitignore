@@ -3,6 +3,7 @@
 !Dockerfile_worker_gui
 !Dockerfile_worker_terminal
 !Dockerfile_cybergod_worker_gui_remote_base
+!Dockerfile_worker_terminal_remote_base
 !docker-compose.yaml
 !tsinghua_tuna_ubuntu_jammy_mirrors
 record/
