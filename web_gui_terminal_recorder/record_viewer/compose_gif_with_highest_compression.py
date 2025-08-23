@@ -1,5 +1,4 @@
 from PIL import Image
-import numpy as np
 from collections import Counter
 
 def create_global_palette(images, max_colors=256):
