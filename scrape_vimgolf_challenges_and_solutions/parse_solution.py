@@ -1,5 +1,6 @@
 import re
 
+# TODO: replay vimgolf worst solution and record into asciinema screencast file, then convert into GIF video (or directly execute in vimgolf-gym environment and record the video)
 
 def test():
     demo_file = "./demo_solution.txt"

@@ -74,6 +74,14 @@ free_ai_freedoms = {
 
 <!-- ![cybergod_4_freedom](https://github.com/user-attachments/assets/7c664aba-c535-4095-b7eb-4eedb99aacb0) -->
 
+## CUA benchmarks
+
+Cybergod original CUA benchmarks:
+
+- [Vimgolf-Gym](https://github.com/James4Ever0/vimgolf-gym) - An open-source environment for training agents to play Vimgolf.
+- [CTF-Gym](https://github.com/James4Ever0/ctf-gym) - An open-source environment for training agents to play Capture The Flag (CTF) challenges.
+- [Cybergod-Gym](https://github.com/James4Ever0/cybergod-gym) - An open-source environment for training agents to earn real-world cryptocurrency at a constant speed and become a cybergod.
+
 ## Computer operation recorder
 
 Now you can record/replay GUI/terminal operations using [this web app](https://github.com/James4Ever0/agi_computer_control/blob/master/web_gui_terminal_recorder%2FREADME.md).

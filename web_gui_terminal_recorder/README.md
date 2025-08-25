@@ -1,5 +1,8 @@
 # Web GUI/Terminal Recorder
 
+<!-- TODO: use ducktrack for gui recording (https://github.com/TheDuckAI/DuckTrack) -->
+<!-- TODO: follow osworld data curation format (https://os-world.github.io/explorer.html) -->
+
 ## Intro
 
 This is a web GUI/terminal recorder. It can record the GUI/terminal input/output and save it to a file.

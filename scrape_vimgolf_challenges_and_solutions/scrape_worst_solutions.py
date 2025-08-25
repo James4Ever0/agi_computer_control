@@ -1,3 +1,5 @@
+# TODO: scrape human leaderboard per challenge (too long, not worth it, unless the database is released)
+
 import os
 import json
 from playwright.sync_api import sync_playwright
@@ -26,7 +28,7 @@ def scrape_worst_solution(playwright_server_url: str, url: str, use_proxy: bool 
         if use_proxy:
             browser = p.chromium.launch(
                 headless=False,
-                proxy={"server": "http://127.0.0.1:7897"},  # run with xvfb-run
+                # proxy={"server": "http://127.0.0.1:7897"},  # run with xvfb-run
             )
         else:
             print("Connecting to remote playwright server:", playwright_server_url)
