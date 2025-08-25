@@ -7,13 +7,9 @@
 <div align="center"><em>Do what can be done, and don't be afraid of the unknown.</em></div>
 
 <p align="center">
-    <a href="https://discord.gg/eM5vezJvEQ">
-        <img alt="Discord" src="https://img.shields.io/discord/1146610656779440188?logo=discord&style=flat&logoColor=white"/>
-    </a>
-    <a href="https://huggingface.co/collections/cybergod-agi/the-frozen-forest-6896f39f95790b18de5abb3f">
-        <img alt="Huggingface Badge" src="https://img.shields.io/badge/🤗&nbsp;-HuggingFace-blue">
-    </a>
-
+    <a href="https://discord.gg/eM5vezJvEQ"><img alt="Discord" src="https://img.shields.io/discord/1146610656779440188?logo=discord&style=flat&logoColor=white"/></a>
+    <a href="https://huggingface.co/collections/cybergod-agi/the-frozen-forest-6896f39f95790b18de5abb3f"><img alt="Huggingface Badge" src="https://img.shields.io/badge/🤗&nbsp;-HuggingFace-blue"></a>
+    <a href="https://hub.docker.com/r/agile4im/agile4im/cybergod_worker_gui"><img alt="Docker image: agile4im/agile4im/cybergod_worker_gui" src="https://img.shields.io/badge/dockerhub-gray?logo=docker"></a>
 </p>
 
 <!-- TODO: put our previous conference histories into a folder, if necessary -->
