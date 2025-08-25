@@ -733,7 +733,7 @@ def save_ttyd_recording(
 async def start_remote_terminal_recording(
     ip_address: str, port: int, username: str, password: str
 ):
-    asciinema_command = "sshpass -p '%s' ssh %s@%s -p %s" % (
+    asciinema_command = "sshpass -p '%s' ssh -o StrictHostKeyChecking=no %s@%s -p %s" % (
         password,
         username,
         ip_address,
@@ -926,7 +926,7 @@ async def start_novnc_remote(ip_address: str, port: int, password: str):
     ) # TODO: remove excessive lxterminal.conf mount
 
     run_command = shlex.split(
-        "python3 /usr/local/bin/startvnc.py --resolution 640x480 --main vncviewer"
+        "python3 /usr/local/bin/startvnc.py --resolution 800x600 --main vncviewer"
     )
 
 
@@ -946,8 +946,9 @@ async def start_novnc_remote_terminal(
     ip_address: str, port: int, username: str, password: str
 ):
     script_mountpoint_base = "./record_viewer/novnc_viewer_recorder"
+    # to simplify hostkey checking, we add "-o StrictHostKeyChecking=no" to the ssh command
     lxterminal_init_command = (
-        f'"sshpass -p {password} ssh {username}@{ip_address} -p {port}"'
+        f'"sshpass -p {password} ssh -o StrictHostKeyChecking=no {username}@{ip_address} -p {port}"'
     )
     assert os.path.isdir(script_mountpoint_base)
     extra_run_options = shlex.split(

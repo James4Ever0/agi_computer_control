@@ -245,9 +245,10 @@ def start_tigervnc_client(
     subprocess.run(
         ["bash", "-c", f"echo {vnc_password} | tightvncpasswd -f > {passwd_file}"]
     )
-    command = (
-        f"vncviewer -passwd={passwd_file} -FullScreen -MenuKey= {vnc_host}:{vnc_port}"
-    )
+    # TODO: -FullScreen has unwanted zoom-pan effect. (if you cannot fix it in tigervnc, use remmina kiosk instead, or pass the init resolution from the computer operation recorder webui)
+    command =  f"vncviewer -passwd={passwd_file} -FullScreen -MenuKey= {vnc_host}:{vnc_port}"
+    # command =  f"vncviewer -passwd={passwd_file} -FullScreen -Maximize -MenuKey= {vnc_host}:{vnc_port}"
+
     return start_application(command, log_file, processes)
 
 
