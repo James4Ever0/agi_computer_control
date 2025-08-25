@@ -733,7 +733,7 @@ def save_ttyd_recording(
 async def start_remote_terminal_recording(
     ip_address: str, port: int, username: str, password: str
 ):
-    asciinema_command = "sshpass -p '%s' ssh -o StrictHostKeyChecking=no %s@%s -p %s" % (
+    asciinema_command = "sshpass -p '%s' ssh -o StrictHostKeyChecking=no -o LogLevel=ERROR %s@%s -p %s" % (
         password,
         username,
         ip_address,
@@ -947,10 +947,11 @@ async def start_novnc_remote_terminal(
 ):
     script_mountpoint_base = "./record_viewer/novnc_viewer_recorder"
     # to simplify hostkey checking, we add "-o StrictHostKeyChecking=no" to the ssh command
-    # TODO: suppress host key warning by adding it to known_hosts, or using command line flags
+    # TODO: suppress host key warning by adding it to known_hosts, or using command line flag: "-o LogLevel=ERROR"
     # Warning: Permanently added '<host-ip>' (<host-key-format>) to the list of known hosts.
+    # reference: https://serverfault.com/questions/638600/auto-accept-rsa-key-fingerprint-from-command-line/862645#862645
     lxterminal_init_command = (
-        f'"sshpass -p {password} ssh -o StrictHostKeyChecking=no {username}@{ip_address} -p {port}"'
+        f'"sshpass -p {password} ssh -o StrictHostKeyChecking=no -o LogLevel=ERROR {username}@{ip_address} -p {port}"'
     )
     assert os.path.isdir(script_mountpoint_base)
     extra_run_options = shlex.split(
