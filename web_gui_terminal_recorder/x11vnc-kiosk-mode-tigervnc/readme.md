@@ -1,3 +1,8 @@
+remmina has kiosk mode. do we not have to tweak its keybindings or config to make it work?
+
+do we have out-of-the-box kiosk mode for terminal, vnc client?
+
+---
 
 pull prebuilt image:
 

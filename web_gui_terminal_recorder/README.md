@@ -155,3 +155,7 @@ Unique file contents:
 - [ ] Implement GUI/terminal record viewer.
 - [ ] Implement GUI/tetminal executor and replayer.
 - [ ] Implement remote VNC recording by building a custom VNC client with input recording capabilities (for example, open the VNC client without window manager in x11vnc-desktop, and pass all input events into the client; or record noVNC client input events using client-side javascript or electron).
+- [x] Implement terminal in GUI recorder.
+- [ ] Implement remote GUI recorder.
+- [ ] Implement remote terminal recorder.
+- [ ] Implement remote terminal in GUI recorder.

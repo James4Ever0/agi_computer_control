@@ -248,7 +248,7 @@ def start_tigervnc_client(
     command = (
         f"vncviewer -passwd={passwd_file} -FullScreen -MenuKey= {vnc_host}:{vnc_port}"
     )
-    start_application(command, log_file, processes)
+    return start_application(command, log_file, processes)
 
 
 def maximize_window(window_class: str, window_count: int):
@@ -409,7 +409,7 @@ def main():
             vnc_host = os.environ.get("VNCVIEWER_VNC_HOST", "localhost")
             vnc_password = os.environ.get("VNCVIEWER_VNC_PASSWORD", "password")
 
-            start_tigervnc_client(
+            main_process = start_tigervnc_client(
                 log_file=log_file,
                 processes=processes,
                 vnc_password=vnc_password,
