@@ -947,6 +947,8 @@ async def start_novnc_remote_terminal(
 ):
     script_mountpoint_base = "./record_viewer/novnc_viewer_recorder"
     # to simplify hostkey checking, we add "-o StrictHostKeyChecking=no" to the ssh command
+    # TODO: suppress host key warning by adding it to known_hosts, or using command line flags
+    # Warning: Permanently added '<host-ip>' (<host-key-format>) to the list of known hosts.
     lxterminal_init_command = (
         f'"sshpass -p {password} ssh -o StrictHostKeyChecking=no {username}@{ip_address} -p {port}"'
     )
