@@ -77,7 +77,7 @@ The web server launches two docker containers (workers) running ttyd/novnc and r
 - The terminal remote recorder is using SSH.
 - The terminal in GUI remote recorder is using lxterminal and SSH.
 - Currently, only one recording can be done at a time.
-- You need to have the following free ports on the host machine: 9001 (webui), 8080 (ttyd), 8081 (novnc), 8950 (vnc)
+- You need to have the following free ports on the host machine: 9001 (webui), 8080 (ttyd: local terminal recorder), 8081 (novnc: local GUI recorder), 8082 (ttyd: remote terminal recorder), 8083 (novnc: remote GUI recorder), 8084 (novnc: remote terminal in GUI recorder), 8085 (novnc: local terminal in GUI recorder).
 
 ## Recording Format
 
