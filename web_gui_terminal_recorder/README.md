@@ -63,7 +63,8 @@ The web server launches two docker containers (workers) running ttyd/novnc and r
     ```
 5. Start recording by clicking the "Start" button.
 6. Stop recording by clicking the "Stop" button.
-7. Remember to enter the description for the recording in the textarea before stopping the recording.
+7. If you are using remote recorders, remember to set the correct connection info before starting the recording. (VNC for GUI, SSH for terminal)
+8. Remember to enter the description for the recording in the textarea before stopping the recording.
 
 ## Notes
 
@@ -72,6 +73,9 @@ The web server launches two docker containers (workers) running ttyd/novnc and r
 - The workers use ttyd/novnc to interact with the terminal/GUI.
 - The workers use asciinema/mss/pynput to record the terminal/GUI input/output.
 - The recorded sessions are saved to `./record` directory.
+- The GUI remote recorder is using TigerVNC.
+- The terminal remote recorder is using SSH.
+- The terminal in GUI remote recorder is using lxterminal and SSH.
 - Currently, only one recording can be done at a time.
 - You need to have the following free ports on the host machine: 9001 (webui), 8080 (ttyd), 8081 (novnc), 8950 (vnc)
 

@@ -1,0 +1,5 @@
+steps:
+    - mount modified novnc/xtermjs html code
+    - run websockify binary in background
+    - optionally, serve the html file with python -m http.server before accessing
+    - open html with playwright on localhost

@@ -31,7 +31,7 @@ def screenshot_worker(output_dir:str):
         while True:
             time.sleep(1)
             timestamp = time.time()
-            screenshot = sct.shot(output=os.path.join(output_dir, "screenshot_%s.png" % timestamp))
+            sct.shot(output=os.path.join(output_dir, "screenshot_%s.png" % timestamp))
 
 def keyboard_worker(output_file:str):
     from pynput import keyboard

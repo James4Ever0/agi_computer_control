@@ -4,10 +4,11 @@
       <link rel="stylesheet" href="node_modules/@xterm/xterm/css/xterm.css" />
       <script src="node_modules/@xterm/xterm/lib/xterm.js"></script>
     </head>
-    <body>
-      <div id="terminal"></div>
+    <body style="background-color: red;">
+      <div id="terminal" style="width: 800px; height: 600px;"></div>
       <script>
-        var term = new Terminal();
+        // api reference: https://xtermjs.org/docs/api/terminal/classes/terminal/
+        const term = new Terminal();
         term.open(document.getElementById('terminal'));
         term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
       </script>

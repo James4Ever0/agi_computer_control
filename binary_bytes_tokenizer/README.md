@@ -1,3 +1,9 @@
+check out special control tokens in xtermjs.org
+
+https://xtermjs.org/docs/api/vtfeatures/
+
+---
+
 in terminal, some special operate codes are in binary, such as <ESC>
 
 we first check if openai tiktoken and huggingface tokenizers supports binary tokenization
