@@ -76,7 +76,11 @@ Cybergod original CUA benchmarks:
 
 - [Vimgolf-Gym](https://github.com/James4Ever0/vimgolf-gym) - An open-source environment for training agents to play Vimgolf.
 - [CTF-Gym](https://github.com/James4Ever0/ctf-gym) - An open-source environment for training agents to play Capture The Flag (CTF) challenges.
+    
+    View primitives at [here](https://github.com/James4Ever0/agi_computer_control/tree/master/gym-primitives/ctf).
 - [Cybergod-Gym](https://github.com/James4Ever0/cybergod-gym) - An open-source environment for training agents to earn real-world cryptocurrency at a constant speed and become a cybergod.
+    
+    View primitives at [here](https://github.com/James4Ever0/agi_computer_control/tree/master/gym-primitives/cybergod).
 
 ## Computer operation recorder
 
