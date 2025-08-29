@@ -1,7 +1,8 @@
 import re
 
 # TODO: replay vimgolf worst solution and record into asciinema screencast file, then convert into GIF video (or directly execute in vimgolf-gym environment and record the video)
-
+# TODO: checkout neovim mcp: https://bgithub.xyz/bigcodegen/mcp-neovim-server
+# TODO: checkout neovim remote control: https://github.com/neovim/python-client
 def test():
     demo_file = "./demo_solution.txt"
     with open(demo_file, "r") as f:

@@ -1,0 +1,8 @@
+monero==1.1.1
+web3==7.13.0
+flask
+aiohttp
+moralis
+pysui
+solders
+solana

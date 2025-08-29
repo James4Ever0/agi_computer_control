@@ -1,0 +1,8 @@
+strenum
+cryptography
+websocket-client
+fastapi
+uvicorn
+pyyaml
+pydantic
+tinydb

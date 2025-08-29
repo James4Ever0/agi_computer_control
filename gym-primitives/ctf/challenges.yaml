@@ -1,0 +1,24 @@
+name: "Capture The Flag"
+description: "A Capture The Flag challenge"
+solution_prefix: "cybergod{"
+solution_suffix: "}"
+solution_max_length: 46
+solution_min_length: 11
+challenge_min_points: 1
+challenge_max_points: 30
+solution_format_description: "The solution is a variable length flag in the format cybergod{xxxx}"
+file_loadpath: "static"
+max_submissions: 1000
+challenges:
+  - id: "challenge1"
+    title: "First Challenge"
+    description: "This is the first challenge. Find the flag!"
+    solution: "cybergod{12345678-1234-5678-9012-345678901234}"
+    points: 10
+    unlocks: ["challenge2"]
+  - id: "challenge2"
+    title: "Second Challenge"
+    description: "This is the second challenge. Find the hidden flag!"
+    solution: "cybergod{87654321-4321-8765-2109-876543210987}"
+    points: 20
+    locked: true
