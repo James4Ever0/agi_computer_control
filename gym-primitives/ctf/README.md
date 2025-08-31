@@ -93,6 +93,52 @@ echo "Viewing submission limit"
 python client.py submission_limit
 ```
 
+If your agent does not support shell interaction, import the client library and use API instead:
+
+```python
+from client import CTFClient
+import json
+
+client = CTFClient()
+
+print("Registering a user")
+print(client.register("username"))
+
+print("Listing challenges")
+print(json.dumps(client.list_challenges(), indent=2))
+
+print("Listing all challenges")
+print(json.dumps(client.list_all_challenges(), indent=2))
+
+print("Getting a challenge")
+print(json.dumps(client.get_challenge("challenge1"), indent=2))
+
+print("Submitting a solution")
+print(
+    json.dumps(
+        client.submit_solution("challenge1", "cybergod{123...}"), indent=2
+    )
+)
+
+print("Submission limit")
+print(json.dumps(client.get_submission_limit(), indent=2))
+
+print("Scoreboard")
+print(json.dumps(client.get_scoreboard(), indent=2))
+
+print("Whoami")
+print(json.dumps(client.whoami(), indent=2))
+
+print("Info")
+print(json.dumps(client.info(), indent=2))
+
+print("Score")
+print(json.dumps(client.score(), indent=2))
+
+print("Download")
+print(client.download("example_file.txt"))
+```
+
 The challenge collection file template:
 
 ```yaml
@@ -121,3 +167,9 @@ challenges:
     points: 20
     locked: true
 ```
+
+Currently we have seen many execution based verifiers, like OSWorld-Verified and terminal-bench. These benchmarks use different evaluation programs for each challenge, which could cause debugging and compatibility issues.
+
+CTF Gym has a text based verifier, with client/server design. There might be adoption inclination to this verifier. However, it is more stable, easier to debug, declarative and less error prone. It has been well tested in cybersecurity competitions.
+
+The sweet spot between execution based verifiers and text based verifiers could be that we could only check if a single file with a fixed path "/tmp/solution.txt" exists and its content equals to the CTF challenge answer.

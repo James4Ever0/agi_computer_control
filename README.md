@@ -70,6 +70,16 @@ free_ai_freedoms = {
 
 <!-- ![cybergod_4_freedom](https://github.com/user-attachments/assets/7c664aba-c535-4095-b7eb-4eedb99aacb0) -->
 
+## Cybergod datasets
+
+The following datasets are available:
+
+- [Vimgolf public challenges dataset](https://huggingface.co/datasets/James4Ever0/vimgolf_challenges_and_solutions)
+- Asciinema public recordings dataset
+    - [Raw cast files](https://huggingface.co/datasets/james4ever0/asciinema_terminal_recordings)
+    - [Agg converted GIF video files](https://www.kaggle.com/datasets/jessysisca/asciinema-public-record-gif-video)
+- [Terminal and GUI recordings](https://huggingface.co/datasets/cybergod-agi/gui_and_terminal_operation_recording)
+
 ## CUA benchmarks
 
 Cybergod original CUA benchmarks:

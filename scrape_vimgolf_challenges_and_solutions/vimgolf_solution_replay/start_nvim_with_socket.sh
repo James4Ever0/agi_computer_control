@@ -1,0 +1,1 @@
+nvim --listen /tmp/nvim.sock
