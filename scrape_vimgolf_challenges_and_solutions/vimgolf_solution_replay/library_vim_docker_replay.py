@@ -10,6 +10,11 @@ import signal
 import shutil
 import shlex
 import json
+import vimgolf.vimgolf
+
+_VIMGOLF_VIMRC_FILEPATH = os.path.join(
+    os.path.dirname(vimgolf.vimgolf.__file__), "vimgolf.vimrc"
+)
 
 IMAGE_NAME = "thinca/vim"
 SERVER_NAME = "VIM"
@@ -20,7 +25,7 @@ def run_vimgolf_replay(
     expected_output,
     vimgolf_solution,
     cast_file_name,
-    key_action_timestamp_log_file_name
+    key_action_timestamp_log_file_name,
 ):
     """Replay VimGolf solution in a Docker container and verify the result."""
     assert (
@@ -43,9 +48,25 @@ def run_vimgolf_replay(
         input_filepath = os.path.join(tmpdirname, "input.txt")
         with open(input_filepath, "w") as f:
             f.write(input_content)
+        vimrc_filepath = os.path.join(tmpdirname, "vimrc")
+        shutil.copy(_VIMGOLF_VIMRC_FILEPATH, vimrc_filepath)
+
+        extra_vim_args = [
+            "-Z",  # restricted mode, utilities not allowed
+            "-n",  # no swap file, memory only editing
+            "--noplugin",  # no plugins
+            "-i",
+            "NONE",  # don't load .viminfo (e.g., has saved macros, etc.)
+            "+0",  # start on line 0
+            "-u",
+            "/workdir/vimrc",  # vimgolf .vimrc
+            "-U",
+            "NONE",  # don't load .gvimrc
+        ]
+        extra_vim_args = " ".join(extra_vim_args)
 
         # Start Docker container with asciinema recording
-        cmd = f"docker run --rm -it --name {container_name} -v {tmpdirname}:/workdir/:rw {IMAGE_NAME} --servername {SERVER_NAME} /workdir/input.txt"
+        cmd = f"docker run --rm -it --name {container_name} -v {tmpdirname}:/workdir/:rw {IMAGE_NAME} {extra_vim_args} --servername {SERVER_NAME} /workdir/input.txt"
         process: ptyprocess.PtyProcess = ptyprocess.PtyProcess.spawn(
             ["asciinema", "rec", "--overwrite", "-c", cmd, "-q", cast_file_name]
         )
@@ -97,7 +118,11 @@ def run_vimgolf_replay(
                 print("replaying key (%s/%s): %s" % (index + 1, len(keys), key))
                 # check if the container and the server exist otherwise just abort execution
                 try:
-                    output = subprocess.check_output(shlex.split(f"docker exec -it {container_name} vim --serverlist"))
+                    output = subprocess.check_output(
+                        shlex.split(
+                            f"docker exec -it {container_name} vim --serverlist"
+                        )
+                    )
                     if "VIM" not in output.decode():
                         print("vim server is not running in the container")
                         break
@@ -181,7 +206,7 @@ end
             expected_output=expected_output,
             vimgolf_solution=vimgolf_solution,
             cast_file_name=cast_file_name,
-            key_action_timestamp_log_file_name=key_action_timestamp_log_file_name 
+            key_action_timestamp_log_file_name=key_action_timestamp_log_file_name,
         )
         == True
     )
