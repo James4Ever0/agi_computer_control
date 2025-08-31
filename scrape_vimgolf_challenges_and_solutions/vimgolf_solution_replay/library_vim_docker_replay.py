@@ -8,6 +8,7 @@ import uuid
 import subprocess
 import signal
 import shutil
+import shlex
 import json
 
 IMAGE_NAME = "thinca/vim"
@@ -94,17 +95,19 @@ def run_vimgolf_replay(
             keys = tokenize_keycode_reprs(vimgolf_solution)
             for index, key in enumerate(keys):
                 print("replaying key (%s/%s): %s" % (index + 1, len(keys), key))
-                # Check container status
-                if (
-                    not subprocess.run(
-                        ["docker", "inspect", container_name],
-                        check=False,
-                        capture_output=True,
-                    ).returncode
-                    == 0
-                ):
-                    raise RuntimeError("Container terminated unexpectedly")
-
+                # check if the container and the server exist otherwise just abort execution
+                try:
+                    output = subprocess.check_output(shlex.split(f"docker exec -it {container_name} vim --serverlist"))
+                    if "VIM" not in output.decode():
+                        print("vim server is not running in the container")
+                        break
+                except subprocess.CalledProcessError:
+                    print("Failed to check if the vim server is running")
+                    break
+                output = subprocess.check_output(shlex.split("docker ps"))
+                if container_name not in output.decode():
+                    print("docker container is not running")
+                    break
                 subprocess.run(
                     [
                         "docker",
@@ -130,8 +133,12 @@ def run_vimgolf_replay(
                     break
                 time.sleep(0.1)
             else:
-                raise RuntimeError("Vim did not exit within expected time")
+                print("Vim did not exit within expected time")
 
+            # shall wait for most three seconds
+            time.sleep(3)
+            if process.isalive():
+                process.terminate()
             # Verify result
             with open(input_filepath, "r") as f:
                 actual_output = f.read()
