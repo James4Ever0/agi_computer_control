@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # not accurate. do not use in production
-import os
 import atexit
+import os
 
 PIPE_PATH = "/tmp/timestamp_pipe"
 

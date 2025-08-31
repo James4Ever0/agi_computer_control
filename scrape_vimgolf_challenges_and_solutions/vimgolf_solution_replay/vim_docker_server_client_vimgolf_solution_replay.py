@@ -2,15 +2,16 @@
 # nvim server shall be running in a docker container. the client could run outside the container
 # pull a dedicated docker image for nvim server
 
-import ptyprocess
-import os
-import time
-import tempfile
-from vimgolf.vimgolf import tokenize_keycode_reprs
 import atexit
-import uuid
+import os
 import shlex
 import subprocess
+import tempfile
+import time
+import uuid
+
+import ptyprocess
+from vimgolf.vimgolf import tokenize_keycode_reprs
 
 IMAGE_NAME = "thinca/vim"
 SERVER_NAME = "VIM"
@@ -25,7 +26,7 @@ output_content = "class Golfer\n  def self.hello(*a)\n    puts \"Hello #{a.join(
 # vimgolf_solution = "<Esc>:<Up><Up><Up><Up><Up>g.<BS>/.*def.$<BS>*end.*/d<CR>:v/\\S/f<BS>d<CR>fai*<Esc><Right><Right>cf))<Esc><Down><Left>i.join(',')<Esc>lldf:df\"a\"<Esc>=<Esc><Esc><BS><Up><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>xxxxxi  <Down><Down><Esc>x<Up><Right>xx<Esc>:wq<CR>"
 
 # a more sophisticated solution
-vimgolf_solution ="<Down>3dd9<Left>4x<Down>3x<Down>3xi  <Up> <Up><Left><Left>  <BS><Esc><Down>18<Right>18xi.join(',')<Up><Left><Esc>5<Left>6xi<Left>*<Esc>:wq<CR>"
+vimgolf_solution = "<Down>3dd9<Left>4x<Down>3x<Down>3xi  <Up> <Up><Left><Left>  <BS><Esc><Down>18<Right>18xi.join(',')<Up><Left><Esc>5<Left>6xi<Left>*<Esc>:wq<CR>"
 
 # bug: cannot remove the temporary directory, insufficient permission
 # maybe we should mount the file into another directory instead of /tmp
@@ -42,14 +43,16 @@ with tempfile.TemporaryDirectory() as tmpdirname:
     # command = f"docker run --rm -it --name {DOCKER_CONTAINER_NAME} {IMAGE_NAME} --servername {SERVER_NAME}"
 
     cast_file_name = "vimgolf_solution_replay.cast"
-    process:ptyprocess.PtyProcess = ptyprocess.PtyProcess.spawn(
+    process: ptyprocess.PtyProcess = ptyprocess.PtyProcess.spawn(
         ["asciinema", "rec", "--overwrite", "-c", command, "-q", cast_file_name],
     )
     pid = process.pid
     atexit.register(lambda: os.system(f"kill {pid}"))
     while True:
         try:
-            output = subprocess.check_output(shlex.split(f"docker exec -it {DOCKER_CONTAINER_NAME} vim --serverlist"))
+            output = subprocess.check_output(
+                shlex.split(f"docker exec -it {DOCKER_CONTAINER_NAME} vim --serverlist")
+            )
             if "VIM" in output.decode():
                 break
         except subprocess.CalledProcessError:
@@ -67,7 +70,9 @@ with tempfile.TemporaryDirectory() as tmpdirname:
         print("replaying key (%s/%s): %s" % (index + 1, len(init_keys), it))
         # check if the container and the server exist otherwise just abort execution
         try:
-            output = subprocess.check_output(shlex.split(f"docker exec -it {DOCKER_CONTAINER_NAME} vim --serverlist"))
+            output = subprocess.check_output(
+                shlex.split(f"docker exec -it {DOCKER_CONTAINER_NAME} vim --serverlist")
+            )
             if "VIM" not in output.decode():
                 print("vim server is not running in the container")
                 break
@@ -97,7 +102,7 @@ with tempfile.TemporaryDirectory() as tmpdirname:
     print("reading back the edited file")
     with open(input_filepath, "r") as f:
         editor_output = f.read()
-    
+
     verified = editor_output == output_content
     print("Verification result:", verified)
     # bug: cleanup methods will cause traceback, wrap whole thing inside a try-finally with exception handling in the finally code block

@@ -1,8 +1,11 @@
-from vimgolf.vimgolf import tokenize_keycode_reprs, logger, write
-import vimgolf.vimgolf
 import os
 
-_VIMGOLF_VIMRC_FILEPATH = os.path.join(os.path.dirname(vimgolf.vimgolf.__file__), 'vimgolf.vimrc')
+import vimgolf.vimgolf
+from vimgolf.vimgolf import logger, tokenize_keycode_reprs, write
+
+_VIMGOLF_VIMRC_FILEPATH = os.path.join(
+    os.path.dirname(vimgolf.vimgolf.__file__), "vimgolf.vimrc"
+)
 
 try:
     # If there were init keys specified, we need to convert them to a

@@ -1,9 +1,10 @@
-from library_vim_docker_replay import run_vimgolf_replay
-import tempfile
-import os
 import json
-import subprocess
+import os
 import shutil
+import subprocess
+import tempfile
+
+from library_vim_docker_replay import run_vimgolf_replay
 
 challenge_dir = "../challenges"
 assert os.path.isdir(
@@ -76,10 +77,10 @@ for index, challenge_id in enumerate(challenges):
         )
         # copy the tmpdir to output_dir
         print("Copying replay output to:", replay_challenge_output_dir)
-        copy_success=False
+        copy_success = False
         try:
             shutil.copytree(tmpdir, replay_challenge_output_dir)
-            copy_success=True
+            copy_success = True
         finally:
             if not copy_success:
                 if os.path.exists(replay_challenge_output_dir):

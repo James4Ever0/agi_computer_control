@@ -2,12 +2,14 @@
 # nvim server shall be running in a docker container. the client could run outside the container
 # pull a dedicated docker image for nvim server
 
+import os
+import tempfile
+import time
+
 import ptyprocess
 import pynvim
-import os
-import time
-import tempfile
 from vimgolf.vimgolf import tokenize_keycode_reprs
+
 
 def vimgolf_solution_to_feedkeys(vimgolf_solution: str) -> list[str]:
 
@@ -50,8 +52,8 @@ with tempfile.TemporaryDirectory() as tmpdirname:
     init_keys = vimgolf_solution_to_feedkeys(vimgolf_solution)
     for index, it in enumerate(init_keys):
         # the replay may get stuck. investigate.
-        print("replaying key (%s/%s): %s" % (index+1, len(init_keys), it))
-        nvim.eval('feedkeys("%s", "t")' % it) 
+        print("replaying key (%s/%s): %s" % (index + 1, len(init_keys), it))
+        nvim.eval('feedkeys("%s", "t")' % it)
         time.sleep(0.3)
     nvim.quit()
     nvim.close()

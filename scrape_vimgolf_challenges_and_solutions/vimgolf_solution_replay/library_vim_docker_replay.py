@@ -1,16 +1,17 @@
-import ptyprocess
-import os
-import time
-import tempfile
-from vimgolf.vimgolf import tokenize_keycode_reprs
 import atexit
-import uuid
-import subprocess
-import signal
-import shutil
-import shlex
 import json
+import os
+import shlex
+import shutil
+import signal
+import subprocess
+import tempfile
+import time
+import uuid
+
+import ptyprocess
 import vimgolf.vimgolf
+from vimgolf.vimgolf import tokenize_keycode_reprs
 
 _VIMGOLF_VIMRC_FILEPATH = os.path.join(
     os.path.dirname(vimgolf.vimgolf.__file__), "vimgolf.vimrc"

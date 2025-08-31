@@ -6,11 +6,11 @@
 
 # if we choose to record the scene in agg-python-bindings, timestamp every frame, we will resolve the time alignment issue.
 
-import shutil
-import ptyprocess
-
-import vimgolf.vimgolf
 import os
+import shutil
+
+import ptyprocess
+import vimgolf.vimgolf
 
 _VIMGOLF_VIMRC_FILEPATH = os.path.join(
     os.path.dirname(vimgolf.vimgolf.__file__), "vimgolf.vimrc"

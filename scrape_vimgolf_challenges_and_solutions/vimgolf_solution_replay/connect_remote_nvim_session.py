@@ -5,7 +5,7 @@ import pynvim
 # this requires the nvim server to be running in terminal executor (cybergod)
 
 # create a session attached to Nvim's address (`v:servername`).
-nvim = pynvim.attach('socket', path='/tmp/nvim.sock')
+nvim = pynvim.attach("socket", path="/tmp/nvim.sock")
 
 # eval working
 # nvim.eval('feedkeys("\\<Esc>", "t")')
