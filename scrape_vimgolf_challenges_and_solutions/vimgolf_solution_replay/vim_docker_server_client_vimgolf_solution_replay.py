@@ -21,7 +21,11 @@ input_content = 'class Golfer\n     def initialize; end # initialize\n  def usel
 
 output_content = "class Golfer\n  def self.hello(*a)\n    puts \"Hello #{a.join(',')}\"\n  end\nend\n"
 
-vimgolf_solution = "<Esc>:<Up><Up><Up><Up><Up>g.<BS>/.*def.$<BS>*end.*/d<CR>:v/\\S/f<BS>d<CR>fai*<Esc><Right><Right>cf))<Esc><Down><Left>i.join(',')<Esc>lldf:df\"a\"<Esc>=<Esc><Esc><BS><Up><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>xxxxxi  <Down><Down><Esc>x<Up><Right>xx<Esc>:wq<CR>"
+# too naive solution, just for demo
+# vimgolf_solution = "<Esc>:<Up><Up><Up><Up><Up>g.<BS>/.*def.$<BS>*end.*/d<CR>:v/\\S/f<BS>d<CR>fai*<Esc><Right><Right>cf))<Esc><Down><Left>i.join(',')<Esc>lldf:df\"a\"<Esc>=<Esc><Esc><BS><Up><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>xxxxxi  <Down><Down><Esc>x<Up><Right>xx<Esc>:wq<CR>"
+
+# a more sophisticated solution
+vimgolf_solution ="<Down>3dd9<Left>4x<Down>3x<Down>3xi  <Up> <Up><Left><Left>  <BS><Esc><Down>18<Right>18xi.join(',')<Up><Left><Esc>5<Left>6xi<Left>*<Esc>:wq<CR>"
 
 # bug: cannot remove the temporary directory, insufficient permission
 # maybe we should mount the file into another directory instead of /tmp
