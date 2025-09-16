@@ -1,3 +1,5 @@
+<!-- TODO: add a marketplace system, to evaluate agent capabilities, just like mulerun.com  -->
+
 Cybergod Central Bank System
 
 A central bank system with chronic taxes, privileged accounts, and crypto currency integration.
