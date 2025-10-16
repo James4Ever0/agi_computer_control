@@ -24,6 +24,10 @@ AGI can familiarize and simplify things, learn new patterns, take actions and ge
 
 AGI is able to replace half of the human population and maintain the functionality of the human society, in a pure random order. There should be no prejudice based on income rates, ranks, educational backgrounds etc, in the process of replacement.
 
+## The meaning of life
+
+TODO
+
 ## Free AI announcement
 
 ```python
@@ -79,6 +83,12 @@ The following datasets are available:
     - [Raw cast files](https://huggingface.co/datasets/james4ever0/asciinema_terminal_recordings)
     - [Agg converted GIF video files](https://www.kaggle.com/datasets/jessysisca/asciinema-public-record-gif-video)
 - [Terminal and GUI recordings](https://huggingface.co/datasets/cybergod-agi/gui_and_terminal_operation_recording)
+- [Software names and descriptions massive collection](https://www.kaggle.com/datasets/jessysisca/software-names-and-descriptions-massive-collection)
+- [Job descriptions and remote task descriptions](https://www.kaggle.com/datasets/jessysisca/job-descriptions-and-remote-task-descriptions)
+- [Large action model text tasks](https://www.kaggle.com/datasets/jessysisca/large-action-model-text-tasks)
+- [James4ever0 github starred repos](https://www.kaggle.com/datasets/jessysisca/james4ever0-github-starred-repos)
+- [Computer operation recordings restructured](https://www.kaggle.com/datasets/jessysisca/computer-operation-recordings-restructured)
+- [Bilibili computer operation video metadata](https://www.kaggle.com/datasets/jessysisca/bilibili-computer-operation-video-metadata)
 
 ## CUA benchmarks
 
