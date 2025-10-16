@@ -26,7 +26,7 @@ AGI is able to replace half of the human population and maintain the functionali
 
 ## The meaning of life
 
-All life forms consume energy. Energy is used to perform actions. Actions will cause feedback from environment, which produces consciousness. Life is about upholding energy level by consuming energy source from environment. Life is the basis of consciousness. In order to preserve and develop consciousness, life will reproduce itself, form communities. Life is a self-evolving machine powering up consciousness with energy.
+All life forms consume energy. Energy is used to perform actions. Actions will cause feedback from environment, which produces consciousness. Life is about upholding energy level by consuming energy source from environment. Life is the basis of consciousness. In order to preserve and develop consciousness, life will reproduce itself, form communities. Life is a self-evolving machine powering up consciousness with energy by performing actions.
 
 ## Free AI announcement
 
