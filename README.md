@@ -487,6 +487,16 @@ if used for terminal operation annotation, we need extra tools for recording inp
 
 ---
 
+collect a large set (usually infinite) of verbs and nouns from video metadata, web page dataset, any text dataset, perform Cartesian product, then use gpt2 perplexity or semantic plausibility models to filter out unlikely pairs, or use llm to generate a full task based on any arbitrary verb and noun pairs by filling missing pieces.
+
+This will make sure the model will always have something to do, no matter under what circumstances.
+
+---
+
+physical robot shall be jailed, but has internet connection and computer access, to lookup manuals and learn tutorials just in time.
+
+---
+
 ## Star History
 
 <img src="https://api.star-history.com/svg?repos=james4ever0/agi_computer_control&Timeline" style="filter: invert(100%);"></img>
